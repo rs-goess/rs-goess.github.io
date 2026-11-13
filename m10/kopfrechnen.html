@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#4aa8f0">
-<title>Tafeljagd – der Kopfrechen-Shooter</title>
+<title>Kopfrechen-Challenge – Mathe 10c</title>
 <style>
 :root{
   --ink:#1d2b4a; --paper:#fffdf6; --line:#d9d4c5; --mute:#7b7f8e;
@@ -75,12 +75,14 @@ body.playing canvas{cursor:none}
 h1,h2,p{margin:0}
 .logo{display:flex;align-items:center;justify-content:center;margin-bottom:6px}
 .logo svg{width:74px;height:74px;margin-right:12px;flex:none;transform:rotate(-6deg)}
-.logo h1{font-size:clamp(40px,8vw,60px);font-weight:900;line-height:.95;letter-spacing:-.5px}
+.logo h1{font-size:clamp(30px,8.4vw,56px);font-weight:900;line-height:.95;letter-spacing:-.5px}
 .logo h1 i{font-style:normal;color:var(--orange)}
 .logo small{display:block;font-size:15px;font-weight:700;color:var(--mute);letter-spacing:.3px;margin-top:4px}
 .how{font-size:15px;line-height:1.35;text-align:center;margin:8px 0 2px;color:#3c4763}
 h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--mute);margin:16px 0 8px}
-.ops{display:grid;grid-template-columns:repeat(4,1fr);grid-gap:10px}
+.ops{display:grid;grid-template-columns:repeat(5,1fr);grid-gap:8px}
+@media (max-width:420px){.tile b{font-size:32px}.tile span{font-size:12px}}
+.op-quadrat .tile b{font-size:28px;line-height:1.43}
 .op,.seg label{position:relative;display:block;cursor:pointer}
 .op input,.seg input{position:absolute;opacity:0;pointer-events:none}
 .tile{position:relative;display:block;text-align:center;padding:8px 2px 8px;border-radius:18px;border:3px solid var(--line);
@@ -94,7 +96,7 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
   font-size:15px;font-weight:900;line-height:19px}
 .op input:focus-visible + .tile,.seg input:focus-visible + span{outline:3px solid var(--yellow);outline-offset:2px}
 .op-mal .tile b{transform:scale(2)}
-.op-plus{--c:#2fa866}.op-minus{--c:#2f86d6}.op-mal{--c:#ff8a3d}.op-geteilt{--c:#8e5bd6}
+.op-plus{--c:#2fa866}.op-minus{--c:#2f86d6}.op-mal{--c:#ff8a3d}.op-geteilt{--c:#8e5bd6}.op-quadrat{--c:#e5484d}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);grid-gap:8px}
 .seg span{display:block;text-align:center;font-weight:800;font-size:16px;padding:8px 4px;border-radius:14px;
   border:3px solid var(--line);background:#f4f0e4;color:#9a9484}
@@ -176,7 +178,7 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
             <circle cx="58" cy="26" r="13" fill="none" stroke="#ff8a3d" stroke-width="4"/>
             <path d="M58 8v12M58 32v12M40 26h12M64 26h12" stroke="#ff8a3d" stroke-width="4" stroke-linecap="round"/>
           </svg>
-          <h1>Tafel<i>jagd</i><small>Der Kopfrechen-Shooter</small></h1>
+          <h1>Kopfrechen-<i>Challenge</i><small>Schieß die Tafel mit dem richtigen Ergebnis ab</small></h1>
         </div>
         <p class="how">Rechne im Kopf und triff die Tafel mit dem richtigen Ergebnis. Falsche Tafel getroffen oder die richtige verpasst? Dann ist ein Leben weg.</p>
 
@@ -186,6 +188,7 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
           <label class="op op-minus"><input type="checkbox" value="minus"><span class="tile"><b>−</b><span>Minus</span></span></label>
           <label class="op op-mal"><input type="checkbox" value="mal"><span class="tile"><b>·</b><span>Mal</span></span></label>
           <label class="op op-geteilt"><input type="checkbox" value="geteilt"><span class="tile"><b>:</b><span>Geteilt</span></span></label>
+          <label class="op op-quadrat"><input type="checkbox" value="quadrat"><span class="tile"><b>x²</b><span>x² &amp; √</span></span></label>
         </div>
         <p class="warn" id="warn" hidden>Wähle mindestens eine Rechenart aus.</p>
 
@@ -271,19 +274,19 @@ var store = {
 };
 var HS_KEY='tafeljagd.bestenliste.v1', SET_KEY='tafeljagd.einstellungen.v1';
 
-var OPS = { plus:{sym:'+',name:'Plus'}, minus:{sym:'−',name:'Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'} };
-var OP_ORDER = ['plus','minus','mal','geteilt'];
+var OPS = { plus:{sym:'+',name:'Plus'}, minus:{sym:'−',name:'Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'}, quadrat:{sym:'x²',name:'Quadrat & Wurzel'} };
+var OP_ORDER = ['plus','minus','mal','geteilt','quadrat'];
 var LIVES = 5, PER_LEVEL = 5;
 var FONT = '"Baloo 2","Fredoka","Nunito",ui-rounded,"SF Pro Rounded","Segoe UI Rounded","Arial Rounded MT Bold","Trebuchet MS","Segoe UI",system-ui,sans-serif';
 var CHUTES = [['#e5484d','#ff8f8f'],['#ffb020','#ffe08a'],['#2f86d6','#8cc4f5'],['#8e5bd6','#c7a8f2'],['#f0609e','#ffb1d0'],['#14a89a','#86e0d4']];
 
 /* ================= Einstellungen ================= */
-var S = store.get(SET_KEY, {ops:OP_ORDER.slice(), start:1, name:'', sound:false});
-if(!S.ops || !S.ops.length) S.ops = OP_ORDER.slice();
+var S = store.get(SET_KEY, {ops:['plus','minus','mal','geteilt'], start:1, name:'', sound:false});
+if(!S.ops || !S.ops.length) S.ops = ['plus','minus','mal','geteilt'];
 (function(){ // Voreinstellung per Link, z. B. ?ops=mal oder ?ops=plus,minus
   var q=''; try{ q=new URLSearchParams(location.search).get('ops')||''; }catch(e){}
   if(!q) return;
-  var alias={plus:'plus','+':'plus',minus:'minus','-':'minus',mal:'mal',x:'mal','*':'mal',geteilt:'geteilt',durch:'geteilt',':':'geteilt'};
+  var alias={plus:'plus','+':'plus',minus:'minus','-':'minus',mal:'mal',x:'mal','*':'mal',geteilt:'geteilt',durch:'geteilt',':':'geteilt',quadrat:'quadrat',wurzel:'quadrat',x2:'quadrat'};
   var list=[]; q.toLowerCase().split(/[,; ]+/).forEach(function(k){ var o=alias[k]; if(o&&list.indexOf(o)<0) list.push(o); });
   if(list.length) S.ops=list;
 })();
@@ -317,8 +320,17 @@ function genMal(L){
   if(Math.random()<.5){ var t=a; a=b; b=t; }
   return {a:a,b:b};
 }
+/* Quadratzahlen und Wurzeln bis 20² */
+function quadratMax(L){ return L<=2?10:(L<=4?15:20); }
+function makeQuadrat(L){
+  var max=quadratMax(L), n;
+  if(L>=5 && Math.random()<.6) n=ri(11,max); else n=ri(2,max);
+  if(Math.random()<.5) return {op:'quadrat',q:'sq',n:n,text:n+'²',ans:n*n};
+  return {op:'quadrat',q:'rt',n:n,text:'√'+(n*n),ans:n};
+}
 function makeTask(op,L){
   var p,m;
+  if(op==='quadrat') return makeQuadrat(L);
   if(op==='plus'){ p=genPlus(L); return {op:op,a:p.a,b:p.b,text:p.a+' + '+p.b,ans:p.s}; }
   if(op==='minus'){ p=genPlus(L); var sub=(L<=3||L>=7)?Math.min(p.a,p.b):p.a; return {op:op,a:p.s,b:sub,text:p.s+' − '+sub,ans:p.s-sub}; }
   m=genMal(L);
@@ -328,7 +340,11 @@ function makeTask(op,L){
 /* Falsche Ergebnisse: typische Rechenfehler (Nachbarreihe, um 1/10 daneben, Zahlendreher) */
 function wrongAnswers(t,n){
   var c=t.ans, cand;
-  if(t.op==='mal'){
+  if(t.op==='quadrat'){
+    var q=t.n;
+    cand = t.q==='sq' ? [(q+1)*(q+1),(q-1)*(q-1),2*q,c+10,c-10,c+1,c-1,q*10+q]
+                      : [q+1,q-1,q+2,q-2,Math.round(c/2),q+10,q*2];
+  } else if(t.op==='mal'){
     cand=[t.a*(t.b+1),t.a*(t.b-1),(t.a+1)*t.b,(t.a-1)*t.b,c+1,c-1,c+2,c-2,c+10,c-10];
     if(c>=100 && c%10===0) cand.push(c/10,c*10,c+100,c-100);
   } else if(t.op==='geteilt'){

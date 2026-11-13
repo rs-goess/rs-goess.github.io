@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#3b77a8">
+<title>1.11 Vorbereitung 1. Schulaufgabe – Tipps und Lösungen</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="../assets/durchklick.css">
+<link rel="stylesheet" href="../assets/formeln.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="../assets/formeln.js"></script>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="index.html">‹ Startseite</a>
+  <small>Mathe 10c · 1.11 Übungsblatt: Vorbereitung 1. Schulaufgabe</small>
+  <h1>Tipps und Lösungen Schritt für Schritt</h1>
+  <div class="chips" id="chips"></div>
+</header>
+<main id="main"></main>
+<nav><button id="zurueck" type="button">◀ Zurück</button><button id="weiter" type="button">Weiter ▶</button></nav>
+
+<script>
+function BILD(datei, text, info){ return '<figure class="bild"><img src="bilder/' + datei + '" alt="' + text + '" loading="lazy">' + (info ? '<figcaption>' + info + '</figcaption>' : '') + '</figure>'; }
+var ROT = 'Skizze nicht maßstabsgetreu · rot: Hilfslinien aus der Lösung';
+var SKIZZE15 = '<figure class="bild"><svg viewBox="0 0 320 230" width="320" role="img" aria-label="Skizze Aufgabe 15">' +
+  '<polygon points="30,200 270,200 96,20" fill="#fdeee5" stroke="#1f2f3d" stroke-width="2.2" stroke-linejoin="round"/>' +
+  '<line x1="83" y1="53" x2="102" y2="200" stroke="#2f6fa3" stroke-width="2.4" stroke-dasharray="6 4"/>' +
+  '<path d="M52 200 A22 22 0 0 0 37.5 179.3" fill="none" stroke="#1f2f3d" stroke-width="1.5"/>' +
+  '<path d="M78 48l10 10M88 48l-10 10M97 195l10 10M107 195l-10 10" stroke="#2f6fa3" stroke-width="2.2"/>' +
+  '<g font-family="Cambria Math,Times New Roman,serif" font-size="15" fill="#1f2f3d">' +
+  '<text x="56" y="192" font-size="13">70°</text>' +
+  '<text x="14" y="207" font-style="italic">A</text><text x="276" y="207" font-style="italic">B</text><text x="92" y="14" font-style="italic">C</text>' +
+  '<text x="56" y="56" font-style="italic" fill="#2f6fa3">E<tspan font-size="11" dy="4">n</tspan></text>' +
+  '<text x="96" y="222" font-style="italic" fill="#2f6fa3">D<tspan font-size="11" dy="4">n</tspan></text>' +
+  '<text x="50" y="36" font-size="13" fill="#2f6fa3"><tspan font-style="italic">x</tspan> cm</text>' +
+  '<text x="48" y="222" font-size="13" fill="#2f6fa3">2<tspan font-style="italic">x</tspan> cm</text>' +
+  '<text x="150" y="222" font-size="13">|AB| = 10 cm</text><text x="44" y="135" font-size="13" transform="rotate(-70 44 135)">|AC| = 8 cm</text>' +
+  '</g></svg><figcaption>Skizze nicht maßstabsgetreu</figcaption></figure>';
+var EK = ' <a class="link" href="einheitskreis.html">Üben: Einheitskreis-Spiel ›</a>';
+
+window.SEITE = { karten: [
+ { chip:'Start', titel:'So benutzt du diese Seite', html:
+   '<p>Das ist die Hilfe zum <b>Übungsblatt 1.11</b>. Rechne zuerst selbst auf deinem Blatt.</p><ol class="start">' +
+   '<li>Kommst du nicht weiter? Tippe auf <b style="background:var(--gelb);padding:0 5px;border-radius:4px">Tipp</b>.</li>' +
+   '<li><b style="background:var(--blau);color:#fff;padding:0 5px;border-radius:4px">Nächste Zeile</b> zeigt dir nur den nächsten Schritt.</li>' +
+   '<li>Ganz am Ende kannst du mit <b>Ganze Lösung</b> alles vergleichen.</li></ol>' +
+   '<div class="merk"><b>Teil A (Aufgaben 1–5):</b> ohne Taschenrechner, direkt auf dem Blatt.<br><b>Teil B (Aufgaben 6–15):</b> mit Taschenrechner auf einem karierten Blatt. Runde auf zwei Nachkommastellen.</div>' +
+   '<p class="hinweis-klein">Die Lösungen sind mit gerundeten Zwischenwerten gerechnet – so wie du auch rechnest. Weicht dein Ergebnis nur in der letzten Stelle ab, liegt das am Runden.</p>' },
+
+ /* ======================= Teil A ======================= */
+ { chip:'A1', untertitel:'Teil A · ohne Taschenrechner', titel:'Aufgabe 1: Pythagoras im Kopf', html:
+   '<div class="aufgabentext">Das Dreieck $ABC$ ist rechtwinklig bei $C$. Ergänze die fehlende Seitenlänge im Kopf (Quadratzahlen bis $20^2$!).</div>' +
+   BILD('111-a1.png','Rechtwinkliges Dreieck ABC mit rechtem Winkel bei C') +
+   '<div class="tab"><table><tr><th>$a$</th><th>$b$</th><th>$c$</th></tr><tr><td>$6 cm$</td><td>$8 cm$</td><td>?</td></tr><tr><td>$5 cm$</td><td>?</td><td>$13 cm$</td></tr><tr><td>?</td><td>$12 cm$</td><td>$15 cm$</td></tr><tr><td>$12 cm$</td><td>$16 cm$</td><td>?</td></tr></table></div>',
+   teile:[
+   { titel:'Die fehlenden Seiten', schritte:[
+     { tipp:'$c$ ist die Hypotenuse: $c^2 = a^2 + b^2$. Fehlt eine Kathete, rechnest du minus: $b^2 = c^2 − a^2$.', zeile:'Zeile 1: $c = @w{36 + 64} = @w{100} = 10 cm$' },
+     { zeile:'Zeile 2: $b = @w{169 − 25} = @w{144} = 12 cm$' },
+     { zeile:'Zeile 3: $a = @w{225 − 144} = @w{81} = 9 cm$' },
+     { tipp:'$144 + 256$ – welche Quadratzahl ist das?', zeile:'Zeile 4: $c = @w{144 + 256} = @w{400} = 20 cm$', ende:true } ] },
+   { titel:'sin, cos und tan als Bruch', frage:'Für das Dreieck in der zweiten Zeile ($a = 5 cm$, $b = 12 cm$, $c = 13 cm$)', schritte:[
+     { tipp:'Vom Winkel $α$ bei $A$ aus: Gegenkathete $a$, Ankathete $b$, Hypotenuse $c$.', zeile:'$sin α = @f{5}{13}$' },
+     { zeile:'$cos α = @f{12}{13}$' },
+     { zeile:'$tan α = @f{5}{12}$', ende:true } ] }
+ ]},
+
+ { chip:'A2', untertitel:'Teil A · ohne Taschenrechner', titel:'Aufgabe 2: Besondere Werte', html:
+   '<div class="aufgabentext">Gib die Werte an. Leite sie dir am Einheitskreis her, statt sie auswendig zu lernen.</div>',
+   teile:[
+   { titel:'Die zehn Werte', schritte:[
+     { tipp:'Am Einheitskreis gilt $P(cos α | sin α)$: Der Sinus ist der y-Wert, der Kosinus der x-Wert. Bei $0°$ ist $P(1 | 0)$, bei $90°$ ist $P(0 | 1)$, bei $180°$ ist $P(−1 | 0)$.', zeile:'$sin 0° = 0$,  $sin 30° = 0,5$,  $sin 90° = 1$,  $sin 180° = 0$' },
+     { tipp:'$cos 60° = 0,5$: Bei $60°$ liegt der Punkt genau über der Mitte zwischen $0$ und $1$.', zeile:'$cos 0° = 1$,  $cos 60° = 0,5$,  $cos 90° = 0$,  $cos 180° = −1$' },
+     { tipp:'$tan α = @f{sin α}{cos α}$. Bei $45°$ sind sin und cos gleich groß.', zeile:'$tan 0° = 0$,  $tan 45° = 1$', ende:true } ] },
+   { titel:'Berechne damit', schritte:[
+     { zeile:'$sin 30° + cos 60° = 0,5 + 0,5 = 1$' },
+     { tipp:'Achtung beim Minus: $cos 180° = −1$, und minus minus gibt plus.', zeile:'$2 · sin 90° − cos 180° = 2 · 1 − (−1) = 3$', ende:true } ] }
+ ], nachher:'<p class="hinweis-klein" style="margin-top:12px">' + EK + '</p>' },
+
+ { chip:'A3', untertitel:'Teil A · ohne Taschenrechner', titel:'Aufgabe 3: Einheitskreis verstehen', teile:[
+   { titel:'a) Gleicher Sinus- und Kosinuswert wie $70°$', schritte:[
+     { tipp:'Gleicher Sinuswert = gleiche Höhe: Spiegle den Punkt an der y-Achse. $sin(180° − α) = sin α$', zeile:'Gleicher Sinuswert: $180° − 70° = 110°$' },
+     { tipp:'Gleicher Kosinuswert = gleicher x-Wert: Spiegle an der x-Achse. $cos(360° − α) = cos α$', zeile:'Gleicher Kosinuswert: $360° − 70° = 290°$', ende:true } ] },
+   { titel:'b) Vorzeichen', frage:'$sin 100°$, $cos 100°$, $sin 250°$, $cos 310°$', schritte:[
+     { tipp:'Überlege, in welchem Quadranten der Punkt liegt: oben → sin positiv, rechts → cos positiv.', zeile:'$100°$ liegt im II. Quadranten (links oben): $sin 100°$: $+$,  $cos 100°$: $−$' },
+     { zeile:'$250°$ liegt im III. Quadranten (links unten): $sin 250°$: $−$' },
+     { zeile:'$310°$ liegt im IV. Quadranten (rechts unten): $cos 310°$: $+$', ende:true } ] },
+   { titel:'c) Warum ist $cos α$ nie größer als $1$?', schritte:[
+     { tipp:'Was bedeutet $cos α$ am Einheitskreis? Wie groß ist der Radius?', zeile:'$cos α$ ist die x-Koordinate eines Punktes auf dem Einheitskreis. Der Kreis hat den Radius $1$ – also liegt $x$ immer zwischen $−1$ und $1$.' },
+     { zeile:'<i>oder:</i> Im rechtwinkligen Dreieck ist die Ankathete nie länger als die Hypotenuse, also ist $@f{Ankathete}{Hypotenuse} ≤ 1$.', ende:true } ] }
+ ], nachher:'<p class="hinweis-klein" style="margin-top:12px">' + EK + '</p>' },
+
+ { chip:'A4', untertitel:'Teil A · ohne Taschenrechner', titel:'Aufgabe 4: Fehler finden', html:
+   '<div class="aufgabentext">Wahr oder falsch? Verbessere die falschen Aussagen.</div>', teile:[
+   { titel:'Die vier Aussagen', knopf:'Nächste Aussage', schritte:[
+     { tipp:'Spiegle den Punkt zu $30°$ an der y-Achse.', zeile:'$sin 150° = sin 30°$ – <b>wahr</b> (gleiche Höhe, $180° − 30° = 150°$)' },
+     { tipp:'Merke: Gegenkathete durch Ankathete – „G vor A“ wie im Alphabet.', zeile:'$tan α = @f{Ankathete}{Gegenkathete}$ – <b>falsch</b>. Richtig: $tan α = @f{Gegenkathete}{Ankathete}$' },
+     { zeile:'„Der Satz des Pythagoras gilt in jedem Dreieck.“ – <b>falsch</b>. Er gilt nur in <b>rechtwinkligen</b> Dreiecken (sonst: Kosinussatz).' },
+     { zeile:'„Für den Sinussatz braucht man eine Seite und ihren Gegenwinkel.“ – <b>wahr</b>', ende:true } ] }
+ ]},
+
+ { chip:'A5', untertitel:'Teil A · ohne Taschenrechner', titel:'Aufgabe 5: Welcher Zusammenhang passt?', html:
+   '<div class="aufgabentext">In einem Dreieck $ABC$ (übliche Bezeichnungen) sind drei Größen gegeben. Womit kannst du die gesuchte Größe <b>direkt</b> berechnen?</div>' +
+   '<div class="box" style="font-size:15px">Faustregel: <b>rechtwinklig?</b> → nur Seiten: Pythagoras, sonst sin/cos/tan. <b>Nicht rechtwinklig?</b> → Seite + Gegenwinkel bekannt: Sinussatz; SWS oder SSS: Kosinussatz.</div>',
+   teile:[
+   { titel:'Die sieben Zeilen', knopf:'Nächste Zeile', schritte:[
+     { tipp:'Rechter Winkel und nur Seiten gesucht/gegeben.', zeile:'$γ = 90°; a; b$ → $c$: <b>Pythagoras</b>' },
+     { zeile:'$γ = 90°; a; c$ → $α$: <b>sin/cos/tan</b> ($sin α = @f{a}{c}$)' },
+     { tipp:'Zwei Seiten und der Winkel dazwischen (SWS).', zeile:'$b; c; α$ → $a$: <b>Kosinussatz</b>' },
+     { zeile:'$c; α; γ$ → $a$: <b>Sinussatz</b> ($c$ und $γ$ sind ein Paar)' },
+     { zeile:'$a; b; c$ → $β$: <b>Kosinussatz</b> (SSS)' },
+     { zeile:'$γ = 90°; b; α$ → $a$: <b>sin/cos/tan</b> ($tan α = @f{a}{b}$)' },
+     { zeile:'$a; b; α$ → $β$: <b>Sinussatz</b> ($a$ und $α$ sind ein Paar)', ende:true } ] }
+ ]},
+
+ /* ======================= Teil B ======================= */
+ { chip:'A6', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 6: Rechtwinklige Dreiecke im Alltag', html:
+   '<div class="aufgabentext">Fertige jeweils eine Skizze an und berechne.</div>', teile:[
+   { titel:'a) Leiter', frage:'Eine $4,50 m$ lange Leiter lehnt an einer Hauswand und schließt mit dem Boden einen Winkel von $72°$ ein. Wie hoch reicht sie, wie weit steht ihr Fuß von der Wand entfernt?', schritte:[
+     { tipp:'Skizze: Wand, Boden und Leiter bilden ein rechtwinkliges Dreieck. Die Leiter ist die Hypotenuse, die Höhe liegt dem $72°$-Winkel gegenüber.', zeile:'$sin 72° = @f{h}{4,5}  ⇒  h = 4,5 · sin 72° ≈ 4,28 m$' },
+     { tipp:'Der Abstand zur Wand ist die Ankathete.', zeile:'$cos 72° = @f{a}{4,5}  ⇒  a = 4,5 · cos 72° ≈ 1,39 m$', ende:true } ] },
+   { titel:'b) Rampe', frage:'Eine $6 m$ lange Rampe überwindet $0,75 m$ Höhenunterschied. Berechne den Steigungswinkel.', schritte:[
+     { tipp:'Die Rampe ist die Hypotenuse, der Höhenunterschied die Gegenkathete.', zeile:'$sin α = @f{0,75}{6} = 0,125$' },
+     { tipp:'Im TR: SHIFT sin, also $sin^{−1}(0,125)$', zeile:'$α ≈ 7,18°$', ende:true } ] },
+   { titel:'c) Baum', frage:'Ein Baum wirft einen $12 m$ langen Schatten. Die Sonnenstrahlen treffen unter $38°$ auf den Boden. Wie hoch ist der Baum?', schritte:[
+     { tipp:'Der Schatten liegt am Winkel an (Ankathete), der Baum liegt gegenüber (Gegenkathete).', zeile:'$tan 38° = @f{h}{12}  ⇒  h = 12 · tan 38° ≈ 9,38 m$', ende:true } ] },
+   { titel:'d) Seilbahn', frage:'Eine Seilbahn überwindet $450 m$ Höhenunterschied, das Seil steigt unter $25°$ an. Wie lang ist das Seil?', schritte:[
+     { tipp:'Das Seil ist die Hypotenuse, die Höhe die Gegenkathete. Achtung beim Umstellen: $s$ steht im Nenner.', zeile:'$sin 25° = @f{450}{s}$' },
+     { zeile:'$s = @f{450}{sin 25°} ≈ 1064,79 m$', ende:true } ] }
+ ]},
+
+ { chip:'A7', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 7: Geraden und Winkel', html:
+   '<div class="aufgabentext">Die Gerade $g$ verläuft durch $P(−1 | 1)$ und $Q(3 | 4)$. Die Gerade $h$ hat die Gleichung $y = 2x − 1$.</div>', teile:[
+   { titel:'a) Gleichung von $g$', schritte:[
+     { tipp:'Steigung: $m = @f{y_Q − y_P}{x_Q − x_P}$', zeile:'$m = @f{4 − 1}{3 − (−1)} = @f{3}{4} = 0,75$' },
+     { tipp:'Setze $P(−1 | 1)$ in $y = 0,75x + t$ ein.', zeile:'$1 = 0,75 · (−1) + t  ⇒  t = 1,75$' },
+     { zeile:'$g: y = 0,75x + 1,75$', ende:true } ] },
+   { titel:'b) Steigungswinkel und Schnittwinkel', schritte:[
+     { tipp:'Der Steigungswinkel hängt mit der Steigung zusammen: $tan α = m$.', zeile:'$tan α_g = 0,75  ⇒  α_g ≈ 36,87°$' },
+     { zeile:'$tan α_h = 2  ⇒  α_h ≈ 63,43°$' },
+     { tipp:'Der Schnittwinkel ist der Unterschied der beiden Steigungswinkel.', zeile:'$φ = 63,43° − 36,87° = 26,56°$', ende:true } ] },
+   { titel:'c) Schnittpunkt $S$', schritte:[
+     { tipp:'Im Schnittpunkt sind die y-Werte gleich: Setze die beiden Terme gleich.', zeile:'$0,75x + 1,75 = 2x − 1$' },
+     { zeile:'$2,75 = 1,25x  ⇒  x = 2,2$' },
+     { tipp:'$x$ in eine der beiden Gleichungen einsetzen.', zeile:'$y = 2 · 2,2 − 1 = 3,4$' },
+     { zeile:'$S(2,2 | 3,4)$', ende:true } ] }
+ ]},
+
+ { chip:'A8', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 8: Sinusfunktion', html:
+   '<div class="aufgabentext">Im Text sind <b>zwei</b> Angaben falsch:<br>„Die Sinusfunktion $y = sin α$ hat die Wertemenge $W = [0; 1]$. Die Sinuskurve wiederholt sich mit der Periodenlänge $360°$. Zwischen $0°$ und $360°$ liegen ihre Nullstellen bei $0°$, $90°$ und $360°$. Den kleinsten Funktionswert $−1$ nimmt sie bei $α = 270°$ an.“</div>', teile:[
+   { titel:'Die zwei Fehler', schritte:[
+     { tipp:'Kann der Sinus auch negativ werden? Denk an den Einheitskreis unterhalb der x-Achse.', zeile:'Fehler 1: richtig ist $W = [−1; 1]$' },
+     { tipp:'Wo ist $sin α = 0$? Dort liegt der Punkt auf der x-Achse.', zeile:'Fehler 2: Nullstellen bei $0°$, $180°$ und $360°$ (bei $90°$ ist $sin 90° = 1$)', ende:true } ] },
+   { titel:'a) $sin α = 0,35$ für $0° ≤ α ≤ 360°$', schritte:[
+     { tipp:'Der TR liefert nur einen Winkel: $sin^{−1}(0,35)$.', zeile:'$α_1 = sin^{−1}(0,35) ≈ 20,49°$' },
+     { tipp:'Den zweiten Winkel mit gleicher Höhe findest du mit $sin(180° − α) = sin α$.', zeile:'$α_2 = 180° − 20,49° = 159,51°$', ende:true } ] },
+   { titel:'b) Für Füchse: $sin α = −0,8$', schritte:[
+     { tipp:'Rechne zuerst mit dem positiven Wert $0,8$ – das gibt den „Grundwinkel“.', zeile:'$sin^{−1}(0,8) ≈ 53,13°$' },
+     { tipp:'Wo ist der Sinus negativ? Im III. und IV. Quadranten. Dort liegen die Winkel $180° + 53,13°$ und $360° − 53,13°$.', zeile:'$α_1 = 180° + 53,13° = 233,13°$' },
+     { zeile:'$α_2 = 360° − 53,13° = 306,87°$', ende:true } ] }
+ ], nachher:'<p class="hinweis-klein" style="margin-top:12px">' + EK + '</p>' },
+
+ { chip:'A9', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 9: Flächeninhalt im allgemeinen Dreieck', teile:[
+   { titel:'a) $b = 7 cm$, $c = 8 cm$, $α = 52°$', schritte:[
+     { tipp:'Zwei Seiten und der Winkel dazwischen: $A = @f{1}{2} · b · c · sin α$', zeile:'$A = @f{1}{2} · 7 · 8 · sin 52° cm^2 ≈ 22,06 cm^2$', ende:true } ] },
+   { titel:'b) Rückwärts: $A = 21 cm^2$, $b = 7 cm$, $c = 8 cm$', frage:'Berechne <b>alle</b> möglichen Maße des Winkels $α$.', schritte:[
+     { tipp:'Setz alles Bekannte in die Flächenformel ein und stelle nach $sin α$ um.', zeile:'$21 = @f{1}{2} · 7 · 8 · sin α = 28 · sin α$' },
+     { zeile:'$sin α = @f{21}{28} = 0,75$' },
+     { zeile:'$α_1 ≈ 48,59°$' },
+     { tipp:'„Alle“ Winkel: Gibt es einen zweiten Winkel im Dreieck mit demselben Sinuswert?', zeile:'$α_2 = 180° − 48,59° = 131,41°$ – auch dieser Winkel passt in ein Dreieck.', ende:true } ] }
+ ]},
+
+ { chip:'A10', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 10: Dreiecke vollständig berechnen', html:
+   '<div class="aufgabentext">Berechne die fehlenden Seitenlängen und Winkelmaße (übliche Bezeichnungen). Überlege zuerst: Welcher Zusammenhang passt?</div>', teile:[
+   { titel:'a) $a = 7 cm$, $b = 9 cm$, $γ = 48°$', schritte:[
+     { tipp:'Zwei Seiten und der Winkel dazwischen (SWS) → Kosinussatz für die dritte Seite $c$.', zeile:'$c^2 = 7^2 + 9^2 − 2 · 7 · 9 · cos 48°  ⇒  c ≈ 6,76 cm$' },
+     { tipp:'Jetzt hast du ein Paar ($c$ und $γ$) → Sinussatz. Nimm den Winkel gegenüber der <b>kleineren</b> Seite $a$, dann gibt es keine zweite Lösung.', zeile:'$sin α = @f{7 · sin 48°}{6,76}  ⇒  α ≈ 50,31°$' },
+     { tipp:'Der letzte Winkel über die Winkelsumme.', zeile:'$β = 180° − 48° − 50,31° = 81,69°$', ende:true } ] },
+   { titel:'b) $c = 12 cm$, $α = 35°$, $β = 78°$', schritte:[
+     { tipp:'Zuerst den dritten Winkel über die Winkelsumme.', zeile:'$γ = 180° − 35° − 78° = 67°$' },
+     { tipp:'$c$ und $γ$ sind ein Paar → Sinussatz.', zeile:'$a = @f{12 · sin 35°}{sin 67°} ≈ 7,48 cm$' },
+     { zeile:'$b = @f{12 · sin 78°}{sin 67°} ≈ 12,75 cm$', ende:true } ] },
+   { titel:'c) $a = 5 cm$, $b = 6 cm$, $c = 9 cm$', schritte:[
+     { tipp:'Drei Seiten (SSS) → Kosinussatz. Beginne mit dem größten Winkel $γ$ (gegenüber der längsten Seite) – der könnte stumpf sein.', zeile:'$cos γ = @f{5^2 + 6^2 − 9^2}{2 · 5 · 6} ≈ −0,3333  ⇒  γ ≈ 109,47°$' },
+     { tipp:'Jetzt Sinussatz mit dem Paar $c$, $γ$.', zeile:'$sin α = @f{5 · sin 109,47°}{9}  ⇒  α ≈ 31,59°$' },
+     { zeile:'$β = 180° − 109,47° − 31,59° = 38,94°$', ende:true } ] }
+ ]},
+
+ { chip:'A11', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 11: Grundstück – Viereck', html:
+   '<div class="aufgabentext">Viereckiges Grundstück $ABCD$ mit der Diagonalen $[BD]$: $@l{AB} = 42 m$; $@l{AD} = 30 m$; $∢BAD = 75°$; $∢CBD = 40°$; $∢DCB = 90°$.</div>' +
+   BILD('111-a11.png','Viereck ABCD mit Diagonale BD', ROT), teile:[
+   { titel:'a) Diagonale $[BD]$', schritte:[
+     { tipp:'Dreieck $ABD$: zwei Seiten und der Winkel dazwischen → Kosinussatz.', zeile:'$@l{BD}^2 = 42^2 + 30^2 − 2 · 42 · 30 · cos 75°$' },
+     { zeile:'$@l{BD} ≈ 44,85 m$', ende:true } ] },
+   { titel:'b) Winkel $∢ADB$', frage:'Falls du a) nicht lösen konntest, rechne mit $@l{BD} = 45 m$.', schritte:[
+     { tipp:'Im Dreieck $ABD$ kennst du jetzt das Paar $[BD]$ und $75°$. $∢ADB$ liegt gegenüber von $[AB]$ → Sinussatz.', zeile:'$@f{sin ∢ADB}{42} = @f{sin 75°}{44,85}$' },
+     { zeile:'$∢ADB ≈ 64,76°$ (mit $45 m$: $≈ 64,36°$)', ende:true } ] },
+   { titel:'c) Seiten $[BC]$ und $[CD]$', schritte:[
+     { tipp:'Das Dreieck $BCD$ ist rechtwinklig bei $C$. $[BD]$ ist die Hypotenuse, der Winkel $40°$ liegt bei $B$.', zeile:'$cos 40° = @f{@l{BC}}{44,85}  ⇒  @l{BC} ≈ 34,36 m$' },
+     { zeile:'$sin 40° = @f{@l{CD}}{44,85}  ⇒  @l{CD} ≈ 28,83 m$', ende:true } ] },
+   { titel:'d) Flächeninhalt des Grundstücks', schritte:[
+     { tipp:'Teile das Viereck an der Diagonalen in zwei Dreiecke.', zeile:'$A_{ABD} = @f{1}{2} · 42 · 30 · sin 75° m^2 ≈ 608,53 m^2$' },
+     { tipp:'Dreieck $BCD$ ist rechtwinklig: $@f{1}{2} · Kathete · Kathete$.', zeile:'$A_{BCD} = @f{1}{2} · 34,36 · 28,83 m^2 ≈ 495,30 m^2$' },
+     { zeile:'$A ≈ 1103,83 m^2$', ende:true } ] },
+   { titel:'e) Kürzeste Leitung von $D$ zu $[AB]$', schritte:[
+     { tipp:'Die kürzeste Leitung ist das Lot von $D$ auf $[AB]$ – sie steht senkrecht auf $[AB]$ (rote Linie).', zeile:'Lot von $D$ auf $[AB]$ einzeichnen (rechter Winkel!)' },
+     { tipp:'Im rechtwinkligen Dreieck mit Hypotenuse $[AD] = 30 m$ liegt das Lot dem $75°$-Winkel gegenüber.', zeile:'$sin 75° = @f{h}{30}  ⇒  h = 30 · sin 75° ≈ 28,98 m$', ende:true } ] }
+ ]},
+
+ { chip:'A12', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 12: Giebelwand – Fünfeck', html:
+   '<div class="aufgabentext">Giebelwand $ABCDE$, $ABCE$ ist ein Rechteck: $@l{AB} = 8 m$; $@l{BC} = 5 m$; $@l{CD} = 5,5 m$; $@l{DE} = 4,5 m$.</div>' +
+   BILD('111-a12.png','Fünfeck ABCDE als Giebelwand', ROT), teile:[
+   { titel:'a) Winkel $∢CED$', schritte:[
+     { tipp:'$ABCE$ ist ein Rechteck – wie lang ist dann $[EC]$?', zeile:'$@l{EC} = @l{AB} = 8 m$' },
+     { tipp:'Im Dreieck $ECD$ kennst du alle drei Seiten (SSS) → Kosinussatz nach dem Winkel umgestellt.', zeile:'$cos ∢CED = @f{4,5^2 + 8^2 − 5,5^2}{2 · 4,5 · 8} = 0,75$' },
+     { zeile:'$∢CED ≈ 41,41°$', ende:true } ] },
+   { titel:'b) Winkel $∢DCE$ mit dem Sinussatz', frage:'Ersatzwert: $∢CED = 41°$', schritte:[
+     { tipp:'$∢DCE$ liegt gegenüber von $[DE] = 4,5 m$, $∢CED$ gegenüber von $[CD] = 5,5 m$.', zeile:'$@f{sin ∢DCE}{4,5} = @f{sin 41,41°}{5,5}$' },
+     { zeile:'$∢DCE ≈ 32,76°$ (mit $41°$: $≈ 32,46°$)', ende:true } ] },
+   { titel:'c) Flächeninhalt der Giebelwand', schritte:[
+     { tipp:'Rechteck plus Dreieck. Für das Dreieck: zwei Seiten und der Winkel dazwischen.', zeile:'$A_{ECD} = @f{1}{2} · 4,5 · 8 · sin 41,41° m^2 ≈ 11,91 m^2$' },
+     { zeile:'$A = 8 · 5 m^2 + 11,91 m^2 = 51,91 m^2$', ende:true } ] },
+   { titel:'d) Wie hoch liegt der First $D$?', schritte:[
+     { tipp:'Zeichne das Lot von $D$ auf $[EC]$ ein (rote Linie). Im rechtwinkligen Dreieck ist $[DE]$ die Hypotenuse.', zeile:'$sin 41,41° = @f{h}{4,5}  ⇒  h ≈ 2,98 m$' },
+     { tipp:'Die Höhe des Rechtecks kommt noch dazu.', zeile:'Firsthöhe: $5 m + 2,98 m = 7,98 m$', ende:true } ] },
+   { titel:'e) Für Füchse: Strecke $[AD]$', schritte:[
+     { tipp:'Dreieck $AED$: $@l{AE} = 5 m$, $@l{ED} = 4,5 m$. Der Winkel bei $E$ setzt sich aus dem rechten Winkel und $∢CED$ zusammen.', zeile:'$∢AED = 90° + 41,41° = 131,41°$' },
+     { zeile:'$@l{AD}^2 = 5^2 + 4,5^2 − 2 · 5 · 4,5 · cos 131,41° ≈ 75,01$' },
+     { zeile:'$@l{AD} ≈ 8,66 m$', ende:true } ] }
+ ]},
+
+ { chip:'A13', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 13: Dreieck im Quader', html:
+   '<div class="aufgabentext">Quader $ABCDEFGH$ mit $@l{AB} = 9 cm$, $@l{BC} = 6 cm$ und $@l{AE} = 4 cm$.</div>' +
+   BILD('111-a13.png','Quader ABCDEFGH mit Dreieck ACH', ROT), teile:[
+   { titel:'a) $[AC]$ und $∢CAG$', schritte:[
+     { tipp:'$[AC]$ ist die Diagonale der Grundfläche: Dreieck $ABC$ ist rechtwinklig bei $B$.', zeile:'$@l{AC} = @w{9^2 + 6^2} cm ≈ 10,82 cm$' },
+     { tipp:'Dreieck $ACG$ ist rechtwinklig bei $C$. $[CG]$ ($4 cm$) liegt dem Winkel gegenüber, $[AC]$ liegt an.', zeile:'$tan ∢CAG = @f{4}{10,82}  ⇒  ∢CAG ≈ 20,29°$', ende:true } ] },
+   { titel:'b) $[AH]$ und $[CH]$', schritte:[
+     { tipp:'$[AH]$ ist die Diagonale der linken Seitenfläche $ADHE$ ($6 cm$ × $4 cm$).', zeile:'$@l{AH} = @w{6^2 + 4^2} cm ≈ 7,21 cm$' },
+     { tipp:'$[CH]$ ist die Diagonale der hinteren Fläche $DCGH$ ($9 cm$ × $4 cm$).', zeile:'$@l{CH} = @w{9^2 + 4^2} cm ≈ 9,85 cm$', ende:true } ] },
+   { titel:'c) Winkel $∢CAH$', schritte:[
+     { tipp:'Im Dreieck $ACH$ kennst du alle drei Seiten (SSS) → Kosinussatz. $∢CAH$ liegt gegenüber von $[CH]$.', zeile:'$cos ∢CAH = @f{7,21^2 + 10,82^2 − 9,85^2}{2 · 7,21 · 10,82} ≈ 0,4617$' },
+     { zeile:'$∢CAH ≈ 62,50°$', ende:true } ] },
+   { titel:'d) Winkel $∢HCA$ mit dem Sinussatz', schritte:[
+     { tipp:'$∢HCA$ liegt gegenüber von $[AH]$, $∢CAH$ gegenüber von $[CH]$.', zeile:'$@f{sin ∢HCA}{7,21} = @f{sin 62,50°}{9,85}$' },
+     { zeile:'$∢HCA ≈ 40,49°$', ende:true } ] },
+   { titel:'e) Flächeninhalt des Dreiecks $ACH$', schritte:[
+     { tipp:'Zwei Seiten und der Winkel dazwischen – zum Beispiel $[AH]$, $[AC]$ und $∢CAH$.', zeile:'$A = @f{1}{2} · 7,21 · 10,82 · sin 62,50° cm^2 ≈ 34,60 cm^2$', ende:true } ] }
+ ]},
+
+ { chip:'A14', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 14: Punkt auf einer Pyramidenkante', html:
+   '<div class="aufgabentext">Gerade Pyramide $ABCDS$ mit quadratischer Grundfläche $ABCD$, $M$ ist der Diagonalenschnittpunkt, $S$ liegt senkrecht über $M$. Es gilt $@l{AC} = 8 cm$ und $@l{MS} = 7,5 cm$.</div>' +
+   BILD('111-a14.png','Pyramide ABCDS mit Strecke AP', ROT), teile:[
+   { titel:'a) Seitenkante $[AS]$ und $∢CAS$', schritte:[
+     { tipp:'Dreieck $AMS$ ist rechtwinklig bei $M$, und $@l{AM}$ ist die Hälfte der Diagonalen.', zeile:'$@l{AM} = 4 cm$;  $@l{AS} = @w{4^2 + 7,5^2} cm = 8,50 cm$' },
+     { tipp:'Für den Winkel bei $A$: $[MS]$ gegenüber, $[AM]$ anliegend.', zeile:'$tan ∢CAS = @f{7,5}{4}  ⇒  ∢CAS ≈ 61,93°$', ende:true } ] },
+   { titel:'b) Warum $∢SCA = ∢CAS$? Berechne $∢ASC$.', schritte:[
+     { tipp:'Wie lang sind $[AS]$ und $[CS]$ im Vergleich?', zeile:'Das Dreieck $ACS$ ist gleichschenklig ($@l{AS} = @l{CS}$), also sind die Basiswinkel gleich groß.' },
+     { zeile:'$∢ASC = 180° − 2 · 61,93° = 56,14°$', ende:true } ] },
+   { titel:'c) Strecke $[AP]$', frage:'$P$ liegt auf $[CS]$ mit $@l{CP} = 3 cm$. Ersatzwert: $∢CAS = 62°$', schritte:[
+     { tipp:'Dreieck $APC$: $@l{AC} = 8 cm$, $@l{CP} = 3 cm$, dazwischen der Winkel bei $C$ ($= ∢CAS$ aus b). → Kosinussatz.', zeile:'$@l{AP}^2 = 8^2 + 3^2 − 2 · 8 · 3 · cos 61,93° ≈ 50,41$' },
+     { zeile:'$@l{AP} ≈ 7,10 cm$', ende:true } ] },
+   { titel:'d) Winkel $∢PAC$', schritte:[
+     { tipp:'Sinussatz im Dreieck $APC$: $∢PAC$ liegt gegenüber von $[PC] = 3 cm$, der Winkel bei $C$ gegenüber von $[AP]$.', zeile:'$@f{sin ∢PAC}{3} = @f{sin 61,93°}{7,10}$' },
+     { zeile:'$∢PAC ≈ 21,89°$', ende:true } ] },
+   { titel:'e) Für Füchse: kleinster Abstand', schritte:[
+     { tipp:'Der kürzeste Abstand von $A$ zur Kante $[CS]$ steht senkrecht auf $[CS]$.', zeile:'$[AP_0] ⊥ [CS]$ – das Dreieck $AP_0C$ ist rechtwinklig bei $P_0$.' },
+     { tipp:'$[AC]$ ist die Hypotenuse, $[AP_0]$ liegt dem Winkel bei $C$ gegenüber.', zeile:'$sin 61,93° = @f{@l{AP_0}}{8}  ⇒  @l{AP_0} ≈ 7,06 cm$', ende:true } ] }
+ ]},
+
+ { chip:'A15', untertitel:'Teil B · mit Taschenrechner', titel:'Aufgabe 15: Funktionale Abhängigkeit', html:
+   '<div class="aufgabentext">Im Dreieck $ABC$ gilt $@l{AB} = 10 cm$, $@l{AC} = 8 cm$ und $∢BAC = 70°$. Auf $[AB]$ liegen Punkte $D_n$ mit $@l{AD_n} = 2x cm$, auf $[AC]$ liegen Punkte $E_n$ mit $@l{CE_n} = x cm$. Sie bilden mit $A$ die Dreiecke $AD_nE_n$.</div>' + SKIZZE15, teile:[
+   { titel:'a) Zuerst mit einer Zahl: $x = 1,5$', schritte:[
+     { tipp:'$@l{AD_1} = 2x$. Und Achtung: $x$ wird von $C$ aus abgemessen – $@l{AE_1}$ ist der <b>Rest</b> von $8 cm$.', zeile:'$@l{AD_1} = 2 · 1,5 cm = 3 cm$;  $@l{AE_1} = 8 cm − 1,5 cm = 6,5 cm$' },
+     { tipp:'Für $[D_1E_1]$: zwei Seiten und der Winkel $70°$ dazwischen → Kosinussatz.', zeile:'$@l{D_1E_1}^2 = 3^2 + 6,5^2 − 2 · 3 · 6,5 · cos 70° ≈ 37,91  ⇒  @l{D_1E_1} ≈ 6,16 cm$' },
+     { zeile:'$A = @f{1}{2} · 3 · 6,5 · sin 70° cm^2 ≈ 9,16 cm^2$', ende:true } ] },
+   { titel:'b) Jetzt allgemein', frage:'Gib $@l{AD_n}$ und $@l{AE_n}$ in Abhängigkeit von $x$ an. Welche Werte darf $x$ annehmen?', schritte:[
+     { tipp:'Dieselbe Rechnung wie in a) – nur mit $x$ statt $1,5$.', zeile:'$@l{AD_n}(x) = 2x cm$;  $@l{AE_n}(x) = (8 − x) cm$' },
+     { tipp:'$D_n$ muss auf $[AB]$ bleiben: $2x ≤ 10$. Und für ein echtes Dreieck muss $x > 0$ sein.', zeile:'$2x ≤ 10$ und $x > 0$, also $0 < x ≤ 5$', ende:true } ] },
+   { titel:'c) Flächeninhalt $A(x)$', frage:'Zeige: $A(x) = (−0,94x^2 + 7,52x) cm^2$', schritte:[
+     { tipp:'Wie in a): $A = @f{1}{2} · b · c · sin α$ – mit den Termen aus b).', zeile:'$A(x) = @f{1}{2} · 2x · (8 − x) · sin 70° cm^2$' },
+     { tipp:'$@f{1}{2} · 2x = x$. Dann $x$ in die Klammer multiplizieren.', zeile:'$= (8x − x^2) · sin 70° cm^2$' },
+     { tipp:'$sin 70° ≈ 0,94$ in die Klammer multiplizieren und $x^2$ nach vorne.', zeile:'$A(x) ≈ (−0,94x^2 + 7,52x) cm^2$', ende:true } ] },
+   { titel:'d) Größter Flächeninhalt', schritte:[
+     { tipp:'TR (Scheitelpunkt): MENU → A Gleichung/Funkt → 2 Polynom → Grad 2. Hinten steht keine Zahl, also $c = 0$.', zeile:'$a = −0,94;  b = 7,52;  c = 0$' },
+     { tipp:'Liegt der x-Wert im erlaubten Bereich aus b)?', zeile:'$x = 4$;  $A_{max} ≈ 15,04 cm^2$ ($0 < 4 ≤ 5$ ✓)', ende:true } ] },
+   { titel:'e) Gleichschenklig mit Basis $[D_2E_2]$', schritte:[
+     { tipp:'Basis $[D_2E_2]$ heißt: Die beiden Schenkel an $A$ sind gleich lang.', zeile:'$@l{AD_2} = @l{AE_2}  ⇒  2x = 8 − x$' },
+     { zeile:'$3x = 8  ⇒  x = @f{8}{3} ≈ 2,67$', ende:true } ] },
+   { titel:'f) Für Füchse: kürzeste Strecke $[D_nE_n]$', frage:'Zeige: $@l{D_nE_n}(x) = @w{6,37x^2 − 26,94x + 64} cm$. Wann ist die Strecke am kürzesten?', schritte:[
+     { tipp:'Kosinussatz wie in a) – mit $2x$ und $(8 − x)$.', zeile:'$@l{D_nE_n}^2 = (2x)^2 + (8 − x)^2 − 2 · 2x · (8 − x) · cos 70°$' },
+     { tipp:'Ausmultiplizieren: $(2x)^2 = 4x^2$, $(8 − x)^2 = 64 − 16x + x^2$, $2 · 2x · (8 − x) = 32x − 4x^2$ und $cos 70° ≈ 0,3420$.', zeile:'$= 4x^2 + 64 − 16x + x^2 − (32x − 4x^2) · 0,3420$' },
+     { zeile:'$= 6,37x^2 − 26,94x + 64$  ⇒  $@l{D_nE_n}(x) = @w{6,37x^2 − 26,94x + 64} cm$' },
+     { tipp:'In den TR kommt nur der Term <b>unter der Wurzel</b>: $a = 6,37;  b = −26,94;  c = 64$. Diesmal suchst du das Minimum.', zeile:'TR: $x ≈ 2,11$, kleinster Wert des Radikanden $≈ 35,52$' },
+     { tipp:'Der TR-Wert ist noch das Quadrat der Länge.', zeile:'$@l{D_nE_n}_{min} ≈ @w{35,52} cm ≈ 5,96 cm$ für $x ≈ 2,11$', ende:true } ] }
+ ]},
+
+ { chip:'Kontrolle', titel:'Aufgabe 16: Selbstkontrolle', html:
+   '<p>Alle Ergebnisse aus Teil B auf einen Blick (ungeordnet). Weicht dein Ergebnis nur in der letzten Stelle ab, liegt das am Runden – sonst rechne noch einmal nach.</p>' +
+   '<div class="tab"><table>' +
+   [['21,89°','1103,83 m^2','9,16 cm^2','7,18°','15,04 cm^2'],['32,76°','6,16 cm','159,51°','51,91 m^2','40,49°'],
+    ['4,28 m','131,41°','44,85 m','64,76°','22,06 cm^2'],['9,38 m','36,87°','48,59°','28,98 m','1064,79 m'],
+    ['6,76 cm','61,93°','7,10 cm','20,29°','41,41°'],['2,67','26,56°','20,49°','34,60 cm^2','50,31°'],
+    ['62,50°','7,98 m','109,47°','7,48 cm','']].map(function(z){ return '<tr>' + z.map(function(w){ return '<td>' + (w ? '$' + w + '$' : '') + '</td>'; }).join('') + '</tr>'; }).join('') +
+   '</table></div><div class="ok">Geschafft! Viel Erfolg in der Schulaufgabe. 💪</div>' }
+]};
+</script>
+<script src="../assets/durchklick.js"></script>
+</body>
+</html>

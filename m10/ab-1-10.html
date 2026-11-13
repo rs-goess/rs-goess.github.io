@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#3b77a8">
+<title>1.10 Funktionale Abhängigkeit – Tipps und Lösungen</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="../assets/durchklick.css">
+<link rel="stylesheet" href="../assets/formeln.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="../assets/formeln.js"></script>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="index.html">‹ Startseite</a>
+  <small>Mathe 10c · 1.10 Funktionale Abhängigkeit im Prüfungsstil</small>
+  <h1>Tipps und Lösungen Schritt für Schritt</h1>
+  <div class="chips" id="chips"></div>
+</header>
+<main id="main"></main>
+<nav><button id="zurueck" type="button">◀ Zurück</button><button id="weiter" type="button">Weiter ▶</button></nav>
+
+<script>
+var SKIZZE1 = '<figure class="bild"><svg viewBox="0 0 330 160" width="330" role="img" aria-label="Skizze Aufgabe 1">' +
+  '<polygon points="22,130 300,130 113,77" fill="#fdeee5" stroke="#1f2f3d" stroke-width="2.2" stroke-linejoin="round"/>' +
+  '<line x1="113" y1="77" x2="160" y2="50" stroke="#2f6fa3" stroke-width="2.4" stroke-dasharray="6 4"/>' +
+  '<line x1="160" y1="50" x2="248" y2="130" stroke="#2f6fa3" stroke-width="2.4" stroke-dasharray="6 4"/>' +
+  '<line x1="248" y1="130" x2="300" y2="130" stroke="#2f6fa3" stroke-width="4" opacity=".35"/>' +
+  '<path d="M60 130 A38 38 0 0 0 55 111" fill="none" stroke="#1f2f3d" stroke-width="1.5"/>' +
+  '<g font-family="Cambria Math,Times New Roman,serif" font-size="15" fill="#1f2f3d">' +
+  '<text x="66" y="124" font-size="13">30°</text>' +
+  '<text x="6" y="136" font-style="italic">A</text><text x="306" y="136" font-style="italic">B</text>' +
+  '<text x="103" y="70" font-style="italic">C</text><text x="157" y="42" font-style="italic" fill="#2f6fa3">C<tspan font-size="11" dy="4">n</tspan></text>' +
+  '<text x="240" y="150" font-style="italic" fill="#2f6fa3">B<tspan font-size="11" dy="4">n</tspan></text>' +
+  '<text x="36" y="96" font-size="13">3 cm</text><text x="145" y="150" font-size="13">8 cm</text>' +
+  '<text x="131" y="55" font-size="14" font-style="italic" fill="#2f6fa3">x</text><text x="270" y="124" font-size="14" font-style="italic" fill="#2f6fa3">x</text>' +
+  '</g><path d="M155 45l10 10M165 45l-10 10M243 125l10 10M253 125l-10 10" stroke="#2f6fa3" stroke-width="2.2"/></svg>' +
+  '<figcaption>Skizze nicht maßstabsgetreu</figcaption></figure>';
+
+window.SEITE = { karten: [
+ { chip:'Start', titel:'So benutzt du diese Seite', html:
+   '<p>Du arbeitest auf deinem <b>Extrablatt</b>. Diese Seite hilft dir wie ein Lehrer nebenbei:</p><ol class="start">' +
+   '<li>Rechne zuerst <b>selbst</b>.</li><li>Kommst du nicht weiter? Tippe auf <b style="background:var(--gelb);padding:0 5px;border-radius:4px">Tipp</b>.</li>' +
+   '<li>Immer noch nicht? <b style="background:var(--blau);color:#fff;padding:0 5px;border-radius:4px">Nächste Zeile</b> zeigt dir nur den nächsten Rechenschritt.</li>' +
+   '<li>Ganz am Ende kannst du mit <b>Ganze Lösung</b> alles vergleichen.</li></ol>' +
+   '<div class="merk"><b>Fahrplan für funktionale Abhängigkeit</b><ol style="margin:4px 0 0;padding-left:22px">' +
+   '<li>Skizze: veränderliche Strecken mit $x$ beschriften</li><li>Teildreieck suchen</li>' +
+   '<li>Satz wählen – meistens Kosinussatz und $A = @f{1}{2} · b · c · sin α$</li><li>erst mit einer Zahl, dann mit $x$</li>' +
+   '<li>Term vereinfachen, Extremwert mit dem TR</li></ol></div>' +
+   '<p class="hinweis-klein">Runde auf zwei Stellen nach dem Komma. Oben kannst du direkt zu einer Aufgabe springen.</p>' },
+
+ { chip:'A1', untertitel:'Aufgabe 1 · Einstieg', titel:'Dreiecke mit zwei veränderlichen Seiten', html:
+   '<div class="aufgabentext">Im Dreieck $ABC$ gilt: $@l{AB} = 8 cm$, $@l{AC} = 3 cm$ und $∢BAC = 30°$. Verkürzt man $[AB]$ von $B$ aus um $x cm$ und verlängert $[AC]$ über $C$ hinaus um $x cm$, so entstehen Dreiecke $AB_nC_n$.</div>' + SKIZZE1,
+   teile:[
+   { titel:'a) Mit einer Zahl: $x = 2$', frage:'Berechne $@l{AB_1}$ und $@l{AC_1}$. Zeichne eine Skizze des Dreiecks $AB_1C_1$.', schritte:[
+     { tipp:'$[AB]$ wird um $2 cm$ kürzer, $[AC]$ wird um $2 cm$ länger.', zeile:'$@l{AB_1} = (8 − 2) cm = 6 cm$' },
+     { zeile:'$@l{AC_1} = (3 + 2) cm = 5 cm$' },
+     { tipp:'Zeichne ein Dreieck mit den Seiten $6 cm$ und $5 cm$ – dazwischen bei $A$ der Winkel $30°$.', zeile:'Skizze: Dreieck $AB_1C_1$ mit $6 cm$ und $5 cm$ und $30°$ bei $A$', ende:true } ] },
+   { titel:'b) Die Strecke $[B_1C_1]$', frage:'Berechne die Länge der Strecke $[B_1C_1]$.', schritte:[
+     { tipp:'Du kennst zwei Seiten und den Winkel dazwischen (SWS). Welcher Satz passt?', zeile:'Kosinussatz: $@l{B_1C_1}^2 = 6^2 + 5^2 − 2 · 6 · 5 · cos 30°$' },
+     { tipp:'In den TR: $36 + 25 − 60 · cos(30)$', zeile:'$@l{B_1C_1}^2 ≈ 9,04$' },
+     { tipp:'Das ist noch das Quadrat der Länge – was fehlt?', zeile:'$@l{B_1C_1} ≈ 3,01 cm$', ende:true } ] },
+   { titel:'c) Flächeninhalt für $x = 2$', frage:'Berechne den Flächeninhalt des Dreiecks $AB_1C_1$.', schritte:[
+     { tipp:'Zwei Seiten und der Winkel dazwischen: $A = @f{1}{2} · b · c · sin α$', zeile:'$A = @f{1}{2} · 6 · 5 · sin 30° cm^2$' },
+     { zeile:'$A = 7,50 cm^2$', ende:true } ] },
+   { titel:'d) Jetzt allgemein mit $x$', frage:'Gib $@l{AB_n}$ und $@l{AC_n}$ in Abhängigkeit von $x$ an. Für welche Werte von $x$ gibt es Dreiecke $AB_nC_n$?', schritte:[
+     { tipp:'Schreib die Rechnung aus a) noch einmal – statt $2$ steht jetzt $x$.', zeile:'$@l{AB_n}(x) = (8 − x) cm$' },
+     { zeile:'$@l{AC_n}(x) = (3 + x) cm$' },
+     { tipp:'$[AC_n]$ wird immer länger – das ist kein Problem. Aber $[AB_n]$ muss länger als $0 cm$ bleiben.', zeile:'$8 − x > 0  ⇒  x < 8$' },
+     { zeile:'Also $0 ≤ x < 8$ (bei $x = 8$ fällt $B_n$ auf $A$)', ende:true } ] },
+   { titel:'e) Term für $@l{B_nC_n}$', frage:'Zeige: $@l{B_nC_n}(x) = @w{3,73x^2 − 18,66x + 31,43} cm$', schritte:[
+     { tipp:'Genau wie in b): Kosinussatz – nur mit $(8 − x)$ und $(3 + x)$ statt $6$ und $5$.', zeile:'$@l{B_nC_n}^2 = (8 − x)^2 + (3 + x)^2 − 2 · (8 − x) · (3 + x) · cos 30°$' },
+     { tipp:'Binomische Formeln: $(8 − x)^2 = 64 − 16x + x^2$ und $(3 + x)^2 = 9 + 6x + x^2$. Außerdem ist $2 · cos 30° ≈ 1,73$ und $(8 − x) · (3 + x) = 24 + 5x − x^2$.', zeile:'$= 64 − 16x + x^2 + 9 + 6x + x^2 − 1,73 · (24 + 5x − x^2)$' },
+     { tipp:'Fasse vorne zusammen und multipliziere die Klammer aus. Achtung: Vor der Klammer steht ein Minus!', zeile:'$= 2x^2 − 10x + 73 − (41,57 + 8,66x − 1,73x^2)$' },
+     { tipp:'Minusklammer auflösen: Alle Vorzeichen in der Klammer drehen sich um. Dann gleiche Glieder zusammenfassen.', zeile:'$= 3,73x^2 − 18,66x + 31,43$' },
+     { zeile:'$@l{B_nC_n}(x) = @w{3,73x^2 − 18,66x + 31,43} cm$' },
+     { tipp:'Probe mit $x = 2$: Kommt ungefähr $3,01$ heraus wie in b)?', zeile:'Probe: $3,73 · 4 − 18,66 · 2 + 31,43 = 9,03$ und $@w{9,03} ≈ 3,00$ – der kleine Unterschied kommt vom Runden ✓', ende:true } ] },
+   { titel:'f) Flächeninhalt $A(x)$', frage:'Zeige: $A(x) = (−0,25x^2 + 1,25x + 6) cm^2$', schritte:[
+     { tipp:'Wie in c), nur mit $(8 − x)$ und $(3 + x)$.', zeile:'$A(x) = @f{1}{2} · (8 − x) · (3 + x) · sin 30° cm^2$' },
+     { tipp:'$@f{1}{2} · sin 30° = @f{1}{2} · 0,5 = 0,25$. Dann die Klammern ausmultiplizieren.', zeile:'$= 0,25 · (24 + 8x − 3x − x^2)$' },
+     { zeile:'$= 0,25 · (−x^2 + 5x + 24)$' },
+     { tipp:'Jedes Glied in der Klammer mit $0,25$ malnehmen.', zeile:'$A(x) = (−0,25x^2 + 1,25x + 6) cm^2$' },
+     { tipp:'Probe mit $x = 2$: Kommt $7,5$ heraus wie in c)?', zeile:'Probe: $−0,25 · 4 + 1,25 · 2 + 6 = −1 + 2,5 + 6 = 7,5$ ✓', ende:true } ] },
+   { titel:'g) Größter Flächeninhalt', frage:'Für welchen Wert von $x$ ist der Flächeninhalt maximal? Gib $A_{max}$ an.', schritte:[
+     { tipp:'Lies $a$, $b$ und $c$ aus $A(x) = −0,25x^2 + 1,25x + 6$ ab.', zeile:'$a = −0,25;  b = 1,25;  c = 6$' },
+     { tipp:'TR: MENU → A Gleichung/Funkt → 2 Polynom → Grad 2 → $a$, $b$, $c$ eingeben → mit = blättern.', zeile:'TR: x-Wert Maximum $2,5$, y-Wert Maximum $7,5625$' },
+     { tipp:'Liegt $2,5$ im erlaubten Bereich aus d)?', zeile:'$A_{max} ≈ 7,56 cm^2$ für $x = 2,5$ ($0 ≤ 2,5 < 8$ ✓)', ende:true } ] },
+   { titel:'h) Für Füchse: gleichschenklig', frage:'Für welchen Wert von $x$ ist das Dreieck $AB_nC_n$ gleichschenklig mit der Basis $[B_nC_n]$? Was fällt dir auf?', schritte:[
+     { tipp:'Basis $[B_nC_n]$ heißt: Die beiden Schenkel an der Spitze $A$ sind gleich lang.', zeile:'$@l{AB_n} = @l{AC_n}  ⇒  8 − x = 3 + x$' },
+     { zeile:'$5 = 2x  ⇒  x = 2,5$' },
+     { tipp:'Vergleiche mit g).', zeile:'Derselbe Wert wie beim größten Flächeninhalt! Die beiden Schenkel ergeben zusammen immer $11 cm$ – das Produkt $b · c$ ist am größten, wenn beide gleich lang sind.', ende:true } ] }
+ ]},
+
+ { chip:'A2', untertitel:'Aufgabe 2 · Prüfungsaufgabe', titel:'Punkte auf einer Pyramidenkante', html:
+   '<div class="aufgabentext">Original-Aufgabe aus der Abschlussprüfung. Bearbeite A 2.1 bis A 2.4 auf deinem Extrablatt – in A 2.2 zeichnest du in die Abbildung.<br><i>Tipp:</i> Das Dreieck $AP_nC$ ist aufgebaut wie in Aufgabe 1: eine feste Seite, eine veränderliche Seite ($x$) und ein fester Winkel dazwischen → Kosinussatz.</div>' +
+   '<figure class="bild gross"><img src="bilder/ap2012-a2.png" alt="Aufgabe A 2 der Abschlussprüfung 2012: Pyramide ABCDS mit Drachenviereck als Grundfläche" loading="lazy">' +
+   '<figcaption>Quelle: Abschlussprüfung 2012 an den Realschulen in Bayern, Mathematik II, Haupttermin, Aufgabe A 2 (ISB)</figcaption></figure>',
+   teile:[
+   { titel:'A 2.1 Winkel $α$ und Strecke $[AS]$', schritte:[
+     { tipp:'Das Dreieck $AMS$ ist rechtwinklig bei $M$, denn $S$ liegt senkrecht über $M$. Gegeben: $@l{AM} = 6 cm$ und $@l{MS} = 10 cm$.', zeile:'$tan α = @f{@l{MS}}{@l{AM}} = @f{10}{6}$' },
+     { zeile:'$α = 59,04°$' },
+     { tipp:'$[AS]$ ist die Hypotenuse im Dreieck $AMS$.', zeile:'$@l{AS} = @w{6^2 + 10^2} cm$' },
+     { zeile:'$@l{AS} = 11,66 cm$', ende:true } ] },
+   { titel:'A 2.2 Punkt $P_1$ und die Strecke $[P_1C]$', schritte:[
+     { tipp:'$P_1$ liegt auf $[AS]$, $2,5 cm$ von $A$ entfernt. Das Dreieck $ACS$ liegt in der Zeichenebene – dort kannst du die $2,5 cm$ direkt abmessen.', zeile:'$P_1$ auf $[AS]$ mit $@l{AP_1} = 2,5 cm$ einzeichnen, dann $[P_1C]$ verbinden.' },
+     { tipp:'Dreieck $AP_1C$: zwei Seiten ($2,5 cm$ und $@l{AC} = 14 cm$) und der Winkel $α$ dazwischen → Kosinussatz.', zeile:'$@l{P_1C}^2 = 2,5^2 + 14^2 − 2 · 2,5 · 14 · cos 59,04°$' },
+     { zeile:'$@l{P_1C} = 12,89 cm$' },
+     { tipp:'Für den Winkel bei $C$ nimmst du den Sinussatz. $∢P_1CA$ liegt gegenüber von $[AP_1]$, der Winkel $α$ gegenüber von $[P_1C]$.', zeile:'$@f{sin ∢P_1CA}{2,5} = @f{sin 59,04°}{12,89}$' },
+     { zeile:'$sin ∢P_1CA = @f{2,5 · sin 59,04°}{12,89}$' },
+     { zeile:'$∢P_1CA = 9,57°$', ende:true } ] },
+   { titel:'A 2.3 Die kürzeste Strecke $[P_2C]$', schritte:[
+     { tipp:'Die kürzeste Verbindung von $C$ zur Kante $[AS]$ steht senkrecht auf $[AS]$.', zeile:'$[P_2C] ⊥ [AS]$' },
+     { tipp:'Dann ist das Dreieck $AP_2C$ rechtwinklig bei $P_2$. $[AC]$ ist die Hypotenuse, $[AP_2]$ die Ankathete von $α$.', zeile:'$cos α = @f{@l{AP_2}}{14 cm}$' },
+     { zeile:'$@l{AP_2} = 14 cm · cos 59,04°$' },
+     { zeile:'$@l{AP_2} = 7,20 cm$', ende:true } ] },
+   { titel:'A 2.4 Flächeninhalt des Dreiecks $ABS$', schritte:[
+     { tipp:'Die Diagonale $[BD]$ wird von $M$ halbiert: $@l{BM} = 6 cm$. Das Dreieck $ABM$ ist rechtwinklig bei $M$.', zeile:'$@l{AB} = @w{6^2 + 6^2} cm = 8,49 cm$' },
+     { tipp:'Wie lang ist $[BS]$? Das Dreieck $BMS$ ist rechtwinklig bei $M$ – genau wie $AMS$.', zeile:'$@l{BS} = @w{6^2 + 10^2} cm = @l{AS} = 11,66 cm$' },
+     { tipp:'Das Dreieck $ABS$ ist also gleichschenklig. Wo trifft die Höhe auf die Basis $[AB]$?', zeile:'Gleichschenklig → die Höhe trifft die Mitte $E$ von $[AB]$: $@l{AE} = 4,245 cm$' },
+     { zeile:'$@l{SE} = @w{11,66^2 − 4,245^2} cm = 10,86 cm$' },
+     { zeile:'$A_{ABS} = @f{1}{2} · 8,49 · 10,86 cm^2$' },
+     { zeile:'$A_{ABS} = 46,10 cm^2$', ende:true } ] }
+ ]},
+
+ { chip:'A3', untertitel:'Aufgabe 3 · Zusatzaufgabe', titel:'Prüfungsaufgabe im Raum', html:
+   '<div class="aufgabentext">Noch eine Original-Prüfungsaufgabe – diesmal mit allgemeinem Term. Bearbeite A 2.1 bis A 2.3 auf deinem Extrablatt.<br><i>Tipp zu A 2.3:</i> $@l{BM}$ ist fest, $@l{BP_n} = x$ ist veränderlich und $φ$ liegt dazwischen. Rechne zuerst mit $x = 4$, dann dieselbe Rechnung mit $x$.</div>' +
+   '<figure class="bild gross"><img src="bilder/ap2011-a2.png" alt="Aufgabe A 2 der Abschlussprüfung 2011: Pyramide ABCS mit gleichschenkligem Dreieck als Grundfläche" loading="lazy">' +
+   '<figcaption>Quelle: Abschlussprüfung 2011 an den Realschulen in Bayern, Mathematik II, Haupttermin, Aufgabe A 2 (ISB)</figcaption></figure>',
+   teile:[
+   { titel:'A 2.1 $[BM]$, $[BS]$ und $φ$', schritte:[
+     { tipp:'Das Dreieck $ABC$ ist gleichschenklig mit Basis $[AC]$. $M$ ist die Mitte der Basis, also steht $[BM]$ senkrecht auf $[AC]$. Außerdem $@l{AM} = 4 cm$.', zeile:'$@l{BM} = @w{10^2 − 4^2} cm$' },
+     { zeile:'$@l{BM} = 9,17 cm$' },
+     { tipp:'Das Dreieck $BMS$ ist rechtwinklig bei $M$.', zeile:'$@l{BS} = @w{9,17^2 + 9^2} cm$' },
+     { zeile:'$@l{BS} = 12,85 cm$' },
+     { tipp:'$φ = ∢MBS$: Gegenkathete $[MS]$, Ankathete $[BM]$.', zeile:'$tan φ = @f{9}{9,17}$' },
+     { zeile:'$φ = 44,46°$', ende:true } ] },
+   { titel:'A 2.2 Pyramide $CASP_1$ für $x = 4$', schritte:[
+     { tipp:'$[BM]$ steht senkrecht auf der Ebene $ACS$. Die Höhe $[P_1F_1]$ der Pyramide verläuft deshalb parallel zu $[BM]$.', zeile:'$P_1$ auf $[BS]$ mit $@l{BP_1} = 4 cm$; $[P_1F_1] ∥ [BM]$, $F_1$ auf $[MS]$' },
+     { tipp:'Im Dreieck $SP_1F_1$ (rechtwinklig bei $F_1$) brauchst du $@l{SP_1}$ und den Winkel bei $S$.', zeile:'$@l{SP_1} = (12,85 − 4) cm = 8,85 cm$' },
+     { tipp:'Winkelsumme im Dreieck $BMS$: $90° + φ + ∢BSM = 180°$.', zeile:'$∢BSM = 90° − 44,46° = 45,54°$' },
+     { tipp:'$[P_1F_1]$ liegt dem Winkel bei $S$ gegenüber, $[SP_1]$ ist die Hypotenuse.', zeile:'$@l{P_1F_1} = 8,85 cm · sin 45,54°$' },
+     { zeile:'$@l{P_1F_1} = 6,32 cm$' },
+     { tipp:'Grundfläche ist das Dreieck $ACS$: $@f{1}{2} · @l{AC} · @l{MS}$. Volumen einer Pyramide: $V = @f{1}{3} · G · h$.', zeile:'$V = @f{1}{3} · @f{1}{2} · 8 · 9 · 6,32 cm^3$' },
+     { zeile:'$V = 75,84 cm^3$', ende:true } ] },
+   { titel:'A 2.3 Term für $@l{MP_n}(x)$', schritte:[
+     { tipp:'Schau dir das Dreieck $BMP_n$ an: $@l{BM} = 9,17 cm$ fest, $@l{BP_n} = x cm$, dazwischen der Winkel $φ$. Rechne zuerst mit $x = 4$.', zeile:'Mit $x = 4$: $@l{MP_1}^2 = 9,17^2 + 4^2 − 2 · 9,17 · 4 · cos 44,46° ≈ 47,74$' },
+     { tipp:'Jetzt dieselbe Rechnung – nur steht statt $4$ ein $x$.', zeile:'$@l{MP_n}^2 = 9,17^2 + x^2 − 2 · 9,17 · x · cos 44,46°$' },
+     { tipp:'Rechne $9,17^2$ und $2 · 9,17 · cos 44,46°$ mit dem TR aus und ordne nach $x^2$, $x$, Zahl.', zeile:'$@l{MP_n}^2 = x^2 − 13,09x + 84,09$' },
+     { zeile:'$@l{MP_n}(x) = @w{x^2 − 13,09x + 84,09} cm$', ende:true } ] }
+ ]}
+]};
+</script>
+<script src="../assets/durchklick.js"></script>
+<script>window.Formel && window.Formel.auto();</script>
+</body>
+</html>

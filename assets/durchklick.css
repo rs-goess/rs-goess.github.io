@@ -1,0 +1,64 @@
+/* Durchklick-Seiten (Tipps und Lösungen Schritt für Schritt) – Aussehen wie 1.9 / 1.12 */
+:root{--blau:#3b77a8;--dunkel:#1f2f3d;--orange:#e97132;--orange-hell:#fdeee5;--lila:#7a2e8e;--gruen:#2e8b57;
+      --gruen-hell:#e6f4ec;--grau:#f2f2f2;--gelb:#ffd23f;--gelb-hell:#fff6d6;--rot:#c00000}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;background:var(--blau);color:var(--dunkel);
+     font-size:17px;line-height:1.45;padding-bottom:150px}
+header{color:#fff;padding:12px 16px 4px;max-width:600px;margin:0 auto}
+header small{opacity:.85;display:block;font-size:13px}
+header h1{margin:2px 0 6px;font-size:20px}
+.zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
+          font-size:14px;font-weight:bold;text-decoration:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:0 0 auto;border:0;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:bold;
+              background:rgba(255,255,255,.22);color:#fff;font-family:inherit;cursor:pointer}
+.chips button.an{background:var(--gelb);color:#222}
+main{max-width:600px;margin:0 auto;padding:6px 12px 12px}
+.karte{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:none}
+.karte.aktiv{display:block;animation:rein .25s ease}
+@keyframes rein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.karte h2{margin:0 0 10px;font-size:19px;color:var(--lila)}
+.karte h2 .teilname{display:block;font-size:13px;color:#6b7780;font-weight:normal;margin-bottom:2px}
+.aufgabentext{background:var(--grau);border-radius:12px;padding:10px 12px;margin:8px 0 12px;font-size:16px}
+.aufgabentext ol{margin:6px 0 0;padding-left:22px}
+.aufgabentext li{margin:2px 0}
+.bild{margin:6px 0 10px;text-align:center}
+.bild img,.bild svg{max-width:100%;height:auto;display:inline-block}
+.bild figcaption{font-size:13px;color:#6b7780;margin-top:2px}
+.bild.gross img{width:100%;border:1px solid #e3e3e3;border-radius:8px}
+.merk{border:2px solid var(--orange);border-radius:12px;padding:10px 12px;background:var(--orange-hell);margin:10px 0}
+.ok{background:var(--gruen-hell);border-radius:12px;padding:10px 12px;margin:10px 0}
+.box{background:var(--grau);border-radius:12px;padding:10px 12px;margin:10px 0}
+.hinweis-klein{font-size:14px;color:#555}
+ol.start li{margin:4px 0}
+.teil{border-top:1px solid #e3e3e3;padding-top:10px;margin-top:12px}
+.teil h3{margin:0 0 4px;font-size:17px}
+.frage{font-size:15px;color:#444;margin:0 0 8px}
+.zeilen{list-style:none;margin:0;padding:0}
+.zeilen li{background:#f7fbff;border-left:4px solid var(--blau);border-radius:6px;padding:7px 10px;margin:6px 0;
+           animation:rein .25s ease;overflow-x:auto;overflow-y:hidden}
+.zeilen li.ende{border-left-color:var(--gruen);background:var(--gruen-hell);font-weight:bold}
+.zeilen li.ende .katex{font-weight:normal}
+.tipp{background:var(--gelb-hell);border:1.5px dashed #e0a93c;border-radius:10px;padding:8px 10px;margin:8px 0;
+      font-size:15px;animation:rein .25s ease}
+.tipp::before{content:"Tipp: ";font-weight:bold;color:#a8740c}
+.knoepfe{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.knoepfe button{border:0;border-radius:10px;padding:9px 12px;font-size:15px;font-weight:bold;font-family:inherit;cursor:pointer}
+.k-tipp{background:var(--gelb);color:#222}
+.k-zeile{background:var(--blau);color:#fff}
+.k-alles{background:#e1e6ea;color:var(--dunkel)}
+.k-alles.warnung{background:var(--orange);color:#fff}
+.knoepfe button:disabled{opacity:.35;cursor:default}
+.fertig{color:var(--gruen);font-weight:bold;margin-top:8px;display:none}
+.tab{overflow-x:auto;margin:8px 0}
+.tab table{border-collapse:collapse;width:100%;font-size:15px}
+.tab th,.tab td{border:1px solid #d5dbe0;padding:5px 6px;text-align:center}
+.tab th{background:var(--grau)}
+nav{max-width:600px;margin:0 auto;padding:0 12px;display:flex;gap:10px;justify-content:center}
+nav button{flex:1;border:0;border-radius:12px;padding:13px;font-size:17px;font-weight:bold;font-family:inherit;cursor:pointer;
+           min-height:54px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+#zurueck{background:#fff;color:var(--dunkel);flex:0 1 38%} #weiter{background:var(--gelb);color:#222}
+nav button:disabled{opacity:.4}
+.f .katex{font-size:1.06em}
+a.link{color:var(--blau);font-weight:bold}

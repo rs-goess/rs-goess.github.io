@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#3b77a8">
-<title>Einheitskreis – Mathe 10c</title>
+<title>Einheitskreis-Challenge – Mathe 10c</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
 <link rel="stylesheet" href="../assets/stil.css">
 <link rel="stylesheet" href="../assets/formeln.css">
@@ -101,7 +101,7 @@ details.spick[open] summary::before{transform:rotate(90deg)}
 <header class="kopf">
   <button class="zurueck" id="zurueck" type="button">‹ Übersicht</button>
   <small id="kopfKlein">Mathe 10c · Kapitel 1 Trigonometrie</small>
-  <h1 id="kopfGross">Einheitskreis</h1>
+  <h1 id="kopfGross">Einheitskreis-Challenge</h1>
 </header>
 
 <main>
@@ -112,15 +112,15 @@ details.spick[open] summary::before{transform:rotate(90deg)}
     <div class="wahl">
       <button class="gross k-blau" type="button" data-start="dreh">
         <span class="bild"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="none" stroke="#fff" stroke-width="3"/><path d="M20 20L31 12" stroke="#ffd23f" stroke-width="3.4" stroke-linecap="round"/><path d="M27 20A7 7 0 0 0 25.7 15.9" fill="none" stroke="#fff" stroke-width="2"/></svg></span>
-        <span><b>Winkel drehen</b><small>Dreh den Zeiger auf den richtigen Winkel</small><span class="rekord" id="rDreh"></span></span><span class="pf">›</span>
+        <span><b>Winkel einstellen</b><small>Dreh den Zeiger auf den passenden Winkel – z. B. für sin α = 0,5</small><span class="rekord" id="rDreh"></span></span><span class="pf">›</span>
       </button>
       <button class="gross k-lila" type="button" data-start="finden">
         <span class="bild"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="none" stroke="#fff" stroke-width="3"/><path d="M4 13h32" stroke="#ffd23f" stroke-width="2" stroke-dasharray="3 3"/><circle cx="9.3" cy="13" r="3.6" fill="#ffd23f"/><circle cx="30.7" cy="13" r="3.6" fill="#ffd23f"/></svg></span>
-        <span><b>Punkte finden</b><small>Tippe alle passenden Punkte auf dem Kreis an</small><span class="rekord" id="rFinden"></span></span><span class="pf">›</span>
+        <span><b>Punkte auf dem Kreis finden</b><small>Tippe alle Punkte an, die zu einem sin-, cos- oder tan-Wert passen</small><span class="rekord" id="rFinden"></span></span><span class="pf">›</span>
       </button>
       <button class="gross k-orange" type="button" data-start="jagd">
         <span class="bild"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="11" fill="none" stroke="#fff" stroke-width="3"/><path d="M20 3v9M20 28v9M3 20h9M28 20h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span>
-        <span><b>Antwort-Jagd</b><small>Schieß die richtige Antwort ab, bevor sie unten ankommt</small><span class="rekord" id="rJagd"></span></span><span class="pf">›</span>
+        <span><b>Werte abschießen</b><small>sin-, cos- und tan-Werte: Schieß die richtige Antwort ab, bevor sie unten ankommt</small><span class="rekord" id="rJagd"></span></span><span class="pf">›</span>
       </button>
     </div>
     <p class="hinweis-klein" style="margin-top:12px">Alles ohne Taschenrechner – genau wie im Teil A der Schulaufgabe.</p>
@@ -458,7 +458,7 @@ function erklaereTan(g){
    Ablauf / Bildschirme
    ========================================================= */
 var MODUS = null;
-var TITEL = { dreh:'Winkel drehen', finden:'Punkte finden', jagd:'Antwort-Jagd', '':'Einheitskreis' };
+var TITEL = { dreh:'Winkel einstellen', finden:'Punkte finden', jagd:'Werte abschießen', '':'Einheitskreis-Challenge' };
 function zeige(id){
   ['sMenu','sDreh','sFinden','sEnde'].forEach(function(k){ $(k).hidden = (k !== id); });
   window.scrollTo(0, 0);
@@ -475,7 +475,7 @@ function route(){
   if (h === 'dreh') startDreh();
   else if (h === 'finden') startFinden();
   else if (h === 'jagd') startJagd();
-  else { MODUS = null; $('kopfGross').textContent = 'Einheitskreis'; rekorde(); zeige('sMenu'); }
+  else { MODUS = null; $('kopfGross').textContent = TITEL['']; rekorde(); zeige('sMenu'); }
 }
 window.addEventListener('hashchange', route);
 Array.prototype.forEach.call(document.querySelectorAll('[data-start]'), function(b){
@@ -598,7 +598,7 @@ function startDreh(){
   zeige('sDreh'); naechsteDreh();
 }
 function naechsteDreh(){
-  if (D.nr >= D.aufgaben.length){ auswertung('Winkel drehen – geschafft!', D.pkt, D.aufgaben.length, D.liste, 'ek.rekord.dreh'); return; }
+  if (D.nr >= D.aufgaben.length){ auswertung('Winkel einstellen – geschafft!', D.pkt, D.aufgaben.length, D.liste, 'ek.rekord.dreh'); return; }
   var A = D.aufgaben[D.nr];
   $('dNr').textContent = D.nr + 1; $('dPkt').textContent = D.pkt;
   $('dBalken').style.width = (D.nr / D.aufgaben.length * 100) + '%';

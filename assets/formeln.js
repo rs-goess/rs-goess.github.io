@@ -49,6 +49,8 @@
       if (istBuchst(c)) {
         var j = i; while (j < n && istBuchst(s[j])) j++;
         var w = s.slice(i, j);
+        /* „m“ direkt nach einer Zahl ist die Einheit Meter */
+        if (w === 'm' && /[\d)]\s*$/.test(s.slice(0, i)) && !/^\s*[=(·]/.test(s.slice(j)) ) { out += '\\,\\mathrm{m}'; i = j; letztesText = false; continue; }
         out += wort(w); letztesText = istTextwort(w); i = j; continue;
       }
       if (c === ' ' || c === ' ') {
