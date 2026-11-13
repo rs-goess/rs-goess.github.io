@@ -34,32 +34,43 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .papernote{display:flex;gap:12px;align-items:center;background:var(--yellow-l);border:2px solid var(--yellow);border-radius:var(--r);padding:12px 14px;margin-bottom:16px;font-weight:700}
 .papernote svg{flex:none;width:36px;height:36px}
 .levels{display:grid;gap:10px}
-.lv{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;text-align:left;background:var(--card);border-radius:var(--r);padding:12px 14px;box-shadow:0 2px 0 var(--line);transition:transform .08s}
+.lv{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;text-align:left;background:var(--card);border-radius:var(--r);padding:12px 14px;box-shadow:0 2px 0 var(--line);transition:transform .08s;width:100%}
 .lv:active{transform:scale(.985)}
-.lv .n{width:44px;height:44px;border-radius:14px;background:var(--blue);color:#fff;display:grid;place-items:center;font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:18px}
+.lv .n{width:44px;height:44px;border-radius:14px;background:var(--blue);color:#fff;display:grid;place-items:center}
+.lv .n i{display:block;width:6px;border-radius:2px;background:currentColor;margin:0 1.5px;align-self:end}
+.lv .n span{display:flex;align-items:flex-end;height:22px}
 .lv b{display:block;font-weight:800}
-.lv .ex{color:var(--muted);font-size:15px;overflow-x:auto;white-space:nowrap}
+.lv .ex{display:block;color:var(--muted);font-size:15px;overflow-x:auto;white-space:nowrap}
+.lv .sub{display:block;color:var(--muted);font-size:13.5px;line-height:1.3}
 .lv .done{color:var(--ok);font-weight:800;font-size:13px}
 .lv.pro .n{background:var(--ink);color:var(--yellow)}
+.lv.locked{opacity:.6;box-shadow:none;border:2px dashed var(--line);cursor:default}
+.lv.locked:active{transform:none}
+.best{margin:14px 2px 0;color:var(--muted);font-size:14.5px;font-weight:700;text-align:center}
 
 /* Spiel */
 .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .chip{background:var(--blue-l);color:var(--blue-d);border-radius:999px;padding:8px 13px;font-weight:800;font-size:14px;text-align:left}
+.rgt{display:flex;align-items:center;gap:10px}
+.streak{background:var(--ink);color:var(--yellow);border-radius:999px;padding:5px 10px;font-weight:800;font-size:13px;white-space:nowrap}
+.streak.bump{animation:bump .35s}
+@keyframes bump{40%{transform:scale(1.18)}}
 .dots{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);font-weight:700}
 .dots i{width:12px;height:12px;border-radius:50%;background:var(--line);display:block}
 .dots i.on{background:var(--ok)}
 .card{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:0 2px 0 var(--line);margin-bottom:12px}
 .task .lbl{font-size:14px;color:var(--muted);font-weight:700;margin-bottom:6px}
 .expr{font-size:24px;overflow-x:auto;overflow-y:hidden;padding:10px 0 12px;text-align:center;white-space:nowrap}
+.expr.long{font-size:20px;white-space:normal;line-height:1.75}
+.expr .prt{display:inline-block;white-space:nowrap}
 .remind{font-size:13.5px;color:var(--muted);text-align:center;border-top:1px dashed var(--line);padding-top:8px}
 .ans .lbl{font-weight:800;margin-bottom:10px}
 .fields{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:center}
 .fld{display:flex;align-items:center;gap:5px;font-size:21px}
-.fld input{width:66px;height:52px;border-radius:12px;border:2.5px solid var(--line);background:#F7FAFF;font:800 21px Nunito,system-ui,sans-serif;text-align:center;color:var(--ink);outline:none;padding:0 4px}
+.fld input{width:74px;height:52px;border-radius:12px;border:2.5px solid var(--line);background:#F7FAFF;font:800 20px Nunito,system-ui,sans-serif;text-align:center;color:var(--ink);outline:none;padding:0 4px}
 .fld input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px var(--blue-l)}
 .fld input.ok{border-color:var(--ok);background:var(--ok-l)}
 .fld input.bad{border-color:var(--bad);background:var(--bad-l)}
-.fld .zahl{font-size:13px;color:var(--muted);font-weight:700}
 .hint0{font-size:13px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.35}
 .fb{margin-top:12px;border-radius:12px;padding:10px 12px;font-weight:700;text-align:center}
 .fb.ok{background:var(--ok-l);color:#126B3C}
@@ -129,38 +140,39 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
   </div>
 </div>
 
-<!-- Stufe geschafft -->
+<!-- Aufstieg -->
 <div class="ov hidden" id="lvlup">
   <div class="box">
     <h2 id="luT"></h2>
     <p id="luP"></p>
     <button class="btn pri" id="luNext"></button>
-    <button class="btn sec" id="luStay">Noch in dieser Stufe üben</button>
+    <button class="btn sec" id="luStay">Noch hier weiterüben</button>
   </div>
 </div>
 
 <div class="wrap">
   <div class="top">
-    <a class="back" href="index.html" id="backLink" aria-label="Zurück">‹</a>
+    <a class="back" href="spiele.html" id="backLink" aria-label="Zurück">‹</a>
     <h1>Klammer-Challenge</h1>
     <div class="score"><span id="pts">0</span> P</div>
   </div>
 
   <!-- Menü -->
   <section id="menu">
-    <p class="lead">Ausmultiplizieren üben – von leicht bis Profi. Wähle deine Stufe. Nach 4 gelösten Aufgaben geht es automatisch eine Stufe höher.</p>
+    <p class="lead">Ausmultiplizieren üben. Wähle, wie schwer du startest – die Aufgaben kommen gemischt. Nach 5 gelösten Aufgaben steigst du auf.</p>
     <div class="papernote">
       <svg viewBox="0 0 120 120" aria-hidden="true"><rect x="22" y="12" width="64" height="88" rx="6" fill="#fff" stroke="#12264A" stroke-width="6"/><path d="M34 34h40M34 50h40M34 66h28" stroke="#12264A" stroke-width="6" stroke-linecap="round"/></svg>
       <span>Immer zuerst auf dem Blatt rechnen, dann das Ergebnis eintippen.</span>
     </div>
     <div class="levels" id="levels"></div>
+    <p class="best" id="best"></p>
   </section>
 
   <!-- Spiel -->
   <section id="game" class="hidden">
     <div class="bar">
       <button class="chip" id="lvChip" type="button"></button>
-      <span class="dots" id="dots"></span>
+      <span class="rgt"><span class="streak hidden" id="streak"></span><span class="dots" id="dots"></span></span>
     </div>
     <div class="card task">
       <div class="lbl">Multipliziere aus und fasse zusammen:</div>
@@ -217,7 +229,9 @@ const isUnit=m=>!m.disp&&Math.abs(m.c.n)===1&&m.c.d===1;
 const body=m=>m.disp?m.disp:((hasVar(m)&&isUnit(m))?'':numTex(m.c))+varTex(m.e);
 const polyTex=l=>l.map((m,i)=>i?(neg(m)?' - ':' + ')+body(m):(neg(m)?'-':'')+body(m)).join('');
 const facTex=(m,lead)=>{const s=(neg(m)?'-':'')+body(m);return neg(m)&&!lead?'('+s+')':s};
-const prodsTex=ps=>ps.map((p,i)=>p.map((m,j)=>facTex(m,i===0&&j===0)).join(' \\cdot ')).join(' + ');
+const prodsTex=ps=>ps.map((p,i)=>p.length===1
+  ?(i?(neg(p[0])?' - ':' + '):(neg(p[0])?'-':''))+body(p[0])
+  :(i?' + ':'')+p.map((m,j)=>facTex(m,i===0&&j===0)).join(' \\cdot ')).join('');
 function preTex(p,lead){
   const sg=neg(p)?(lead?'-':' - '):(lead?'':' + ');
   if(p.disp)return sg+p.disp+' \\cdot ';
@@ -231,30 +245,90 @@ const simple=m=>(!hasVar(m)&&m.c.d===1)||(isUnit(m)&&m.e[0]+m.e[1]===1);
 const pw=m=>simple(m)?body(m)+'^2':'('+body(m)+')^2';
 const valTex=f=>(f.n<0?'-':'')+(f.d===1?Math.abs(f.n):decStr(f).replace(',','{,}'));
 const valPar=f=>f.n<0?'('+valTex(f)+')':valTex(f);
+const plainOne=m=>!m.disp&&!hasVar(m)&&m.c.n===1&&m.c.d===1;
+const plainUnit=m=>!m.disp&&!hasVar(m)&&isUnit(m);
 
 /* ================= Schritt-für-Schritt-Lösung ================= */
-function solve(P){
-  const S=[], add=(t,tex)=>S.push({t,tex});
-  if(P.parts.length>1){
-    const prods=[],flat=[];
-    P.parts.forEach(p=>p.br[0].forEach(m=>{prods.push([p.pre,m]);flat.push(mmul(p.pre,m))}));
-    add('Löse jede Klammer einzeln auf: Faktor mal jedes Glied. Das Vorzeichen vor dem Faktor gehört dazu!',prodsTex(prods));
-    add('Rechne jedes Produkt aus. Achte auf die Vorzeichen ($- \\cdot - = +$).',polyTex(flat));
-    add('Fasse gleichartige Glieder zusammen.',polyTex(combine(flat)));
-    return S;
+/* Faktor hinter der Klammer mit dem Faktor davor zusammenfassen */
+function mergePost(p){
+  const post=p.post, np=mmul(p.pre,{c:post.c,e:post.e});
+  let txt;
+  if(post.disp){
+    const t=post.trig;
+    txt='Setze den Wert ein: $\\'+t.fn+' '+t.deg+'^\\circ = '+valTex(t.val)+'$. Fasse dann die Faktoren vor und hinter der Klammer zusammen: $'+facTex(p.pre,true)+' \\cdot '+valPar(post.c)+' = '+facTex(np,true)+'$.';
+  }else{
+    txt='Fasse die Faktoren vor und hinter der Klammer zusammen: $'+facTex(p.pre,true)+' \\cdot '+facTex(post,false)+' = '+facTex(np,true)+'$.';
   }
+  p.pre=np;p.post=null;
+  return txt;
+}
+/* mehrere Teile, z. B. (2x - 3)^2 - 4(x^2 - 2x + 5) * cos 60° */
+function solveMulti(P){
+  const S=[], add=(t,tex)=>S.push({t,tex});
+  const parts=P.parts.map(o=>({pre:o.pre,br:o.br.map(b=>b.slice()),sq:o.sq,post:o.post}));
+  const txt=[];
+  parts.forEach(p=>{if(p.post)txt.push(mergePost(p))});
+  if(txt.length)add(txt.join(' '),exprTex(parts));
+  const clash=V.indexOf('a')>=0||V.indexOf('b')>=0;
+  const s1=[],s2=[],say=[];
+  let hard=false;
+  parts.forEach((p,i)=>{
+    const lead=i===0;
+    if(!p.sq&&p.br.length===1){p.inner=p.br[0];s1.push(partTex(p,lead));s2.push(partTex(p,lead));return;}
+    hard=true;
+    const one=plainOne(p.pre);
+    const wrap=s=>one?(lead?s:' + ('+s+')'):preTex(p.pre,lead)+'\\left[\\,'+s+'\\,\\right]';
+    const A=p.br[0], B=p.sq?p.br[0]:p.br[1];
+    const third=!p.sq&&A.length===2&&B.length===2&&key(A[0])===key(B[0])&&feq(A[0].c,B[0].c)&&key(A[1])===key(B[1])&&A[1].c.n===-B[1].c.n&&A[1].c.d===B[1].c.d;
+    if(p.sq&&A.length===2){
+      const a=A[0],b=A[1],plus=!neg(b),aa=absM(a),bb=absM(b),nr=plus?'1':'2';
+      say.push(clash?'$'+partTex({pre:M(1),br:p.br,sq:true},true)+'$ ist die '+nr+'. binomische Formel: erstes Glied zum Quadrat, '+(plus?'plus':'minus')+' das doppelte Produkt, plus zweites Glied zum Quadrat.'
+        :'$'+partTex({pre:M(1),br:p.br,sq:true},true)+'$ ist die '+nr+'. binomische Formel $'+(plus?'(a+b)^2 = a^2 + 2ab + b^2':'(a-b)^2 = a^2 - 2ab + b^2')+'$ mit $a = '+body(aa)+'$ und $b = '+body(bb)+'$.');
+      s1.push(wrap(pw(aa)+(plus?' + ':' - ')+'2 \\cdot '+body(aa)+' \\cdot '+body(bb)+' + '+pw(bb)));
+      p.inner=[mmul(a,a),mmul(M(2),mmul(a,b)),mmul(b,b)];
+    }else if(third){
+      const aa=absM(A[0]),bb=absM(A[1]);
+      say.push(clash?'$'+partTex({pre:M(1),br:p.br},true)+'$ ist die 3. binomische Formel: erstes Glied zum Quadrat minus zweites Glied zum Quadrat.'
+        :'$'+partTex({pre:M(1),br:p.br},true)+'$ ist die 3. binomische Formel $(a+b)(a-b) = a^2 - b^2$ mit $a = '+body(aa)+'$ und $b = '+body(bb)+'$.');
+      s1.push(wrap(pw(aa)+' - '+pw(bb)));
+      p.inner=[mmul(aa,aa),mmul(M(-1),mmul(bb,bb))];
+    }else{
+      const prods=[];A.forEach(a=>B.forEach(b=>prods.push([a,b])));
+      say.push('Bei $'+partTex({pre:M(1),br:p.br},true)+'$ multiplizierst du jedes Glied der ersten Klammer mit jedem Glied der zweiten.');
+      s1.push(wrap(prodsTex(prods)));
+      p.inner=combine(pmul(A,B));
+    }
+    s2.push(wrap(polyTex(p.inner)));
+    if(!one)p.kept=true;
+  });
+  if(hard){
+    add(say.join(' ')+(parts.some(p=>p.kept)?' Der Faktor davor bleibt erst einmal stehen – setze eine eckige Klammer.':'')+' Den Rest schreibst du unverändert ab.',s1.join(''));
+    add('Rechne die Quadrate und Produkte aus.',s2.join(''));
+  }
+  const prods=[],flat=[];
+  let minus=false;
+  parts.forEach(p=>{
+    const unit=plainUnit(p.pre);
+    if(unit&&p.pre.c.n<0)minus=true;
+    p.inner.forEach(m=>{const r=mmul(p.pre,m);flat.push(r);prods.push(unit?[r]:[p.pre,m]);});
+  });
+  const flip=minus?' Bei einem Minus vor der Klammer dreht sich jedes Vorzeichen in der Klammer um.':'';
+  if(prods.some(p=>p.length>1)){
+    add('Löse jetzt jede Klammer auf: Faktor mal jedes Glied. Das Vorzeichen vor dem Faktor gehört dazu!'+flip,prodsTex(prods));
+    add('Rechne jedes Produkt aus. Achte auf die Vorzeichen ($- \\cdot - = +$).',polyTex(flat));
+  }else{
+    add('Löse jetzt die Klammern auf.'+flip,polyTex(flat));
+  }
+  const comb=combine(flat);
+  if(polyTex(comb)!==polyTex(flat))add('Fasse gleichartige Glieder zusammen und ordne.',polyTex(comb));
+  return S;
+}
+function solve(P){
+  if(P.parts.length>1)return solveMulti(P);
+  const S=[], add=(t,tex)=>S.push({t,tex});
   const o=P.parts[0];
   const p={pre:o.pre,br:o.br.map(b=>b.slice()),sq:o.sq,post:o.post};
-  // sin/cos-Wert in der Klammer einsetzen
-  p.br.forEach(b=>b.forEach((m,i)=>{
-    if(!m.disp)return;
-    const t=m.trig, prod=fmul(F(t.N),t.val);
-    let txt='Setze zuerst den Wert ein: $\\'+t.fn+' '+t.deg+'^\\circ = '+valTex(t.val)+'$, also $'+t.N+' \\cdot \\'+t.fn+' '+t.deg+'^\\circ = '+t.N+' \\cdot '+valPar(t.val)+' = '+valTex(prod)+'$.';
-    if(m.dsign<0&&prod.n<0)txt+=' Davor steht ein Minus: $-('+valTex(prod)+') = +'+valTex(F(-prod.n,prod.d))+'$.';
-    b[i]=M(m.c);
-    add(txt,partTex(p,true));
-  }));
-  // sin/cos-Wert als Faktor
+  // sin/cos-Wert als Faktor vor der Klammer
   if(p.pre.disp){
     const t=p.pre.trig;
     p.pre=M(p.pre.c);
@@ -262,11 +336,10 @@ function solve(P){
   }
   // Faktor hinter der Klammer nach vorne holen
   if(p.post){
-    const np=mmul(p.pre,p.post);
-    add('Fasse die Faktoren vor und hinter der Klammer zusammen: $'+facTex(p.pre,true)+' \\cdot '+facTex(p.post,false)+' = '+facTex(np,true)+'$.','');
-    p.pre=np;p.post=null;S[S.length-1].tex=partTex(p,true);
+    const t=mergePost(p);
+    add(t,partTex(p,true));
   }
-  const one=!hasVar(p.pre)&&p.pre.c.n===1&&p.pre.c.d===1;
+  const one=plainOne(p.pre);
   let inner=p.br[0];
   if(p.sq||p.br.length===2){
     const wrap=s=>one?s:preTex(p.pre,true)+'\\left[\\,'+s+'\\,\\right]';
@@ -315,42 +388,45 @@ const ri=(a,b)=>a+Math.floor(rnd()*(b-a+1));
 const pick=a=>a[ri(0,a.length-1)];
 const sgn=()=>rnd()<.5?1:-1;
 const nz=(a,b)=>sgn()*ri(a,b);
-const TRIG=[['sin',30,F(1,2)],['cos',60,F(1,2)],['sin',90,F(1)],['cos',0,F(1)],['cos',180,F(-1)],['cos',120,F(-1,2)],['sin',150,F(1,2)]];
+const TRIG=[['sin',30,F(1,2)],['cos',60,F(1,2)],['cos',60,F(1,2)],['sin',90,F(1)],['cos',0,F(1)],['cos',180,F(-1)],['cos',120,F(-1,2)],['sin',150,F(1,2)]];
+/* N * cos 60° als Faktor vor der Klammer */
 function trigMono(N,dsign){
   const t=pick(TRIG), val=t[2];
   return {c:fmul(F(N*dsign),val),e:[0,0],disp:N+' \\cdot \\'+t[0]+' '+t[1]+'^\\circ',dsign:dsign,trig:{N:N,fn:t[0],deg:t[1],val:val}};
 }
-const LEVELS=[
-  {t:'Faktor mal Klammer',ex:'3(2x + 5)'},
-  {t:'Minus und Buchstaben als Faktor',ex:'-2x(3x - 4)'},
-  {t:'Klammer mal Klammer',ex:'(x + 3)(2x - 5)'},
-  {t:'Binomische Formeln',ex:'(3x - 2)^2'},
-  {t:'Faktor vor Klammern',ex:'-2(x + 3)(x - 1)'},
-  {t:'Brüche und Kommazahlen',ex:'-\\tfrac{1}{2} \\cdot (4x^2 - 6x + 10)'},
-  {t:'Profi: mit sin und cos',ex:'-\\tfrac{1}{2} \\cdot (3x^2 - 2x + 16 \\cdot \\cos 60^\\circ)'}
-];
-function build(level){
+/* cos 60° als Faktor hinter der Klammer */
+function trigPost(){
+  const t=pick(TRIG), val=t[2];
+  return {c:val,e:[0,0],disp:'\\'+t[0]+' '+t[1]+'^\\circ',dsign:1,trig:{N:1,fn:t[0],deg:t[1],val:val}};
+}
+/* Buchstabe: meistens x, mit steigender Stufe öfter ein anderer */
+let TIER=1;
+const letter=()=>rnd()<[0,.85,.65,.55,.5][TIER]?'x':pick(['a','b','z','y','z','a']);
+const pair=()=>pick([['a','b'],['x','y'],['a','b'],['u','v']]);
+
+function build(type){
   V=['x'];STYLE='frac';
   const r=rnd();
-  if(level===1){
-    V=[pick(['x','x','x','a','y'])];
+  if(type===1){
+    V=[letter()];
     let br=r<.75?[M(ri(1,6),1),M(nz(1,9))]:[M(ri(1,4),2),M(nz(1,6),1),M(nz(1,9))];
     if(br.length===2&&br[1].c.n>0&&rnd()<.2)br.reverse();
     return [{pre:M(ri(2,9)),br:[br]}];
   }
-  if(level===2){
+  if(type===2){
     const k=ri(0,5);
+    if(k!==4)V=[letter()];
     if(k===0)return [{pre:M(-ri(2,9)),br:[[M(ri(1,6),1),M(nz(1,9))]]}];
     if(k===1)return [{pre:M(-1),br:[rnd()<.5?[M(ri(1,6),1),M(-ri(1,9))]:[M(ri(1,4),2),M(nz(1,6),1),M(nz(1,9))]]}];
     if(k===2)return [{pre:M(ri(1,5),1),br:[[M(ri(1,5),1),M(nz(1,9))]]}];
     if(k===3)return [{pre:M(-ri(1,5),1),br:[[M(ri(1,5),1),M(nz(1,9))]]}];
-    if(k===4){V=['a','b'];return [{pre:M(sgn()*ri(2,5),1,0),br:[rnd()<.5?[M(ri(1,5),0,1),M(nz(1,9))]:[M(ri(1,4),1,0),M(nz(1,5),0,1)]]}];}
+    if(k===4){V=pair();return [{pre:M(sgn()*ri(2,5),1,0),br:[rnd()<.5?[M(ri(1,5),0,1),M(nz(1,9))]:[M(ri(1,4),1,0),M(nz(1,5),0,1)]]}];}
     const q=rnd();
     return [{pre:M(ri(2,5)),br:[[M(ri(1,4),1),M(nz(1,6))]],post:q<.4?M(ri(2,4)):q<.75?M(ri(1,3),1):M(-ri(2,3))}];
   }
-  if(level===3){
-    if(r<.25){V=pick([['a','b'],['x','y']]);return [{pre:M(1),br:[[M(ri(1,3),1,0),M(nz(1,4),0,1)],[M(ri(1,3),1,0),M(nz(1,4),0,1)]]}];}
-    V=[pick(['x','x','x','a','y'])];
+  if(type===3){
+    if(r<.25){V=pair();return [{pre:M(1),br:[[M(ri(1,3),1,0),M(nz(1,4),0,1)],[M(ri(1,3),1,0),M(nz(1,4),0,1)]]}];}
+    V=[letter()];
     for(;;){
       const a=pick([1,1,1,2,3]),c=pick([1,1,1,2,3]),b=nz(1,9),d=nz(1,9);
       if(a===c&&b===-d)continue;
@@ -358,14 +434,14 @@ function build(level){
       return [{pre:M(1),br:[[M(a,1),M(b)],[M(c,1),M(d)]]}];
     }
   }
-  if(level===4){
+  if(type===4){
     const k=ri(0,3);
     if(r<.25){
-      V=pick([['a','b'],['x','y']]);const p=ri(1,4),q=ri(1,4);
+      V=pair();const p=ri(1,4),q=ri(1,4);
       if(k<=1)return [{pre:M(1),br:[[M(p,1,0),M(k?q:-q,0,1)]],sq:true}];
       return [{pre:M(1),br:[[M(p,1,0),M(k===2?q:-q,0,1)],[M(p,1,0),M(k===2?-q:q,0,1)]]}];
     }
-    V=[pick(['x','x','x','a','y'])];
+    V=[letter()];
     const a=pick([1,1,2,3,4,5]),b=ri(1,9);
     if(k<=1){
       if(k===0&&rnd()<.2)return [{pre:M(1),br:[[M(b),M(a,1)]],sq:true}];
@@ -373,7 +449,8 @@ function build(level){
     }
     return [{pre:M(1),br:[[M(a,1),M(k===2?b:-b)],[M(a,1),M(k===2?-b:b)]]}];
   }
-  if(level===5){
+  if(type===5){
+    V=[letter()];
     const k=ri(0,4);
     if(k===0)return [{pre:M(sgn()*ri(2,5)),br:[[M(1,1),M(nz(1,6))],[M(1,1),M(nz(1,6))]]}];
     if(k===1)return [{pre:M(-1),br:[[M(pick([1,1,2]),1),M(nz(1,6))],[M(1,1),M(nz(1,6))]]}];
@@ -386,7 +463,8 @@ function build(level){
       return [{pre:M(k1),br:[[M(a,1),M(b)]]},{pre:M(k2),br:[[M(c,1),M(d)]]}];
     }
   }
-  if(level===6){
+  if(type===6){
+    V=[letter()];
     const f=pick([[1,2,'frac'],[-1,2,'frac'],[1,2,'frac'],[-1,2,'frac'],[1,4,'frac'],[-1,4,'frac'],[1,3,'frac'],[-1,3,'frac'],[2,3,'frac'],[-2,3,'frac'],[3,4,'frac'],[3,2,'frac'],[-3,2,'frac'],
                   [1,2,'dec'],[-1,2,'dec'],[3,2,'dec'],[-3,2,'dec'],[5,2,'dec'],[1,5,'dec'],[-1,5,'dec']]);
     const d=f[1];STYLE=f[2];
@@ -395,30 +473,70 @@ function build(level){
     if(d===2&&rnd()<.25){const i=ri(0,br.length-1);br[i]=M(sgn()*pick([1,3,5,7]),br[i].e[0]);if(i===0)br[i].c=F(Math.abs(br[i].c.n));}
     return [{pre:M(F(f[0],d)),br:[br]}];
   }
-  // Stufe 7
-  if(r<.5){
-    const f=pick([[-1,2,'frac'],[-1,2,'frac'],[1,2,'frac'],[-1,4,'frac'],[1,4,'frac'],[-3,2,'frac'],[-1,2,'dec'],[1,2,'dec'],[3,2,'dec'],[-2,1,'frac'],[-3,1,'frac']]);
-    const d=f[1];STYLE=f[2];
-    let a=d*ri(1,4);if(d===2&&rnd()<.3)a=pick([1,3,5]);
-    return [{pre:M(F(f[0],d)),br:[[M(a,2),M(d*nz(1,5),1),trigMono(2*d*ri(d===1?2:1,d===4?3:5),rnd()<.75?1:-1)]]}];
+  if(type===7){
+    V=[letter()];
+    // Hauptfall: -1,5 * (3x² - 2x + 16) * cos 60°
+    if(r<.6){
+      for(;;){
+        const f=pick([[-3,2,'dec'],[-3,2,'dec'],[-1,2,'dec'],[1,2,'dec'],[3,2,'dec'],[5,2,'dec'],[-5,2,'dec'],[-2,1,'dec'],[3,1,'dec'],[-3,1,'dec'],[4,1,'dec'],[-4,1,'dec']]);
+        STYLE=f[2];
+        const post=trigPost();
+        const tot=fmul(F(f[0],f[1]),post.c);
+        if(tot.d===1&&Math.abs(tot.n)===1)continue;
+        return [{pre:M(F(f[0],f[1])),br:[[M(ri(1,5),2),M(nz(1,6),1),M(2*nz(1,9))]],post:post}];
+      }
+    }
+    if(r<.75){
+      for(;;){
+        const pre=trigMono(2*ri(2,6),1);
+        if(Math.abs(pre.c.n)===1&&pre.c.d===1)continue;
+        return [{pre:pre,br:[[M(ri(1,4),2),M(nz(1,5),1),M(nz(1,7))]]}];
+      }
+    }
+    const f=pick([[1,2,'frac'],[-1,2,'frac'],[-1,2,'frac'],[1,2,'dec'],[-1,2,'dec'],[3,2,'dec']]);STYLE=f[2];
+    if(r<.9)return [{pre:M(F(f[0],2)),br:[[M(2*ri(1,2),1),M(2*nz(1,4))],[M(1,1),M(nz(1,6))]]}];
+    return [{pre:M(F(f[0],2)),br:[[M(2*pick([1,1,2]),1),M(2*nz(1,3))]],sq:true}];
   }
-  if(r<.65){
-    const pre=trigMono(2*ri(2,6),1);
-    return [{pre:pre,br:[[M(ri(1,4),2),M(nz(1,5),1),M(nz(1,7))]]}];
+  // Typ 8, Experte: binomische Formel plus Faktor mal Dreier-Klammer mal Faktor
+  V=[letter()];STYLE='dec';
+  const tri=()=>[M(ri(1,4),2),M(nz(1,6),1),M(2*nz(1,8))];
+  const a=pick([1,1,2,2,3]),b=ri(1,6);
+  const binom=k=>k===0?{br:[[M(a,1),M(b)]],sq:true}:k===1?{br:[[M(a,1),M(-b)]],sq:true}:{br:[[M(a,1),M(b)],[M(a,1),M(-b)]]};
+  const B=binom(ri(0,2));
+  for(;;){
+    const k=ri(0,3);
+    let p1,p2;
+    if(k===0){           // (2x - 3)² - 1,5 * (4x² - 2x + 6) * cos 60°
+      const f=pick([[-3,2],[3,2],[-1,2],[5,2],[-5,2],[-2,1],[-3,1],[4,1],[-4,1],[3,1]]);
+      p1={pre:M(1),br:B.br,sq:B.sq};
+      p2={pre:M(F(f[0],f[1])),br:[tri()],post:trigPost()};
+    }else if(k===1){     // 3(x + 2)² - 2(x² - 4x + 6) * 3
+      p1={pre:M(pick([2,3,-2,-3,-1])),br:B.br,sq:B.sq};
+      p2={pre:M(sgn()*ri(2,4)),br:[tri()],post:M(pick([2,3,-2]))};
+    }else if(k===2){     // -0,5 * (2x + 4)² + 3(x² - 2x + 4) * sin 30°
+      const f=pick([[-1,2],[1,2],[-3,2],[3,2]]);
+      const c=2*pick([1,1,2]),d=2*ri(1,3),kk=ri(0,2);
+      const br=kk===0?{br:[[M(c,1),M(d)]],sq:true}:kk===1?{br:[[M(c,1),M(-d)]],sq:true}:{br:[[M(c,1),M(d)],[M(c,1),M(-d)]]};
+      p1={pre:M(F(f[0],f[1])),br:br.br,sq:br.sq};
+      p2={pre:M(sgn()*ri(2,6)),br:[tri()],post:trigPost()};
+    }else{               // 4(x² - 3x + 2) * cos 60° - (3x - 2)²
+      p1={pre:M(sgn()*2*ri(1,4)),br:[tri()],post:trigPost()};
+      p2={pre:M(pick([-1,-1,-2,2,-3])),br:B.br,sq:B.sq};
+    }
+    const bad=[p1,p2].some(p=>{if(!p.post)return false;const t=fmul(p.pre.c,p.post.c);return t.d===1&&Math.abs(t.n)===1;});
+    if(bad)continue;
+    return [p1,p2];
   }
-  const f=pick([[1,2,'frac'],[-1,2,'frac'],[-1,2,'frac'],[1,2,'dec'],[-1,2,'dec'],[3,2,'dec']]);STYLE=f[2];
-  if(r<.85)return [{pre:M(F(f[0],2)),br:[[M(2*ri(1,2),1),M(2*nz(1,4))],[M(1,1),M(nz(1,6))]]}];
-  return [{pre:M(F(f[0],2)),br:[[M(2*pick([1,1,2]),1),M(2*nz(1,3))]],sq:true}];
 }
-function gen(level){
-  const parts=build(level);
-  const P={level:level,vars:V.slice(),style:STYLE,parts:parts};
+function gen(type){
+  const parts=build(type);
+  const P={type:type,vars:V.slice(),style:STYLE,parts:parts};
   P.tex=exprTex(parts);
   const all=[];
-  parts.forEach(p=>{let l=[mmul(p.pre,p.post||M(1))];p.br.forEach(b=>{l=pmul(l,b);if(p.sq)l=pmul(l,b)});all.push.apply(all,l)});
+  parts.forEach(p=>{let l=[mmul(p.pre,p.post?{c:p.post.c,e:p.post.e}:M(1))];p.br.forEach(b=>{l=pmul(l,b);if(p.sq)l=pmul(l,b)});all.push.apply(all,l)});
   const ans=combine(all);
   let es;
-  if(V.length===1){const d=Math.max.apply(null,ans.map(m=>m.e[0]));es=[];for(let i=d;i>=0;i--)es.push([i,0]);}
+  if(V.length===1){const d=Math.max.apply(null,all.map(m=>m.e[0]));es=[];for(let i=d;i>=0;i--)es.push([i,0]);}
   else{const seen={};es=all.slice().sort(sortM).filter(m=>seen[key(m)]?false:(seen[key(m)]=1)).map(m=>m.e);}
   P.fields=es.map(e=>{const hit=ans.filter(m=>key(m)===e[0]+','+e[1])[0];return{e:e,tex:varTex(e),val:hit?hit.c:F(0)}});
   P.steps=solve(P);
@@ -432,43 +550,79 @@ function parseNum(s){
   if((m=/^([+-]?)(\d+)\/(\d+)$/.exec(s))&&+m[3]!==0)return F((m[1]==='-'?-1:1)*parseInt(m[2],10),parseInt(m[3],10));
   return null;
 }
-window.KT={cur:()=>S.P,gen:gen,parseNum:parseNum,fracTxt:fracTxt,feq:feq};
+
+/* ================= Stufen: gemischte Aufgaben ================= */
+/* w: Aufgabentyp -> Gewicht */
+const TIERS=[null,
+  {name:'Leicht', sub:'Faktor mal Klammer, Minus davor, Klammer mal Klammer', ex:'-2x(3x - 4)', w:{1:35,2:35,3:30}},
+  {name:'Mittel', sub:'Binomische Formeln, Faktor vor Klammern, Brüche und Kommazahlen', ex:'-2(x + 3)(x - 1)', w:{3:15,4:30,5:30,6:25}},
+  {name:'Schwer', sub:'Kommazahlen, Brüche und sin/cos als Faktor', ex:'-1{,}5 \\cdot (3x^2 - 2x + 16) \\cdot \\cos 60^\\circ', w:{5:15,6:20,7:65}},
+  {name:'Experte', sub:'Alles kombiniert – wie in der Abschlussprüfung', ex:'(2x - 3)^2 - 1{,}5 \\cdot (4x^2 - 2x + 6) \\cdot \\cos 60^\\circ', w:{7:25,8:75}}
+];
+let lastType=0;
+function pickType(tier){
+  const w=TIERS[tier].w, ks=Object.keys(w).map(Number);
+  for(let tries=0;;tries++){
+    let s=0;ks.forEach(k=>s+=w[k]);
+    let x=rnd()*s,t=ks[0];
+    for(const k of ks){x-=w[k];if(x<0){t=k;break}}
+    if(t!==lastType||tries>3||(tier===4&&t===8)){lastType=t;return t;}
+  }
+}
+function genTier(tier){TIER=tier;return gen(pickType(tier));}
+window.KT={cur:()=>S.P,gen:t=>{TIER=t<=2?1:t<=6?2:t===7?3:4;return gen(t)},genTier:genTier,parseNum:parseNum,fracTxt:fracTxt,feq:feq};
 
 /* ================= Oberfläche ================= */
 const $=id=>document.getElementById(id);
-function tex(s,display){
+function tex(s){
   if(window.katex){try{return katex.renderToString(s,{throwOnError:false,displayMode:false})}catch(e){}}
-  return '<span>'+s.replace(/\\tfrac\{(\d+)\}\{(\d+)\}/g,'$1/$2').replace(/\\cdot/g,'·').replace(/\^\\circ/g,'°').replace(/\^2/g,'²').replace(/\^3/g,'³')
+  return '<span>'+s.replace(/\\[td]frac\{(\d+)\}\{(\d+)\}/g,'$1/$2').replace(/\\cdot/g,'·').replace(/\^\\circ/g,'°').replace(/\^2/g,'²').replace(/\^3/g,'³')
     .replace(/\{,\}/g,',').replace(/\\left|\\right|\\,|\\/g,'').replace(/-/g,'−')+'</span>';
 }
 const rich=t=>t.split('$').map((s,i)=>i%2?tex(s):s.replace(/&/g,'&amp;').replace(/</g,'&lt;')).join('');
+const store={
+  get(k,d){try{const v=localStorage.getItem('kc_'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('kc_'+k,JSON.stringify(v))}catch(e){}}
+};
 
-const NEED=4;
-const S={level:1,P:null,pts:0,clean:0,tries:0,tips:0,done:false,cleared:{}};
+const NEED=5;
+const S={tier:1,P:null,pts:0,clean:0,tries:0,tips:0,done:false,streak:0,cleared:{},
+  best:store.get('best',0),expert:store.get('expert',false)};
 let active=null;
+if(/[?&]stufe=experte/.test(location.search))S.expert=true;
 
+const bars=n=>'<span>'+[9,14,19,22].slice(0,n).map(h=>'<i style="height:'+h+'px"></i>').join('')+'</span>';
 function renderMenu(){
-  $('levels').innerHTML=LEVELS.map((l,i)=>'<button class="lv'+(i===6?' pro':'')+'" data-l="'+(i+1)+'"><span class="n">'+(i+1)+'</span><span><b>'+l.t+'</b><span class="ex">'+tex(l.ex)+'</span>'+(S.cleared[i+1]?'<span class="done"> ✓ geschafft</span>':'')+'</span></button>').join('');
+  $('levels').innerHTML=TIERS.slice(1).map((l,i)=>{
+    const t=i+1, locked=t===4&&!S.expert;
+    return '<button class="lv'+(t===4?' pro':'')+(locked?' locked':'')+'" data-l="'+t+'"'+(locked?' disabled':'')+'><span class="n">'+bars(t)+'</span><span><b>'+l.name+(S.cleared[t]?'<span class="done"> ✓ geschafft</span>':'')+'</b>'
+      +'<span class="sub">'+(locked?'Wird freigeschaltet, wenn du „Schwer“ geschafft hast.':l.sub)+'</span>'
+      +(locked?'':'<span class="ex">z. B. '+tex(l.ex)+'</span>')+'</span></button>';
+  }).join('');
+  $('best').textContent=S.best?'Dein Rekord auf diesem Gerät: '+S.best+' Punkte':'';
 }
 function show(which){
   $('menu').classList.toggle('hidden',which!=='menu');
   $('game').classList.toggle('hidden',which!=='game');
   window.scrollTo(0,0);
 }
-function start(level){S.level=level;S.clean=0;show('game');next();}
+function start(tier){S.tier=tier;S.clean=0;show('game');next();}
 function next(){
-  S.P=gen(S.level);S.tries=0;S.tips=0;S.done=false;
-  const P=S.P;
-  $('lvChip').textContent='Stufe '+S.level+' · '+LEVELS[S.level-1].t+' ▾';
-  $('expr').innerHTML=tex(P.tex.replace(/\\tfrac/g,'\\dfrac'));
+  S.P=genTier(S.tier);S.tries=0;S.tips=0;S.done=false;
+  const P=S.P;V=P.vars.slice();STYLE=P.style;
+  $('lvChip').textContent=TIERS[S.tier].name+' · gemischt ▾';
+  $('expr').innerHTML=P.parts.length>1
+    ?P.parts.map((q,i)=>'<span class="prt">'+tex(partTex(q,i===0).replace(/\\tfrac/g,'\\dfrac'))+'</span>').join(' ')
+    :tex(P.tex.replace(/\\tfrac/g,'\\dfrac'));
+  $('expr').classList.toggle('long',P.parts.length>1);
   $('remind').textContent=/sin|cos/.test(P.tex)?'Erst auf dem Blatt rechnen. Die sin- und cos-Werte kennst du vom Einheitskreis.':'Erst auf dem Blatt rechnen – dann eintippen.';
   $('fields').innerHTML=P.fields.map((f,i)=>'<label class="fld"><input type="text" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" data-i="'+i+'" aria-label="Zahl vor '+(f.tex||'nichts (Zahl ohne Buchstabe)')+'">'+(f.tex?tex(f.tex):'')+'</label>').join('');
   const lead=P.fields[0].tex;
-  $('hint0').innerHTML='Gibt es ein Glied nicht, trage 0 ein. Steht nur '+tex(lead)+' da, trage 1 ein.'+(P.fields[P.fields.length-1].tex?'':' Ins letzte Kästchen kommt die Zahl ohne Buchstabe.');
+  $('hint0').innerHTML='Gibt es ein Glied nicht, trage 0 ein. Steht nur '+tex(lead)+' da, trage 1 ein.'+(P.fields[P.fields.length-1].tex?'':' Ins letzte Kästchen kommt die Zahl ohne Buchstabe.')+(S.tier>=2?' Kommazahl (0,75) oder Bruch (3/4) – beides geht.':'');
   $('fb').className='fb hidden';
   $('stepsCard').classList.add('hidden');$('steps').innerHTML='';
   $('pad').classList.remove('hidden');
-  renderActs();renderDots();
+  renderActs();renderDots();renderStreak(false);
   const first=$('fields').querySelector('input');active=first;first.focus({preventScroll:true});
   window.scrollTo(0,0);
 }
@@ -476,10 +630,16 @@ function renderDots(){
   let h='';for(let i=0;i<NEED;i++)h+='<i class="'+(i<S.clean?'on':'')+'"></i>';
   $('dots').innerHTML=h;
 }
+function renderStreak(bump){
+  const el=$('streak');
+  el.classList.toggle('hidden',S.streak<2);
+  el.textContent='Serie ×'+S.streak;
+  if(bump){el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');}
+}
 function renderActs(){
   const a=$('acts');
   if(S.done){
-    a.innerHTML='<button class="btn pri wide" data-a="next">Nächste Aufgabe</button><button class="btn ghost wide" data-a="menu">Stufe wechseln</button>';
+    a.innerHTML='<button class="btn pri wide" data-a="next">Nächste Aufgabe</button><button class="btn ghost wide" data-a="menu">Schwierigkeit wechseln</button>';
   }else{
     const more=S.tips<S.P.steps.length-1;
     a.innerHTML='<button class="btn sec" data-a="tip"'+(more?'':' disabled style="opacity:.45"')+'>'+(S.tips?'Nächster Tipp':'Tipp zeigen')+'</button><button class="btn sec" data-a="solve">Lösung zeigen</button>';
@@ -500,12 +660,18 @@ function finish(solved){
   renderSteps(S.P.steps.length,true);
   renderActs();
   if(solved){
-    const base=10*S.level, got=(S.tries===1&&S.tips===0)?base:Math.round(base/2);
+    const cleanRun=S.tries===1&&S.tips===0;
+    const base=10*S.tier;
+    S.streak=cleanRun?S.streak+1:0;
+    const bonus=S.streak>=3?5:0;
+    const got=(cleanRun?base:Math.round(base/2))+bonus;
     S.pts+=got;$('pts').textContent=S.pts;
-    S.clean++;renderDots();
-    fb('ok','Richtig! +'+got+' Punkte'+(S.tries===1&&S.tips===0?'':' (beim ersten Versuch ohne Tipp gibt es '+base+')'));
-    if(S.clean>=NEED){S.cleared[S.level]=true;setTimeout(levelUp,700);}
+    if(S.pts>S.best){S.best=S.pts;store.set('best',S.best);}
+    S.clean++;renderDots();renderStreak(cleanRun);
+    fb('ok','Richtig! +'+got+' Punkte'+(bonus?' (davon 5 Serien-Bonus)':'')+(cleanRun?'':' – beim ersten Versuch ohne Tipp gibt es '+base+'.'));
+    if(S.clean>=NEED){S.cleared[S.tier]=true;if(S.tier>=3&&!S.expert){S.expert=true;store.set('expert',true);}setTimeout(levelUp,700);}
   }else{
+    S.streak=0;renderStreak(false);
     fb('info','Hier ist die Lösung. Geh die Schritte durch und vergleiche mit deinem Blatt – wo weicht deine Rechnung ab?');
   }
   if(document.activeElement)document.activeElement.blur();
@@ -528,10 +694,11 @@ function check(){
     (wrong===1?'Ein Kästchen stimmt noch nicht.':wrong+' Kästchen stimmen noch nicht.')+' Prüfe deine Rechnung auf dem Blatt – oder hol dir einen Tipp.');
 }
 function levelUp(){
-  const last=S.level===7;
-  $('luT').textContent=last?'Profi-Stufe geschafft!':'Stufe '+S.level+' geschafft!';
-  $('luP').textContent=last?'Stark – solche Terme löst du jetzt sicher. Du kannst weiter Punkte sammeln oder eine andere Stufe wiederholen.':'Weiter geht es mit Stufe '+(S.level+1)+': '+LEVELS[S.level].t+'.';
-  $('luNext').textContent=last?'Weiter Punkte sammeln':'Weiter zu Stufe '+(S.level+1);
+  const last=S.tier===4, n=TIERS[S.tier].name;
+  $('luT').textContent=last?'Experten-Stufe geschafft!':'„'+n+'“ geschafft!';
+  $('luP').textContent=last?'Stark – solche Terme löst du jetzt sicher. Genau das brauchst du in der Abschlussprüfung. Du kannst weiter Punkte sammeln.'
+    :'Du steigst auf: Weiter geht es mit „'+TIERS[S.tier+1].name+'“ – '+TIERS[S.tier+1].sub+'.';
+  $('luNext').textContent=last?'Weiter Punkte sammeln':'Weiter mit „'+TIERS[S.tier+1].name+'“';
   $('lvlup').classList.remove('hidden');
 }
 
@@ -565,9 +732,9 @@ $('acts').addEventListener('click',e=>{
   else if(a==='solve')finish(false);
 });
 $('lvChip').addEventListener('click',()=>{renderMenu();show('menu');});
-$('levels').addEventListener('click',e=>{const b=e.target.closest('.lv');if(b)start(+b.dataset.l);});
+$('levels').addEventListener('click',e=>{const b=e.target.closest('.lv');if(b&&!b.disabled)start(+b.dataset.l);});
 $('introGo').addEventListener('click',()=>$('intro').classList.add('hidden'));
-$('luNext').addEventListener('click',()=>{$('lvlup').classList.add('hidden');if(S.level<7)S.level++;S.clean=0;next();});
+$('luNext').addEventListener('click',()=>{$('lvlup').classList.add('hidden');if(S.tier<4)S.tier++;S.clean=0;next();});
 $('luStay').addEventListener('click',()=>{$('lvlup').classList.add('hidden');S.clean=0;renderDots();});
 
 function init(){renderMenu();}
