@@ -1,0 +1,5 @@
+/* Ergänzung zu KaTeX: Formeln passend zu den Übungsseiten */
+.katex{font-size:1.08em}
+.fz .katex{font-size:1.1em}
+.f-block{display:block;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.fz{overflow-x:auto;overflow-y:hidden;line-height:1.5!important;padding:5px 0 6px!important}

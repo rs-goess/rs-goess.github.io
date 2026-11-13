@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.9 Selbstlernpfad – Tipps und Lösungen</title>
+<style>
+  :root{--blau:#3b77a8;--dunkel:#1f2f3d;--orange:#e97132;--orange-hell:#fdeee5;--lila:#7a2e8e;--gruen:#2e8b57;
+        --gruen-hell:#e6f4ec;--grau:#f2f2f2;--gelb:#ffd23f;--gelb-hell:#fff6d6;--lcd:#c9d8c0;--rot:#c00000}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;background:var(--blau);color:var(--dunkel);
+       font-size:17px;line-height:1.45}
+  header{color:#fff;padding:12px 16px 4px;max-width:600px;margin:0 auto}
+  header small{opacity:.85;display:block;font-size:13px}
+  header h1{margin:2px 0 6px;font-size:20px}
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+  .chips button{flex:0 0 auto;border:0;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:bold;
+                background:rgba(255,255,255,.22);color:#fff;font-family:inherit;cursor:pointer}
+  .chips button.an{background:var(--gelb);color:#222}
+  main{max-width:600px;margin:0 auto;padding:6px 12px 92px}
+  .karte{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:none}
+  .karte.aktiv{display:block;animation:rein .25s ease}
+  @keyframes rein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .karte h2{margin:0 0 10px;font-size:19px;color:var(--lila)}
+  .aufgabentext{background:var(--grau);border-radius:12px;padding:10px 12px;margin:8px 0 12px;font-size:16px}
+  .f{font-family:"Cambria Math","Times New Roman",serif;font-style:italic;white-space:nowrap}
+  .g{font-style:normal}
+  .w{text-decoration:overline}
+  .bruch{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.85em;
+         line-height:1.05;margin:0 2px}
+  .bruch span:first-child{border-bottom:1.3px solid currentColor;padding:0 2px}
+  .merk{border:2px solid var(--orange);border-radius:12px;padding:10px 12px;background:var(--orange-hell);margin:10px 0}
+  .ok{background:var(--gruen-hell);border-radius:12px;padding:10px 12px;margin:10px 0}
+  .box{background:var(--grau);border-radius:12px;padding:10px 12px;margin:10px 0}
+  .hinweis-klein{font-size:14px;color:#555}
+  b.o{color:var(--orange)}
+  /* Teilaufgaben mit Tipps */
+  .teil{border-top:1px solid #e3e3e3;padding-top:10px;margin-top:12px}
+  .teil h3{margin:0 0 4px;font-size:17px}
+  .frage{font-size:15px;color:#444;margin:0 0 8px}
+  .zeilen{list-style:none;margin:0;padding:0}
+  .zeilen li{background:#f7fbff;border-left:4px solid var(--blau);border-radius:6px;padding:7px 10px;margin:6px 0;
+             animation:rein .25s ease}
+  .zeilen li .f, .tipp .f{white-space:normal}
+  .zeilen li.ende{border-left-color:var(--gruen);background:var(--gruen-hell);font-weight:bold}
+  .tipp{background:var(--gelb-hell);border:1.5px dashed #e0a93c;border-radius:10px;padding:8px 10px;margin:8px 0;
+        font-size:15px;animation:rein .25s ease}
+  .tipp::before{content:"Tipp: ";font-weight:bold;color:#a8740c}
+  .knoepfe{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .knoepfe button{border:0;border-radius:10px;padding:9px 12px;font-size:15px;font-weight:bold;font-family:inherit;
+                  cursor:pointer}
+  .k-tipp{background:var(--gelb);color:#222}
+  .k-zeile{background:var(--blau);color:#fff}
+  .k-alles{background:#e1e6ea;color:var(--dunkel)}
+  .k-alles.warnung{background:var(--orange);color:#fff}
+  .knoepfe button:disabled{opacity:.35;cursor:default}
+  .fertig{color:var(--gruen);font-weight:bold;margin-top:8px;display:none}
+  /* Taschenrechner */
+  .tr{background:#3a3d42;border-radius:22px 22px 12px 12px;padding:12px 14px 14px;max-width:330px;margin:12px auto;
+      box-shadow:inset 0 0 0 2px #50545a}
+  .tr .marke{display:flex;justify-content:space-between;color:#fff;font-weight:bold;font-size:13px;letter-spacing:.5px}
+  .tr .marke i{color:#ff6b6b;font-style:normal;letter-spacing:3px;font-weight:normal}
+  .lcd{background:var(--lcd);border-radius:6px;margin:8px 0 10px;padding:8px 10px;min-height:96px;
+       font-family:"Courier New",Consolas,monospace;font-size:17px;color:#1c2418;white-space:pre;line-height:1.3;overflow:hidden}
+  .lcd .inv{background:#1c2418;color:var(--lcd);padding:0 2px}
+  .tasten{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+  .taste{background:#595d64;color:#fff;border-radius:7px;text-align:center;padding:6px 0;font-size:13px;font-weight:bold}
+  .taste.hl{background:var(--gelb);color:#222;box-shadow:0 0 0 3px #fff,0 0 12px var(--gelb);animation:puls 1.2s infinite}
+  @keyframes puls{50%{transform:scale(1.07)}}
+  nav{position:fixed;left:0;right:0;bottom:0;background:rgba(31,47,61,.96);padding:10px 12px;display:flex;gap:10px;
+      justify-content:center}
+  nav button{flex:1;max-width:280px;border:0;border-radius:12px;padding:13px;font-size:17px;font-weight:bold;
+             font-family:inherit;cursor:pointer}
+  #zurueck{background:#e1e6ea;color:var(--dunkel)} #weiter{background:var(--gelb);color:#222}
+  nav button:disabled{opacity:.4}
+  input[type=range]{width:100%;accent-color:var(--orange)}
+  svg text{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+  .zeile{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .ergebnis{font-size:19px;font-weight:bold}
+  ol.start li{margin:4px 0}
+
+  /* --- Paket: Startseiten-Link und Navigation unter der Karte statt am Bildschirmrand --- */
+  .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
+            font-size:14px;font-weight:bold;text-decoration:none}
+  main{padding-bottom:12px !important}
+  nav{position:static !important;background:transparent !important;max-width:600px;margin:0 auto;padding:0 12px !important}
+  nav button{max-width:none !important;min-height:54px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  #zurueck{background:#fff !important;flex:0 1 38% !important}
+  body{padding-bottom:150px}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="../assets/formeln.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="../assets/formeln.js"></script>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="index.html">‹ Startseite</a>
+  <small>Mathe 10c · 1.9 Flächeninhalt in Abhängigkeit von x</small>
+  <h1>Selbstlernpfad – Tipps und Lösungen</h1>
+  <div class="chips" id="chips"></div>
+</header>
+
+<main id="main">
+
+<!-- ===== Start ===== -->
+<section class="karte" data-chip="Start">
+  <h2>So benutzt du diese Seite</h2>
+  <p>Du arbeitest auf deinem <b>Blatt</b>. Diese Seite hilft dir wie ein Lehrer nebenbei:</p>
+  <ol class="start">
+    <li>Rechne zuerst <b>selbst</b>.</li>
+    <li>Kommst du nicht weiter? Tippe auf <b style="background:var(--gelb);padding:0 5px;border-radius:4px">Tipp</b>.</li>
+    <li>Immer noch nicht? <b style="background:var(--blau);color:#fff;padding:0 5px;border-radius:4px">Nächste Zeile</b> zeigt dir nur den nächsten Rechenschritt.</li>
+    <li>Ganz am Ende kannst du mit <b>Ganze Lösung</b> alles vergleichen.</li>
+  </ol>
+  <div class="merk">Wer nur abschreibt, lernt nichts – und in der Schulaufgabe am 16.11. gibt es keine Tipp-Taste.</div>
+  <p class="hinweis-klein">Oben kannst du direkt zu einer Aufgabe springen. Unten blätterst du weiter.</p>
+</section>
+
+<!-- ===== Aufgabe 1 ===== -->
+<section class="karte" data-chip="A1">
+  <h2>Aufgabe 1: Wiederholung</h2>
+  <div class="aufgabentext">Das Dreieck <span class="f">AB<sub>n</sub>C</span> ist bei <span class="f">A</span> rechtwinklig mit
+    <span class="f">|<span class="w">AC</span>| = 8 <span class="g">cm</span></span>. <span class="f">B<sub>n</sub></span> wandert nach rechts,
+    <span class="f">|<span class="w">AB<sub>n</sub></span>| = x <span class="g">cm</span></span>.</div>
+  <svg viewBox="0 0 300 140" width="100%" role="img" aria-label="Skizze Aufgabe 1">
+    <polygon points="40,120 150,120 40,25" fill="#fdeee5" stroke="#1f2f3d" stroke-width="2"/>
+    <line x1="150" y1="120" x2="270" y2="120" stroke="#999" stroke-dasharray="5 4"/>
+    <path d="M52 120 A12 12 0 0 0 40 108" fill="none" stroke="#1f2f3d"/><circle cx="45" cy="115" r="1.8" fill="#1f2f3d"/>
+    <text x="22" y="134">A</text><text x="145" y="136">B₁</text><text x="28" y="22">C</text>
+    <text x="2" y="78" font-style="normal">8 cm</text><text x="85" y="136">x cm</text>
+  </svg>
+  <div class="teil" data-teil></div>
+  <div class="teil" data-teil></div>
+</section>
+
+<!-- ===== Aufgabe 2 ===== -->
+<section class="karte" data-chip="A2">
+  <h2>Aufgabe 2: Beide Seiten hängen von x ab</h2>
+  <div class="aufgabentext"><span class="f">|<span class="w">AB</span>| = 12 <span class="g">cm</span></span>.
+    <span class="f">|<span class="w">AB<sub>n</sub></span>| = (12 − 2x) <span class="g">cm</span></span> und
+    <span class="f">|<span class="w">AC<sub>n</sub></span>| = x <span class="g">cm</span></span>, rechter Winkel bei <span class="f">A</span>.</div>
+  <svg viewBox="0 0 300 140" width="100%" role="img" aria-label="Skizze Aufgabe 2">
+    <polygon points="40,120 200,120 40,55" fill="#fdeee5" stroke="#1f2f3d" stroke-width="2"/>
+    <line x1="200" y1="120" x2="270" y2="120" stroke="#999" stroke-dasharray="5 4"/>
+    <path d="M52 120 A12 12 0 0 0 40 108" fill="none" stroke="#1f2f3d"/><circle cx="45" cy="115" r="1.8" fill="#1f2f3d"/>
+    <text x="22" y="134">A</text><text x="192" y="136">Bₙ</text><text x="264" y="136">B</text><text x="26" y="50">Cₙ</text>
+    <text x="4" y="92">x cm</text><text x="80" y="136">(12 − 2x) cm</text>
+  </svg>
+  <div class="teil" data-teil></div>
+  <div class="teil" data-teil></div>
+  <div class="teil" data-teil></div>
+</section>
+
+<!-- ===== Entdecken ===== -->
+<section class="karte" data-chip="Entdecken">
+  <h2>Entdecke: Wann ist die Fläche am größten?</h2>
+  <p>Das ist das Dreieck aus Aufgabe 2. <b>Schieb den Regler</b> und beobachte die Fläche.</p>
+  <svg id="dreieck" viewBox="0 0 320 170" width="100%" role="img" aria-label="Dreieck"></svg>
+  <input type="range" id="regler" min="0.2" max="5.8" step="0.2" value="1">
+  <div class="zeile"><span class="f" style="font-size:20px">x = <span id="xwert"></span></span>
+    <span class="ergebnis">A = <span id="awert"></span> cm²</span></div>
+  <svg id="graph" viewBox="0 0 320 170" width="100%" role="img" aria-label="Flächeninhalt"></svg>
+  <div class="box">Wird <span class="f">x</span> größer, wird die eine Seite <b>länger</b> und die andere <b>kürzer</b>.
+    Die Fläche wird deshalb <b>erst größer und dann wieder kleiner</b>.</div>
+</section>
+
+<!-- ===== Was macht der TR ===== -->
+<section class="karte" data-chip="TR">
+  <h2>Was macht der Taschenrechner?</h2>
+  <p>Irgendwo zwischen „größer werden“ und „kleiner werden“ liegt die Stelle mit dem <b>größten Wert</b>.
+     Diese Stelle zu finden, ist mit Ausprobieren mühsam.</p>
+  <div class="merk">
+    <p style="margin:0">In <span class="f">A(x) = −x² + 6x</span> steht ein <span class="f">x²</span>. Für solche Terme hat
+      der Taschenrechner ein eigenes Programm: <b>Polynom-Gleichung, Grad 2</b>.</p>
+    <p style="margin:8px 0 0">Er sagt dir dann, für welches <span class="f">x</span> der Wert am größten ist
+      (<b>x-Wert Maximum</b>) und wie groß er dann ist (<b>y-Wert Maximum</b>).</p>
+  </div>
+  <p class="hinweis-klein">Die Kurve, die du eben gesehen hast, heißt <b>Parabel</b>. Warum das so funktioniert, lernt ihr in den nächsten Stunden genauer – heute reicht es, wenn du den Taschenrechner bedienen kannst.</p>
+  <p>Auf den nächsten Seiten rechnen wir das <b>Beispiel vom Blatt (Seite 2)</b> zusammen am Taschenrechner. Nimm deinen TR in die Hand!</p>
+</section>
+
+<!-- ===== TR-Schritte ===== -->
+<section class="karte" data-chip="TR-Beispiel">
+  <h2>Schritt 1: Term vorbereiten</h2>
+  <p>Schreib den Term so, dass vor <span class="f">x²</span>, vor <span class="f">x</span> und am Ende eine Zahl steht:</p>
+  <p class="box f" style="text-align:center;font-size:20px">A(x) = <b class="o">−1</b>·x² + <b class="o">6</b>·x + <b class="o">0</b></p>
+  <div class="ok">Du brauchst: <span class="f">a = −1</span>, &nbsp;<span class="f">b = 6</span>, &nbsp;<span class="f">c = 0</span></div>
+  <p class="hinweis-klein">Fürs Minus gibt es auf dem Taschenrechner die Taste <b>(−)</b>.</p>
+</section>
+
+<section class="karte">
+  <h2>Schritt 2: MENU drücken</h2>
+  <div class="tr"><div class="marke">CASIO <i>CLASSWIZ</i></div><div class="lcd">
+
+</div>
+    <div class="tasten"><div class="taste">SHIFT</div><div class="taste">ALPHA</div><div class="taste hl">MENU</div><div class="taste">ON</div></div></div>
+  <p>Drücke die Taste <b>MENU</b> (oben rechts).</p>
+</section>
+
+<section class="karte">
+  <h2>Schritt 3: A: Gleichung/Funkt</h2>
+  <div class="tr"><div class="marke">CASIO <i>CLASSWIZ</i></div><div class="lcd"> ▫   ▫   ▫   ▫
+ ▫  <span class="inv">x=0</span>  ▫   ▫
+A:Gleichung/Funkt</div>
+    <div class="tasten"><div class="taste">◀</div><div class="taste hl">▶ ▼</div><div class="taste">x</div><div class="taste hl">=</div></div></div>
+  <p>Mit den Pfeiltasten das Symbol <b>A: Gleichung/Funkt</b> auswählen und mit <b>=</b> bestätigen.</p>
+</section>
+
+<section class="karte">
+  <h2>Schritt 4: Polynom-Gleichung</h2>
+  <div class="tr"><div class="marke">CASIO <i>CLASSWIZ</i></div><div class="lcd">1:Gleichungssyst.
+<span class="inv">2:Polynom-Gleich.</span></div>
+    <div class="tasten"><div class="taste">1</div><div class="taste hl">2</div><div class="taste">3</div><div class="taste">AC</div></div></div>
+  <p>Drücke die <b>2</b>.</p>
+</section>
+
+<section class="karte">
+  <h2>Schritt 5: Grad 2</h2>
+  <div class="tr"><div class="marke">CASIO <i>CLASSWIZ</i></div><div class="lcd">Polynom-Gleich.
+Grad?
+
+2~4 wählen</div>
+    <div class="tasten"><div class="taste">1</div><div class="taste hl">2</div><div class="taste">3</div><div class="taste">4</div></div></div>
+  <p>Im Term steht <span class="f">x²</span> – also <b>Grad 2</b>. Drücke die <b>2</b>.</p>
+</section>
+
+<section class="karte">
+  <h2>Schritt 6: a, b und c eingeben</h2>
+  <div class="tr"><div class="marke">CASIO <i>CLASSWIZ</i></div><div class="lcd">ax²+bx+c
+<span class="inv">-1</span>x²+  6x +  0</div>
+    <div class="tasten"><div class="taste hl">(−)</div><div class="taste hl">1</div><div class="taste hl">6</div><div class="taste hl">=</div></div></div>
+  <p>Tippe <b>(−) 1 =</b>, dann <b>6 =</b>, dann <b>0 =</b>.</p>
+  <p class="hinweis-klein">Vertippt? Mit den Pfeiltasten zurück auf das Feld gehen und neu eingeben.</p>
+</section>
+
+<section class="karte">
+  <h2>Schritt 7: Mit = weiterblättern</h2>
+  <div class="tr"><div class="marke">CASIO <i>CLASSWIZ</i></div><div class="lcd" id="ergebnisLCD"></div>
+    <div class="tasten"><div class="taste">◀</div><div class="taste">▲</div><div class="taste">▼</div>
+      <div class="taste hl" id="gleichTaste" role="button" tabindex="0">=</div></div></div>
+  <p><b>Tippe hier auf die gelbe =‑Taste</b> – und drück auf deinem TR mit:</p>
+  <ol id="liste" class="hinweis-klein" style="margin:4px 0 0 18px;padding:0"></ol>
+</section>
+
+<section class="karte">
+  <h2>Schritt 8: Prüfen und Antwort</h2>
+  <div class="box">Ist der x‑Wert erlaubt (Aufgabe 2c: <span class="f">0 &lt; x &lt; 6</span>)? &nbsp;<span class="f">x = 3</span> ✓</div>
+  <div class="ok" style="font-size:19px"><span class="f">A<sub>max</sub> = 9 <span class="g">cm²</span></span> für <span class="f">x = 3</span></div>
+  <p>Probe: <span class="f">|<span class="w">AB<sub>0</sub></span>| = 12 − 2·3 = 6 <span class="g">cm</span></span>,
+     <span class="f">|<span class="w">AC<sub>0</sub></span>| = 3 <span class="g">cm</span></span>,
+     <span class="f"><span class="bruch"><span>1</span><span>2</span></span>·6·3 = 9</span> ✓</p>
+  <p class="hinweis-klein">Die Zahlen <span class="f">x₁ = 6</span> und <span class="f">x₂ = 0</span> sind genau die Grenzen des erlaubten Bereichs – dort ist die Fläche 0.</p>
+  <p><b>Jetzt du:</b> Weiter mit Aufgabe 3 auf deinem Blatt!</p>
+</section>
+
+<!-- ===== Aufgabe 3 ===== -->
+<section class="karte" data-chip="A3">
+  <h2>Aufgabe 3: Jetzt du</h2>
+  <div class="aufgabentext">Rechter Winkel bei <span class="f">A</span>,
+    <span class="f">|<span class="w">AB<sub>n</sub></span>| = (10 − 2x) <span class="g">cm</span></span>,
+    <span class="f">|<span class="w">AC<sub>n</sub></span>| = 2x <span class="g">cm</span></span>.</div>
+  <div class="teil" data-teil></div>
+  <div class="teil" data-teil></div>
+  <div class="teil" data-teil></div>
+</section>
+
+<!-- ===== Aufgabe 4 ===== -->
+<section class="karte" data-chip="A4">
+  <h2>Aufgabe 4: Kürzeste Hypotenuse</h2>
+  <div class="aufgabentext">Dreieck aus Aufgabe 2: <span class="f">|<span class="w">AB<sub>n</sub></span>| = (12 − 2x) <span class="g">cm</span></span>,
+    <span class="f">|<span class="w">AC<sub>n</sub></span>| = x <span class="g">cm</span></span>. Runde auf zwei Nachkommastellen.</div>
+  <div class="teil" data-teil></div>
+  <div class="teil" data-teil></div>
+</section>
+
+<!-- ===== Aufgabe 5 ===== -->
+<section class="karte" data-chip="A5">
+  <h2>Aufgabe 5 (für Füchse): Mit Trigonometrie</h2>
+  <div class="aufgabentext">Jetzt ist <span class="f">∢B<sub>n</sub>AC<sub>n</sub> = 40°</span> (nicht mehr 90°). Die Längen bleiben:
+    <span class="f">|<span class="w">AB<sub>n</sub></span>| = (12 − 2x) <span class="g">cm</span></span>,
+    <span class="f">|<span class="w">AC<sub>n</sub></span>| = x <span class="g">cm</span></span>.</div>
+  <div class="teil" data-teil></div>
+  <div class="teil" data-teil></div>
+</section>
+
+<section class="karte" data-chip="Fertig">
+  <h2>Geschafft!</h2>
+  <div class="ok">Super – du hast heute selbstständig gelernt, wie man den <b>größten (oder kleinsten) Wert</b> mit dem Taschenrechner bestimmt.</div>
+  <p>Merke dir die Reihenfolge:</p>
+  <div class="merk">
+    <p style="margin:0"><b class="o">1</b> Term aufstellen (erst mit einer Zahl, dann mit x)</p>
+    <p style="margin:6px 0 0"><b class="o">2</b> Erlaubten Bereich für x angeben</p>
+    <p style="margin:6px 0 0"><b class="o">3</b> a, b, c ablesen → TR: MENU → A → 2 → Grad 2</p>
+    <p style="margin:6px 0 0"><b class="o">4</b> Mit = blättern bis x‑Wert und y‑Wert Maximum (bzw. Minimum)</p>
+    <p style="margin:6px 0 0"><b class="o">5</b> x prüfen, Antwort mit Einheit (bei Wurzel: am Ende Wurzel ziehen)</p>
+  </div>
+  <p>Was du nicht geschafft hast, machst du bis Dienstag als Hausaufgabe fertig.</p>
+</section>
+
+</main>
+
+<nav><button id="zurueck">◀ Zurück</button><button id="weiter">Weiter ▶</button></nav>
+
+<script>
+(function(){
+  // ---------- Hilfen für Formeln
+  function B(z,n){return '<span class="bruch"><span>'+z+'</span><span>'+n+'</span></span>';}
+  function F(t){return '<span class="f">'+t+'</span>';}
+  function L(t){return '|<span class="w">'+t+'</span>|';}
+  var cm='<span class="g"> cm</span>', cm2='<span class="g"> cm²</span>';
+  function W(t){return '√<span class="w">'+t+'</span>';}
+
+  // ---------- Inhalte der Teilaufgaben: je Schritt optional ein Tipp und die nächste Rechenzeile
+  var TEILE=[
+    // Aufgabe 1 a
+    {titel:'a) Mit einer Zahl: x = 6', frage:'Berechne '+F(L('B<sub>1</sub>C'))+' und den Flächeninhalt '+F('A<sub>1</sub>')+'.',
+     schritte:[
+      {tipp:'Die gesuchte Seite liegt dem rechten Winkel gegenüber – das ist die Hypotenuse. Welcher Satz passt?',
+       zeile:'Satz des Pythagoras: '+F(L('B<sub>1</sub>C')+'² = 8² + 6²')},
+      {tipp:'Rechne erst die Quadrate aus und addiere.', zeile:F(L('B<sub>1</sub>C')+'² = 64 + 36 = 100')},
+      {tipp:'Welche Zahl mal sich selbst ergibt 100?', zeile:F(L('B<sub>1</sub>C')+' = 10'+cm)},
+      {tipp:'Im rechtwinkligen Dreieck: Fläche = '+B(1,2)+' · Kathete · Kathete. Die Katheten sind 6 cm und 8 cm.',
+       zeile:F('A<sub>1</sub> = '+B(1,2)+' · 6 · 8'+cm2)},
+      {zeile:F('A<sub>1</sub> = 24'+cm2), ende:true}]},
+    // Aufgabe 1 b
+    {titel:'b) Dieselbe Rechnung mit x', frage:'Stelle '+F(L('B<sub>n</sub>C')+'(x)')+' und '+F('A(x)')+' auf und mache die Probe mit x = 6.',
+     schritte:[
+      {tipp:'Schreib genau die Rechnung aus a) noch einmal – nur steht jetzt statt 6 ein x.',
+       zeile:F(L('B<sub>n</sub>C')+'² = 8² + x²')},
+      {zeile:F(L('B<sub>n</sub>C')+'² = 64 + x²')},
+      {tipp:'64 + x² kann man nicht weiter zusammenfassen. Also bleibt die Wurzel stehen.',
+       zeile:F(L('B<sub>n</sub>C')+'(x) = '+W('64 + x²')+cm)},
+      {tipp:'Fläche wie in a): '+B(1,2)+' · Kathete · Kathete – mit x statt 6.',
+       zeile:F('A(x) = '+B(1,2)+' · x · 8'+cm2+' = 4x'+cm2)},
+      {tipp:'Setz x = 6 in deine Terme ein. Kommt dasselbe heraus wie in a)?',
+       zeile:'Probe: '+F(W('64 + 36')+' = '+W('100')+' = 10')+' ✓ und '+F('4 · 6 = 24')+' ✓', ende:true}]},
+    // Aufgabe 2 a
+    {titel:'a) Mit einer Zahl: x = 2', frage:'Berechne '+F(L('AB<sub>1</sub>'))+', '+F(L('AC<sub>1</sub>'))+' und den Flächeninhalt.',
+     schritte:[
+      {tipp:'Setz x = 2 in (12 − 2x) ein. Punkt vor Strich!', zeile:F(L('AB<sub>1</sub>')+' = (12 − 2 · 2)'+cm+' = 8'+cm)},
+      {tipp:'Bei '+F(L('AC<sub>n</sub>')+' = x')+' ist es noch leichter.', zeile:F(L('AC<sub>1</sub>')+' = 2'+cm)},
+      {tipp:'Rechter Winkel bei A: Die beiden Seiten an A sind die Katheten.', zeile:F('A<sub>1</sub> = '+B(1,2)+' · 8 · 2'+cm2+' = 8'+cm2), ende:true}]},
+    // Aufgabe 2 b
+    {titel:'b) Dieselbe Rechnung mit x', frage:'Stelle den Flächeninhalt '+F('A(x)')+' auf.',
+     schritte:[
+      {tipp:'Schreib die Rechnung aus a) – statt 8 jetzt (12 − 2x), statt 2 jetzt x.',
+       zeile:F('A(x) = '+B(1,2)+' · (12 − 2x) · x'+cm2)},
+      {tipp:'Rechne zuerst '+B(1,2)+' · (12 − 2x): Beide Zahlen in der Klammer halbieren.',
+       zeile:F('A(x) = (6 − x) · x'+cm2)},
+      {tipp:'Jetzt beide Teile der Klammer mit x malnehmen.', zeile:F('A(x) = (6x − x²)'+cm2)},
+      {tipp:'Ordne so, dass x² vorne steht.', zeile:F('A(x) = (−x² + 6x)'+cm2)},
+      {tipp:'Probe mit x = 2: Kommt 8 heraus wie in a)?', zeile:'Probe: '+F('−2 · 2 + 6 · 2 = −4 + 12 = 8')+' ✓', ende:true}]},
+    // Aufgabe 2 c
+    {titel:'c) Bedingung für x', frage:'Welche Werte darf x annehmen?',
+     schritte:[
+      {tipp:'Eine Strecke muss länger als 0 cm sein. Schreib das für beide Seiten auf.',
+       zeile:F('12 − 2x &gt; 0')+' und '+F('x &gt; 0')},
+      {tipp:'Löse 12 − 2x &gt; 0 wie eine Gleichung: + 2x auf beiden Seiten, dann durch 2.',
+       zeile:F('12 &gt; 2x')+' → '+F('6 &gt; x')+', also '+F('x &lt; 6')},
+      {zeile:'Also: '+F('0 &lt; x &lt; 6'), ende:true}]},
+    // Aufgabe 3 a
+    {titel:'a) Flächeninhalt aufstellen', frage:'Stelle '+F('A(x)')+' auf.',
+     schritte:[
+      {tipp:'Genau wie in Aufgabe 2b: '+B(1,2)+' · Kathete · Kathete.', zeile:F('A(x) = '+B(1,2)+' · (10 − 2x) · 2x'+cm2)},
+      {tipp:B(1,2)+' · 2x ist ganz leicht: Die Hälfte von 2x ist …?', zeile:F('A(x) = (10 − 2x) · x'+cm2)},
+      {tipp:'Klammer mit x malnehmen und x² nach vorne.', zeile:F('A(x) = (−2x² + 10x)'+cm2), ende:true}]},
+    // Aufgabe 3 b
+    {titel:'b) Bedingung für x', frage:'Welche Werte darf x annehmen?',
+     schritte:[
+      {tipp:'Beide Seiten müssen länger als 0 cm sein.', zeile:F('10 − 2x &gt; 0')+' und '+F('2x &gt; 0')},
+      {zeile:F('x &lt; 5')+' und '+F('x &gt; 0')},
+      {zeile:'Also: '+F('0 &lt; x &lt; 5'), ende:true}]},
+    // Aufgabe 3 c
+    {titel:'c) Größter Flächeninhalt mit dem TR', frage:'Ermittle '+F('A<sub>max</sub>')+' und den zugehörigen Wert von x.',
+     schritte:[
+      {tipp:'Lies a, b und c aus '+F('A(x) = −2x² + 10x')+' ab. Steht hinten keine Zahl, ist c = 0.',
+       zeile:F('a = −2,  b = 10,  c = 0')},
+      {tipp:'MENU → A: Gleichung/Funkt → 2: Polynom-Gleich. → Grad 2 → a, b, c eingeben → mit = blättern (wie im Beispiel).',
+       zeile:'TR: '+F('x₁ = 5,  x₂ = 0')+', x‑Wert Maximum '+F('2,5')+', y‑Wert Maximum '+F('12,5')},
+      {tipp:'Liegt 2,5 im erlaubten Bereich aus b)?', zeile:F('0 &lt; 2,5 &lt; 5')+' ✓'},
+      {zeile:F('A<sub>max</sub> = 12,5'+cm2)+' für '+F('x = 2,5'), ende:true},
+      {tipp:'Willst du es prüfen? Rechne die beiden Katheten für x = 2,5 aus.',
+       zeile:'Probe: '+F(L('AB<sub>0</sub>')+' = 5'+cm)+', '+F(L('AC<sub>0</sub>')+' = 5'+cm)+', '+F(B(1,2)+' · 5 · 5 = 12,5')+' ✓'}]},
+    // Aufgabe 4 a
+    {titel:'a) Term für die Hypotenuse', frage:'Zeige: '+F(L('B<sub>n</sub>C<sub>n</sub>')+'(x) = '+W('5x² − 48x + 144')+cm),
+     schritte:[
+      {tipp:'Die Hypotenuse liegt gegenüber vom rechten Winkel → Pythagoras mit den beiden Katheten.',
+       zeile:F(L('B<sub>n</sub>C<sub>n</sub>')+'² = (12 − 2x)² + x²')},
+      {tipp:'(12 − 2x)² heißt (12 − 2x) · (12 − 2x). Jeder mit jedem: 12·12, 12·(−2x), (−2x)·12, (−2x)·(−2x).',
+       zeile:F('(12 − 2x)² = 144 − 24x − 24x + 4x²')},
+      {tipp:'Fasse die beiden x-Glieder zusammen: −24x − 24x = …?', zeile:F('(12 − 2x)² = 144 − 48x + 4x²')},
+      {tipp:'Jetzt das x² von der zweiten Kathete dazu: 4x² + x² = …?',
+       zeile:F(L('B<sub>n</sub>C<sub>n</sub>')+'² = 5x² − 48x + 144')},
+      {zeile:F(L('B<sub>n</sub>C<sub>n</sub>')+'(x) = '+W('5x² − 48x + 144')+cm), ende:true}]},
+    // Aufgabe 4 b
+    {titel:'b) Kürzeste Hypotenuse mit dem TR', frage:'Ermittle die kürzeste Hypotenuse '+F(L('B<sub>0</sub>C<sub>0</sub>'))+' und den Wert von x.',
+     schritte:[
+      {tipp:'In den TR kommt nur der Term <b>unter der Wurzel</b>.', zeile:F('a = 5,  b = −48,  c = 144')},
+      {tipp:'Diesmal sucht der TR den <b>kleinsten</b> Wert (Minimum). Zeigt er zuerst „Keine reelle Lösung“, ist das hier normal – einfach mit = weiterblättern.',
+       zeile:'TR: x‑Wert Minimum '+F('4,8')+', y‑Wert Minimum '+F('28,8')},
+      {tipp:'Der y‑Wert ist noch das Quadrat der Länge. Was fehlt noch?', zeile:F(L('B<sub>0</sub>C<sub>0</sub>')+' = '+W('28,8')+cm+' ≈ 5,37'+cm)},
+      {tipp:'Liegt 4,8 im erlaubten Bereich 0 &lt; x &lt; 6?',
+       zeile:'Kürzeste Hypotenuse: '+F('≈ 5,37'+cm)+' für '+F('x = 4,8')+' (4,8 liegt in 0 &lt; x &lt; 6 ✓)', ende:true}]},
+    // Aufgabe 5 a
+    {titel:'a) Flächeninhalt mit Sinus', frage:'Zeige: '+F('A(x) = (−x² + 6x) · sin 40°'+cm2),
+     schritte:[
+      {tipp:'Kein rechter Winkel mehr! Fläche mit zwei Seiten und dem Winkel dazwischen: A = '+B(1,2)+' · b · c · sin α.',
+       zeile:F('A(x) = '+B(1,2)+' · (12 − 2x) · x · sin 40°'+cm2)},
+      {tipp:'Wie in Aufgabe 2b: '+B(1,2)+' · (12 − 2x) = (6 − x).', zeile:F('A(x) = (6 − x) · x · sin 40°'+cm2)},
+      {zeile:F('A(x) = (−x² + 6x) · sin 40°'+cm2), ende:true}]},
+    // Aufgabe 5 b
+    {titel:'b) Größter Flächeninhalt', frage:'Ermittle '+F('A<sub>max</sub>')+' und den Wert von x.',
+     schritte:[
+      {tipp:'sin 40° ist nur eine feste Zahl (ungefähr 0,64). Ändert sie, <b>wo</b> der größte Wert liegt?',
+       zeile:'Der größte Wert liegt wieder bei '+F('x = 3')+' (wie im Beispiel).'},
+      {tipp:'Im TR kannst du direkt eingeben: a = −sin(40), b = 6·sin(40), c = 0 – dann gibt es keine Rundungsfehler.',
+       zeile:F('A<sub>max</sub> = 9 · sin 40°'+cm2+' ≈ 5,79'+cm2)},
+      {zeile:F('A<sub>max</sub> ≈ 5,79'+cm2)+' für '+F('x = 3'), ende:true}]}
+  ];
+
+  // ---------- Teilaufgaben aufbauen
+  var platz=[].slice.call(document.querySelectorAll('[data-teil]'));
+  platz.forEach(function(div,idx){
+    var d=TEILE[idx]; if(!d) return;
+    div.innerHTML='<h3>'+d.titel+'</h3><p class="frage">'+d.frage+'</p><ul class="zeilen"></ul><div class="tipp-ort"></div>'+
+      '<div class="knoepfe"><button class="k-tipp">Tipp</button><button class="k-zeile">Nächste Zeile</button>'+
+      '<button class="k-alles">Ganze Lösung</button></div><div class="fertig">✓ Fertig – vergleiche mit deinem Blatt.</div>';
+    var ul=div.querySelector('.zeilen'), ort=div.querySelector('.tipp-ort');
+    var bt=div.querySelector('.k-tipp'), bz=div.querySelector('.k-zeile'), ba=div.querySelector('.k-alles'), fe=div.querySelector('.fertig');
+    var n=0, warn=false;
+    function status(){
+      var naechster=d.schritte[n];
+      bt.disabled=!naechster||!naechster.tipp||ort.innerHTML!=='';
+      bz.disabled=!naechster; ba.disabled=!naechster;
+      fe.style.display=naechster?'none':'block';
+      if(!naechster){ba.classList.remove('warnung');ba.textContent='Ganze Lösung';}
+    }
+    function zeige(){
+      var s=d.schritte[n]; if(!s) return;
+      var li=document.createElement('li'); li.innerHTML=s.zeile; if(s.ende) li.className='ende'; ul.appendChild(li);
+      n++; ort.innerHTML='';
+    }
+    bt.onclick=function(){var s=d.schritte[n]; if(s&&s.tipp){ort.innerHTML='<div class="tipp">'+s.tipp+'</div>';} status();};
+    bz.onclick=function(){zeige(); warn=false; ba.classList.remove('warnung'); ba.textContent='Ganze Lösung'; status();};
+    ba.onclick=function(){
+      if(!warn){warn=true; ba.classList.add('warnung'); ba.textContent='Wirklich? Erst selbst probieren! (nochmal tippen)'; return;}
+      while(n<d.schritte.length) zeige(); warn=false; status();
+    };
+    status();
+  });
+
+  // ---------- Seitennavigation + Sprungleiste
+  var karten=[].slice.call(document.querySelectorAll('.karte')), i=0;
+  var chips=document.getElementById('chips'), chipKarte=[];
+  karten.forEach(function(k,j){
+    if(k.dataset.chip){var b=document.createElement('button'); b.textContent=k.dataset.chip;
+      b.onclick=function(){zeige(j);}; chips.appendChild(b); chipKarte.push([b,j]);}
+  });
+  function zeige(n){
+    i=Math.max(0,Math.min(karten.length-1,n));
+    karten.forEach(function(k,j){k.classList.toggle('aktiv',j===i);});
+    var aktiv=null; chipKarte.forEach(function(c){if(c[1]<=i) aktiv=c[0];});
+    chipKarte.forEach(function(c){c[0].classList.toggle('an',c[0]===aktiv);});
+    if(aktiv) aktiv.scrollIntoView({inline:'center',block:'nearest'});
+    document.getElementById('zurueck').disabled=(i===0);
+    document.getElementById('weiter').textContent=(i===karten.length-1)?'Zum Start ↺':'Weiter ▶';
+    window.scrollTo(0,0);
+  }
+  document.getElementById('weiter').onclick=function(){zeige(i===karten.length-1?0:i+1);};
+  document.getElementById('zurueck').onclick=function(){zeige(i-1);};
+  zeige(0);
+
+  // ---------- Schieberegler (Entdecken)
+  function komma(z){return String(Math.round(z*100)/100).replace('.',',');}
+  var regler=document.getElementById('regler'), dr=document.getElementById('dreieck'), gr=document.getElementById('graph');
+  var NS='http://www.w3.org/2000/svg';
+  function el(svg,tag,att,txt){var e=document.createElementNS(NS,tag);for(var a in att)e.setAttribute(a,att[a]);if(txt)e.textContent=txt;svg.appendChild(e);return e;}
+  function zeichne(){
+    var x=parseFloat(regler.value), b=12-2*x, h=x, A=-x*x+6*x;
+    document.getElementById('xwert').textContent=komma(x);
+    document.getElementById('awert').textContent=komma(A);
+    dr.innerHTML=''; var k=22, ax=34, ay=150;
+    el(dr,'line',{x1:ax,y1:ay,x2:ax+12*k,y2:ay,stroke:'#bbb','stroke-dasharray':'5 4'});
+    el(dr,'polygon',{points:ax+','+ay+' '+(ax+b*k)+','+ay+' '+ax+','+(ay-h*k),fill:'#fdeee5',stroke:'#1f2f3d','stroke-width':2});
+    el(dr,'path',{d:'M'+(ax+12)+' '+ay+' A12 12 0 0 0 '+ax+' '+(ay-12),fill:'none',stroke:'#1f2f3d'});
+    el(dr,'circle',{cx:ax+5,cy:ay-5,r:1.8,fill:'#1f2f3d'});
+    el(dr,'text',{x:ax-14,y:ay+14},'A'); el(dr,'text',{x:ax+b*k-4,y:ay+16},'Bₙ');
+    el(dr,'text',{x:ax-24,y:ay-h*k+4},'Cₙ'); el(dr,'text',{x:ax+12*k-4,y:ay+16},'B');
+    gr.innerHTML=''; var gx=34, gy=150, sx=45, sy=14;
+    el(gr,'line',{x1:gx,y1:gy,x2:gx+6.4*sx,y2:gy,stroke:'#1f2f3d'});
+    el(gr,'line',{x1:gx,y1:gy,x2:gx,y2:gy-10*sy,stroke:'#1f2f3d'});
+    for(var t=1;t<=6;t++){el(gr,'text',{x:gx+t*sx-4,y:gy+15,'font-size':12},String(t));}
+    [3,6,9].forEach(function(t){el(gr,'text',{x:gx-18,y:gy-t*sy+4,'font-size':12},String(t));});
+    var d='';for(var u=0;u<=60;u++){var xx=u/10;d+=(u?'L':'M')+(gx+xx*sx)+' '+(gy-(-xx*xx+6*xx)*sy);}
+    el(gr,'path',{d:d,fill:'none',stroke:'#e97132','stroke-width':3});
+    el(gr,'text',{x:gx+6.2*sx,y:gy-6},'x'); el(gr,'text',{x:gx+6,y:12},'Fläche A(x) in cm²');
+    el(gr,'circle',{cx:gx+x*sx,cy:gy-A*sy,r:7,fill:'#3b77a8',stroke:'#fff','stroke-width':2});
+    if(Math.abs(x-3)<0.01){el(gr,'text',{x:gx+3*sx+10,y:gy-9*sy+4,fill:'#2e8b57','font-style':'normal','font-weight':'bold'},'größter Wert!');}
+  }
+  regler.addEventListener('input',zeichne); zeichne();
+
+  // ---------- Ergebnis-Bildschirme im Beispiel
+  var bilder=['x₁=\n\n               6','x₂=\n\n               0','x-Wert Maximum\n\n               3','y-Wert Maximum\n\n               9'];
+  var texte=['erste Nullstelle: x₁ = 6','zweite Nullstelle: x₂ = 0','x-Wert Maximum: 3 → für x = 3 ist die Fläche am größten','y-Wert Maximum: 9 → die größte Fläche ist 9 cm²'];
+  var b=-1, lcd=document.getElementById('ergebnisLCD'), liste=document.getElementById('liste');
+  lcd.textContent='ax²+bx+c\n-1x²+  6x +  0\n\n          (mit = lösen)';
+  function blaettern(){ if(b>=bilder.length-1) return; b++; lcd.textContent=bilder[b];
+    var li=document.createElement('li'); li.textContent=texte[b]; liste.appendChild(li); }
+  var gt=document.getElementById('gleichTaste');
+  gt.addEventListener('click',blaettern);
+  gt.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();blaettern();}});
+})();
+</script>
+
+<script>window.Formel && window.Formel.auto();</script>
+</body>
+</html>

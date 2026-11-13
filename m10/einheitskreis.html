@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3b77a8">
+<title>Einheitskreis – Mathe 10c</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="../assets/stil.css">
+<link rel="stylesheet" href="../assets/formeln.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="../assets/formeln.js"></script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233b77a8'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23fff' stroke-width='5'/%3E%3Cpath d='M32 32 L46 18' stroke='%23ffd23f' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* ---------- Kreis ---------- */
+.kreisbox{max-width:380px;margin:4px auto 0;position:relative}
+.kreisbox svg{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+svg text{font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif}
+.aufgabe{font-size:18px;line-height:1.45;color:var(--dunkel);margin:2px 0 4px;min-height:52px}
+.aufgabe .katex{font-size:1.1em}
+.leiste{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--text2);margin-bottom:6px}
+.leiste b{color:var(--dunkel)}
+.balken{flex:1;height:7px;background:#e8edf1;border-radius:9px;overflow:hidden;margin:0 6px}
+.balken i{display:block;height:100%;width:0;background:var(--gelb);transition:width .3s}
+.anzeige{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;font-size:16px;margin:4px 0 8px;min-height:30px}
+.anzeige .s{color:var(--sin)} .anzeige .c{color:var(--cos)}
+.reihe{display:flex;gap:8px;margin-top:8px}
+.reihe .knopf{flex:1;padding:12px 8px}
+.reihe .knopf.klein{flex:0 0 64px}
+.schalter{display:flex;align-items:center;justify-content:center;gap:8px;font-size:14.5px;color:var(--text2);margin-top:10px}
+.schalter input{width:20px;height:20px;accent-color:var(--blau)}
+.rueck{border-radius:12px;padding:10px 12px;margin-top:10px;font-size:16px;line-height:1.45}
+.rueck.ok{background:var(--gruen-hell);border:2px solid var(--gruen)}
+.rueck.no{background:var(--rot-hell);border:2px solid var(--rot)}
+.rueck b.t{display:block;font-size:17px;margin-bottom:2px}
+.hilfe{font-size:13.5px;color:#6b7780;text-align:center;margin:6px 0 0}
+.ergebnis{font-size:44px;font-weight:bold;text-align:center;color:var(--lila);margin:4px 0}
+.ergebnis small{display:block;font-size:15px;font-weight:normal;color:var(--text2)}
+.liste{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
+.liste li{border:2px solid var(--linie);border-radius:12px;padding:8px 10px;font-size:15px;line-height:1.4}
+.liste li.ok{border-color:#bfe3cc} .liste li.no{border-color:#f0c2bc;background:#fff8f7}
+.rekord{font-size:13.5px;color:var(--text2);margin-left:6px}
+
+/* ---------- Spickzettel ---------- */
+details.spick{margin-top:2px}
+details.spick summary{cursor:pointer;font-weight:bold;color:var(--lila);font-size:17px;padding:4px 0;list-style:none}
+details.spick summary::-webkit-details-marker{display:none}
+details.spick summary::before{content:'▸ ';display:inline-block;transition:transform .2s}
+details.spick[open] summary::before{transform:rotate(90deg)}
+.spick ol{margin:8px 0 6px;padding-left:22px;font-size:15.5px}
+.spick ol li{margin-bottom:6px}
+.wt{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0 4px;table-layout:fixed}
+.wt th,.wt td{border:1px solid var(--linie);padding:5px 1px;text-align:center}
+.wt th{background:var(--grau);font-weight:normal}
+.wt .katex{font-size:1em}
+.tabwrap{overflow-x:auto}
+
+/* ---------- Antwort-Jagd ---------- */
+#buehne{position:fixed;inset:0;z-index:20;background:linear-gradient(#2c5f88,#3b77a8 45%,#5d98c6);display:flex;flex-direction:column;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;overflow:hidden}
+#hud{display:flex;align-items:center;gap:8px;padding:10px 12px 6px;padding-top:max(10px,env(safe-area-inset-top));color:#fff}
+#hud .herz{display:flex;gap:2px}
+#hud .herz svg{width:24px;height:24px;fill:#ff6b6b;stroke:#fff;stroke-width:1.4;transition:transform .25s,fill .25s}
+#hud .herz svg.weg{fill:rgba(255,255,255,.25);transform:scale(.8)}
+#hud .pkt{margin-left:auto;text-align:right;line-height:1.05}
+#hud .pkt b{font-size:22px;display:block}
+#hud .pkt span{font-size:12.5px;opacity:.9}
+#hud button{background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:10px;width:40px;height:40px;font-size:18px;font-weight:bold}
+#frage{margin:2px 12px 0;background:#fff;border-radius:16px;padding:10px 14px;box-shadow:0 4px 0 rgba(0,0,0,.15);font-size:18px;line-height:1.4;
+  text-align:center;min-height:62px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:3}
+#frage .katex{font-size:1.12em}
+#frage.ok{background:#d6f5e0} #frage.no{background:#ffe0dc}
+#feld{position:relative;flex:1;overflow:hidden;margin-top:4px}
+#boden{position:absolute;left:0;right:0;bottom:0;height:10px;background:repeating-linear-gradient(90deg,#ffd23f 0 18px,#1f2f3d 18px 36px);opacity:.85}
+.kachel{position:absolute;top:0;left:0;background:#fff;border:3px solid #1f2f3d;border-radius:14px;padding:8px 4px;text-align:center;
+  font-size:19px;font-weight:bold;box-shadow:0 5px 0 rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;min-height:58px;
+  will-change:transform;cursor:pointer;line-height:1.2;color:#1f2f3d}
+.kachel .katex{font-size:1.05em;font-weight:normal}
+.kachel.f1{background:#fff6d6} .kachel.f2{background:#f6ecf9} .kachel.f3{background:#e3f0fa} .kachel.f4{background:#e3f4ea}
+.kachel.treffer{animation:platz .35s forwards;pointer-events:none}
+.kachel.falsch{background:#ffd3cf!important;border-color:var(--rot);animation:wackel .35s}
+.kachel.richtig{background:#c9f3d6!important;border-color:var(--gruen)}
+@keyframes platz{to{opacity:0;transform:var(--pos) scale(1.35)}}
+@keyframes wackel{0%,100%{margin-left:0}25%{margin-left:-7px}75%{margin-left:7px}}
+.knall{position:absolute;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;border:4px solid #ffd23f;pointer-events:none;animation:knall .4s forwards;z-index:4}
+@keyframes knall{from{transform:scale(.2);opacity:1}to{transform:scale(1.3);opacity:0}}
+.plus{position:absolute;color:#ffe680;font-weight:bold;font-size:24px;pointer-events:none;animation:hoch .8s forwards;z-index:4;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+@keyframes hoch{to{transform:translateY(-50px);opacity:0}}
+#erkl{position:absolute;left:12px;right:12px;bottom:18px;background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 6px 20px rgba(0,0,0,.3);
+  font-size:16px;line-height:1.45;z-index:6;max-height:70%;overflow:auto}
+#erkl b.t{display:block;color:var(--rot);font-size:18px;margin-bottom:4px}
+#stufeToast{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);background:var(--gelb);color:#2b2200;font-weight:bold;font-size:22px;
+  padding:10px 18px;border-radius:14px;box-shadow:0 5px 0 rgba(0,0,0,.2);z-index:5;opacity:0;pointer-events:none;white-space:nowrap}
+#stufeToast.go{animation:toast 1.4s}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,-30%)}15%,75%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-70%)}}
+.overlay{position:absolute;inset:0;background:rgba(20,35,50,.55);display:flex;align-items:center;justify-content:center;z-index:8;padding:16px}
+.overlay .karte{max-width:400px;width:100%;text-align:center}
+</style>
+</head>
+<body>
+<header class="kopf">
+  <button class="zurueck" id="zurueck" type="button">‹ Übersicht</button>
+  <small id="kopfKlein">Mathe 10c · Kapitel 1 Trigonometrie</small>
+  <h1 id="kopfGross">Einheitskreis</h1>
+</header>
+
+<main>
+<!-- ================= Menü ================= -->
+<div id="sMenu">
+  <section class="karte">
+    <h2>Was möchtest du üben?</h2>
+    <div class="wahl">
+      <button class="gross k-blau" type="button" data-start="dreh">
+        <span class="bild"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="none" stroke="#fff" stroke-width="3"/><path d="M20 20L31 12" stroke="#ffd23f" stroke-width="3.4" stroke-linecap="round"/><path d="M27 20A7 7 0 0 0 25.7 15.9" fill="none" stroke="#fff" stroke-width="2"/></svg></span>
+        <span><b>Winkel drehen</b><small>Dreh den Zeiger auf den richtigen Winkel</small><span class="rekord" id="rDreh"></span></span><span class="pf">›</span>
+      </button>
+      <button class="gross k-lila" type="button" data-start="finden">
+        <span class="bild"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="none" stroke="#fff" stroke-width="3"/><path d="M4 13h32" stroke="#ffd23f" stroke-width="2" stroke-dasharray="3 3"/><circle cx="9.3" cy="13" r="3.6" fill="#ffd23f"/><circle cx="30.7" cy="13" r="3.6" fill="#ffd23f"/></svg></span>
+        <span><b>Punkte finden</b><small>Tippe alle passenden Punkte auf dem Kreis an</small><span class="rekord" id="rFinden"></span></span><span class="pf">›</span>
+      </button>
+      <button class="gross k-orange" type="button" data-start="jagd">
+        <span class="bild"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="11" fill="none" stroke="#fff" stroke-width="3"/><path d="M20 3v9M20 28v9M3 20h9M28 20h9" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span>
+        <span><b>Antwort-Jagd</b><small>Schieß die richtige Antwort ab, bevor sie unten ankommt</small><span class="rekord" id="rJagd"></span></span><span class="pf">›</span>
+      </button>
+    </div>
+    <p class="hinweis-klein" style="margin-top:12px">Alles ohne Taschenrechner – genau wie im Teil A der Schulaufgabe.</p>
+  </section>
+
+  <section class="karte">
+    <details class="spick" id="spick">
+      <summary>Spickzettel Einheitskreis</summary>
+      <div id="spickInhalt"></div>
+    </details>
+  </section>
+</div>
+
+<!-- ================= Winkel drehen ================= -->
+<section class="karte" id="sDreh" hidden>
+  <div class="leiste"><span>Aufgabe <b id="dNr">1</b> von <span id="dVon">10</span></span><span class="balken"><i id="dBalken"></i></span><span><b id="dPkt">0</b> richtig</span></div>
+  <div class="aufgabe" id="dAufgabe"></div>
+  <div class="kreisbox" id="dKreis"></div>
+  <div class="anzeige" id="dAnzeige"></div>
+  <div class="reihe" id="dKnoepfe">
+    <button class="knopf grau klein" type="button" id="dMinus" aria-label="1 Grad weniger">−1°</button>
+    <button class="knopf gelb" type="button" id="dPruefen">Prüfen</button>
+    <button class="knopf grau klein" type="button" id="dPlus" aria-label="1 Grad mehr">+1°</button>
+  </div>
+  <label class="schalter"><input type="checkbox" id="dWerte" checked> sin- und cos-Werte anzeigen</label>
+  <div id="dRueck" class="rueck" hidden></div>
+  <div class="reihe" id="dWeiterReihe" hidden><button class="knopf voll" type="button" id="dWeiter">Weiter ›</button></div>
+  <p class="hilfe" id="dHilfe">Zieh den orangen Punkt oder tippe auf den Kreis. Feinjustieren mit −1° / +1°.</p>
+</section>
+
+<!-- ================= Punkte finden ================= -->
+<section class="karte" id="sFinden" hidden>
+  <div class="leiste"><span>Aufgabe <b id="fNr">1</b> von <span id="fVon">8</span></span><span class="balken"><i id="fBalken"></i></span><span><b id="fPkt">0</b> richtig</span></div>
+  <div class="aufgabe" id="fAufgabe"></div>
+  <div class="kreisbox" id="fKreis"></div>
+  <div class="reihe" id="fKnoepfe">
+    <button class="knopf grau" type="button" id="fTipp">Tipp</button>
+    <button class="knopf grau" type="button" id="fLeer">Löschen</button>
+    <button class="knopf gelb" type="button" id="fPruefen">Prüfen</button>
+  </div>
+  <div id="fRueck" class="rueck" hidden></div>
+  <div class="reihe" id="fWeiterReihe" hidden><button class="knopf voll" type="button" id="fWeiter">Weiter ›</button></div>
+  <p class="hilfe" id="fHilfe">Tippe auf den Kreis, um einen Punkt zu setzen. Tippst du einen Punkt nochmal an, verschwindet er.</p>
+</section>
+
+<!-- ================= Auswertung ================= -->
+<section class="karte" id="sEnde" hidden>
+  <h2 id="eTitel">Geschafft!</h2>
+  <div class="ergebnis" id="eErgebnis"></div>
+  <p class="dunkel" id="eKommentar" style="text-align:center"></p>
+  <div class="reihe"><button class="knopf gelb" type="button" id="eNochmal">Nochmal</button><button class="knopf grau" type="button" id="eMenue">Zum Menü</button></div>
+  <h2 style="margin-top:18px" id="eListeTitel">Deine Aufgaben</h2>
+  <ul class="liste" id="eListe"></ul>
+</section>
+</main>
+
+<!-- ================= Antwort-Jagd (Vollbild) ================= -->
+<div id="buehne" hidden>
+  <div id="hud">
+    <button type="button" id="jPause" aria-label="Pause">II</button>
+    <div class="herz" id="jHerz"></div>
+    <div class="pkt"><b id="jPunkte">0</b><span id="jStufe">Stufe 1</span></div>
+  </div>
+  <div id="frage"></div>
+  <div id="feld">
+    <div id="boden"></div>
+    <div id="stufeToast"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   Helfer
+   ========================================================= */
+var $ = function(id){ return document.getElementById(id); };
+function ri(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function mische(arr){ var a=arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+var RAD = Math.PI/180;
+function sind(g){ return Math.sin(g*RAD); }
+function cosd(g){ return Math.cos(g*RAD); }
+function norm(g){ g = g % 360; if (g < 0) g += 360; return g; }
+function wdiff(a,b){ var d = Math.abs(norm(a)-norm(b)); return Math.min(d, 360-d); }
+
+/* gerundet auf 2 Stellen (−0 vermeiden) */
+function r2(v){ var r = Math.round(v*100)/100; return Math.abs(r) < 1e-9 ? 0 : r; }
+function istExakt(v){ return Math.abs(v*100 - Math.round(v*100)) < 1e-6; }
+/* Zahl in deutscher Schreibweise: 0,5 · −0,71 · 1 */
+function zahl(v){
+  var r = r2(v), s = Math.abs(r).toFixed(2);
+  s = s.replace(/0+$/,'').replace(/\.$/,'').replace('.',',');
+  return (r < 0 ? '−' : '') + s;
+}
+function gleich(v){ return istExakt(v) ? '=' : '≈'; }
+function grad(g){ var r = Math.round(g*100)/100; return (Number.isInteger(r) ? String(r) : r.toFixed(2).replace('.',',')) + '°'; }
+function quadrant(g){ g = norm(g); return g < 90 ? 'I' : g < 180 ? 'II' : g < 270 ? 'III' : 'IV'; }
+function aufAchse(g){ return norm(g) % 90 === 0; }
+
+/* Formeln: $…$ im Text -> KaTeX */
+function plain(x){
+  return x.replace(/@f\{([^{}]*)\}\{([^{}]*)\}/g,'($1)/($2)').replace(/@w\{([^{}]*)\}/g,'√($1)')
+          .replace(/@[slt]\{([^{}]*)\}/g,'$1').replace(/\^2/g,'²').replace(/\^\{?([^}\s]*)\}?/g,'^$1').replace(/_\{?([^}\s]*)\}?/g,'$1');
+}
+function F(x){ var h = window.Formel && window.Formel.html(x, false); var kurz = plain(x).length <= 26 ? ' style="white-space:nowrap"' : '';
+  return '<span class="f"' + kurz + '>' + (h || plain(x)) + '</span>'; }
+function fmt(s){ return (s || '').replace(/\$([^$]+)\$/g, function(_, x){ return F(x); }); }
+
+/* Speicher (darf fehlen) */
+var mem = {};
+function lies(k, d){ try{ var v = localStorage.getItem(k); if (v !== null) return JSON.parse(v); }catch(e){} return (k in mem) ? mem[k] : d; }
+function schreib(k, v){ mem[k] = v; try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+/* =========================================================
+   Einheitskreis als SVG
+   ========================================================= */
+var NS = 'http://www.w3.org/2000/svg', S = 100;
+function el(tag, at, eltern){
+  var e = document.createElementNS(NS, tag);
+  for (var k in at) e.setAttribute(k, at[k]);
+  if (eltern) eltern.appendChild(e);
+  return e;
+}
+function tx(x, y, t, at, eltern){
+  var a = Object.assign({ x:x, y:y, 'text-anchor':'middle', 'dominant-baseline':'middle', 'font-size':11, fill:'#1f2f3d' }, at || {});
+  var e = el('text', a, eltern); e.textContent = t; return e;
+}
+function P(g, r){ r = r || S; return [r*cosd(g), -r*sind(g)]; }
+
+function Kreis(box, opt){
+  opt = opt || {};
+  var svg = el('svg', { viewBox:'-134 -134 268 268', role:'img', 'aria-label':'Einheitskreis' }, box);
+  var gGitter = el('g', {}, svg), gAchsen = el('g', {}, svg), gHilfe = el('g', {}, svg),
+      gWinkel = el('g', {}, svg), gPunkte = el('g', {}, svg), gLoes = el('g', {}, svg);
+
+  /* Gitter (fein, für Schätz-Aufgaben) */
+  for (var i = -10; i <= 10; i++){
+    if (i === 0) continue;
+    var st = (i % 5 === 0) ? '#d6e0e8' : '#edf2f6';
+    el('line', { x1:i*10, y1:-112, x2:i*10, y2:112, stroke:st, 'stroke-width':0.8 }, gGitter);
+    el('line', { x1:-112, y1:i*10, x2:112, y2:i*10, stroke:st, 'stroke-width':0.8 }, gGitter);
+  }
+  gGitter.style.display = 'none';
+
+  /* Achsen mit Pfeilen */
+  el('line', { x1:-124, y1:0, x2:124, y2:0, stroke:'#1f2f3d', 'stroke-width':1.3 }, gAchsen);
+  el('line', { x1:0, y1:124, x2:0, y2:-124, stroke:'#1f2f3d', 'stroke-width':1.3 }, gAchsen);
+  el('path', { d:'M124 0l-7 -3.5v7z M0 -124l-3.5 7h7z', fill:'#1f2f3d' }, gAchsen);
+  tx(126, 10, 'x', { 'font-style':'italic', 'font-size':12 }, gAchsen);
+  tx(9, -126, 'y', { 'font-style':'italic', 'font-size':12 }, gAchsen);
+  /* Einteilung */
+  [[100,'1'],[-100,'−1'],[50,'0,5'],[-50,'−0,5']].forEach(function(t){
+    el('line', { x1:t[0], y1:-3, x2:t[0], y2:3, stroke:'#1f2f3d', 'stroke-width':1.2 }, gAchsen);
+    el('line', { x1:-3, y1:-t[0], x2:3, y2:-t[0], stroke:'#1f2f3d', 'stroke-width':1.2 }, gAchsen);
+    tx(t[0] + (t[0] > 0 ? 7 : -8), 10, t[1], { 'font-size':9.5, fill:'#4b5963' }, gAchsen);
+    tx(-12, -t[0] + (t[0] > 0 ? -6 : 6), t[1], { 'font-size':9.5, fill:'#4b5963', 'text-anchor':'end' }, gAchsen);
+  });
+  /* Kreis + Gradstriche alle 30° */
+  el('circle', { cx:0, cy:0, r:S, fill:'none', stroke:'#1f2f3d', 'stroke-width':2 }, gAchsen);
+  for (var g = 0; g < 360; g += 30){
+    var a = P(g, S-4), b = P(g, S+4);
+    el('line', { x1:a[0], y1:a[1], x2:b[0], y2:b[1], stroke:'#1f2f3d', 'stroke-width':1.1 }, gAchsen);
+  }
+  /* Quadranten */
+  [['I',118,-118],['II',-118,-118],['III',-118,118],['IV',118,118]].forEach(function(q){
+    tx(q[1], q[2], q[0], { 'font-size':11, fill:'#9aa6b0', 'font-weight':'bold' }, gAchsen);
+  });
+
+  /* Winkel-Darstellung (Drehen) */
+  var bogen = el('path', { fill:'rgba(233,113,50,.16)', stroke:'#e97132', 'stroke-width':1.4 }, gWinkel);
+  var bogenTxt = tx(0, 0, 'α', { 'font-style':'italic', 'font-size':12, fill:'#c4561c' }, gWinkel);
+  var cosL = el('line', { stroke:'#2f6fa3', 'stroke-width':5, 'stroke-linecap':'round' }, gWinkel);
+  var sinL = el('line', { stroke:'#7a2e8e', 'stroke-width':5, 'stroke-linecap':'round' }, gWinkel);
+  var zeiger = el('line', { x1:0, y1:0, stroke:'#1f2f3d', 'stroke-width':2.4, 'stroke-linecap':'round' }, gWinkel);
+  var punkt = el('circle', { r:7.5, fill:'#e97132', stroke:'#fff', 'stroke-width':2.5 }, gWinkel);
+  var pTxt = tx(0, 0, 'P', { 'font-style':'italic', 'font-size':13, 'font-weight':'bold' }, gWinkel);
+  gWinkel.style.display = 'none';
+
+  var api = { svg:svg, winkel:0, werte:true };
+
+  api.zeigeWinkel = function(an){ gWinkel.style.display = an ? '' : 'none'; };
+  api.gitter = function(an){ gGitter.style.display = an ? '' : 'none'; };
+  api.setWinkel = function(g){
+    g = Math.round(norm(g)); api.winkel = g;
+    var p = P(g), c = cosd(g), s = sind(g);
+    zeiger.setAttribute('x2', p[0]); zeiger.setAttribute('y2', p[1]);
+    punkt.setAttribute('cx', p[0]); punkt.setAttribute('cy', p[1]);
+    var pl = P(g, S + 16); pTxt.setAttribute('x', pl[0]); pTxt.setAttribute('y', pl[1]);
+    var r = 22;
+    if (g === 0){ bogen.setAttribute('d', ''); bogenTxt.textContent = ''; }
+    else {
+      var e = P(g, r);
+      bogen.setAttribute('d', 'M0 0L' + r + ' 0A' + r + ' ' + r + ' 0 ' + (g > 180 ? 1 : 0) + ' 0 ' + e[0].toFixed(2) + ' ' + e[1].toFixed(2) + 'Z');
+      var m = P(g/2, g < 40 ? 34 : 31); bogenTxt.setAttribute('x', m[0]); bogenTxt.setAttribute('y', m[1]); bogenTxt.textContent = 'α';
+    }
+    var sichtbar = api.werte ? '' : 'none';
+    cosL.style.display = sinL.style.display = sichtbar;
+    cosL.setAttribute('x1', 0); cosL.setAttribute('y1', 0); cosL.setAttribute('x2', c*S); cosL.setAttribute('y2', 0);
+    sinL.setAttribute('x1', c*S); sinL.setAttribute('y1', 0); sinL.setAttribute('x2', c*S); sinL.setAttribute('y2', -s*S);
+    if (opt.onWinkel) opt.onWinkel(g);
+  };
+
+  /* Hilfslinien */
+  api.hilfe = function(h){
+    gHilfe.innerHTML = '';
+    if (!h) return;
+    var at = { stroke:h.farbe || '#7a2e8e', 'stroke-width':2, 'stroke-dasharray':'6 4' };
+    if (h.typ === 'h') el('line', Object.assign({ x1:-122, y1:-h.wert*S, x2:122, y2:-h.wert*S }, at), gHilfe);
+    else if (h.typ === 'v') el('line', Object.assign({ x1:h.wert*S, y1:-122, x2:h.wert*S, y2:122 }, at), gHilfe);
+    else if (h.typ === 'd'){ var w = Math.atan(h.wert)/RAD, a = P(w, 125), b = P(w + 180, 125);
+      el('line', Object.assign({ x1:a[0], y1:a[1], x2:b[0], y2:b[1] }, at), gHilfe); }
+    if (h.text){ tx(Math.max(-112, Math.min(112, h.tx)), h.ty, h.text, { 'font-size':10.5, fill:h.farbe || '#7a2e8e', 'font-weight':'bold' }, gHilfe); }
+  };
+
+  /* gesetzte Punkte (Finden) */
+  api.punkte = [];
+  api.zeichnePunkte = function(){
+    gPunkte.innerHTML = '';
+    api.punkte.forEach(function(g){ var p = P(g); el('circle', { cx:p[0], cy:p[1], r:8, fill:'#e97132', stroke:'#fff', 'stroke-width':2.5 }, gPunkte); });
+  };
+
+  /* Lösung anzeigen */
+  api.loesung = function(liste){
+    gLoes.innerHTML = '';
+    (liste || []).forEach(function(o){
+      var p = P(o.g), farbe = o.farbe || '#2e8b57';
+      if (o.typ === 'kreuz'){
+        el('path', { d:'M' + (p[0]-7) + ' ' + (p[1]-7) + 'l14 14m0 -14l-14 14', stroke:'#c0392b', 'stroke-width':3.2, 'stroke-linecap':'round' }, gLoes);
+        return;
+      }
+      if (o.zeiger) el('line', { x1:0, y1:0, x2:p[0], y2:p[1], stroke:farbe, 'stroke-width':2.2, 'stroke-dasharray':'5 4' }, gLoes);
+      el('circle', { cx:p[0], cy:p[1], r:11, fill:'none', stroke:farbe, 'stroke-width':3 }, gLoes);
+      if (o.text){
+        var q = P(o.g, S + 22);
+        var bw = Math.max(34, o.text.length * 6.4 + 8);
+        q[0] = Math.max(-132 + bw/2, Math.min(132 - bw/2, q[0])); q[1] = Math.max(-122, Math.min(124, q[1]));
+        el('rect', { x:q[0]-bw/2, y:q[1]-9, width:bw, height:18, rx:6, fill:'#fff', stroke:farbe, 'stroke-width':1.4 }, gLoes);
+        tx(q[0], q[1] + 0.5, o.text, { 'font-size':11, fill:farbe, 'font-weight':'bold' }, gLoes);
+      }
+    });
+  };
+
+  /* Zeiger-Eingabe */
+  function svgPunkt(e){
+    var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    var q = pt.matrixTransform(svg.getScreenCTM().inverse());
+    return { x:q.x, y:q.y, d:Math.hypot(q.x, q.y), g:norm(Math.atan2(-q.y, q.x)/RAD) };
+  }
+  var zieht = false;
+  svg.addEventListener('pointerdown', function(e){
+    if (api.gesperrt) return;
+    var q = svgPunkt(e);
+    if (opt.modus === 'dreh'){
+      if (q.d < 12) return;
+      zieht = true; try{ svg.setPointerCapture(e.pointerId); }catch(_){}
+      api.setWinkel(q.g); e.preventDefault();
+    } else if (opt.modus === 'finden' && opt.onTipp){
+      opt.onTipp(q); e.preventDefault();
+    }
+  });
+  svg.addEventListener('pointermove', function(e){ if (zieht && !api.gesperrt){ api.setWinkel(svgPunkt(e).g); e.preventDefault(); } });
+  function los(){ zieht = false; }
+  svg.addEventListener('pointerup', los); svg.addEventListener('pointercancel', los);
+  return api;
+}
+
+/* =========================================================
+   Erklär-Bausteine
+   ========================================================= */
+var QN = { I:'I.', II:'II.', III:'III.', IV:'IV.' };
+function lageText(g){
+  var q = quadrant(g);
+  var lage = { I:'rechts oben', II:'links oben', III:'links unten', IV:'rechts unten' }[q];
+  return 'Der Punkt zu $' + grad(g) + '$ liegt im ' + QN[q] + ' Quadranten (' + lage + ').';
+}
+function bezug(g){ g = norm(g); return g <= 90 ? g : g <= 180 ? 180 - g : g <= 270 ? g - 180 : 360 - g; }
+var ACHSE = { 0:[1,0], 90:[0,1], 180:[-1,0], 270:[0,-1] };
+function erklaereWert(f, g){
+  g = norm(g);
+  if (f === 'tan') return erklaereTan(g);
+  var v = f === 'sin' ? sind(g) : cosd(g);
+  if (aufAchse(g)){
+    var k = ACHSE[g];
+    return 'Der Punkt zu $' + grad(g) + '$ ist $P(' + zahl(k[0]) + ' | ' + zahl(k[1]) + ')$. ' +
+           (f === 'sin' ? 'Der Sinus ist der y-Wert' : 'Der Kosinus ist der x-Wert') + ': $' + f + ' ' + grad(g) + ' = ' + zahl(v) + '$.';
+  }
+  var b = bezug(g), vb = f === 'sin' ? sind(b) : cosd(b);
+  var t = lageText(g) + ' ';
+  t += (f === 'sin' ? 'Dort ist der y-Wert ' + (v > 0 ? 'positiv' : 'negativ') : 'Dort ist der x-Wert ' + (v > 0 ? 'positiv' : 'negativ')) + '. ';
+  if (b !== g) t += 'Der Betrag ist so groß wie bei $' + grad(b) + '$: $' + f + ' ' + grad(b) + ' ' + gleich(vb) + ' ' + zahl(vb) + '$, also $' + f + ' ' + grad(g) + ' ' + gleich(v) + ' ' + zahl(v) + '$.';
+  else t += 'Merkwert: $' + f + ' ' + grad(g) + ' ' + gleich(v) + ' ' + zahl(v) + '$.';
+  return t;
+}
+function erklaereTan(g){
+  var s = sind(g), c = cosd(g);
+  if (Math.abs(c) < 1e-9) return 'Es ist $tan α = @f{sin α}{cos α}$. Bei $' + grad(g) + '$ ist $cos ' + grad(g) + ' = 0$ – durch $0$ kann man nicht teilen. $tan ' + grad(g) + '$ ist nicht definiert.';
+  if (Math.abs(s) < 1e-9) return 'Es ist $tan α = @f{sin α}{cos α}$. Bei $' + grad(g) + '$ ist $sin ' + grad(g) + ' = 0$, also $tan ' + grad(g) + ' = 0$.';
+  var t = s/c;
+  return 'Es ist $tan α = @f{sin α}{cos α}$. Bei $' + grad(g) + '$ sind sin und cos gleich lang' + (t > 0 ? ' und haben dasselbe Vorzeichen' : ', haben aber verschiedene Vorzeichen') + ': $tan ' + grad(g) + ' = ' + zahl(t) + '$.';
+}
+
+/* =========================================================
+   Spickzettel
+   ========================================================= */
+(function(){
+  var W = [0,30,45,60,90,180,270];
+  function zeile(f){
+    return '<tr><th>' + F(f + ' α') + '</th>' + W.map(function(g){
+      var v = f === 'sin' ? sind(g) : f === 'cos' ? cosd(g) : (Math.abs(cosd(g)) < 1e-9 ? null : sind(g)/cosd(g));
+      return '<td>' + (v === null ? '–' : F(zahl(v))) + '</td>';
+    }).join('') + '</tr>';
+  }
+  $('spickInhalt').innerHTML =
+    '<ol>' +
+    '<li>' + fmt('Der Punkt zum Winkel $α$ auf dem Einheitskreis ist $P(cos α | sin α)$: <b>x-Wert = Kosinus</b>, <b>y-Wert = Sinus</b>.') + '</li>' +
+    '<li>' + fmt('Der Radius ist $1$. Deshalb gilt immer $−1 ≤ sin α ≤ 1$ und $−1 ≤ cos α ≤ 1$.') + '</li>' +
+    '<li>' + fmt('Gleicher Sinuswert = gleiche Höhe → an der y-Achse spiegeln: $sin(180° − α) = sin α$.') + '</li>' +
+    '<li>' + fmt('Gleicher Kosinuswert = gleicher x-Wert → an der x-Achse spiegeln: $cos(360° − α) = cos α$.') + '</li>' +
+    '<li>' + fmt('$tan α = @f{sin α}{cos α}$ – nicht definiert, wenn $cos α = 0$ ist ($90°$, $270°$).') + '</li>' +
+    '<li>Vorzeichen in den Quadranten:</li>' +
+    '</ol>' +
+    '<table class="wt" style="max-width:300px;margin:0 auto 10px"><tr><th>Quadrant</th><th>I.</th><th>II.</th><th>III.</th><th>IV.</th></tr>' +
+    '<tr><th>' + F('sin α') + '</th><td>+</td><td>+</td><td>−</td><td>−</td></tr>' +
+    '<tr><th>' + F('cos α') + '</th><td>+</td><td>−</td><td>−</td><td>+</td></tr>' +
+    '<tr><th>' + F('tan α') + '</th><td>+</td><td>−</td><td>+</td><td>−</td></tr></table>' +
+    '<div class="tabwrap"><table class="wt"><tr><th>' + F('α') + '</th>' + W.map(function(g){ return '<th>' + F(grad(g)) + '</th>'; }).join('') + '</tr>' +
+    zeile('sin') + zeile('cos') + zeile('tan') + '</table></div>' +
+    '<p class="hinweis-klein" style="margin-top:2px">Werte mit zwei Nachkommastellen sind gerundet. – heißt: nicht definiert.</p>' +
+    '<p class="hinweis-klein">Für Teil A der Schulaufgabe brauchst du: ' + fmt('$sin 0° = 0$, $sin 30° = 0,5$, $sin 90° = 1$, $sin 180° = 0$, $cos 0° = 1$, $cos 60° = 0,5$, $cos 90° = 0$, $cos 180° = −1$, $tan 0° = 0$, $tan 45° = 1$.') + '</p>';
+})();
+
+/* =========================================================
+   Ablauf / Bildschirme
+   ========================================================= */
+var MODUS = null;
+var TITEL = { dreh:'Winkel drehen', finden:'Punkte finden', jagd:'Antwort-Jagd', '':'Einheitskreis' };
+function zeige(id){
+  ['sMenu','sDreh','sFinden','sEnde'].forEach(function(k){ $(k).hidden = (k !== id); });
+  window.scrollTo(0, 0);
+}
+function rekorde(){
+  var d = lies('ek.rekord.dreh', null), f = lies('ek.rekord.finden', null), j = lies('ek.rekord.jagd', null);
+  $('rDreh').textContent = d !== null ? 'Bestes Ergebnis: ' + d + ' von 10' : '';
+  $('rFinden').textContent = f !== null ? 'Bestes Ergebnis: ' + f + ' von 8' : '';
+  $('rJagd').textContent = j !== null ? 'Rekord: ' + j + ' Punkte' : '';
+}
+function route(){
+  var h = (location.hash || '').replace('#','');
+  if (h !== 'jagd') jagdStopp();
+  if (h === 'dreh') startDreh();
+  else if (h === 'finden') startFinden();
+  else if (h === 'jagd') startJagd();
+  else { MODUS = null; $('kopfGross').textContent = 'Einheitskreis'; rekorde(); zeige('sMenu'); }
+}
+window.addEventListener('hashchange', route);
+Array.prototype.forEach.call(document.querySelectorAll('[data-start]'), function(b){
+  b.addEventListener('click', function(){
+    var m = b.getAttribute('data-start');
+    if (location.hash === '#' + m) route(); else location.hash = m;
+  });
+});
+$('zurueck').addEventListener('click', function(){
+  if (MODUS) { location.hash = ''; }
+  else location.href = 'index.html';
+});
+$('eMenue').addEventListener('click', function(){ location.hash = ''; });
+$('eNochmal').addEventListener('click', function(){ if (MODUS === 'dreh') startDreh(); else if (MODUS === 'finden') startFinden(); });
+
+function auswertung(titel, richtig, von, liste, key){
+  $('eTitel').textContent = titel;
+  $('eErgebnis').innerHTML = richtig + ' / ' + von + '<small>beim ersten Versuch richtig</small>';
+  var q = richtig / von;
+  $('eKommentar').textContent = q === 1 ? 'Perfekt! Du hast den Einheitskreis im Griff.' :
+    q >= 0.75 ? 'Stark! Schau dir die roten Aufgaben unten nochmal an.' :
+    q >= 0.5 ? 'Gut, aber da geht noch was. Lies die Erklärungen zu den roten Aufgaben.' :
+               'Nimm dir den Spickzettel im Menü dazu und versuch es gleich nochmal.';
+  $('eListe').innerHTML = liste.map(function(a){
+    return '<li class="' + (a.ok ? 'ok' : 'no') + '">' + (a.ok ? '✅ ' : '❌ ') + fmt(a.text) + (a.ok ? '' : '<div style="margin-top:4px;color:#4b5963">' + fmt(a.erkl) + '</div>') + '</li>';
+  }).join('');
+  var alt = lies(key, null); if (alt === null || richtig > alt) schreib(key, richtig);
+  zeige('sEnde');
+}
+
+/* =========================================================
+   Modus 1: Winkel drehen
+   ========================================================= */
+var D = null;
+var dKreis = Kreis($('dKreis'), { modus:'dreh', onWinkel:anzeigeDreh });
+dKreis.zeigeWinkel(true);
+function anzeigeDreh(g){
+  var s = sind(g), c = cosd(g);
+  var h = '<span>' + F('α = ' + grad(g)) + '</span>';
+  if (dKreis.werte){
+    h += '<span>' + F('P(' + zahl(c) + ' | ' + zahl(s) + ')') + '</span>' +
+         '<span class="c">' + F('cos α ' + gleich(c) + ' ' + zahl(c)) + '</span>' +
+         '<span class="s">' + F('sin α ' + gleich(s) + ' ' + zahl(s)) + '</span>';
+  }
+  $('dAnzeige').innerHTML = h;
+}
+$('dWerte').addEventListener('change', function(){ dKreis.werte = this.checked; dKreis.setWinkel(dKreis.winkel); });
+$('dMinus').addEventListener('click', function(){ if (!dKreis.gesperrt) dKreis.setWinkel(dKreis.winkel - 1); });
+$('dPlus').addEventListener('click', function(){ if (!dKreis.gesperrt) dKreis.setWinkel(dKreis.winkel + 1); });
+
+/* eindeutige Bedingungen mit besonderen Werten */
+var BED = [
+  { t:'$sin α = 0,5$ und $cos α > 0$', g:30 }, { t:'$sin α = 0,5$ und $cos α < 0$', g:150 },
+  { t:'$sin α = −0,5$ und $cos α < 0$', g:210 }, { t:'$sin α = −0,5$ und $cos α > 0$', g:330 },
+  { t:'$cos α = 0,5$ und $sin α > 0$', g:60 }, { t:'$cos α = 0,5$ und $sin α < 0$', g:300 },
+  { t:'$cos α = −0,5$ und $sin α > 0$', g:120 }, { t:'$cos α = −0,5$ und $sin α < 0$', g:240 },
+  { t:'$sin α = 1$', g:90 }, { t:'$sin α = −1$', g:270 }, { t:'$cos α = −1$', g:180 },
+  { t:'$tan α = 1$ und $cos α < 0$', g:225 }, { t:'$tan α = −1$ und $sin α > 0$', g:135 }, { t:'$tan α = −1$ und $sin α < 0$', g:315 }
+];
+var QUAD = [
+  { t:'$sin α > 0$ und $cos α < 0$', q:'II', von:90, bis:180, e:'$sin α > 0$: P liegt oberhalb der x-Achse. $cos α < 0$: P liegt links der y-Achse.' },
+  { t:'$sin α < 0$ und $cos α < 0$', q:'III', von:180, bis:270, e:'$sin α < 0$: P liegt unterhalb der x-Achse. $cos α < 0$: P liegt links der y-Achse.' },
+  { t:'$sin α < 0$ und $cos α > 0$', q:'IV', von:270, bis:360, e:'$sin α < 0$: P liegt unterhalb der x-Achse. $cos α > 0$: P liegt rechts der y-Achse.' },
+  { t:'$tan α > 0$ und $sin α < 0$', q:'III', von:180, bis:270, e:'$sin α < 0$: unterhalb der x-Achse. Damit $tan α = @f{sin α}{cos α}$ positiv ist, muss auch $cos α < 0$ sein: links der y-Achse.' },
+  { t:'$tan α < 0$ und $cos α > 0$', q:'IV', von:270, bis:360, e:'$cos α > 0$: rechts der y-Achse. Damit $tan α = @f{sin α}{cos α}$ negativ ist, muss $sin α < 0$ sein: unterhalb der x-Achse.' }
+];
+
+function aufgabeDreh(typ){
+  var a, g;
+  switch (typ){
+    case 'einstellen':
+      g = pick([ri(1,17)*5, ri(19,35)*5, ri(37,53)*5, ri(55,71)*5]);
+      return { text:'Stelle den Winkel $α = ' + grad(g) + '$ ein.', pruef:function(x){ return x === g; },
+               loes:[g], erkl:'Von der positiven x-Achse aus gegen den Uhrzeigersinn drehen. ' + (aufAchse(g) ? '' : lageText(g)) };
+    case 'punkt':
+      g = pick([30,45,60,120,135,150,210,225,240,300,315,330]);
+      var px = zahl(cosd(g)), py = zahl(sind(g));
+      return { text:'Stelle den Winkel so ein, dass der Zeiger auf den Punkt $P(' + px + ' | ' + py + ')$ zeigt.',
+               pruef:function(x){ return zahl(cosd(x)) === px && zahl(sind(x)) === py; }, loes:[g],
+               erkl:'x-Wert $' + px + '$ und y-Wert $' + py + '$: ' + lageText(g) + ' Gesucht ist $α = ' + grad(g) + '$.' };
+    case 'sinGleich':
+      a = Math.random() < 0.7 ? pick([ri(2,17)*5, ri(19,34)*5]) : pick([ri(37,53)*5, ri(55,71)*5]);
+      if (a === 90 || a === 270) a += 10;
+      g = norm(180 - a);
+      return { text:'Welcher andere Winkel hat denselben Sinuswert wie $' + grad(a) + '$? Stelle ihn ein.', pruef:function(x){ return x === g; },
+               loes:[g], vorher:a,
+               erkl:'Gleicher Sinuswert heißt gleiche Höhe (gleicher y-Wert). Spiegle den Punkt an der y-Achse: $180° − ' + grad(a) + ' = ' + (a < 180 ? grad(g) : grad(180 - a) + '$, also $' + grad(g)) + '$.' };
+    case 'cosGleich':
+      a = pick([ri(2,17)*5, ri(19,35)*5, ri(37,53)*5, ri(55,70)*5]);
+      if (a === 90 || a === 180 || a === 270) a += 15;
+      g = norm(360 - a);
+      return { text:'Welcher andere Winkel hat denselben Kosinuswert wie $' + grad(a) + '$? Stelle ihn ein.', pruef:function(x){ return x === g; },
+               loes:[g], vorher:a,
+               erkl:'Gleicher Kosinuswert heißt gleicher x-Wert. Spiegle den Punkt an der x-Achse: $360° − ' + grad(a) + ' = ' + grad(g) + '$.' };
+    case 'quadrant':
+      var q = pick(QUAD);
+      return { text:'Stelle irgendeinen Winkel ein, für den gilt: ' + q.t + '.', pruef:function(x){ return x > q.von && x < q.bis; },
+               loes:[(q.von + q.bis)/2], bereich:true,
+               erkl:q.e + ' Also liegt P im ' + q.q + '. Quadranten: $' + q.von + '° < α < ' + q.bis + '°$.' };
+    case 'bedingung':
+      var b = pick(BED);
+      return { text:'Stelle den Winkel ein, für den gilt: ' + b.t + '.', pruef:function(x){ return x === b.g; }, loes:[b.g],
+               erkl:erklaereBed(b) };
+  }
+}
+function erklaereBed(b){
+  var g = b.g;
+  if (g % 90 === 0) return 'Der Punkt $P(' + zahl(cosd(g)) + ' | ' + zahl(sind(g)) + ')$ liegt auf einer Achse: $α = ' + grad(g) + '$.';
+  if (/tan/.test(b.t)) return '$tan α = ±1$ heißt: sin und cos sind gleich lang – der Zeiger liegt auf einer Winkelhalbierenden ($45°$, $135°$, $225°$, $315°$). Die zweite Bedingung legt den Quadranten fest: $α = ' + grad(g) + '$.';
+  var f = /^\$sin/.test(b.t) ? 'sin' : 'cos';
+  var paar = f === 'sin' ? (sind(g) > 0 ? [30,150] : [210,330]) : (cosd(g) > 0 ? [60,300] : [120,240]);
+  return '$' + f + ' α = ' + zahl(f === 'sin' ? sind(g) : cosd(g)) + '$ gilt für $α = ' + grad(paar[0]) + '$ und $α = ' + grad(paar[1]) + '$. Die zweite Bedingung sagt, welcher passt: $α = ' + grad(g) + '$.';
+}
+
+function startDreh(){
+  MODUS = 'dreh'; $('kopfGross').textContent = TITEL.dreh;
+  var typen = ['einstellen','einstellen','punkt','sinGleich','cosGleich','quadrant','bedingung','sinGleich','bedingung','punkt'];
+  D = { nr:0, pkt:0, liste:[], aufgaben:typen.map(aufgabeDreh) };
+  $('dVon').textContent = D.aufgaben.length;
+  zeige('sDreh'); naechsteDreh();
+}
+function naechsteDreh(){
+  if (D.nr >= D.aufgaben.length){ auswertung('Winkel drehen – geschafft!', D.pkt, D.aufgaben.length, D.liste, 'ek.rekord.dreh'); return; }
+  var A = D.aufgaben[D.nr];
+  $('dNr').textContent = D.nr + 1; $('dPkt').textContent = D.pkt;
+  $('dBalken').style.width = (D.nr / D.aufgaben.length * 100) + '%';
+  $('dAufgabe').innerHTML = fmt(A.text);
+  dKreis.gesperrt = false; dKreis.loesung(null);
+  /* Startwinkel: nicht schon die Lösung */
+  var start = A.vorher !== undefined ? A.vorher : 0;
+  if (A.pruef(start)) start = norm(start + 100);
+  dKreis.setWinkel(start);
+  $('dRueck').hidden = true; $('dWeiterReihe').hidden = true; $('dKnoepfe').hidden = false; $('dHilfe').hidden = false;
+}
+$('dPruefen').addEventListener('click', function(){
+  var A = D.aufgaben[D.nr], x = dKreis.winkel, ok = A.pruef(x);
+  dKreis.gesperrt = true;
+  if (ok) D.pkt++;
+  D.liste.push({ ok:ok, text:A.text, erkl:A.erkl });
+  var r = $('dRueck'); r.hidden = false; r.className = 'rueck ' + (ok ? 'ok' : 'no');
+  r.innerHTML = '<b class="t">' + (ok ? 'Richtig!' : 'Leider nicht – du hast $' + grad(x) + '$ eingestellt.').replace(/\$([^$]+)\$/g, function(_, y){ return F(y); }) + '</b>' + fmt(A.erkl);
+  if (!ok && !A.bereich) dKreis.loesung(A.loes.map(function(g){ return { g:g, zeiger:true, text:grad(g) }; }));
+  if (!ok && A.bereich) dKreis.loesung([{ g:A.loes[0], zeiger:true, text:'z. B.' }]);
+  $('dKnoepfe').hidden = true; $('dHilfe').hidden = true; $('dWeiterReihe').hidden = false;
+  $('dPkt').textContent = D.pkt;
+  r.scrollIntoView({ behavior:'smooth', block:'nearest' });
+});
+$('dWeiter').addEventListener('click', function(){ D.nr++; naechsteDreh(); });
+
+/* =========================================================
+   Modus 2: Punkte finden
+   ========================================================= */
+var FI = null;
+var fKreis = Kreis($('fKreis'), { modus:'finden', onTipp:tippFinden });
+function tippFinden(q){
+  if (fKreis.gesperrt) return;
+  if (q.d < 0.5*S || q.d > 1.4*S) return;
+  var g = Math.round(q.g);
+  for (var i = 0; i < fKreis.punkte.length; i++){
+    if (wdiff(fKreis.punkte[i], g) < 9){ fKreis.punkte.splice(i, 1); fKreis.zeichnePunkte(); return; }
+  }
+  if (fKreis.punkte.length >= 4) fKreis.punkte.shift();
+  fKreis.punkte.push(norm(g)); fKreis.zeichnePunkte();
+}
+var WERT_SIN = [{ v:0.5, l:[30,150] }, { v:-0.5, l:[210,330] }, { v:1, l:[90] }, { v:-1, l:[270] }, { v:0, l:[0,180] }];
+var WERT_COS = [{ v:0.5, l:[60,300] }, { v:-0.5, l:[120,240] }, { v:1, l:[0] }, { v:-1, l:[180] }, { v:0, l:[90,270] }];
+var WERT_TAN = [{ v:1, l:[45,225] }, { v:-1, l:[135,315] }, { v:0, l:[0,180] }];
+function asin_d(v){ return Math.asin(v)/RAD; }
+function acos_d(v){ return Math.acos(v)/RAD; }
+
+function aufgabeFinden(typ){
+  var g, w;
+  switch (typ){
+    case 'winkel':
+      g = pick([30,45,60,120,135,150,210,225,240,300,315,330]);
+      return { text:'Tippe den Punkt zum Winkel $α = ' + grad(g) + '$ an.', loes:[g], tol:6,
+               erkl:lageText(g) + ' Die Striche am Kreis sind alle $30°$.' };
+    case 'koord':
+      g = pick([30,60,120,150,210,240,300,330,90,180,270]);
+      return { text:'Tippe den Punkt $P(' + zahl(cosd(g)) + ' | ' + zahl(sind(g)) + ')$ an.', loes:[g], tol:6,
+               erkl:'x-Wert $' + zahl(cosd(g)) + '$, y-Wert $' + zahl(sind(g)) + '$. ' + (aufAchse(g) ? 'Der Punkt liegt auf einer Achse: $α = ' + grad(g) + '$.' : lageText(g)) };
+    case 'sin':
+      w = pick(WERT_SIN);
+      return { text:'Tippe <b>alle</b> Punkte an, für die gilt: $sin α = ' + zahl(w.v) + '$.', loes:w.l, tol:6,
+               hilfe:{ typ:'h', wert:w.v, text:'y = ' + zahl(w.v), tx:52, ty:-w.v*S - 8 },
+               erkl:'$sin α$ ist der y-Wert. Die waagrechte Linie $y = ' + zahl(w.v) + '$ trifft den Kreis ' + (w.l.length === 1 ? 'nur einmal' : 'zweimal') + ': ' + w.l.map(function(x){ return '$' + grad(x) + '$'; }).join(' und ') + '.' +
+                    (w.l.length === 2 && w.v !== 0 ? ' Merke: $sin(180° − α) = sin α$.' : '') };
+    case 'cos':
+      w = pick(WERT_COS);
+      return { text:'Tippe <b>alle</b> Punkte an, für die gilt: $cos α = ' + zahl(w.v) + '$.', loes:w.l, tol:6,
+               hilfe:{ typ:'v', wert:w.v, text:'x = ' + zahl(w.v), tx:w.v*S + (Math.abs(w.v) > 0.6 ? (w.v > 0 ? -24 : 24) : 22), ty:-118, farbe:'#2f6fa3' },
+               erkl:'$cos α$ ist der x-Wert. Die senkrechte Linie $x = ' + zahl(w.v) + '$ trifft den Kreis ' + (w.l.length === 1 ? 'nur einmal' : 'zweimal') + ': ' + w.l.map(function(x){ return '$' + grad(x) + '$'; }).join(' und ') + '.' +
+                    (w.l.length === 2 && w.v !== 0 ? ' Merke: $cos(360° − α) = cos α$.' : '') };
+    case 'tan':
+      w = pick(WERT_TAN);
+      return { text:'Tippe <b>alle</b> Punkte an, für die gilt: $tan α = ' + zahl(w.v) + '$.', loes:w.l, tol:6,
+               hilfe:{ typ:'d', wert:w.v, farbe:'#e97132' },
+               erkl:(w.v === 0 ? '$tan α = @f{sin α}{cos α} = 0$ heißt $sin α = 0$: Punkte auf der x-Achse, $0°$ und $180°$.' :
+                     '$tan α = ' + zahl(w.v) + '$ heißt: sin und cos sind gleich lang' + (w.v > 0 ? ' mit gleichem Vorzeichen' : ' mit verschiedenem Vorzeichen') + '. Das sind ' + w.l.map(function(x){ return '$' + grad(x) + '$'; }).join(' und ') + ' – sie liegen sich genau gegenüber.') };
+    case 'sinSchaetz':
+      var v = pick([0.3, 0.4, 0.6, 0.7, 0.8, 0.9, -0.3, -0.4, -0.6, -0.7, -0.8]);
+      var a1 = asin_d(v), l = v > 0 ? [a1, 180 - a1] : [180 - a1, 360 + a1];
+      return { text:'Tippe <b>alle</b> Punkte an, für die gilt: $sin α = ' + zahl(v) + '$. Das Gitter hilft dir.', loes:l, tol:7, gitter:true,
+               hilfe:{ typ:'h', wert:v, text:'y = ' + zahl(v), tx:52, ty:-v*S - 8 },
+               erkl:'Waagrechte Linie bei $y = ' + zahl(v) + '$: Sie trifft den Kreis bei $α ≈ ' + grad(l[0]) + '$ und $α ≈ ' + grad(l[1]) + '$ – beide Punkte haben dieselbe Höhe und liegen spiegelbildlich zur y-Achse.' + (v > 0 ? ' Probe: $' + grad(l[0]) + ' + ' + grad(l[1]) + ' = 180°$.' : '') };
+    case 'cosSchaetz':
+      var u = pick([0.3, 0.4, 0.6, 0.7, 0.8, -0.3, -0.6, -0.7, -0.8, -0.9]);
+      var b1 = acos_d(u), m = [b1, 360 - b1];
+      return { text:'Tippe <b>alle</b> Punkte an, für die gilt: $cos α = ' + zahl(u) + '$. Das Gitter hilft dir.', loes:m, tol:7, gitter:true,
+               hilfe:{ typ:'v', wert:u, text:'x = ' + zahl(u), tx:u*S + (Math.abs(u) > 0.6 ? (u > 0 ? -24 : 24) : 22), ty:-118, farbe:'#2f6fa3' },
+               erkl:'Senkrechte Linie bei $x = ' + zahl(u) + '$: Sie trifft den Kreis bei $α ≈ ' + grad(m[0]) + '$ und $α ≈ ' + grad(m[1]) + '$ (mit dem Taschenrechner: $cos^{−1}(' + zahl(u) + ')$). Es gilt $360° − ' + grad(m[0]) + ' = ' + grad(m[1]) + '$.' };
+  }
+}
+function startFinden(){
+  MODUS = 'finden'; $('kopfGross').textContent = TITEL.finden;
+  var typen = ['winkel','koord','sin','cos','tan', pick(['sin','cos']), 'sinSchaetz', 'cosSchaetz'];
+  FI = { nr:0, pkt:0, liste:[], aufgaben:typen.map(aufgabeFinden) };
+  $('fVon').textContent = FI.aufgaben.length;
+  zeige('sFinden'); naechsteFinden();
+}
+function naechsteFinden(){
+  if (FI.nr >= FI.aufgaben.length){ auswertung('Punkte finden – geschafft!', FI.pkt, FI.aufgaben.length, FI.liste, 'ek.rekord.finden'); return; }
+  var A = FI.aufgaben[FI.nr];
+  $('fNr').textContent = FI.nr + 1; $('fPkt').textContent = FI.pkt;
+  $('fBalken').style.width = (FI.nr / FI.aufgaben.length * 100) + '%';
+  $('fAufgabe').innerHTML = fmt(A.text);
+  fKreis.gesperrt = false; fKreis.punkte = []; fKreis.zeichnePunkte(); fKreis.loesung(null); fKreis.hilfe(null);
+  fKreis.gitter(!!A.gitter);
+  $('fTipp').disabled = !A.hilfe;
+  $('fRueck').hidden = true; $('fWeiterReihe').hidden = true; $('fKnoepfe').hidden = false; $('fHilfe').hidden = false;
+}
+$('fTipp').addEventListener('click', function(){ var A = FI.aufgaben[FI.nr]; if (A.hilfe) fKreis.hilfe(A.hilfe); });
+$('fLeer').addEventListener('click', function(){ if (!fKreis.gesperrt){ fKreis.punkte = []; fKreis.zeichnePunkte(); } });
+$('fPruefen').addEventListener('click', function(){
+  var A = FI.aufgaben[FI.nr], gesetzt = fKreis.punkte.slice();
+  if (!gesetzt.length){ $('fHilfe').textContent = 'Setz zuerst mindestens einen Punkt auf den Kreis.'; return; }
+  /* jede Lösung braucht einen eigenen gesetzten Punkt in der Nähe */
+  var frei = gesetzt.slice(), gefunden = 0, falsch = [];
+  A.loes.forEach(function(L){
+    var best = -1, bd = 999;
+    frei.forEach(function(p, i){ var d = wdiff(p, L); if (d <= A.tol && d < bd){ bd = d; best = i; } });
+    if (best >= 0){ gefunden++; frei.splice(best, 1); }
+  });
+  falsch = frei;
+  var ok = gefunden === A.loes.length && falsch.length === 0;
+  fKreis.gesperrt = true;
+  if (ok) FI.pkt++;
+  FI.liste.push({ ok:ok, text:A.text, erkl:A.erkl });
+  if (A.hilfe) fKreis.hilfe(A.hilfe);
+  fKreis.loesung(A.loes.map(function(g){ return { g:g, text:(Number.isInteger(Math.round(g*100)/100) ? '' : '≈') + grad(g) }; })
+                 .concat(falsch.map(function(g){ return { g:g, typ:'kreuz' }; })));
+  var msg;
+  if (ok) msg = 'Richtig!';
+  else if (gefunden === A.loes.length) msg = 'Fast – du hast zu viele Punkte gesetzt.';
+  else if (gefunden > 0) msg = 'Nur zum Teil richtig – es ' + (A.loes.length - gefunden === 1 ? 'fehlt ein Punkt.' : 'fehlen Punkte.');
+  else msg = 'Leider nicht.';
+  var r = $('fRueck'); r.hidden = false; r.className = 'rueck ' + (ok ? 'ok' : 'no');
+  r.innerHTML = '<b class="t">' + msg + '</b>' + fmt(A.erkl);
+  $('fKnoepfe').hidden = true; $('fHilfe').hidden = true; $('fWeiterReihe').hidden = false;
+  $('fPkt').textContent = FI.pkt;
+  r.scrollIntoView({ behavior:'smooth', block:'nearest' });
+});
+$('fWeiter').addEventListener('click', function(){ FI.nr++; $('fHilfe').textContent = 'Tippe auf den Kreis, um einen Punkt zu setzen. Tippst du einen Punkt nochmal an, verschwindet er.'; naechsteFinden(); });
+
+/* =========================================================
+   Modus 3: Antwort-Jagd
+   ========================================================= */
+var WERTE = [-1, -0.5, 0, 0.5, 1];
+function antwortenAus(richtig, pool, n){
+  var rest = mische(pool.filter(function(x){ return x !== richtig; })).slice(0, n - 1);
+  var alle = mische([richtig].concat(rest));
+  return { a:alle, r:alle.indexOf(richtig) };
+}
+var GEN = {
+  sinCos: function(){
+    var f = pick(['sin','cos']);
+    var g = f === 'sin' ? pick([0,30,90,150,180,210,270,330]) : pick([0,60,90,120,180,240,270,300]);
+    var v = r2(f === 'sin' ? sind(g) : cosd(g));
+    var x = antwortenAus(zahl(v), WERTE.map(zahl), 4);
+    return { frage:'$' + f + ' ' + grad(g) + ' = ?$', a:x.a, r:x.r, mathe:true,
+             erkl:erklaereWert(f, g), kurz:'$' + f + ' ' + grad(g) + ' = ' + zahl(v) + '$' };
+  },
+  tan: function(){
+    var g = pick([0,45,135,180,225,315,90,270]);
+    var c = cosd(g), v = Math.abs(c) < 1e-9 ? 'n. d.' : zahl(sind(g)/c);
+    var pool = ['−1','0','1','n. d.'];
+    var x = antwortenAus(v, pool, 4);
+    return { frage:'$tan ' + grad(g) + ' = ?$', a:x.a, r:x.r, mathe:true, nd:true,
+             erkl:erklaereTan(g), kurz:'$tan ' + grad(g) + '$ ' + (v === 'n. d.' ? 'ist nicht definiert' : '$= ' + v + '$') };
+  },
+  ungefaehr: function(){
+    var f = pick(['sin','cos']);
+    var g = pick([45,135,225,315, f === 'sin' ? pick([60,120,240,300]) : pick([30,150,210,330])]);
+    var v = f === 'sin' ? sind(g) : cosd(g), rv = zahl(v);
+    var pool = ['0,5','0,71','0,87','1','−0,5','−0,71','−0,87','−1'];
+    var gleichesVZ = pool.filter(function(p){ return (p[0] === '−') === (v < 0); });
+    var x = antwortenAus(rv, gleichesVZ.concat([zahl(-v)]), 4);
+    return { frage:'$' + f + ' ' + grad(g) + ' ≈ ?$', a:x.a, r:x.r, mathe:true,
+             erkl:erklaereWert(f, g), kurz:'$' + f + ' ' + grad(g) + ' ≈ ' + rv + '$' };
+  },
+  sinGleich: function(){
+    var a = pick([ri(2,17)*5, ri(19,34)*5]); if (a === 90) a = 80;
+    var r = norm(180 - a);
+    var pool = [norm(180 + a), norm(360 - a), norm(a + 90), norm(270 - a)].filter(function(x){ return x !== r && x !== a; });
+    pool = pool.filter(function(x, i){ return pool.indexOf(x) === i; });
+    var x = antwortenAus(grad(r), pool.map(grad).concat([grad(r)]), 4);
+    return { frage:'Welcher Winkel hat denselben Sinuswert wie $' + grad(a) + '$?', a:x.a, r:x.r, mathe:true,
+             erkl:'Gleicher Sinuswert = gleiche Höhe. An der y-Achse spiegeln: $180° − ' + grad(a) + ' = ' + grad(r) + '$.',
+             kurz:'$sin ' + grad(a) + ' = sin ' + grad(r) + '$' };
+  },
+  cosGleich: function(){
+    var a = pick([ri(2,17)*5, ri(19,35)*5]); if (a === 90) a = 70;
+    var r = norm(360 - a);
+    var pool = [norm(180 - a), norm(180 + a), norm(a + 90)].filter(function(x){ return x !== r && x !== a; });
+    pool = pool.filter(function(x, i){ return pool.indexOf(x) === i; });
+    var x = antwortenAus(grad(r), pool.map(grad).concat([grad(r)]), 4);
+    return { frage:'Welcher Winkel hat denselben Kosinuswert wie $' + grad(a) + '$?', a:x.a, r:x.r, mathe:true,
+             erkl:'Gleicher Kosinuswert = gleicher x-Wert. An der x-Achse spiegeln: $360° − ' + grad(a) + ' = ' + grad(r) + '$.',
+             kurz:'$cos ' + grad(a) + ' = cos ' + grad(r) + '$' };
+  },
+  vorzeichen: function(){
+    var f = pick(['sin','cos']);
+    var g = Math.random() < 0.15 ? pick(f === 'sin' ? [180, 360] : [90, 270]) : pick([ri(1,17)*5, ri(19,35)*5, ri(37,53)*5, ri(55,71)*5]);
+    g = norm(g); if (g === 0) g = 180;
+    var v = f === 'sin' ? sind(g) : cosd(g);
+    var r = Math.abs(v) < 1e-9 ? 'null' : v > 0 ? 'positiv' : 'negativ';
+    var alle = ['positiv','negativ','null'];
+    var e = Math.abs(v) < 1e-9 ? 'Der Punkt zu $' + grad(g) + '$ liegt auf der ' + (f === 'sin' ? 'x-Achse: y-Wert $0$.' : 'y-Achse: x-Wert $0$.')
+          : lageText(g) + ' ' + (f === 'sin' ? (v > 0 ? 'Er liegt oberhalb der x-Achse' : 'Er liegt unterhalb der x-Achse') + ', also ist $sin ' + grad(g) + '$ ' + r + '.'
+                                                : (v > 0 ? 'Er liegt rechts der y-Achse' : 'Er liegt links der y-Achse') + ', also ist $cos ' + grad(g) + '$ ' + r + '.');
+    return { frage:'Das Vorzeichen von $' + f + ' ' + grad(g) + '$ ist …', a:alle, r:alle.indexOf(r), mathe:false, erkl:e,
+             kurz:'$' + f + ' ' + grad(g) + '$ ist ' + r };
+  },
+  quadrant: function(){
+    var q = pick(QUAD.slice(0,3).concat([{ t:'$sin α > 0$ und $cos α > 0$', q:'I', von:0, bis:90, e:'$sin α > 0$: oberhalb der x-Achse. $cos α > 0$: rechts der y-Achse.' }], QUAD.slice(3)));
+    var alle = ['I','II','III','IV'];
+    return { frage:'In welchem Quadranten gilt ' + q.t + '?', a:alle.map(function(x){ return x + '.'; }), r:alle.indexOf(q.q), mathe:false,
+             erkl:q.e + ' → ' + q.q + '. Quadrant ($' + q.von + '° < α < ' + q.bis + '°$).', kurz:q.t + ' → ' + q.q + '. Quadrant' };
+  },
+  keineLoesung: function(){
+    var r = pick(['sin α = 1,2','cos α = −1,5','sin α = −1,1','cos α = 2','sin α = 1,5']);
+    var pool = mische(['sin α = 0,9','cos α = −1','sin α = −0,4','tan α = 3','cos α = 0','tan α = −5','sin α = 1']).slice(0,3);
+    var alle = mische([r].concat(pool));
+    return { frage:'Welche Gleichung hat <b>keine</b> Lösung?', a:alle, r:alle.indexOf(r), mathe:true,
+             erkl:'Der Einheitskreis hat den Radius $1$: Alle x- und y-Werte liegen zwischen $−1$ und $1$. Also ist $−1 ≤ sin α ≤ 1$ und $−1 ≤ cos α ≤ 1$. $tan α$ kann dagegen jeden Wert annehmen.',
+             kurz:'$' + r + '$ hat keine Lösung' };
+  },
+  formel: function(){
+    if (Math.random() < 0.5){
+      var alle = mische(['@f{sin α}{cos α}','@f{cos α}{sin α}','sin α · cos α','sin α − cos α']);
+      return { frage:'$tan α = ?$', a:alle, r:alle.indexOf('@f{sin α}{cos α}'), mathe:true,
+               erkl:'$tan α = @f{Gegenkathete}{Ankathete} = @f{sin α}{cos α}$ (im Steigungsdreieck am Einheitskreis: Höhe durch Breite).', kurz:'$tan α = @f{sin α}{cos α}$' };
+    }
+    var b = mische(['P(cos α | sin α)','P(sin α | cos α)','P(tan α | 1)']);
+    return { frage:'Welche Koordinaten hat der Punkt zum Winkel $α$ auf dem Einheitskreis?', a:b, r:b.indexOf('P(cos α | sin α)'), mathe:true,
+             erkl:'x-Wert = Kosinus, y-Wert = Sinus: $P(cos α | sin α)$.', kurz:'$P(cos α | sin α)$' };
+  },
+  symmetrie: function(){
+    var S4 = [
+      { f:'sin(180° − α)', r:'sin α', e:'Spiegelung an der y-Achse: gleiche Höhe, also $sin(180° − α) = sin α$.' },
+      { f:'cos(360° − α)', r:'cos α', e:'Spiegelung an der x-Achse: gleicher x-Wert, also $cos(360° − α) = cos α$.' },
+      { f:'cos(180° − α)', r:'−cos α', e:'Spiegelung an der y-Achse: der x-Wert wechselt das Vorzeichen, also $cos(180° − α) = −cos α$.' },
+      { f:'sin(360° − α)', r:'−sin α', e:'Spiegelung an der x-Achse: der y-Wert wechselt das Vorzeichen, also $sin(360° − α) = −sin α$.' }
+    ];
+    var s = pick(S4), alle = mische(['sin α','−sin α','cos α','−cos α']);
+    return { frage:'$' + s.f + ' = ?$', a:alle, r:alle.indexOf(s.r), mathe:true, erkl:s.e, kurz:'$' + s.f + ' = ' + s.r + '$' };
+  }
+};
+var STUFEN = [
+  ['sinCos','sinCos','vorzeichen'],
+  ['sinCos','vorzeichen','sinGleich','cosGleich'],
+  ['sinCos','tan','sinGleich','cosGleich','quadrant','keineLoesung'],
+  ['sinCos','tan','ungefaehr','sinGleich','cosGleich','quadrant','keineLoesung','formel','vorzeichen'],
+  ['sinCos','tan','ungefaehr','sinGleich','cosGleich','quadrant','keineLoesung','formel','symmetrie','vorzeichen']
+];
+var PRO_STUFE = 5, LEBEN = 3;
+var HERZ = '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+var J = null, rafId = 0;
+
+function fallZeit(st){ return Math.max(4.8, 11 * Math.pow(0.9, st - 1)); }
+function startJagd(){
+  MODUS = 'jagd';
+  jagdStopp();
+  J = { leben:LEBEN, punkte:0, stufe:1, richtig:0, serie:0, liste:[], frage:null, kacheln:[], phase:'fall', letzte:'', t:0, lauf:true };
+  $('buehne').hidden = false; document.body.style.overflow = 'hidden';
+  $('jHerz').innerHTML = new Array(LEBEN + 1).join(HERZ);
+  hudJagd();
+  setTimeout(naechsteJagd, 50);
+  var last = performance.now();
+  function loop(now){
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (J && J.lauf) schrittJagd(dt);
+    rafId = requestAnimationFrame(loop);
+  }
+  rafId = requestAnimationFrame(loop);
+}
+function jagdStopp(){
+  if (rafId) cancelAnimationFrame(rafId); rafId = 0;
+  $('buehne').hidden = true; document.body.style.overflow = '';
+  var f = $('feld'); Array.prototype.slice.call(f.querySelectorAll('.kachel,.knall,.plus,#erkl,.overlay')).forEach(function(n){ n.remove(); });
+}
+function hudJagd(){
+  $('jPunkte').textContent = J.punkte;
+  $('jStufe').textContent = 'Stufe ' + J.stufe + (J.serie >= 3 ? ' · Serie ' + J.serie : '');
+  var h = $('jHerz').children; for (var i = 0; i < h.length; i++) h[i].setAttribute('class', i < J.leben ? '' : 'weg');
+}
+function naechsteJagd(){
+  var feld = $('feld'); Array.prototype.slice.call(feld.querySelectorAll('.kachel,#erkl')).forEach(function(n){ n.remove(); });
+  var pool = STUFEN[Math.min(J.stufe, STUFEN.length) - 1], f, n = 0;
+  do { f = GEN[pick(pool)](); n++; } while (f.frage === J.letzte && n < 10);
+  J.letzte = f.frage; J.frage = f; J.phase = 'fall';
+  var fr = $('frage'); fr.className = ''; fr.innerHTML = fmt(f.frage);
+  var W = feld.clientWidth, H = feld.clientHeight, k = f.a.length;
+  var lane = W / k, bw = Math.min(lane - 10, 170);
+  var stag = mische([0, 0.08, 0.16, 0.24].slice(0, k));
+  J.v = (H - 10) / fallZeit(J.stufe);
+  J.kacheln = f.a.map(function(t, i){
+    var d = document.createElement('div');
+    d.className = 'kachel f' + (1 + (i % 4));
+    var inhalt = t === 'n. d.' ? '<span style="font-size:15px">nicht<br>definiert</span>' : (f.mathe ? F(t) : t);
+    d.innerHTML = inhalt; d.style.width = bw + 'px';
+    feld.appendChild(d);
+    var o = { el:d, x:lane * i + (lane - bw) / 2, y:-d.offsetHeight - stag[i] * H, h:d.offsetHeight, ok:i === f.r, weg:false };
+    d.addEventListener('pointerdown', function(e){ e.preventDefault(); schuss(o, e); });
+    setze(o); return o;
+  });
+}
+function setze(o){ var p = 'translate(' + o.x.toFixed(1) + 'px,' + o.y.toFixed(1) + 'px)'; o.el.style.transform = p; o.el.style.setProperty('--pos', p); }
+function schrittJagd(dt){
+  if (J.phase !== 'fall') return;
+  var H = $('feld').clientHeight;
+  for (var i = 0; i < J.kacheln.length; i++){
+    var o = J.kacheln[i]; if (o.weg) continue;
+    o.y += J.v * dt; setze(o);
+    if (o.y + o.h >= H - 10){
+      if (o.ok){ fehler(o, true); return; }
+      o.weg = true; o.el.style.transition = 'opacity .3s'; o.el.style.opacity = '0';
+    }
+  }
+}
+function effekt(cls, x, y, text){
+  var d = document.createElement('div'); d.className = cls; d.style.left = x + 'px'; d.style.top = y + 'px';
+  if (text) d.textContent = text;
+  $('feld').appendChild(d); setTimeout(function(){ d.remove(); }, 900);
+}
+function schuss(o, e){
+  if (!J || J.phase !== 'fall' || o.weg) return;
+  var r = $('feld').getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  effekt('knall', x, y);
+  if (o.ok){
+    var fortschritt = Math.max(0, Math.min(1, o.y / r.height));
+    var p = 10 + 2 * (J.stufe - 1) + Math.round(6 * (1 - fortschritt)) + 2 * Math.min(J.serie, 5);
+    J.punkte += p; J.serie++; J.richtig++;
+    J.liste.push({ ok:true, text:J.frage.kurz });
+    o.weg = true; o.el.classList.add('treffer');
+    effekt('plus', x - 14, y - 20, '+' + p);
+    $('frage').className = 'ok';
+    J.kacheln.forEach(function(k){ if (k !== o){ k.weg = true; k.el.style.transition = 'opacity .25s'; k.el.style.opacity = '0'; } });
+    J.phase = 'zwischen';
+    if (J.richtig % PRO_STUFE === 0){ J.stufe++; var t = $('stufeToast'); t.textContent = 'Stufe ' + J.stufe + '!'; t.classList.remove('go'); void t.offsetWidth; t.classList.add('go'); }
+    hudJagd();
+    setTimeout(function(){ if (J && J.phase === 'zwischen') naechsteJagd(); }, 650);
+  } else {
+    fehler(o, false);
+  }
+}
+function fehler(o, verpasst){
+  J.phase = 'erkl'; J.leben--; J.serie = 0; hudJagd();
+  try{ if (navigator.vibrate) navigator.vibrate(60); }catch(_){}
+  $('frage').className = 'no';
+  if (!verpasst) o.el.classList.add('falsch');
+  J.kacheln.forEach(function(k){ if (k.ok){ k.el.classList.add('richtig'); } });
+  J.liste.push({ ok:false, text:J.frage.kurz, erkl:J.frage.erkl });
+  var richtigText = J.frage.a[J.frage.r];
+  var anzeige = richtigText === 'n. d.' ? 'nicht definiert' : (J.frage.mathe ? F(richtigText) : richtigText);
+  var box = document.createElement('div'); box.id = 'erkl';
+  box.innerHTML = '<b class="t">' + (verpasst ? 'Verpasst!' : 'Daneben!') + '</b>' +
+    '<div style="margin-bottom:6px">Richtig ist: <b>' + anzeige + '</b></div>' + fmt(J.frage.erkl) +
+    '<div class="reihe"><button class="knopf voll" type="button">' + (J.leben > 0 ? 'Weiter ›' : 'Zur Auswertung') + '</button></div>';
+  $('feld').appendChild(box);
+  box.querySelector('button').addEventListener('click', function(){ if (J.leben > 0) naechsteJagd(); else endeJagd(); });
+}
+function endeJagd(){
+  J.phase = 'ende';
+  var eb = $('erkl'); if (eb) eb.remove();
+  var alt = lies('ek.rekord.jagd', 0), neu = J.punkte > alt;
+  if (neu) schreib('ek.rekord.jagd', J.punkte);
+  var fehlerListe = J.liste.filter(function(a){ return !a.ok; });
+  var ov = document.createElement('div'); ov.className = 'overlay';
+  ov.innerHTML = '<div class="karte"><h2>' + (neu ? 'Neuer Rekord!' : 'Spiel vorbei') + '</h2>' +
+    '<div class="ergebnis">' + J.punkte + '<small>Punkte · Stufe ' + J.stufe + ' · ' + J.richtig + ' richtig</small></div>' +
+    (neu ? '' : '<p>Dein Rekord auf diesem Gerät: ' + alt + ' Punkte</p>') +
+    '<div class="reihe"><button class="knopf gelb" type="button" id="jNochmal">Nochmal</button><button class="knopf grau" type="button" id="jMenue">Zum Menü</button></div>' +
+    (fehlerListe.length ? '<h2 style="margin-top:14px;text-align:left">Das schaust du dir nochmal an</h2><ul class="liste" style="text-align:left">' +
+      fehlerListe.map(function(a){ return '<li class="no"><b>' + fmt(a.text) + '</b><div style="margin-top:4px;color:#4b5963">' + fmt(a.erkl) + '</div></li>'; }).join('') + '</ul>' : '') +
+    '</div>';
+  ov.style.overflow = 'auto'; ov.style.alignItems = 'flex-start';
+  $('feld').appendChild(ov);
+  $('jNochmal').addEventListener('click', startJagd);
+  $('jMenue').addEventListener('click', function(){ location.hash = ''; });
+}
+$('jPause').addEventListener('click', function(){
+  if (!J || J.phase === 'ende' || J.phase === 'pause') return;
+  var vorher = J.phase; J.phase = 'pause';
+  var ov = document.createElement('div'); ov.className = 'overlay';
+  ov.innerHTML = '<div class="karte"><h2>Pause</h2><p>Kurz durchatmen. Die Antworten warten auf dich.</p><div class="reihe"><button class="knopf gelb" type="button">Weiter</button><button class="knopf grau" type="button">Zum Menü</button></div></div>';
+  $('feld').appendChild(ov);
+  var b = ov.querySelectorAll('button');
+  b[0].addEventListener('click', function(){ ov.remove(); J.phase = vorher; });
+  b[1].addEventListener('click', function(){ location.hash = ''; });
+});
+document.addEventListener('visibilitychange', function(){ if (document.hidden && J && J.phase === 'fall' && !$('buehne').hidden) $('jPause').click(); });
+
+/* Testzugang (nur mit ?test in der Adresse) */
+if (/[?&]test\b/.test(location.search)) window.__ek = { aufgabeDreh:aufgabeDreh, aufgabeFinden:aufgabeFinden, GEN:GEN, zahl:zahl, grad:grad };
+
+/* Start */
+route();
+})();
+</script>
+</body>
+</html>

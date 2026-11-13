@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#3b77a8">
+<title>Walk-in-Quiz Trigonometrie – Mathe 10c</title>
+<style>
+:root{--blau:#3b77a8;--dunkel:#1f2f3d;--orange:#e97132;--orange-hell:#fdeee5;--lila:#7a2e8e;--lila-hell:#f6ecf9;--gruen:#2e8b57;
+      --gruen-hell:#e6f4ec;--grau:#f2f2f2;--gelb:#ffd23f;--gelb-hell:#fff6d6;--rot:#c00000;--rot-hell:#fde8e8}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:Calibri,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--blau);color:var(--dunkel);
+     font-size:17px;line-height:1.45;overflow-x:hidden}
+button{font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+header{color:#fff;padding:12px 16px 4px;max-width:600px;margin:0 auto}
+header .oben{display:flex;align-items:center;gap:10px}
+header small{opacity:.9;display:block;font-size:13px}
+header h1{margin:1px 0 6px;font-size:20px;line-height:1.2}
+#heim{flex:0 0 auto;border:0;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;font-weight:bold;font-size:14px;
+      padding:8px 12px;cursor:pointer;white-space:nowrap}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:0 0 auto;min-width:36px;border:0;border-radius:999px;padding:6px 11px;font-size:14px;font-weight:bold;
+              background:rgba(255,255,255,.22);color:#fff;cursor:pointer}
+.chips button.gut{background:#bfe6cf;color:#14532d}
+.chips button.spaet{background:#ffe9a3;color:#5c4400}
+.chips button.offen{background:#f7c9c9;color:#7a1010}
+.chips button.an{outline:3px solid var(--gelb);outline-offset:-1px;background:#fff;color:var(--dunkel)}
+main{max-width:600px;margin:0 auto;padding:6px 12px 0}
+.karte{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.18);margin-bottom:12px;animation:rein .25s ease}
+@keyframes rein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.karte h2{margin:0 0 10px;font-size:19px;line-height:1.25;color:var(--lila);text-decoration:underline;text-underline-offset:3px;font-weight:normal}
+.karte p{margin:8px 0}
+.zaehler{font-size:13.5px;color:#5b6770;margin-bottom:2px;display:flex;justify-content:space-between;gap:8px}
+.aufgabentext{background:var(--grau);border-radius:12px;padding:10px 12px;margin:8px 0 10px;font-size:16.5px}
+.geg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.geg span.g1{background:#fff;border:1.5px solid #d5dde3;border-radius:999px;padding:2px 10px;font-size:15.5px}
+/* Formeln */
+.f{font-family:"Cambria Math",Cambria,"STIX Two Math","Times New Roman",serif;white-space:normal;font-size:1.04em}
+.f i{font-style:italic}
+.fz{font-family:"Cambria Math",Cambria,"STIX Two Math","Times New Roman",serif;font-size:1.08em;margin:7px 0 3px;padding:2px 0 3px;
+    overflow-x:auto;overflow-y:hidden;white-space:normal;scrollbar-width:thin;line-height:2.05}
+.w{text-decoration:overline}
+.nw{white-space:nowrap}
+.f.kurz{white-space:nowrap!important}
+.bruch{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.86em;line-height:1.12;margin:0 2px}
+.bruch>span:first-child{border-bottom:1.4px solid currentColor;padding:0 3px 1px}
+.bruch>span:last-child{padding:1px 3px 0}
+.wz{white-space:nowrap}
+.wz>span{border-top:1.4px solid currentColor;padding:0 2px 0 1px;margin-left:-1px}
+sub,sup{font-size:.72em;line-height:0}
+/* Zeichnung */
+.figbox{display:flex;justify-content:center;margin:6px 0 4px}
+svg.fig{width:100%;max-width:340px;height:auto;display:block}
+svg.fig text{font-family:"Cambria Math",Cambria,"Times New Roman",serif}
+/* Antworten */
+.wahl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.wahl.eins{grid-template-columns:1fr}
+.wahl button{border:2px solid #d5dde3;background:#fff;border-radius:12px;padding:12px 8px;font-size:16.5px;cursor:pointer;
+             min-height:52px;line-height:1.35;color:var(--dunkel)}
+.wahl.eins button{text-align:left;padding:11px 12px}
+.wahl button .f{white-space:normal}
+.wahl button.richtig{background:var(--gruen-hell);border-color:var(--gruen);color:#14532d;font-weight:bold}
+.wahl button.falsch{background:var(--rot-hell);border-color:var(--rot);color:#7a1010;animation:wackel .3s}
+.wahl button:disabled{cursor:default}
+.wahl button.aus{opacity:.55}
+@keyframes wackel{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.fb{margin-top:10px}
+.fb .nein{background:var(--rot-hell);border-radius:12px;padding:9px 12px;font-size:15.5px;animation:rein .25s ease}
+.fb .nein b.kopf{color:var(--rot)}
+.fb .ja{background:var(--gruen-hell);border-radius:12px;padding:9px 12px;font-size:16px;animation:rein .25s ease}
+.fb .ja b.kopf{color:var(--gruen)}
+.fb .f{white-space:normal}
+.gross{display:block;width:100%;border:0;border-radius:12px;padding:13px;font-size:16.5px;font-weight:bold;cursor:pointer;margin-top:10px;text-align:center;text-decoration:none}
+.k-erkl{background:var(--lila);color:#fff}
+.k-leise{background:transparent;color:#4b5963;font-weight:normal;font-size:15px;text-decoration:underline;padding:8px}
+.k-grau{background:#e1e6ea;color:var(--dunkel)}
+/* Erklärung */
+.schritte{list-style:none;margin:10px 0 0;padding:0;counter-reset:s}
+.schritte li{position:relative;background:#f7fbff;border-left:4px solid var(--blau);border-radius:8px;padding:9px 10px 9px 44px;margin:8px 0;
+             animation:rein .25s ease;counter-increment:s;font-size:16px}
+.schritte li::before{content:counter(s);position:absolute;left:9px;top:9px;width:25px;height:25px;border-radius:50%;background:var(--gelb);
+                     font-weight:bold;font-size:14.5px;display:flex;align-items:center;justify-content:center}
+.schritte li[hidden]{display:none}
+.knoepfe{display:flex;gap:8px;margin-top:10px}
+.knoepfe button{flex:1;border:0;border-radius:12px;padding:12px 8px;font-size:16px;font-weight:bold;cursor:pointer}
+.k-zeile{background:var(--blau);color:#fff}
+.k-alles{background:#e1e6ea;color:var(--dunkel)}
+.ok{background:var(--gruen-hell);border:2px solid var(--gruen);border-radius:12px;padding:10px 12px;margin:10px 0;animation:rein .25s ease}
+.ok small{display:block;font-weight:bold;color:var(--gruen);font-size:13.5px}
+.ok .f{white-space:normal;font-size:1.12em}
+.merk{border:2px solid var(--orange);border-radius:12px;padding:9px 12px;background:var(--orange-hell);margin:10px 0;font-size:15.5px;animation:rein .25s ease}
+.merk::before{content:"Merke: ";font-weight:bold;color:#b8501a}
+.merk .f{white-space:normal}
+.hinweis-klein{font-size:14px;color:#55606a}
+/* Start */
+.themen{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.thema{display:flex;align-items:center;gap:11px;border:2px solid #dbe2e8;background:#fff;border-radius:14px;padding:10px 12px;cursor:pointer;
+       text-align:left;width:100%;font-size:16.5px}
+.thema .tn{flex:0 0 46px;height:46px;border-radius:12px;background:var(--lila-hell);color:var(--lila);font-weight:bold;display:flex;
+           align-items:center;justify-content:center;font-size:16px}
+.thema .tt{flex:1;min-width:0;font-weight:bold;line-height:1.25}
+.thema .tt small{display:block;font-weight:normal;color:#5b6770;font-size:13.5px;line-height:1.3;margin-top:2px}
+.thema .tp{flex:0 0 auto;font-size:13.5px;color:#5b6770;text-align:right;white-space:nowrap}
+.thema .balken{display:block;width:46px;height:6px;background:#e3e9ee;border-radius:9px;overflow:hidden;margin-top:4px}
+.thema .balken i{display:block;height:100%;background:var(--gruen)}
+.thema.fertig{border-color:var(--gruen)}
+.thema.fertig .tn{background:var(--gruen-hell);color:var(--gruen)}
+.mix{background:var(--gelb-hell);border:2px dashed #e0a93c}
+.mix .tn{background:var(--gelb);color:#3d2f00}
+ol.start{margin:6px 0;padding-left:22px}
+ol.start li{margin:4px 0}
+.punkte{font-size:44px;font-weight:bold;color:var(--lila);text-align:center;margin:4px 0}
+.liste{list-style:none;margin:8px 0 0;padding:0}
+.liste li{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #e6e9ec;font-size:15.5px}
+.liste .mark{flex:0 0 26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;background:#e3e9ee;color:#55606a}
+.liste .mark.gut{background:#bfe6cf;color:#14532d}.liste .mark.spaet{background:#ffe9a3;color:#5c4400}.liste .mark.offen{background:#f7c9c9;color:#7a1010}
+.liste .lt{flex:1;min-width:0}
+.liste button{flex:0 0 auto;border:0;border-radius:9px;background:var(--lila-hell);color:var(--lila);font-weight:bold;font-size:14px;padding:7px 10px;cursor:pointer}
+.legende{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:#55606a;margin-top:10px}
+.legende i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:4px}
+/* Navigation steht direkt unter der Karte (nicht am Bildschirmrand fixiert), darunter bleibt Platz frei */
+nav{max-width:600px;margin:0 auto;padding:0 12px;display:flex;gap:10px}
+body{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+nav button{flex:1;border:0;border-radius:14px;padding:15px 8px;font-size:17px;font-weight:bold;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18);min-height:54px}
+#zurueck{background:#fff;color:var(--dunkel);flex:0 1 38%} #weiter{background:var(--gelb);color:#222}
+nav button:disabled{opacity:.4}
+nav[hidden]{display:none}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gelb);outline-offset:2px}
+@media (max-width:360px){body{font-size:16px}.wahl{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="../assets/formeln.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="../assets/formeln.js"></script>
+</head>
+<body>
+<header>
+  <div class="oben">
+    <div style="flex:1;min-width:0"><small id="kopfKlein">Mathe 10c · Kapitel 1 Trigonometrie</small><h1 id="kopfGross">Walk-in-Quiz</h1></div>
+    <button type="button" id="heim" hidden>‹ Themen</button>
+  </div>
+  <div class="chips" id="chips" hidden></div>
+</header>
+<main id="main"><section class="karte"><h2>Walk-in-Quiz Trigonometrie</h2><p>Die Seite braucht JavaScript. Bitte öffne sie im normalen Browser deines Handys (Chrome, Safari, Firefox).</p></section></main>
+<nav id="nav" hidden><button type="button" id="zurueck">‹ Zurück</button><button type="button" id="weiter">Weiter ›</button></nav>
+<script>
+window.STARTSEITE="index.html";
+/* ---------- Formelsatz: kleine Kurzschrift -> HTML ----------
+   $...$ Formel in der Zeile, $$...$$ eigene Formelzeile
+   @f{Zähler}{Nenner} Bruch · @w{...} Wurzel · @s{AB} Strecke · @l{AB} Streckenlänge · @t{Text} aufrecht
+   _n _{max} tiefgestellt · ^2 ^{−1} hochgestellt */
+const AUFRECHT = new Set(['sin','cos','tan','cm','mm','dm','km','LE','FE','und','oder','für','bei','mit','TR','max','min','Rechteck','Dreieck']);
+const BUCHST = /[A-Za-zÄÖÜäöüßα-ωΑ-Ωφ]/;
+function mth(s){
+  let i = 0;
+  function arg(){ i++; const r = seq('}'); i++; return r; }
+  function roh(){ i++; let j = s.indexOf('}', i); const r = s.slice(i, j); i = j + 1; return r; }
+  function seq(ende){
+    let out = '';
+    while (i < s.length && s[i] !== ende){
+      const c = s[i];
+      if (c === '@'){
+        const k = s[i+1]; i += 2;
+        if (k === 't'){ out += roh(); continue; }
+        const a = arg();
+        if (k === 'f'){ const b = arg(); out += '<span class="bruch"><span>' + a + '</span><span>' + b + '</span></span>'; }
+        else if (k === 'w') out += '<span class="wz">√<span>' + a + '</span></span>';
+        else if (k === 's') out += '<span class="w">' + a + '</span>';
+        else if (k === 'l') out += '<span class="nw">|<span class="w">' + a + '</span>|</span>';
+      } else if (c === '_' || c === '^'){
+        i++; let a;
+        if (s[i] === '{') a = arg(); else { a = BUCHST.test(s[i]) ? '<i>' + s[i] + '</i>' : s[i]; i++; }
+        out += (c === '_' ? '<sub>' : '<sup>') + a + (c === '_' ? '</sub>' : '</sup>');
+      } else if (BUCHST.test(c)){
+        let j = i; while (j < s.length && BUCHST.test(s[j])) j++;
+        const w = s.slice(i, j); i = j;
+        out += AUFRECHT.has(w) ? w : '<i>' + w + '</i>';
+      } else if (c === ' '){ out += '&nbsp;'; i++; }
+      else { out += c; i++; }
+    }
+    return out;
+  }
+  /* Umbruch nur vor =, ⇒ und ≈ erlauben */
+  return seq(null).replace(/&nbsp;(=|⇒|≈)/g, ' $1');
+}
+function fmt(s){
+  if (!s) return '';
+  const K = x => (window.Formel && window.Formel.html(x, false)) || mth(x);
+  return s.replace(/\$\$([^$]+)\$\$/g, (_, x) => '<div class="fz">' + ((window.Formel && window.katex) ? window.katex.renderToString('\\displaystyle ' + window.Formel.tex(x), {throwOnError:false, strict:'ignore'}) : mth(x)) + '</div>')
+          .replace(/\$([^$]+)\$/g, (_, x) => '<span class="f' + (x.replace(/@\w\{|[{}_^]/g, '').length <= 24 ? ' kurz' : '') + '">' + K(x) + '</span>');
+}
+
+/* ---------- Zeichnungen (SVG) ---------- */
+const FARBE = { hyp:'#7a2e8e', ank:'#2f6fa3', geg:'#c0392b', ges:'#e97132', gruen:'#2e8b57', std:'#1f2f3d', grau:'#8a959e', hell:'#eaf1f7' };
+function farbe(c){ return FARBE[c] || c || FARBE.std; }
+/* Beschriftung in SVG: einzelne Buchstaben kursiv, _x tiefgestellt */
+function svgt(s, fs){
+  let out = '', i = 0;
+  const tief = a => '<tspan dy="' + (fs*0.26).toFixed(1) + '" font-size="' + (fs*0.72).toFixed(1) + '" font-style="italic">' + a +
+                    '</tspan><tspan dy="' + (-fs*0.26).toFixed(1) + '">​</tspan>';
+  while (i < s.length){
+    const c = s[i];
+    if (c === '_'){ i++; let a; if (s[i] === '{'){ const j = s.indexOf('}', i); a = s.slice(i+1, j); i = j+1; } else { a = s[i]; i++; } out += tief(a); }
+    else if (BUCHST.test(c)){
+      let j = i; while (j < s.length && BUCHST.test(s[j])) j++;
+      const w = s.slice(i, j); i = j;
+      const einheit = w === 'm' && /\d $/.test(s.slice(0, i - 1));
+      out += (AUFRECHT.has(w) || w.length > 3 || einheit) ? w : '<tspan font-style="italic">' + w + '</tspan>';
+    } else { out += c; i++; }
+  }
+  return out;
+}
+function txt(x, y, s, o){
+  o = o || {}; const fs = o.fs || 15;
+  return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" font-size="' + fs + '" text-anchor="' + (o.a || 'middle') +
+         '" fill="' + farbe(o.c) + '"' + (o.b ? ' font-weight="bold"' : '') + ' dominant-baseline="central">' + svgt(String(s), fs) + '</text>';
+}
+/* Allgemeine Geometrie-Zeichnung.
+   o.P Punkte (Mathe-Koordinaten, y nach oben) · o.poly Flächen · o.seg Strecken · o.ang Winkelbögen · o.rw rechte Winkel
+   o.lab Eckenbeschriftung · o.dot Punkte · o.W Breite · o.pad [links, oben, rechts, unten] */
+function geo(o){
+  const P = o.P, namen = Object.keys(P);
+  const W = o.W || 320, pad = o.pad || [34, 26, 34, 28], Hmax = o.H || 210;
+  const rahmen = (o.box || namen).map(n => P[n]);
+  const xs = rahmen.map(p => p[0]), ys = rahmen.map(p => p[1]);
+  const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+  const sc = Math.min((W - pad[0] - pad[2]) / (maxx - minx || 1), (Hmax - pad[1] - pad[3]) / (maxy - miny || 1));
+  const ox = pad[0] + ((W - pad[0] - pad[2]) - (maxx - minx) * sc) / 2;
+  const H = pad[1] + pad[3] + (maxy - miny) * sc;
+  const X = n => { const p = P[n]; return [ox + (p[0] - minx) * sc, pad[1] + (maxy - p[1]) * sc]; };
+  const mitte = o.cen ? o.cen.map(n => X(n)) : namen.map(n => X(n));
+  const cx = mitte.reduce((a, p) => a + p[0], 0) / mitte.length, cy = mitte.reduce((a, p) => a + p[1], 0) / mitte.length;
+  const ein = (dx, dy) => { const l = Math.hypot(dx, dy) || 1; return [dx / l, dy / l]; };
+  let s = '';
+  (o.poly || []).forEach(pl => {
+    const pts = pl.p.map(n => X(n).map(v => v.toFixed(1)).join(',')).join(' ');
+    s += '<polygon points="' + pts + '" fill="' + (pl.f || FARBE.hell) + '" stroke="none"/>';
+  });
+  /* Winkelbögen */
+  (o.ang || []).forEach(a => {
+    const [u, v, w, op0] = a, op = op0 || {};
+    const V = X(v), U = X(u), Wp = X(w);
+    let a1 = Math.atan2(U[1] - V[1], U[0] - V[0]), a2 = Math.atan2(Wp[1] - V[1], Wp[0] - V[0]);
+    let d = a2 - a1; while (d <= -Math.PI) d += 2 * Math.PI; while (d > Math.PI) d -= 2 * Math.PI;
+    const th = Math.abs(d), r = op.r || (th < 0.6 ? 38 : th < 0.95 ? 30 : 26);
+    const p1 = [V[0] + r * Math.cos(a1), V[1] + r * Math.sin(a1)], p2 = [V[0] + r * Math.cos(a1 + d), V[1] + r * Math.sin(a1 + d)];
+    const col = farbe(op.c);
+    if (op.f) s += '<path d="M' + V[0].toFixed(1) + ',' + V[1].toFixed(1) + ' L' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1) + ' A' + r + ',' + r + ' 0 0 ' + (d > 0 ? 1 : 0) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1) + ' Z" fill="' + op.f + '"/>';
+    s += '<path d="M' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1) + ' A' + r + ',' + r + ' 0 0 ' + (d > 0 ? 1 : 0) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1) + '" fill="none" stroke="' + col + '" stroke-width="1.6"/>';
+    if (op.t){
+      const am = a1 + d / 2, len = String(op.t).replace(/_/g, '').length;
+      const innen = !op.aus && !op.d && th >= 0.95 && len <= 1;
+      const dd = innen ? r * 0.6 : (op.d || r + 7 + 3.7 * len);
+      s += txt(V[0] + dd * Math.cos(am), V[1] + dd * Math.sin(am), op.t, { fs: op.fs || 14, c: op.c });
+    }
+  });
+  /* rechte Winkel: Viertelkreis mit Punkt */
+  (o.rw || []).forEach(a => {
+    const [u, v, w, op0] = a, op = op0 || {};
+    const V = X(v), U = X(u), Wp = X(w), r = op.r || 17;
+    let a1 = Math.atan2(U[1] - V[1], U[0] - V[0]), a2 = Math.atan2(Wp[1] - V[1], Wp[0] - V[0]);
+    let d = a2 - a1; while (d <= -Math.PI) d += 2 * Math.PI; while (d > Math.PI) d -= 2 * Math.PI;
+    const p1 = [V[0] + r * Math.cos(a1), V[1] + r * Math.sin(a1)], p2 = [V[0] + r * Math.cos(a2), V[1] + r * Math.sin(a2)];
+    const col = farbe(op.c), am = a1 + d / 2;
+    s += '<path d="M' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1) + ' A' + r + ',' + r + ' 0 0 ' + (d > 0 ? 1 : 0) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1) + '" fill="none" stroke="' + col + '" stroke-width="1.6"/>';
+    s += '<circle cx="' + (V[0] + r * 0.5 * Math.cos(am)).toFixed(1) + '" cy="' + (V[1] + r * 0.5 * Math.sin(am)).toFixed(1) + '" r="1.7" fill="' + col + '"/>';
+  });
+  /* Strecken */
+  (o.seg || []).forEach(g => {
+    const [p, q, op0] = g, op = op0 || {};
+    const A = X(p), B = X(q), col = farbe(op.c);
+    s += '<line x1="' + A[0].toFixed(1) + '" y1="' + A[1].toFixed(1) + '" x2="' + B[0].toFixed(1) + '" y2="' + B[1].toFixed(1) + '" stroke="' + col +
+         '" stroke-width="' + (op.w || (op.c ? 3 : 1.9)) + '" stroke-linecap="round"' + (op.d ? ' stroke-dasharray="' + (op.d === true ? '5 4' : op.d) + '"' : '') + '/>';
+    if (op.t){
+      const pos = op.tp == null ? 0.5 : op.tp, mx = A[0] + (B[0] - A[0]) * pos, my = A[1] + (B[1] - A[1]) * pos;
+      let n = ein(-(B[1] - A[1]), B[0] - A[0]);
+      if (op.o == null){ if ((mx - cx) * n[0] + (my - cy) * n[1] < 0) n = [-n[0], -n[1]]; }
+      else if (op.o < 0) n = [-n[0], -n[1]];
+      const ab = op.ab == null ? 13 : op.ab;
+      const anker = n[0] > 0.35 ? 'start' : n[0] < -0.35 ? 'end' : 'middle';
+      s += txt(mx + n[0] * (anker === 'middle' ? ab : ab - 5), my + n[1] * ab, op.t, { fs: op.fs || 14, a: anker, c: op.tc || op.c });
+    }
+  });
+  /* Punkte */
+  (o.dot || []).forEach(n => { const p = X(n); s += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3" fill="' + FARBE.std + '"/>'; });
+  /* Eckenbeschriftung */
+  const lab = o.lab || {};
+  Object.keys(lab).forEach(n => {
+    const p = X(n); let t = lab[n], ri;
+    if (Array.isArray(t)){ ri = ein(t[1], t[2]); t = t[0]; } else ri = ein(p[0] - cx, p[1] - cy);
+    s += txt(p[0] + ri[0] * 15, p[1] + ri[1] * 14, t, { fs: 16, b: 1 });
+  });
+  if (o.extra) s += o.extra(X, sc);
+  return '<svg class="fig" viewBox="0 0 ' + W + ' ' + H.toFixed(0) + '" role="img" aria-label="' + (o.alt || 'Skizze') + '">' + s + '</svg>';
+}
+/* Dreieck ABC: Seite a liegt A gegenüber usw.
+   o.P Ecken · o.rw Ecke mit rechtem Winkel · o.s Seitenbeschriftung {a,b,c} · o.f Seitenfarben {a,b,c}
+   o.w Winkel {A:'55°'} oder {A:{t:'55°',c:'ges'}} · o.h Höhe {von:'C', t:'h_c'} · o.ecken andere Namen */
+function tri(o){
+  const N = o.ecken || { A:'A', B:'B', C:'C' };
+  const P = { A:o.P.A, B:o.P.B, C:o.P.C };
+  const s = o.s || {}, f = o.f || {};
+  const g = { P, seg:[], ang:[], rw:[], lab:{}, poly:[{ p:['A','B','C'], f:o.fill || '#f4f7fa' }], W:o.W, pad:o.pad, H:o.H, alt:o.alt, cen:['A','B','C'], box:['A','B','C'], extra:o.extra };
+  const seite = { a:['B','C'], b:['C','A'], c:['A','B'] };
+  ['a','b','c'].forEach(k => g.seg.push([seite[k][0], seite[k][1], { t:s[k], c:f[k] }]));
+  const nachbar = { A:['B','C'], B:['C','A'], C:['A','B'] };
+  if (o.rw) g.rw.push([nachbar[o.rw][0], o.rw, nachbar[o.rw][1]]);
+  Object.keys(o.w || {}).forEach(v => {
+    const w = typeof o.w[v] === 'string' ? { t:o.w[v] } : o.w[v];
+    g.ang.push([nachbar[v][0], v, nachbar[v][1], w]);
+  });
+  ['A','B','C'].forEach(v => { g.lab[v] = N[v]; });
+  if (o.h){
+    const v = o.h.von, [u, w] = nachbar[v], U = P[u], Wp = P[w], V = P[v];
+    const dx = Wp[0] - U[0], dy = Wp[1] - U[1], t = ((V[0] - U[0]) * dx + (V[1] - U[1]) * dy) / (dx * dx + dy * dy);
+    P.F = [U[0] + t * dx, U[1] + t * dy];
+    g.seg.push([v, 'F', { c:'geg', w:2.2, d:'6 4', t:o.h.t, o:o.h.o == null ? 1 : o.h.o, ab:11 }]);
+    g.rw.push([v, 'F', t > 0.5 ? u : w, { c:'geg', r:13 }]);
+  }
+  return geo(g);
+}
+/* Koordinatensystem: o.x [min,max], o.y [min,max], o.e Pixel je Einheit, o.zeichne(X, Y) liefert weiteres SVG */
+function koord(o){
+  const e = o.e || 40, ex = o.ex || e, ey = o.ey || e, pl = 28, pt = 18, pb = 26;
+  const W = pl * 2 + (o.x[1] - o.x[0]) * ex, H = pt + pb + (o.y[1] - o.y[0]) * ey;
+  const X = x => pl + (x - o.x[0]) * ex, Y = y => pt + (o.y[1] - y) * ey;
+  let s = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>';
+  const sx = o.sx || 1, sy = o.sy || 1;
+  if (o.gitter !== false){
+    for (let x = Math.ceil(o.x[0] / sx) * sx; x <= o.x[1] + 1e-9; x += sx) s += '<line x1="' + X(x) + '" y1="' + Y(o.y[0]) + '" x2="' + X(x) + '" y2="' + Y(o.y[1]) + '" stroke="#dfe5ea" stroke-width="1"/>';
+    for (let y = Math.ceil(o.y[0] / sy) * sy; y <= o.y[1] + 1e-9; y += sy) s += '<line x1="' + X(o.x[0]) + '" y1="' + Y(y) + '" x2="' + X(o.x[1]) + '" y2="' + Y(y) + '" stroke="#dfe5ea" stroke-width="1"/>';
+  }
+  const pf = '#1f2f3d';
+  s += '<line x1="' + X(o.x[0]) + '" y1="' + Y(0) + '" x2="' + (X(o.x[1]) + 10) + '" y2="' + Y(0) + '" stroke="' + pf + '" stroke-width="1.6"/>';
+  s += '<path d="M' + (X(o.x[1]) + 16) + ',' + Y(0) + ' l-8,-4 v8 z" fill="' + pf + '"/>';
+  s += '<line x1="' + X(0) + '" y1="' + Y(o.y[0]) + '" x2="' + X(0) + '" y2="' + (Y(o.y[1]) - 10) + '" stroke="' + pf + '" stroke-width="1.6"/>';
+  s += '<path d="M' + X(0) + ',' + (Y(o.y[1]) - 16) + ' l-4,8 h8 z" fill="' + pf + '"/>';
+  s += txt(X(o.x[1]) + 14, Y(0) + 15, o.xn || 'x', { fs:14 }) + txt(X(0) - 13, Y(o.y[1]) - 10, o.yn || 'y', { fs:14 });
+  (o.tx || []).forEach(x => { s += '<line x1="' + X(x) + '" y1="' + (Y(0) - 3) + '" x2="' + X(x) + '" y2="' + (Y(0) + 3) + '" stroke="' + pf + '" stroke-width="1.4"/>' + txt(X(x) + (o.txd ? o.txd(x) : 0), Y(0) + 13, (o.txf ? o.txf(x) : String(x).replace('-', '−').replace('.', ',')), { fs:11.5 }); });
+  (o.ty || []).forEach(y => { s += '<line x1="' + (X(0) - 3) + '" y1="' + Y(y) + '" x2="' + (X(0) + 3) + '" y2="' + Y(y) + '" stroke="' + pf + '" stroke-width="1.4"/>' + txt(X(0) - 7, Y(y), String(y).replace('-', '−').replace('.', ','), { fs:11.5, a:'end' }); });
+  if (o.zeichne) s += o.zeichne(X, Y);
+  return '<svg class="fig' + (o.kl ? ' ' + o.kl : '') + '" viewBox="0 0 ' + (W + 6) + ' ' + H + '" role="img" aria-label="' + (o.alt || 'Koordinatensystem') + '">' + s + '</svg>';
+}
+function gerade(X, Y, m, t, x1, x2, c){ return '<line x1="' + X(x1).toFixed(1) + '" y1="' + Y(m * x1 + t).toFixed(1) + '" x2="' + X(x2).toFixed(1) + '" y2="' + Y(m * x2 + t).toFixed(1) + '" stroke="' + farbe(c) + '" stroke-width="2.4" stroke-linecap="round"/>'; }
+function kurve(X, Y, f, x1, x2, c, n){
+  n = n || 80; let d = '';
+  for (let i = 0; i <= n; i++){ const x = x1 + (x2 - x1) * i / n; d += (i ? ' L' : 'M') + X(x).toFixed(1) + ',' + Y(f(x)).toFixed(1); }
+  return '<path d="' + d + '" fill="none" stroke="' + farbe(c) + '" stroke-width="2.4" stroke-linejoin="round"/>';
+}
+/* Quader im Schrägbild: Kanten a (nach rechts), b (nach hinten), c (nach oben); o.dreieck z. B. ['A','C','G'] */
+function koerperPunkte(a, b, c){
+  const k = 0.5 * Math.SQRT1_2, P = {};
+  const pr = (x, y, z) => [x + y * k, z + y * k];
+  P.A = pr(0,0,0); P.B = pr(a,0,0); P.C = pr(a,b,0); P.D = pr(0,b,0);
+  P.E = pr(0,0,c); P.F = pr(a,0,c); P.G = pr(a,b,c); P.H = pr(0,b,c);
+  return P;
+}
+function quader(o){
+  const P = koerperPunkte(o.a, o.b, o.c);
+  const g = { P, seg:[], poly:[], lab:{}, rw:[], ang:[], W:o.W || 320, H:o.H || 230, pad:[30, 24, 56, 26], alt:o.alt || 'Quader im Schrägbild' };
+  if (o.dreieck) g.poly.push({ p:o.dreieck, f:'#fdeee5' });
+  const versteckt = [['A','D'],['D','C'],['D','H']];
+  const sichtbar = [['A','B'],['B','C'],['A','E'],['B','F'],['C','G'],['E','F'],['F','G'],['G','H'],['H','E']];
+  versteckt.forEach(k => g.seg.push([k[0], k[1], { d:'4 4', w:1.3 }]));
+  sichtbar.forEach(k => g.seg.push([k[0], k[1], { w:1.7 }]));
+  const kt = o.kanten || {};
+  if (kt.AB) g.seg.push(['A','B', { w:0.01, t:kt.AB, o:1, ab:13 }]);
+  if (kt.BC) g.seg.push(['B','C', { w:0.01, t:kt.BC, o:1, ab:12 }]);
+  if (kt.CG) g.seg.push(['C','G', { w:0.01, t:kt.CG, o:1, ab:12 }]);
+  (o.linien || []).forEach(l => g.seg.push([l[0], l[1], Object.assign({ c:'ges', w:2.6 }, l[2] || {})]));
+  (o.rw || []).forEach(r => g.rw.push(r));
+  (o.ang || []).forEach(r => g.ang.push(r));
+  const ri = { A:[-1,1], B:[1,1], C:[1,0.3], D:[-1,-0.4], E:[-1,-0.3], F:[1,-0.5], G:[1,-1], H:[-1,-1] };
+  Object.keys(ri).forEach(n => { g.lab[n] = [n, ri[n][0], ri[n][1]]; });
+  return geo(g);
+}
+/* Gerade quadratische Pyramide ABCDS mit Grundkante a und Höhe h, M Mittelpunkt der Grundfläche */
+function pyramide(o){
+  const k = 0.5 * Math.SQRT1_2, a = o.a, pr = (x, y, z) => [x + y * k, z + y * k];
+  const P = { A:pr(0,0,0), B:pr(a,0,0), C:pr(a,a,0), D:pr(0,a,0), M:pr(a/2,a/2,0), S:pr(a/2,a/2,o.h) };
+  const g = { P, seg:[], poly:[], lab:{}, rw:[], ang:[], dot:['M'], W:o.W || 320, H:o.H || 270, pad:[30, 24, 30, 26], alt:o.alt || 'Pyramide im Schrägbild' };
+  if (o.dreieck) g.poly.push({ p:o.dreieck, f:'#fdeee5' });
+  [['A','D'],['D','C'],['D','S'],['A','C'],['M','S']].forEach(k2 => g.seg.push([k2[0], k2[1], { d:'4 4', w:1.3 }]));
+  [['A','B'],['B','C'],['A','S'],['B','S'],['C','S']].forEach(k2 => g.seg.push([k2[0], k2[1], { w:1.7 }]));
+  (o.linien || []).forEach(l => g.seg.push([l[0], l[1], Object.assign({ c:'ges', w:2.6 }, l[2] || {})]));
+  (o.rw || []).forEach(r => g.rw.push(r));
+  (o.ang || []).forEach(r => g.ang.push(r));
+  const ri = { A:[-1,1], B:[1,1], C:[1,0.2], D:[-1,-0.2], S:[0,-1], M:[0.5,1] };
+  Object.keys(ri).forEach(n => { g.lab[n] = [n, ri[n][0], ri[n][1]]; });
+  return geo(g);
+}
+
+/* ---------- Aufgaben ---------- */
+['Gegenkathete','Ankathete','Hypotenuse','Kathete'].forEach(w => AUFRECHT.add(w));
+const rad = g => g * Math.PI / 180, sind = g => Math.sin(rad(g)), cosd = g => Math.cos(rad(g)), tand = g => Math.tan(rad(g));
+const asind = v => Math.asin(v) / Math.PI * 180, acosd = v => Math.acos(v) / Math.PI * 180, atand = v => Math.atan(v) / Math.PI * 180;
+const pol = (r, g) => [r * cosd(g), r * sind(g)];
+/* rechtwinkliges Dreieck mit rechtem Winkel bei A: B rechts (Länge c), C oben (Länge b) */
+const rwA = (b, c, o) => tri(Object.assign({ P:{ A:[0,0], B:[c,0], C:[0,b] }, rw:'A', pad:[62, 26, 40, 30] }, o));
+const HYP = 'Hypotenuse', ANK = 'Ankathete', GEG = 'Gegenkathete';
+const THEMEN = [];
+
+THEMEN.push({ nr:'1.1', titel:'Trigonometrische Terme', sub:'sin, cos, tan und Pythagoras im rechtwinkligen Dreieck', fragen:[
+{ t:'Formeln für sin, cos und tan',
+  q:'Welche Formel gehört zu $sin α$?',
+  fig:() => tri({ P:{ A:[0,0], B:[6.4,0], C:pol(5.11,37) }, rw:'C', w:{ A:'α' } }),
+  figL:() => tri({ P:{ A:[0,0], B:[6.4,0], C:pol(5.11,37) }, rw:'C', w:{ A:'α' }, s:{ a:GEG, b:ANK, c:HYP }, f:{ a:'geg', b:'ank', c:'hyp' }, pad:[40,26,92,30] }),
+  o:[['$@f{Gegenkathete}{Hypotenuse}$', 1],
+     ['$@f{Ankathete}{Hypotenuse}$', 0, 'Das ist die Formel für $cos α$.'],
+     ['$@f{Gegenkathete}{Ankathete}$', 0, 'Das ist die Formel für $tan α$.'],
+     ['$@f{Hypotenuse}{Gegenkathete}$', 0, 'Zähler und Nenner sind vertauscht – die Hypotenuse steht bei $sin$ und $cos$ immer unten.']],
+  k:'$sin α = @f{Gegenkathete}{Hypotenuse}$',
+  s:['Die <b>Hypotenuse</b> ist die längste Seite. Sie liegt gegenüber vom rechten Winkel.',
+     'Die <b>Gegenkathete</b> liegt dem Winkel $α$ gegenüber, die <b>Ankathete</b> liegt am Winkel $α$ an.',
+     'Die drei Formeln: $$sin α = @f{Gegenkathete}{Hypotenuse}$$ $$cos α = @f{Ankathete}{Hypotenuse}$$ $$tan α = @f{Gegenkathete}{Ankathete}$$'],
+  e:'$sin α = @f{Gegenkathete}{Hypotenuse}$',
+  m:'Gilt nur im rechtwinkligen Dreieck! Welche Seite Gegen- bzw. Ankathete ist, hängt immer vom Winkel ab.' },
+
+{ t:'Strecke b mit γ = 55°',
+  q:'Gib die Länge der Strecke $b$ an.', geg:['rechter Winkel bei $A$', '$a = 7 cm$', '$γ = 55°$'],
+  fig:() => rwA(4.02, 5.73, { s:{ a:'7 cm', b:'b = ?' }, w:{ C:'55°' } }),
+  figL:() => rwA(4.02, 5.73, { s:{ a:HYP, b:ANK, c:GEG }, f:{ a:'hyp', b:'ank', c:'geg' }, w:{ C:'γ' }, pad:[82,26,84,32] }),
+  o:[['$b ≈ 4,02 cm$', 1],
+     ['$b ≈ 5,73 cm$', 0, 'Das ist $7 cm · sin 55°$. Der Sinus gehört zur Gegenkathete – $b$ liegt aber am Winkel $γ$ an.'],
+     ['$b ≈ 10,00 cm$', 0, 'Das ist $7 cm · tan 55°$. Der Tangens verbindet die beiden Katheten – gegeben ist aber die Hypotenuse.'],
+     ['$b ≈ 12,20 cm$', 0, 'Du hast durch $cos 55°$ geteilt. $b$ ist eine Kathete und muss kürzer sein als die Hypotenuse (7 cm).']],
+  k:'$b = 7 cm · cos 55° ≈ 4,02 cm$',
+  s:['Rechter Winkel bei $A$ ⇒ die Hypotenuse ist $a = 7 cm$ (sie liegt gegenüber von $A$).',
+     'Vom Winkel $γ$ aus liegt $b$ am Winkel an ⇒ <b>Ankathete</b>. Ankathete und Hypotenuse ⇒ <b>Kosinus</b>.',
+     'Formel aufstellen und nach $b$ umstellen (beide Seiten $· a$): $$cos γ = @f{b}{a}  ⇒  b = a · cos γ$$',
+     'Einsetzen und ausrechnen: $$b = 7 cm · cos 55° ≈ 4,02 cm$$'],
+  e:'$b ≈ 4,02 cm$',
+  c:[[7*cosd(55),2],[7*sind(55),2],[7*tand(55),2],[7/cosd(55),2]] },
+
+{ t:'Strecke c mit γ = 55°',
+  q:'Gib die Länge der Strecke $c$ an.', geg:['rechter Winkel bei $A$', '$a = 7 cm$', '$γ = 55°$'],
+  fig:() => rwA(4.02, 5.73, { s:{ a:'7 cm', c:'c = ?' }, w:{ C:'55°' } }),
+  figL:() => rwA(4.02, 5.73, { s:{ a:HYP, b:ANK, c:GEG }, f:{ a:'hyp', b:'ank', c:'geg' }, w:{ C:'γ' }, pad:[82,26,84,32] }),
+  o:[['$c ≈ 5,73 cm$', 1],
+     ['$c ≈ 4,02 cm$', 0, 'Das ist $7 cm · cos 55°$, also die Ankathete $b$. Gesucht ist die Seite gegenüber von $γ$.'],
+     ['$c ≈ 8,55 cm$', 0, 'Du hast durch $sin 55°$ geteilt. $c$ ist eine Kathete und muss kürzer sein als die Hypotenuse (7 cm).'],
+     ['$c ≈ 10,00 cm$', 0, 'Das ist $7 cm · tan 55°$. Für den Tangens bräuchtest du die Ankathete, gegeben ist aber die Hypotenuse.']],
+  k:'$c = 7 cm · sin 55° ≈ 5,73 cm$',
+  s:['Rechter Winkel bei $A$ ⇒ die Hypotenuse ist $a = 7 cm$.',
+     'Vom Winkel $γ$ aus liegt $c$ gegenüber ⇒ <b>Gegenkathete</b>. Gegenkathete und Hypotenuse ⇒ <b>Sinus</b>.',
+     'Formel aufstellen und nach $c$ umstellen (beide Seiten $· a$): $$sin γ = @f{c}{a}  ⇒  c = a · sin γ$$',
+     'Einsetzen und ausrechnen: $$c = 7 cm · sin 55° ≈ 5,73 cm$$'],
+  e:'$c ≈ 5,73 cm$',
+  c:[[7*sind(55),2],[7*cosd(55),2],[7/sind(55),2],[7*tand(55),2]] },
+
+{ t:'Strecke b mit β = 27°',
+  q:'Gib die Länge der Strecke $b$ an.', geg:['rechter Winkel bei $A$', '$c = 7 cm$', '$β = 27°$'],
+  fig:() => rwA(3.57, 7, { s:{ c:'7 cm', b:'b = ?' }, w:{ B:'27°' } }),
+  figL:() => rwA(3.57, 7, { s:{ a:HYP, b:GEG, c:ANK }, f:{ a:'hyp', b:'geg', c:'ank' }, w:{ B:'β' }, pad:[96,26,70,32] }),
+  o:[['$b ≈ 3,57 cm$', 1],
+     ['$b ≈ 7,86 cm$', 0, 'Das ist $7 cm : cos 27°$ – also die Hypotenuse $a$, nicht die Kathete $b$.'],
+     ['$b ≈ 3,18 cm$', 0, 'Das ist $7 cm · sin 27°$. Der Sinus braucht die Hypotenuse – $c = 7 cm$ ist aber eine Kathete.'],
+     ['$b ≈ 13,74 cm$', 0, 'Du hast durch $tan 27°$ geteilt statt multipliziert. Bei einem so kleinen Winkel ist die Gegenkathete kürzer als die Ankathete.']],
+  k:'$b = 7 cm · tan 27° ≈ 3,57 cm$',
+  s:['Rechter Winkel bei $A$. Vom Winkel $β$ aus liegt $b$ gegenüber ⇒ <b>Gegenkathete</b>, $c = 7 cm$ liegt an ⇒ <b>Ankathete</b>.',
+     'Gegenkathete und Ankathete ⇒ <b>Tangens</b>.',
+     'Formel aufstellen und nach $b$ umstellen (beide Seiten $· c$): $$tan β = @f{b}{c}  ⇒  b = c · tan β$$',
+     'Einsetzen und ausrechnen: $$b = 7 cm · tan 27° ≈ 3,57 cm$$'],
+  e:'$b ≈ 3,57 cm$',
+  c:[[7*tand(27),2],[7/cosd(27),2],[7*sind(27),2],[7/tand(27),2]] },
+
+{ t:'Hypotenuse a mit dem Sinus',
+  q:'Gib die Länge der Strecke $a$ an.', geg:['rechter Winkel bei $A$', '$b = 9 cm$', '$β = 27°$'],
+  fig:() => rwA(9, 17.66, { s:{ b:'9 cm', a:'a = ?' }, w:{ B:'27°' } }),
+  figL:() => rwA(9, 17.66, { s:{ a:HYP, b:GEG, c:ANK }, f:{ a:'hyp', b:'geg', c:'ank' }, w:{ B:'β' }, pad:[96,26,70,32] }),
+  o:[['$a ≈ 19,82 cm$', 1],
+     ['$a ≈ 4,09 cm$', 0, 'Du hast $9 cm · sin 27°$ gerechnet. Die Hypotenuse ist aber die längste Seite – du musst durch $sin 27°$ teilen.'],
+     ['$a ≈ 10,10 cm$', 0, 'Das ist $9 cm : cos 27°$. Vom Winkel $β$ aus ist $b$ aber die Gegenkathete ⇒ Sinus.'],
+     ['$a ≈ 17,66 cm$', 0, 'Das ist $9 cm : tan 27°$ – also die Ankathete $c$, nicht die Hypotenuse.']],
+  k:'$a = @f{9 cm}{sin 27°} ≈ 19,82 cm$',
+  s:['Rechter Winkel bei $A$ ⇒ $a$ ist die Hypotenuse (gesucht).',
+     'Vom Winkel $β$ aus liegt $b = 9 cm$ gegenüber ⇒ <b>Gegenkathete</b>. Gegenkathete und Hypotenuse ⇒ <b>Sinus</b>.',
+     'Formel aufstellen und nach $a$ umstellen (erst $· a$, dann $: sin β$): $$sin β = @f{b}{a}  ⇒  a = @f{b}{sin β}$$',
+     'Einsetzen und ausrechnen: $$a = @f{9 cm}{sin 27°} ≈ 19,82 cm$$'],
+  e:'$a ≈ 19,82 cm$',
+  m:'Steht die gesuchte Seite im Nenner, musst du zweimal umstellen. Kontrolle: Die Hypotenuse ist immer die längste Seite.',
+  c:[[9/sind(27),2],[9*sind(27),2],[9/cosd(27),2],[9/tand(27),2]] },
+
+{ t:'Hypotenuse a mit dem Kosinus',
+  q:'Gib die Länge der Strecke $a$ an.', geg:['rechter Winkel bei $A$', '$c = 9 cm$', '$β = 27°$'],
+  fig:() => rwA(4.59, 9, { s:{ c:'9 cm', a:'a = ?' }, w:{ B:'27°' } }),
+  figL:() => rwA(4.59, 9, { s:{ a:HYP, b:GEG, c:ANK }, f:{ a:'hyp', b:'geg', c:'ank' }, w:{ B:'β' }, pad:[96,26,70,32] }),
+  o:[['$a ≈ 10,10 cm$', 1],
+     ['$a ≈ 8,02 cm$', 0, 'Du hast $9 cm · cos 27°$ gerechnet. Die Hypotenuse muss länger sein als die Kathete (9 cm) – teile durch $cos 27°$.'],
+     ['$a ≈ 19,82 cm$', 0, 'Das ist $9 cm : sin 27°$. Vom Winkel $β$ aus ist $c$ aber die Ankathete ⇒ Kosinus.'],
+     ['$a ≈ 4,59 cm$', 0, 'Das ist $9 cm · tan 27°$ – also die Kathete $b$, nicht die Hypotenuse.']],
+  k:'$a = @f{9 cm}{cos 27°} ≈ 10,10 cm$',
+  s:['Rechter Winkel bei $A$ ⇒ $a$ ist die Hypotenuse (gesucht).',
+     'Vom Winkel $β$ aus liegt $c = 9 cm$ am Winkel an ⇒ <b>Ankathete</b>. Ankathete und Hypotenuse ⇒ <b>Kosinus</b>.',
+     'Formel aufstellen und nach $a$ umstellen (erst $· a$, dann $: cos β$): $$cos β = @f{c}{a}  ⇒  a = @f{c}{cos β}$$',
+     'Einsetzen und ausrechnen: $$a = @f{9 cm}{cos 27°} ≈ 10,10 cm$$'],
+  e:'$a ≈ 10,10 cm$',
+  c:[[9/cosd(27),2],[9*cosd(27),2],[9/sind(27),2],[9*tand(27),2]] },
+
+{ t:'Strecke BC mit 30°',
+  q:'Berechne die Länge der Strecke $@s{BC}$.', geg:['rechter Winkel bei $B$', '$@l{AC} = 5 cm$', '$∢BAC = 30°$'],
+  fig:() => tri({ P:{ A:[0,0], B:[4.33,0], C:[4.33,2.5] }, rw:'B', s:{ b:'5 cm' }, w:{ A:'30°' }, pad:[40,26,40,30] }),
+  figL:() => tri({ P:{ A:[0,0], B:[4.33,0], C:[4.33,2.5] }, rw:'B', s:{ b:HYP, a:GEG, c:ANK }, f:{ b:'hyp', a:'geg', c:'ank' }, w:{ A:'30°' }, pad:[40,26,100,32] }),
+  o:[['$@l{BC} = 2,5 cm$', 1],
+     ['$@l{BC} ≈ 4,33 cm$', 0, 'Das ist $5 cm · cos 30°$ – die Ankathete $@s{AB}$. Gesucht ist die Seite gegenüber vom 30°-Winkel.'],
+     ['$@l{BC} ≈ 2,89 cm$', 0, 'Das ist $5 cm · tan 30°$. Für den Tangens bräuchtest du die Ankathete – 5 cm ist aber die Hypotenuse.'],
+     ['$@l{BC} = 10 cm$', 0, 'Du hast durch $sin 30°$ geteilt. Eine Kathete kann nicht länger sein als die Hypotenuse (5 cm).']],
+  k:'$@l{BC} = 5 cm · sin 30° = 2,5 cm$',
+  s:['Rechter Winkel bei $B$ ⇒ die Hypotenuse ist $@s{AC}$ mit $@l{AC} = 5 cm$.',
+     'Vom 30°-Winkel bei $A$ aus liegt $@s{BC}$ gegenüber ⇒ <b>Gegenkathete</b>. Gegenkathete und Hypotenuse ⇒ <b>Sinus</b>.',
+     'Formel aufstellen: $$sin 30° = @f{@l{BC}}{5 cm}$$',
+     'Nach $@l{BC}$ umstellen und ausrechnen: $$@l{BC} = 5 cm · sin 30° = 2,5 cm$$'],
+  e:'$@l{BC} = 2,5 cm$',
+  m:'$sin 30° = 0,5$ – diesen Wert darfst du dir merken: Die Gegenkathete ist dann genau halb so lang wie die Hypotenuse.',
+  c:[[5*sind(30),1],[5*cosd(30),2],[5*tand(30),2]] },
+
+{ t:'Winkel γ mit dem Tangens',
+  q:'Gib das Maß des Winkels $γ$ an.', geg:['rechter Winkel bei $A$', '$b = 4 cm$', '$c = 7 cm$'],
+  fig:() => rwA(4, 7, { s:{ b:'4 cm', c:'7 cm' }, w:{ C:{ t:'γ = ?', c:'ges' } } }),
+  figL:() => rwA(4, 7, { s:{ a:HYP, b:ANK, c:GEG }, f:{ a:'hyp', b:'ank', c:'geg' }, w:{ C:'γ' }, pad:[82,26,84,32] }),
+  o:[['$γ ≈ 60,26°$', 1],
+     ['$γ ≈ 29,74°$', 0, 'Du hast $tan^{−1}(@f{4}{7})$ gerechnet – das ist der Winkel $β$. Von $γ$ aus liegt $c = 7 cm$ gegenüber, sie gehört in den Zähler.'],
+     ['$γ ≈ 34,85°$', 0, 'Du hast $sin^{−1}$ benutzt. Für den Sinus brauchst du die Hypotenuse – gegeben sind aber die beiden Katheten.'],
+     ['$γ ≈ 55,15°$', 0, 'Du hast $cos^{−1}$ benutzt. Für den Kosinus brauchst du die Hypotenuse – gegeben sind aber die beiden Katheten.']],
+  k:'$tan γ = @f{7 cm}{4 cm}  ⇒  γ ≈ 60,26°$',
+  s:['Rechter Winkel bei $A$. Bekannt sind die beiden Katheten $b = 4 cm$ und $c = 7 cm$.',
+     'Vom Winkel $γ$ aus liegt $c$ gegenüber ⇒ <b>Gegenkathete</b>, $b$ liegt an ⇒ <b>Ankathete</b>. Beide Katheten ⇒ <b>Tangens</b>.',
+     'Formel aufstellen und einsetzen: $$tan γ = @f{c}{b} = @f{7 cm}{4 cm} = 1,75$$',
+     'Winkel mit der Umkehrfunktion berechnen (SHIFT + tan): $$γ = tan^{−1}(1,75) ≈ 60,26°$$'],
+  e:'$γ ≈ 60,26°$',
+  m:'Winkel gesucht ⇒ Umkehrfunktion: SHIFT + sin, cos oder tan. Der Taschenrechner muss auf Grad stehen (D im Display).',
+  c:[[atand(7/4),2],[atand(4/7),2],[asind(4/7),2],[acosd(4/7),2]] },
+
+{ t:'Winkel γ mit dem Sinus',
+  q:'Gib das Maß des Winkels $γ$ an.', geg:['rechter Winkel bei $A$', '$a = 7 cm$', '$c = 6 cm$'],
+  fig:() => rwA(3.61, 6, { s:{ a:'7 cm', c:'6 cm' }, w:{ C:{ t:'γ = ?', c:'ges' } } }),
+  figL:() => rwA(3.61, 6, { s:{ a:HYP, b:ANK, c:GEG }, f:{ a:'hyp', b:'ank', c:'geg' }, w:{ C:'γ' }, pad:[82,26,84,32] }),
+  o:[['$γ ≈ 59,00°$', 1],
+     ['$γ ≈ 31,00°$', 0, 'Du hast $cos^{−1}(@f{6}{7})$ gerechnet. Von $γ$ aus ist $c$ aber die Gegenkathete ⇒ Sinus.'],
+     ['$γ ≈ 40,60°$', 0, 'Du hast $tan^{−1}(@f{6}{7})$ gerechnet. Der Tangens verbindet die beiden Katheten – $a = 7 cm$ ist aber die Hypotenuse.'],
+     ['$γ ≈ 0,86°$', 0, '$@f{6}{7} ≈ 0,86$ ist erst der Sinuswert. Den Winkel bekommst du mit der Umkehrfunktion (SHIFT + sin).']],
+  k:'$sin γ = @f{6 cm}{7 cm}  ⇒  γ ≈ 59,00°$',
+  s:['Rechter Winkel bei $A$ ⇒ $a = 7 cm$ ist die Hypotenuse.',
+     'Vom Winkel $γ$ aus liegt $c = 6 cm$ gegenüber ⇒ <b>Gegenkathete</b>. Gegenkathete und Hypotenuse ⇒ <b>Sinus</b>.',
+     'Formel aufstellen und einsetzen: $$sin γ = @f{c}{a} = @f{6 cm}{7 cm}$$',
+     'Winkel mit der Umkehrfunktion berechnen (SHIFT + sin): $$γ = sin^{−1}(@f{6}{7}) ≈ 59,00°$$'],
+  e:'$γ ≈ 59,00°$',
+  c:[[asind(6/7),2],[acosd(6/7),2],[atand(6/7),2],[6/7,2]] },
+
+{ t:'Winkel im Dreieck mit zwei Katheten',
+  q:'Berechne das Maß des Winkels $∢CBA$.', geg:['rechter Winkel bei $A$', '$@l{AB} = 5 cm$', '$@l{AC} = 3 cm$'],
+  fig:() => rwA(3, 5, { s:{ b:'3 cm', c:'5 cm' }, w:{ B:{ t:'?', c:'ges' } } }),
+  figL:() => rwA(3, 5, { s:{ a:HYP, b:GEG, c:ANK }, f:{ a:'hyp', b:'geg', c:'ank' }, w:{ B:{ t:'?', c:'ges' } }, pad:[96,26,70,32] }),
+  o:[['$∢CBA ≈ 30,96°$', 1],
+     ['$∢CBA ≈ 59,04°$', 0, 'Du hast $tan^{−1}(@f{5}{3})$ gerechnet – das ist der Winkel bei $C$. Vom Winkel bei $B$ aus liegt $@s{AC}$ (3 cm) gegenüber.'],
+     ['$∢CBA ≈ 36,87°$', 0, 'Du hast $sin^{−1}(@f{3}{5})$ gerechnet. 5 cm ist hier aber nicht die Hypotenuse, sondern eine Kathete.'],
+     ['$∢CBA ≈ 53,13°$', 0, 'Du hast $cos^{−1}(@f{3}{5})$ gerechnet. Gegeben sind aber die beiden Katheten ⇒ Tangens.']],
+  k:'$tan ∢CBA = @f{3 cm}{5 cm}  ⇒  ∢CBA ≈ 30,96°$',
+  s:['Der Winkel $∢CBA$ hat seinen Scheitel bei $B$ (mittlerer Buchstabe).',
+     'Von $B$ aus liegt $@s{AC}$ gegenüber ⇒ <b>Gegenkathete</b> (3 cm), $@s{AB}$ liegt an ⇒ <b>Ankathete</b> (5 cm). Beide Katheten ⇒ <b>Tangens</b>.',
+     'Formel aufstellen: $$tan ∢CBA = @f{3 cm}{5 cm}$$',
+     'Umkehrfunktion (SHIFT + tan): $$∢CBA = tan^{−1}(@f{3}{5}) ≈ 30,96°$$'],
+  e:'$∢CBA ≈ 30,96°$',
+  c:[[atand(3/5),2],[atand(5/3),2],[asind(3/5),2],[acosd(3/5),2]] },
+
+{ t:'Winkel δ im Rechteck',
+  q:'Gib das Maß des Winkels $δ$ an.', geg:['Rechteck $ABCD$', 'Diagonale: $@l{BD} = 15 cm$', '$@l{AB} = 13 cm$'],
+  fig:() => geo({ P:{ A:[0,0], B:[13,0], C:[13,7.48], D:[0,7.48] }, poly:[{ p:['A','B','D'], f:'#e3e7ea' }],
+        seg:[['A','B',{ t:'13 cm' }], ['B','C'], ['C','D'], ['D','A'], ['B','D',{ t:'15 cm', o:-1 }]],
+        ang:[['D','B','A',{ t:'β', r:46, d:62 }], ['C','B','D',{ t:'δ = ?', c:'ges', r:28, d:50 }]], rw:[['B','A','D']],
+        lab:{ A:'A', B:'B', C:'C', D:'D' }, pad:[30,26,30,30] }),
+  figL:() => geo({ P:{ A:[0,0], B:[13,0], C:[13,7.48], D:[0,7.48] }, poly:[{ p:['A','B','D'], f:'#e3e7ea' }],
+        seg:[['A','B',{ t:'13 cm', c:'ank' }], ['B','C'], ['C','D'], ['D','A'], ['B','D',{ t:'15 cm', o:-1, c:'hyp' }]],
+        ang:[['D','B','A',{ t:'β', r:46, d:62 }], ['C','B','D',{ t:'δ', c:'ges', r:28, d:44 }]], rw:[['B','A','D']],
+        lab:{ A:'A', B:'B', C:'C', D:'D' }, pad:[30,26,30,30] }),
+  o:[['$δ ≈ 60,07°$', 1],
+     ['$δ ≈ 29,93°$', 0, 'Das ist der Winkel $β$ im grauen Dreieck. Gesucht ist $δ$ – der Rest bis zum rechten Winkel bei $B$.'],
+     ['$δ ≈ 49,09°$', 0, 'Hier wurde $β$ mit dem Tangens berechnet ($tan^{−1}(@f{13}{15}) ≈ 40,91°$). 15 cm ist aber die Hypotenuse ⇒ Kosinus.'],
+     ['$δ ≈ 40,91°$', 0, 'Das ist $tan^{−1}(@f{13}{15})$. 13 cm und 15 cm sind Ankathete und Hypotenuse ⇒ Kosinus – und danach noch $90° − β$ rechnen.']],
+  k:'$cos β = @f{13 cm}{15 cm}  ⇒  β ≈ 29,93°$; $δ = 90° − β ≈ 60,07°$',
+  s:['Das graue Dreieck $ABD$ ist rechtwinklig (rechter Winkel bei $A$ – Ecke des Rechtecks).',
+     'Zuerst $β = ∢DBA$: Von $β$ aus ist $@s{AB}$ die <b>Ankathete</b> (13 cm) und $@s{BD}$ die <b>Hypotenuse</b> (15 cm) ⇒ <b>Kosinus</b>. $$cos β = @f{13 cm}{15 cm}  ⇒  β = cos^{−1}(@f{13}{15}) ≈ 29,93°$$',
+     'Im Rechteck ist der Winkel bei $B$ ein rechter Winkel, also $β + δ = 90°$: $$δ = 90° − 29,93° = 60,07°$$'],
+  e:'$β ≈ 29,93°$, $δ ≈ 60,07°$',
+  c:[[acosd(13/15),2],[90-acosd(13/15),2],[atand(13/15),2],[90-atand(13/15),2]] },
+
+{ t:'Seite a mit dem Satz des Pythagoras',
+  q:'Gib die Länge der Seite $a$ an.', geg:['rechter Winkel bei $A$', '$b = 4 cm$', '$c = 6 cm$'],
+  fig:() => rwA(4, 6, { s:{ b:'4 cm', c:'6 cm', a:'a = ?' } }),
+  figL:() => rwA(4, 6, { s:{ a:'Hypotenuse a', b:'Kathete', c:'Kathete' }, f:{ a:'hyp', b:'ank', c:'ank' }, pad:[70,26,100,32] }),
+  o:[['$a ≈ 7,21 cm$', 1],
+     ['$a = 10 cm$', 0, 'Du hast die Seiten nur addiert. Beim Satz des Pythagoras werden die Seiten erst quadriert.'],
+     ['$a = 52 cm$', 0, '52 ist erst $a^2$. Am Ende musst du noch die Wurzel ziehen.'],
+     ['$a ≈ 4,47 cm$', 0, 'Du hast $@w{6^2 − 4^2}$ gerechnet. Minus rechnest du nur, wenn eine Kathete gesucht ist – $a$ ist die Hypotenuse.']],
+  k:'$a = @w{4^2 + 6^2} cm = @w{52} cm ≈ 7,21 cm$',
+  s:['Rechter Winkel bei $A$, zwei Seiten bekannt, kein Winkel nötig ⇒ <b>Satz des Pythagoras</b>.',
+     '$a$ liegt gegenüber vom rechten Winkel ⇒ $a$ ist die Hypotenuse: $$a^2 = b^2 + c^2$$',
+     'Einsetzen: $$a^2 = (4 cm)^2 + (6 cm)^2 = 16 cm^2 + 36 cm^2 = 52 cm^2$$',
+     'Wurzel ziehen: $$a = @w{52} cm ≈ 7,21 cm$$'],
+  e:'$a ≈ 7,21 cm$',
+  c:[[Math.sqrt(52),2],[Math.sqrt(20),2]] },
+
+{ t:'Voraussetzung für sin, cos, tan und Pythagoras',
+  q:'Wann darfst du $sin$, $cos$, $tan$ und den Satz des Pythagoras verwenden?',
+  fig:() => tri({ P:{ A:[0,0], B:[6.4,0], C:pol(5.11,37) }, rw:'C', w:{ A:'α' } }),
+  o:[['Nur im rechtwinkligen Dreieck – zwei Größen sind bekannt, eine ist gesucht.', 1],
+     ['In jedem Dreieck, wenn zwei Seiten bekannt sind.', 0, 'Ohne rechten Winkel gibt es keine Hypotenuse und keine Katheten – dann helfen nur Sinussatz und Kosinussatz.'],
+     ['In jedem Dreieck, wenn ein Winkel bekannt ist.', 0, 'Ein Winkel allein reicht nicht – und ohne rechten Winkel gibt es keine Hypotenuse.'],
+     ['Nur im gleichschenkligen Dreieck.', 0, 'Auf gleich lange Seiten kommt es nicht an – entscheidend ist der rechte Winkel.']],
+  k:'rechtwinkliges Dreieck + 2 bekannt, 1 gesucht',
+  s:['$sin$, $cos$, $tan$ und der Satz des Pythagoras gelten <b>nur im rechtwinkligen Dreieck</b>.',
+     '<b>Sinus</b> verbindet: Winkel, Gegenkathete, Hypotenuse.<br><b>Kosinus</b> verbindet: Winkel, Ankathete, Hypotenuse.<br><b>Tangens</b> verbindet: Winkel, Gegenkathete, Ankathete.',
+     'Der <b>Satz des Pythagoras</b> verbindet die drei Seiten: zwei Katheten und die Hypotenuse. Einen Winkel brauchst du dafür nicht.',
+     'Immer gilt: Zwei der drei Größen müssen bekannt sein, die dritte wird gesucht.'],
+  e:'rechtwinkliges Dreieck + 2 Größen bekannt, 1 gesucht',
+  m:'Kein rechter Winkel? Dann Sinussatz oder Kosinussatz (Themen 1.5 und 1.6).' }
+]});
+
+/* Hilfen für Zeichnungen im Koordinatensystem */
+function bogen(cx, cy, r, g1, g2, c, fuell){
+  const a = [cx + r * cosd(g1), cy - r * sind(g1)], b = [cx + r * cosd(g2), cy - r * sind(g2)];
+  const gross = Math.abs(g2 - g1) > 180 ? 1 : 0;
+  return (fuell ? '<path d="M' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' L' + a[0].toFixed(1) + ',' + a[1].toFixed(1) + ' A' + r + ',' + r + ' 0 ' + gross + ' 0 ' + b[0].toFixed(1) + ',' + b[1].toFixed(1) + ' Z" fill="' + fuell + '"/>' : '') +
+    '<path d="M' + a[0].toFixed(1) + ',' + a[1].toFixed(1) + ' A' + r + ',' + r + ' 0 ' + gross + ' 0 ' + b[0].toFixed(1) + ',' + b[1].toFixed(1) + '" fill="none" stroke="' + farbe(c) + '" stroke-width="1.8"/>';
+}
+const strich = (x1, y1, x2, y2, c, d, w) => '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + farbe(c) + '" stroke-width="' + (w || 1.8) + '"' + (d ? ' stroke-dasharray="5 4"' : '') + ' stroke-linecap="round"/>';
+const punkt = (x, y, c, r) => '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + (r || 4) + '" fill="' + farbe(c) + '"/>';
+
+/* zwei Geraden g und h */
+function geraden(o){
+  return koord({ x:[-3,3.6], y:[-2,3.2], e:44, tx:[-2,-1,1,2,3], ty:[-1,1,2,3], alt:'Geraden im Koordinatensystem', zeichne:(X, Y) => {
+    let s = '';
+    o.g.forEach(l => { s += gerade(X, Y, l.m, l.t, l.x1, l.x2, l.c) + txt(X(l.lx), Y(l.ly), l.n, { fs:14, c:l.c, a:l.a || 'middle' }); });
+    if (o.dreiecke) o.dreiecke.forEach(d => {
+      s += strich(X(d.x), Y(d.y), X(d.x + d.dx), Y(d.y), d.c, 1) + strich(X(d.x + d.dx), Y(d.y), X(d.x + d.dx), Y(d.y + d.dy), d.c, 1) +
+           txt(X(d.x + d.dx * (d.lx || 0.5)), Y(d.y) + 11, String(d.dx), { fs:13, c:d.c, b:1 }) + txt(X(d.x + d.dx) + 9, Y(d.y + d.dy * (d.ly || 0.5)), String(d.dy), { fs:13, c:d.c, b:1 }) + punkt(X(d.x), Y(d.y), d.c, 3);
+    });
+    if (o.phi){ const p = o.phi; s += bogen(X(p.x), Y(p.y), p.r || 34, p.g1, p.g2, 'ges') + txt(X(p.x) + (p.d || 52) * cosd((p.g1 + p.g2) / 2), Y(p.y) - (p.d || 52) * sind((p.g1 + p.g2) / 2), p.t, { fs:14, c:'ges' }); }
+    if (o.winkel) o.winkel.forEach(p => { s += bogen(X(p.x), Y(p.y), p.r || 26, 0, p.g, p.c) + txt(X(p.x) + (p.d || 38) * cosd(p.g / 2), Y(p.y) - (p.d || 38) * sind(p.g / 2) , p.t, { fs:12.5, c:p.c }); });
+    return s;
+  } });
+}
+const G1 = [{ m:1/3, t:0.5, x1:-3, x2:3.6, c:'ank', n:'g', lx:3.35, ly:2.0 }, { m:1.5, t:-1, x1:-0.67, x2:2.8, c:'gruen', n:'h', lx:2.35, ly:3.0, a:'end' }];
+const G1b = [{ m:1/3, t:0.5, x1:-3, x2:3.6, c:'ank', n:'g', lx:-2.6, ly:0.05 }, { m:1.5, t:-1, x1:-0.67, x2:2.8, c:'gruen', n:'h', lx:2.35, ly:3.0, a:'end' }];
+const G2 = [{ m:2/3, t:0, x1:-3, x2:3.6, c:'ank', n:'g', lx:3.3, ly:1.75 }, { m:1.5, t:0, x1:-1.33, x2:2.13, c:'gruen', n:'h', lx:1.55, ly:3.0, a:'end' }];
+
+/* Gerade durch den Ursprung mit Punkt P und Steigungsdreieck */
+function ursprungsgerade(o){
+  return koord({ x:[-1.2,3.4], y:[-1,2.8], e:56, gitter:false, alt:'Gerade durch den Ursprung', zeichne:(X, Y) => {
+    const px = 2.4, py = 1.6;
+    let s = gerade(X, Y, py / px, 0, -1.2, 3.4, 'geg');
+    if (o.dreieck) s += strich(X(0), Y(0), X(px), Y(0), 'ank', 0, 3) + strich(X(px), Y(0), X(px), Y(py), 'ges', 0, 3) +
+        txt(X(px / 2), Y(0) + 14, o.xt || 'x', { fs:15, c:'ank' }) + txt(X(px) + 11, Y(py / 2), o.yt || 'y', { fs:15, c:'ges' });
+    else s += strich(X(px), Y(0), X(px), Y(py), 'grau', 1) + strich(X(0), Y(py), X(px), Y(py), 'grau', 1);
+    if (o.alpha) s += bogen(X(0), Y(0), 30, 0, atand(py / px), 'std') + txt(X(0) + 43 * cosd(16), Y(0) - 43 * sind(16), 'α', { fs:15 });
+    s += punkt(X(px), Y(py), 'ges') + txt(X(px) - 6, Y(py) - 15, 'P(x | y)', { fs:15, c:'ges', b:1, a:'end' }) + txt(X(0) - 12, Y(0) + 13, 'O', { fs:14 });
+    return s;
+  } });
+}
+/* Einheitskreis */
+function ekreis(o){
+  return koord({ x:[-1.35,1.35], y:[-1.3,1.3], e:98, gitter:false, alt:'Einheitskreis', zeichne:(X, Y) => {
+    const r = X(1) - X(0);
+    let s = '<circle cx="' + X(0) + '" cy="' + Y(0) + '" r="' + r + '" fill="#e9eef2" fill-opacity=".75" stroke="#1f2f3d" stroke-width="1.8"/>';
+    s += strich(X(-1.35), Y(0), X(1.35), Y(0), 'std', 0, 1.6) + strich(X(0), Y(-1.3), X(0), Y(1.3) - 10, 'std', 0, 1.6);
+    if (!o.ohneZahlen) s += txt(X(1) + 9, Y(0) + 13, '1', { fs:12.5 }) + txt(X(-1) - 11, Y(0) + 13, '−1', { fs:12.5 }) + txt(X(0) - 9, Y(1) - 9, '1', { fs:12.5 }) + txt(X(0) - 12, Y(-1) + 11, '−1', { fs:12.5 });
+    (o.linien || []).forEach(l => { s += strich(X(l[0]), Y(l[1]), X(l[2]), Y(l[3]), l[4], l[5], l[6]); });
+    (o.radien || []).forEach(g => { s += strich(X(0), Y(0), X(cosd(g.g)), Y(sind(g.g)), g.c || 'std', 0, 2.4); });
+    (o.boegen || []).forEach(b => { s += bogen(X(0), Y(0), b.r || 30, 0, b.g, b.c || 'std') + (b.t ? txt(X(0) + (b.d || 44) * cosd(b.tg == null ? b.g / 2 : b.tg), Y(0) - (b.d || 44) * sind(b.tg == null ? b.g / 2 : b.tg), b.t, { fs:15, c:b.c }) : ''); });
+    (o.punkte || []).forEach(p => { s += punkt(X(p.x), Y(p.y), p.c || 'ges') + txt(X(p.x) + (p.dx || 0), Y(p.y) + (p.dy || 0), p.t, { fs:p.fs || 14, c:p.c || 'ges', b:1, a:p.a || 'start' }); });
+    (o.texte || []).forEach(t => { s += txt(X(t.x), Y(t.y), t.t, { fs:t.fs || 13, c:t.c, a:t.a || 'middle' }); });
+    return s;
+  } });
+}
+/* Sinuskurve */
+function sinus(o){
+  o = o || {};
+  return koord({ x:[0,400], y:[-1.25,1.25], ex:0.71, ey:62, sx:90, sy:0.5, tx:[90,180,270,360], txf:x => x + '°', txd:x => x === 180 ? -15 : x === 360 ? 16 : 0, ty:[-1,-0.5,0.5,1], xn:'α', yn:'y', alt:'Sinuskurve', zeichne:(X, Y) => {
+    let s = '';
+    (o.band || []).forEach(b => { s += '<rect x="' + X(b[0]) + '" y="' + Y(1.15) + '" width="' + (X(b[1]) - X(b[0])) + '" height="' + (Y(-1.15) - Y(1.15)) + '" fill="' + b[2] + '" fill-opacity=".55"/>'; });
+    s += kurve(X, Y, x => sind(x), 0, 360, 'ank', 120);
+    (o.waag || []).forEach(w => { s += strich(X(0), Y(w.y), X(385), Y(w.y), w.c || 'ges', 1) + txt(X(392), Y(w.y) - 9, w.t, { fs:12, c:w.c || 'ges', a:'end' }); });
+    (o.lot || []).forEach(l => { s += strich(X(l.x), Y(0), X(l.x), Y(sind(l.x)), l.c || 'ges', 1); });
+    (o.punkte || []).forEach(p => { s += punkt(X(p.x), Y(sind(p.x)), p.c || 'ges') + (p.t ? txt(X(p.x) + (p.dx || 0), Y(sind(p.x)) + (p.dy == null ? -13 : p.dy), p.t, { fs:12.5, c:p.c || 'ges', b:1, a:p.a || 'middle' }) : ''); });
+    (o.texte || []).forEach(t => { s += txt(X(t.x), Y(t.y), t.t, { fs:t.fs || 12.5, c:t.c, a:t.a || 'middle', b:t.b }); });
+    return s;
+  } });
+}
+
+THEMEN.push({ nr:'1.2', titel:'Steigung und Winkel', sub:'Geradengleichung, Steigungswinkel, Schnittwinkel', fragen:[
+{ t:'Funktionsgleichungen ablesen',
+  q:'Welche Funktionsgleichungen haben die Geraden $g$ und $h$?',
+  fig:() => geraden({ g:G1 }),
+  figL:() => geraden({ g:G1, dreiecke:[{ x:0, y:0.5, dx:3, dy:1, c:'ank', lx:0.84 }, { x:0, y:-1, dx:2, dy:3, c:'gruen', ly:0.6 }] }),
+  o:[['$g: y = @f{1}{3}x + 0,5$<br>$h: y = @f{3}{2}x − 1$', 1],
+     ['$g: y = 3x + 0,5$<br>$h: y = @f{2}{3}x − 1$', 0, 'Die Steigungen sind umgedreht. Steigung = „nach oben“ geteilt durch „nach rechts“: bei $g$ geht es 1 nach oben auf 3 nach rechts.'],
+     ['$g: y = 0,5x + @f{1}{3}$<br>$h: y = −x + @f{3}{2}$', 0, '$m$ und $t$ sind vertauscht: Die Zahl vor dem $x$ ist die Steigung, die Zahl ohne $x$ der y-Achsenabschnitt.'],
+     ['$g: y = @f{1}{3}x − 1$<br>$h: y = @f{3}{2}x + 0,5$', 0, 'Die y-Achsenabschnitte sind vertauscht: $g$ schneidet die y-Achse bei 0,5 und $h$ bei −1.']],
+  k:'$g: y = @f{1}{3}x + 0,5$ und $h: y = @f{3}{2}x − 1$',
+  s:['Allgemeine Form einer Geraden: $$y = m · x + t$$ $m$ ist die Steigung, $t$ der y-Achsenabschnitt.',
+     'Gerade $g$: Sie schneidet die y-Achse bei 0,5 ⇒ $t = 0,5$. Steigungsdreieck: 3 nach rechts, 1 nach oben. $$m_g = @f{1}{3}  ⇒  g: y = @f{1}{3}x + 0,5$$',
+     'Gerade $h$: Sie schneidet die y-Achse bei −1 ⇒ $t = −1$. Steigungsdreieck: 2 nach rechts, 3 nach oben. $$m_h = @f{3}{2}  ⇒  h: y = @f{3}{2}x − 1$$'],
+  e:'$g: y = @f{1}{3}x + 0,5$;  $h: y = @f{3}{2}x − 1$',
+  m:'Steigung $m = @f{@t{Höhenunterschied}}{@t{Längenunterschied}}$ – erst nach rechts gehen, dann nach oben zählen.' },
+
+{ t:'Schnittwinkel zweier Geraden (1)',
+  q:'Gib den Schnittwinkel $φ$ der beiden Geraden an.', geg:['$g: y = @f{1}{3}x + 0,5$', '$h: y = @f{3}{2}x − 1$'],
+  fig:() => geraden({ g:G1, phi:{ x:9/7, y:13/14, g1:atand(1/3), g2:atand(1.5), t:'φ = ?', d:58 } }),
+  figL:() => geraden({ g:G1, phi:{ x:9/7, y:13/14, g1:atand(1/3), g2:atand(1.5), t:'φ', d:46 },
+        winkel:[{ x:-1.5, y:0, g:atand(1/3), t:'α_g', c:'ank', r:44, d:60 }, { x:2/3, y:0, g:atand(1.5), t:'α_h', c:'gruen', r:20, d:33 }] }),
+  o:[['$φ ≈ 37,87°$', 1],
+     ['$φ ≈ 74,74°$', 0, 'Du hast die beiden Steigungswinkel addiert. Der Schnittwinkel ist ihre Differenz.'],
+     ['$φ ≈ 56,31°$', 0, 'Das ist nur der Steigungswinkel von $h$ – also der Winkel zwischen $h$ und der x-Achse.'],
+     ['$φ ≈ 49,40°$', 0, 'Du hast erst die Steigungen subtrahiert und dann $tan^{−1}$ genommen. Berechne zuerst für jede Gerade den Winkel und subtrahiere dann die Winkel.']],
+  k:'$φ = α_h − α_g ≈ 56,310° − 18,435° ≈ 37,87°$',
+  s:['Steigungen ablesen: $$m_g = @f{1}{3},   m_h = @f{3}{2}$$',
+     'Für jede Gerade den Steigungswinkel (Winkel zur x-Achse) mit $tan α = m$ berechnen: $$α_h = tan^{−1}(@f{3}{2}) ≈ 56,310°$$ $$α_g = tan^{−1}(@f{1}{3}) ≈ 18,435°$$',
+     'Der Schnittwinkel $φ$ ist die Differenz der beiden Steigungswinkel: $$φ = α_h − α_g ≈ 56,310° − 18,435° ≈ 37,87°$$'],
+  e:'$φ ≈ 37,87°$',
+  m:'Rechnest du mit auf zwei Stellen gerundeten Winkeln (56,31° − 18,43°), erhältst du 37,88°. Solche kleinen Rundungsunterschiede sind in Ordnung.',
+  c:[[atand(1.5)-atand(1/3),2],[atand(1.5)+atand(1/3),2],[atand(1.5),2],[atand(1.5-1/3),2],[atand(1.5),3],[atand(1/3),3]] },
+
+{ t:'Schnittwinkel zweier Geraden (2)',
+  q:'Gib den Schnittwinkel $φ$ der beiden Geraden an.', geg:['$g: y = @f{2}{3}x$', '$h: y = @f{3}{2}x$'],
+  fig:() => geraden({ g:G2, phi:{ x:0, y:0, g1:atand(2/3), g2:atand(1.5), t:'φ = ?', r:52, d:76 } }),
+  figL:() => geraden({ g:G2, phi:{ x:0, y:0, g1:atand(2/3), g2:atand(1.5), t:'φ', r:62, d:76 },
+        winkel:[{ x:0, y:0, g:atand(2/3), t:'α_g', c:'ank', r:44, d:58 }, { x:0, y:0, g:atand(1.5), t:'', c:'gruen', r:24 }] }),
+  o:[['$φ ≈ 22,62°$', 1],
+     ['$φ = 90°$', 0, 'Du hast die beiden Steigungswinkel addiert (33,69° + 56,31°). Der Schnittwinkel ist ihre Differenz.'],
+     ['$φ ≈ 39,81°$', 0, 'Du hast erst die Steigungen subtrahiert und dann $tan^{−1}$ genommen. Berechne zuerst für jede Gerade den Winkel.'],
+     ['$φ ≈ 33,69°$', 0, 'Das ist nur der Steigungswinkel von $g$ – der Winkel zwischen $g$ und der x-Achse.']],
+  k:'$φ = α_h − α_g ≈ 56,31° − 33,69° = 22,62°$',
+  s:['Beide Geraden gehen durch den Ursprung ($t = 0$). Steigungen ablesen: $$m_g = @f{2}{3},   m_h = @f{3}{2}$$',
+     'Steigungswinkel mit $tan α = m$: $$α_g = tan^{−1}(@f{2}{3}) ≈ 33,69°$$ $$α_h = tan^{−1}(@f{3}{2}) ≈ 56,31°$$',
+     'Schnittwinkel = Differenz der Steigungswinkel: $$φ = 56,31° − 33,69° = 22,62°$$'],
+  e:'$φ ≈ 22,62°$',
+  c:[[atand(1.5)-atand(2/3),2],[atand(2/3),2],[atand(1.5),2],[atand(1.5-2/3),2]] },
+
+{ t:'Steigung mit den Koordinaten von P',
+  q:'Die Gerade geht durch den Ursprung $O(0 | 0)$ und den Punkt $P(x | y)$. Wie bestimmst du ihre Steigung $m$?',
+  fig:() => ursprungsgerade({}),
+  figL:() => ursprungsgerade({ dreieck:1 }),
+  o:[['$m = @f{y}{x}$', 1],
+     ['$m = @f{x}{y}$', 0, 'Vertauscht: Der Höhenunterschied ($y$) steht oben, der Längenunterschied ($x$) unten.'],
+     ['$m = x · y$', 0, 'Die Steigung ist ein Verhältnis (ein Bruch), kein Produkt.'],
+     ['$m = y − x$', 0, 'Die Steigung ist ein Verhältnis: Höhenunterschied geteilt durch Längenunterschied.']],
+  k:'$m = @f{y − 0}{x − 0} = @f{y}{x}$',
+  s:['Steigung zwischen zwei Punkten $P$ und $Q$ (Steigungsdreieck): $$m = @f{y_P − y_Q}{x_P − x_Q}$$',
+     'Die Gerade geht durch den Ursprung $O(0 | 0)$. Wähle $Q = O$: $$m = @f{y − 0}{x − 0} = @f{y}{x}$$'],
+  e:'$m = @f{y}{x}$' },
+
+{ t:'Steigung mit dem Winkel α',
+  q:'Die Gerade schließt mit der x-Achse den Winkel $α$ ein. Wie bestimmst du ihre Steigung $m$ mit dem Winkel?',
+  fig:() => ursprungsgerade({ alpha:1 }),
+  figL:() => ursprungsgerade({ alpha:1, dreieck:1 }),
+  o:[['$m = tan α$', 1],
+     ['$m = sin α$', 0, 'Der Sinus verbindet Gegenkathete und Hypotenuse. Im Steigungsdreieck brauchst du die beiden Katheten $y$ und $x$.'],
+     ['$m = cos α$', 0, 'Der Kosinus verbindet Ankathete und Hypotenuse. Im Steigungsdreieck brauchst du die beiden Katheten $y$ und $x$.'],
+     ['$m = @f{cos α}{sin α}$', 0, 'Das ist der Kehrwert. Richtig herum: $@f{sin α}{cos α} = tan α$.']],
+  k:'$m = @f{y}{x} = tan α$',
+  s:['Im Steigungsdreieck ist $y$ die <b>Gegenkathete</b> und $x$ die <b>Ankathete</b> von $α$ ⇒ Tangens: $$tan α = @f{y}{x}$$',
+     'Von der vorherigen Aufgabe weißt du: $m = @f{y}{x}$. Also: $$m = tan α$$',
+     'Am Einheitskreis gilt $x = cos α$ und $y = sin α$. Deshalb gilt außerdem: $$tan α = @f{sin α}{cos α}$$'],
+  e:'$m = tan α = @f{y}{x} = @f{sin α}{cos α}$',
+  m:'Steigungswinkel einer Geraden: $tan α = m$, also $α = tan^{−1}(m)$.' }
+]});
+
+THEMEN.push({ nr:'1.3', titel:'Der Einheitskreis', sub:'Punkte P(cos α | sin α), Werte ohne Taschenrechner', fragen:[
+{ t:'Koordinaten von P mit dem Winkel α',
+  q:'$P$ liegt auf dem Einheitskreis (Radius 1). Wie lauten die Koordinaten von $P$ in Abhängigkeit vom Winkel $α$?',
+  fig:() => ekreis({ radien:[{ g:35 }], boegen:[{ g:35, t:'α', d:46 }], punkte:[{ x:cosd(35), y:sind(35), t:'P(x | y)', dx:8, dy:-10 }], texte:[{ x:0.33, y:0.4, t:'1' }] }),
+  figL:() => ekreis({ radien:[{ g:35, c:'hyp' }], boegen:[{ g:35, t:'α', d:46 }], linien:[[0,0,cosd(35),0,'ank',0,3.2],[cosd(35),0,cosd(35),sind(35),'geg',0,3.2]],
+        punkte:[{ x:cosd(35), y:sind(35), t:'P', dx:8, dy:-10 }], texte:[{ x:0.33, y:0.4, t:'1', c:'hyp' }, { x:0.42, y:-0.13, t:'x', c:'ank', fs:15 }, { x:0.93, y:0.27, t:'y', c:'geg', fs:15 }] }),
+  o:[['$P(cos α | sin α)$', 1],
+     ['$P(sin α | cos α)$', 0, 'Vertauscht: $x$ ist die Ankathete von $α$ ⇒ Kosinus. $y$ ist die Gegenkathete ⇒ Sinus.'],
+     ['$P(α | sin α)$', 0, 'Das wäre ein Punkt auf der Sinuskurve. Auf dem Einheitskreis ist die x-Koordinate $cos α$.'],
+     ['$P(1 | tan α)$', 0, 'Die 1 ist der Radius (die Hypotenuse), keine Koordinate von $P$.']],
+  k:'$x = cos α$ und $y = sin α$',
+  s:['Fälle von $P$ das Lot auf die x-Achse ⇒ es entsteht ein rechtwinkliges Dreieck.',
+     'Die Hypotenuse ist der Radius: 1. Die Ankathete von $α$ ist $x$, die Gegenkathete ist $y$.',
+     'Kosinus: $$cos α = @f{x}{1} = x$$',
+     'Sinus: $$sin α = @f{y}{1} = y$$'],
+  e:'$P(cos α | sin α)$' },
+
+{ t:'Winkel α und Punkt P aus x = 0,4',
+  q:'$P$ liegt im ersten Quadranten auf dem Einheitskreis und hat die x-Koordinate 0,4. Gib den Winkel $α$ und die Koordinaten von $P$ an.',
+  fig:() => ekreis({ radien:[{ g:66.42 }], boegen:[{ g:66.42, t:'α', d:42 }], linien:[[0.4,0,0.4,sind(66.42),'grau',1]], punkte:[{ x:0.4, y:sind(66.42), t:'P(0,4 | ?)', dx:8, dy:-8 }], texte:[{ x:0.4, y:-0.12, t:'0,4' }] }),
+  figL:() => ekreis({ radien:[{ g:66.42, c:'hyp' }], boegen:[{ g:66.42, t:'α', d:42 }], linien:[[0,0,0.4,0,'ank',0,3.2],[0.4,0,0.4,sind(66.42),'geg',0,3.2]],
+        punkte:[{ x:0.4, y:sind(66.42), t:'P', dx:8, dy:-8 }], texte:[{ x:0.2, y:-0.12, t:'x', c:'ank', fs:15 }, { x:0.5, y:0.45, t:'y', c:'geg', fs:15 }, { x:0.1, y:0.52, t:'1', c:'hyp' }] }),
+  o:[['$α ≈ 66,42°$;  $P(0,4 | 0,92)$', 1],
+     ['$α ≈ 23,58°$;  $P(0,4 | 0,92)$', 0, 'Du hast $sin^{−1}(0,4)$ gerechnet. Die x-Koordinate gehört aber zum Kosinus: $cos α = 0,4$.'],
+     ['$α ≈ 66,42°$;  $P(0,4 | 0,6)$', 0, 'Der Winkel stimmt. Aber es gilt nicht $x + y = 1$, sondern $x^2 + y^2 = 1$. Berechne $y = sin 66,42°$.'],
+     ['$α ≈ 21,80°$;  $P(0,4 | 0,37)$', 0, 'Du hast $tan^{−1}(0,4)$ gerechnet. Der Tangens wäre $@f{y}{x}$ – gegeben ist aber nur $x = cos α$.']],
+  k:'$cos α = 0,4  ⇒  α ≈ 66,42°$;  $y = sin 66,42° ≈ 0,92$',
+  s:['Im Einheitskreis ist der Radius 1 (Hypotenuse). Deshalb gilt: $$x = cos α,   y = sin α$$',
+     'Winkel aus der x-Koordinate berechnen (SHIFT + cos): $$cos α = 0,4  ⇒  α = cos^{−1}(0,4) ≈ 66,42°$$',
+     'y-Koordinate berechnen: $$y = sin 66,42° ≈ 0,92$$',
+     'Kontrolle mit dem Satz des Pythagoras ($x^2 + y^2 = 1$): $$y = @w{1 − 0,4^2} = @w{0,84} ≈ 0,92$$'],
+  e:'$α ≈ 66,42°$;  $P(0,4 | 0,92)$',
+  c:[[acosd(0.4),2],[sind(acosd(0.4)),2],[asind(0.4),2],[atand(0.4),2],[sind(atand(0.4)),2],[Math.sqrt(0.84),2]] },
+
+{ t:'Ohne Taschenrechner: P₁(0,71 | 0,71)',
+  q:'Der Punkt $P_1(0,71 | 0,71)$ liegt auf dem Einheitskreis. Welcher Winkel $α_1$ gehört dazu? (ohne Taschenrechner)',
+  fig:() => ekreis({ punkte:[{ x:cosd(45), y:sind(45), t:'P_1', dx:8, dy:-8 }] }),
+  figL:() => ekreis({ radien:[{ g:45, c:'gruen' }], boegen:[{ g:45, t:'45°', d:50, c:'gruen' }], linien:[[cosd(45),0,cosd(45),sind(45),'grau',1],[0,sind(45),cosd(45),sind(45),'grau',1]], punkte:[{ x:cosd(45), y:sind(45), t:'P_1', dx:8, dy:-8, c:'gruen' }] }),
+  o:[['$α_1 = 45°$', 1],
+     ['$α_1 = 30°$', 0, 'Bei 30° ist $y = sin 30° = 0,5$ – der Punkt wäre $P(0,87 | 0,5)$.'],
+     ['$α_1 = 60°$', 0, 'Bei 60° ist $x = cos 60° = 0,5$ – der Punkt wäre $P(0,5 | 0,87)$.'],
+     ['$α_1 = 71°$', 0, '0,71 ist eine Koordinate (eine Länge), kein Winkel.']],
+  k:'$x = y$ ⇒ Winkelhalbierende ⇒ $α_1 = 45°$',
+  s:['Merke: Ein Punkt auf dem Einheitskreis hat die Koordinaten $P(cos α | sin α)$.',
+     'Bei $P_1$ sind $x$ und $y$ gleich groß ⇒ $P_1$ liegt auf der Winkelhalbierenden des ersten Quadranten.',
+     'Die Winkelhalbierende teilt den rechten Winkel zwischen den Achsen genau in der Mitte: $$α_1 = 45°$$',
+     'Kontrolle: $cos 45° = sin 45° ≈ 0,71$ ✓'],
+  e:'$α_1 = 45°$',
+  c:[[cosd(45),2],[cosd(30),2]] },
+
+{ t:'Ohne Taschenrechner: P₂(0 | ?)',
+  q:'Der Punkt $P_2$ liegt auf dem Einheitskreis und hat die x-Koordinate 0. Was ist möglich? (ohne Taschenrechner)',
+  fig:() => ekreis({}),
+  figL:() => ekreis({ punkte:[{ x:0, y:1, t:'P_2(0 | 1)', dx:9, dy:-9, c:'gruen' }, { x:0, y:-1, t:'P_2′(0 | −1)', dx:9, dy:11, c:'gruen' }], boegen:[{ g:90, t:'90°', d:46, c:'gruen' }] }),
+  o:[['$α_2 = 90°$ mit $P_2(0 | 1)$ oder $α_2 = 270°$ mit $P_2(0 | −1)$', 1],
+     ['$α_2 = 0°$ mit $P_2(0 | 1)$ oder $α_2 = 180°$ mit $P_2(0 | −1)$', 0, 'Bei 0° und 180° liegt der Punkt auf der x-Achse – dort ist $y = 0$, nicht $x = 0$.'],
+     ['nur $α_2 = 90°$ mit $P_2(0 | 1)$', 0, 'Das ist eine Möglichkeit – aber auch unten auf der y-Achse ist $x = 0$.'],
+     ['$α_2 = 45°$ mit $P_2(0 | 0,71)$', 0, 'Bei 45° sind beide Koordinaten 0,71. Für $x = 0$ muss der Punkt auf der y-Achse liegen.']],
+  k:'$x = 0$ ⇒ $P_2$ liegt auf der y-Achse: oben (90°) oder unten (270°)',
+  s:['$x = 0$ bedeutet: Der Punkt liegt genau auf der y-Achse.',
+     'Die y-Achse schneidet den Einheitskreis zweimal: oben bei $(0 | 1)$ und unten bei $(0 | −1)$.',
+     'Oben: Vierteldrehung ⇒ $α_2 = 90°$. Unten: Dreivierteldrehung ⇒ $α_2 = 270°$.'],
+  e:'$α_2 = 90°$: $P_2(0 | 1)$   oder   $α_2 = 270°$: $P_2(0 | −1)$' },
+
+{ t:'Ohne Taschenrechner: α₃ = 180°',
+  q:'Welche Koordinaten hat der Punkt $P_3$ auf dem Einheitskreis zum Winkel $α_3 = 180°$? (ohne Taschenrechner)',
+  fig:() => ekreis({}),
+  figL:() => ekreis({ radien:[{ g:180, c:'gruen' }], boegen:[{ g:180, t:'180°', d:46, tg:60, c:'gruen' }], punkte:[{ x:-1, y:0, t:'P_3', dx:-8, dy:-13, a:'end', c:'gruen' }] }),
+  o:[['$P_3(−1 | 0)$', 1],
+     ['$P_3(1 | 0)$', 0, 'Das ist der Startpunkt bei $α = 0°$ (bzw. 360°).'],
+     ['$P_3(0 | −1)$', 0, 'Dieser Punkt liegt unten auf der y-Achse – das ist $α = 270°$.'],
+     ['$P_3(0 | 1)$', 0, 'Dieser Punkt liegt oben auf der y-Achse – das ist $α = 90°$.']],
+  k:'halbe Umdrehung ⇒ $P_3(−1 | 0)$',
+  s:['Gestartet wird bei $(1 | 0)$ auf der positiven x-Achse, gedreht wird gegen den Uhrzeigersinn.',
+     '180° ist eine halbe Umdrehung ⇒ $P_3$ liegt auf der negativen x-Achse.',
+     'Der Radius ist 1: $$P_3(−1 | 0)$$ Also gilt: $cos 180° = −1$ und $sin 180° = 0$.'],
+  e:'$P_3(−1 | 0)$' },
+
+{ t:'Ohne Taschenrechner: P₄(? | 0,5)',
+  q:'Der Punkt $P_4$ liegt auf dem Einheitskreis und hat die y-Koordinate 0,5. Was ist möglich? (ohne Taschenrechner)',
+  fig:() => ekreis({ linien:[[-1.25,0.5,1.25,0.5,'ges',1]], texte:[{ x:1.22, y:0.6, t:'y = 0,5', c:'ges', a:'end' }] }),
+  figL:() => ekreis({ linien:[[-1.25,0.5,1.25,0.5,'ges',1]], radien:[{ g:30, c:'gruen' }, { g:150, c:'gruen' }], boegen:[{ g:30, t:'30°', d:56, tg:13, c:'gruen' }, { g:150, r:20, c:'gruen' }],
+        punkte:[{ x:cosd(30), y:0.5, t:'P_4', dx:7, dy:-11, c:'gruen' }, { x:-cosd(30), y:0.5, t:'P_4′', dx:-7, dy:-11, a:'end', c:'gruen' }] }),
+  o:[['$α_4 = 30°$ mit $x ≈ 0,87$ oder $α_4 = 150°$ mit $x ≈ −0,87$', 1],
+     ['nur $α_4 = 30°$ mit $x ≈ 0,67$', 0, 'Der Winkel 30° stimmt, aber $cos 30° ≈ 0,87$ (nicht 0,67). Außerdem gibt es links von der y-Achse einen zweiten Punkt mit $y = 0,5$.'],
+     ['$α_4 = 60°$ mit $x ≈ 0,87$ oder $α_4 = 120°$ mit $x ≈ −0,87$', 0, 'Bei 60° ist $y = sin 60° ≈ 0,87$. Den Wert 0,5 hat der Sinus bei 30°.'],
+     ['$α_4 = 45°$ mit $x = 0,5$', 0, 'Bei 45° sind beide Koordinaten etwa 0,71. Merke dir: $sin 30° = 0,5$.']],
+  k:'$sin α = 0,5$ ⇒ $α_4 = 30°$ oder $180° − 30° = 150°$;  $x = ± cos 30° ≈ ± 0,87$',
+  s:['Die y-Koordinate ist der Sinus: $sin α = 0,5$. Diesen Wert kennst du auswendig: $$sin 30° = 0,5$$',
+     'Die Gerade $y = 0,5$ schneidet den Einheitskreis zweimal. Spiegelst du den ersten Punkt an der y-Achse, erhältst du den zweiten Winkel: $$180° − 30° = 150°$$',
+     'x-Koordinaten: $$cos 30° ≈ 0,87   @t{und}   cos 150° ≈ −0,87$$'],
+  e:'$α_4 = 30°$: $P_4(0,87 | 0,5)$   oder   $α_4 = 150°$: $P_4(−0,87 | 0,5)$',
+  m:'Diese Werte solltest du kennen: $sin 30° = 0,5$ und $sin 45° = cos 45° ≈ 0,71$.',
+  c:[[cosd(30),2],[cosd(45),2]] }
+]});
+
+THEMEN.push({ nr:'1.4', titel:'Sinusfunktion', sub:'Sinuskurve lesen: gleiche Werte, höchster Punkt, Verlauf', fragen:[
+{ t:'Zweiter Winkel mit demselben Sinuswert',
+  q:'Bei $α = 30°$ ist $sin α = 0,5$. Bei welchem weiteren Winkel zwischen 0° und 360° ist der Sinuswert genauso groß?',
+  fig:() => sinus({ waag:[{ y:0.5, t:'y = 0,5' }], punkte:[{ x:30, t:'30°', dx:-4, dy:-13 }] }),
+  figL:() => sinus({ waag:[{ y:0.5, t:'y = 0,5' }], lot:[{ x:30 }, { x:150 }], punkte:[{ x:30, t:'30°', dx:-4 }, { x:150, t:'150°', dx:6 }] }),
+  o:[['$α = 150°$', 1],
+     ['$α = 210°$', 0, '$sin 210° = −0,5$: gleicher Betrag, aber die Kurve liegt dort unter der Achse.'],
+     ['$α = 330°$', 0, '$sin 330° = −0,5$: gleicher Betrag, aber die Kurve liegt dort unter der Achse.'],
+     ['$α = 60°$', 0, '$sin 60° ≈ 0,87$ – die Kurve steigt bis 90° noch weiter an.']],
+  k:'$α_2 = 180° − 30° = 150°$',
+  s:['Zeichne in Gedanken die waagrechte Linie $y = 0,5$ ein. Sie schneidet die Sinuskurve zwischen 0° und 360° zweimal.',
+     'Der Hügel der Sinuskurve ist symmetrisch zum höchsten Punkt bei 90°. Der erste Schnittpunkt (30°) liegt 60° vor dem Gipfel – der zweite liegt 60° dahinter.',
+     'Rechnung: $$α_2 = 180° − α_1 = 180° − 30° = 150°$$',
+     'Probe mit dem Taschenrechner: $sin 150° = 0,5$ ✓'],
+  e:'$α = 150°$',
+  m:'Es gilt immer: $sin(180° − α) = sin α$.' },
+
+{ t:'Alle Winkel zu einem Sinuswert',
+  q:'Für welche Winkel $α$ zwischen 0° und 360° gilt $sin α = 0,35$?',
+  fig:() => sinus({ waag:[{ y:0.35, t:'y = 0,35' }] }),
+  figL:() => sinus({ waag:[{ y:0.35, t:'y = 0,35' }], lot:[{ x:20.49 }, { x:159.51 }], punkte:[{ x:20.49, t:'α_1', dx:-6 }, { x:159.51, t:'α_2', dx:8 }] }),
+  o:[['$α_1 ≈ 20,49°$ und $α_2 ≈ 159,51°$', 1],
+     ['nur $α ≈ 20,49°$', 0, 'Der Taschenrechner liefert nur den ersten Winkel. Die Linie $y = 0,35$ schneidet die Kurve aber zweimal.'],
+     ['$α_1 ≈ 20,49°$ und $α_2 ≈ 339,51°$', 0, 'Du hast $360° − α_1$ gerechnet. Dort ist der Sinuswert −0,35 (unter der Achse). Richtig ist $180° − α_1$.'],
+     ['$α_1 ≈ 20,49°$ und $α_2 ≈ 200,49°$', 0, 'Du hast $180° + α_1$ gerechnet. Dort ist der Sinuswert −0,35 (unter der Achse). Richtig ist $180° − α_1$.']],
+  k:'$α_1 = sin^{−1}(0,35) ≈ 20,49°$;  $α_2 = 180° − 20,49° = 159,51°$',
+  s:['Ersten Winkel mit der Umkehrfunktion berechnen (SHIFT + sin): $$α_1 = sin^{−1}(0,35) ≈ 20,49°$$',
+     'Der Sinuswert ist positiv ⇒ die Linie $y = 0,35$ schneidet die Kurve auf dem Hügel zwischen 0° und 180° ein zweites Mal.',
+     'Zweiter Winkel: $$α_2 = 180° − α_1 = 180° − 20,49° = 159,51°$$',
+     'Probe: $sin 159,51° ≈ 0,35$ ✓'],
+  e:'$α_1 ≈ 20,49°$ und $α_2 ≈ 159,51°$',
+  c:[[asind(0.35),2],[180-asind(0.35),2],[360-asind(0.35),2],[180+asind(0.35),2]] },
+
+{ t:'Höchster Punkt der Sinuskurve',
+  q:'Bei welchem Winkel zwischen 0° und 360° ist $sin α$ am größten – und wie groß ist der Wert dort?',
+  fig:() => sinus({}),
+  figL:() => sinus({ lot:[{ x:90, c:'gruen' }, { x:270, c:'geg' }], punkte:[{ x:90, t:'(90° | 1)', c:'gruen', dy:-12, dx:22 }, { x:270, t:'(270° | −1)', c:'geg', dy:13, dx:-26 }] }),
+  o:[['bei $α = 90°$:  $sin 90° = 1$', 1],
+     ['bei $α = 180°$:  $sin 180° = 1$', 0, '$sin 180° = 0$ – dort schneidet die Kurve die Achse (Nullstelle).'],
+     ['bei $α = 270°$:  $sin 270° = 1$', 0, '$sin 270° = −1$ – das ist der tiefste Punkt der Kurve.'],
+     ['bei $α = 360°$:  $sin 360° = 1$', 0, '$sin 360° = 0$ – nach einer ganzen Umdrehung ist der Punkt wieder am Start.']],
+  k:'höchster Punkt bei 90° mit $sin 90° = 1$',
+  s:['Am Einheitskreis ist $sin α$ die Höhe ($y$-Koordinate) des Punktes $P$.',
+     'Der Punkt ist ganz oben, wenn er eine Vierteldrehung gemacht hat: bei $α = 90°$ liegt er bei $(0 | 1)$. $$sin 90° = 1$$',
+     'Der tiefste Punkt liegt genau gegenüber bei $α = 270°$: $sin 270° = −1$. Größer als 1 und kleiner als −1 kann der Sinus nie werden.'],
+  e:'$sin 90° = 1$ (größter Wert),  $sin 270° = −1$ (kleinster Wert)',
+  m:'Die Sinuswerte liegen immer zwischen −1 und 1. Nach 360° wiederholt sich die Kurve.' },
+
+{ t:'Wo fällt die Sinuskurve?',
+  q:'Der Greifer des OP-Roboters hat die Höhe $y = sin α$. Der Motor dreht gleichmäßig von 0° bis 360°. In welchem Winkelbereich bewegt sich der Greifer nach unten?',
+  fig:() => sinus({}),
+  figL:() => sinus({ band:[[0,90,'#e6f4ec'],[90,270,'#fde8e8'],[270,360,'#e6f4ec']], texte:[{ x:45, y:-0.85, t:'hoch', c:'gruen', b:1 }, { x:180, y:0.85, t:'runter', c:'geg', b:1 }, { x:315, y:0.85, t:'hoch', c:'gruen', b:1 }] }),
+  o:[['zwischen 90° und 270°', 1],
+     ['zwischen 180° und 360°', 0, 'Dort ist der Greifer unter der Mittellage – aber ab 270° bewegt er sich schon wieder nach oben.'],
+     ['zwischen 0° und 180°', 0, 'Dort ist der Greifer über der Mittellage. Bis 90° steigt er aber noch.'],
+     ['nur zwischen 90° und 180°', 0, 'Dort fällt er – aber zwischen 180° und 270° fällt er weiter bis zum tiefsten Punkt.']],
+  k:'von 90° (höchster Punkt) bis 270° (tiefster Punkt)',
+  s:['Lies die Kurve von links nach rechts wie ein Höhenprofil.',
+     'Von 0° bis 90° steigt die Kurve bis zum höchsten Punkt.',
+     'Von 90° bis 270° fällt sie – erst bis zur Mittellage (180°), dann weiter bis zum tiefsten Punkt (270°).',
+     'Von 270° bis 360° steigt sie wieder bis zur Mittellage.'],
+  e:'nach unten: $90° < α < 270°$;  nach oben: $0° < α < 90°$ und $270° < α < 360°$' },
+
+{ t:'Halber Winkel – halbe Höhe?',
+  q:'Ein Ingenieur behauptet: „Bei 45° hat der Greifer die Hälfte seiner größten Höhe erreicht – 45° ist ja die Hälfte von 90°.“ Stimmt das?',
+  fig:() => sinus({ lot:[{ x:45 }], punkte:[{ x:45, t:'45°', dx:-8 }] }),
+  figL:() => sinus({ waag:[{ y:0.5, t:'halbe Höhe', c:'grau' }], lot:[{ x:45 }, { x:30, c:'gruen' }], punkte:[{ x:45, t:'0,71', dx:-7, dy:-9, a:'end' }, { x:30, t:'', c:'gruen' }], texte:[{ x:30, y:-0.14, t:'30°', c:'gruen', b:1 }] }),
+  o:[['Nein – $sin 45° ≈ 0,71$. Die halbe Höhe ist schon bei 30° erreicht.', 1],
+     ['Ja – $sin 45° = 0,5$.', 0, 'Rechne nach: $sin 45° ≈ 0,71$. Den Wert 0,5 hat der Sinus bei 30°.'],
+     ['Ja – die Sinuskurve steigt gleichmäßig an.', 0, 'Die Sinuskurve ist keine Gerade: Am Anfang steigt sie steil, zum Gipfel hin wird sie immer flacher.'],
+     ['Nein – bei 45° ist erst ein Viertel der Höhe erreicht.', 0, 'Rechne nach: $sin 45° ≈ 0,71$ – das ist sogar mehr als die Hälfte.']],
+  k:'$sin 45° ≈ 0,71 ≠ 0,5$',
+  s:['Die größte Höhe ist $sin 90° = 1$. Die Hälfte davon ist 0,5.',
+     'Einsetzen: $$sin 45° ≈ 0,71$$ Bei 45° ist der Greifer also schon bei etwa 71 % der größten Höhe.',
+     'Die halbe Höhe ist bei 30° erreicht, denn $sin 30° = 0,5$.',
+     'Der Denkfehler: Die Sinuskurve ist keine Gerade. Sie steigt am Anfang steil und wird zum Gipfel hin flacher – Winkel und Höhe sind nicht proportional.'],
+  e:'Die Aussage ist falsch: $sin 45° ≈ 0,71$; halbe Höhe bei 30°.',
+  c:[[sind(45),2]] }
+]});
+
+/* Standarddreiecke */
+const D_ALLG = { A:[0,0], B:[7,0], C:[2.6,4.6] };
+const D5A = { A:[0,0], B:[8.844,0], C:pol(5.664,73) };          /* a = 9, α = 73°, β = 37° */
+const D5B = { A:[0,0], B:[11,0], C:pol(11.515,41) };            /* c = 11, α = 41°, γ = 66° */
+const D5C = { A:[0,0], B:[8.404,0], C:pol(6,65) };              /* a = 8, b = 6, α = 65° */
+const D6A = { A:[0,0], B:[9,0], C:pol(4,73) };                  /* b = 4, c = 9, α = 73° */
+const D6B = { A:[0,0], B:[8,0], C:[8 - 6 * cosd(48), 6 * sind(48)] }; /* a = 6, c = 8, β = 48° */
+const D6C = { A:[0,0], B:[9,0], C:[5.833,3.869] };              /* a = 5, b = 7, c = 9 */
+const D6D = { A:[0,0], B:[9.465,0], C:pol(8,65) };              /* b = 8, β = 50°, γ = 65° */
+const D7 = { A:[0,0], B:[8,0], C:pol(6,40) };                   /* b = 6, c = 8, α = 40° */
+const allg = o => tri(Object.assign({ P:D_ALLG, s:{ a:'a', b:'b', c:'c' }, w:{ A:'α', B:'β', C:'γ' } }, o));
+
+THEMEN.push({ nr:'1.5', titel:'Sinussatz', sub:'Von der Höhe zum Sinussatz – Seiten und Winkel im allgemeinen Dreieck', fragen:[
+{ t:'Strecke b – geht das direkt?',
+  q:'Kannst du die Länge $b$ direkt mit $sin$, $cos$ oder $tan$ berechnen?', geg:['$a = 9 cm$', '$α = 73°$', '$β = 37°$'],
+  fig:() => tri({ P:D5A, s:{ a:'9 cm', b:'b = ?' }, w:{ A:'73°', B:'37°' } }),
+  figL:() => tri({ P:D5A, s:{ a:'9 cm', b:'b' }, w:{ A:'73°', B:'37°', C:{ t:'70°', c:'geg' } } }),
+  o:[['Nein – das Dreieck ist nicht rechtwinklig ($γ = 70°$).', 1],
+     ['Ja: $b = 9 cm · sin 37° ≈ 5,42 cm$', 0, 'Dafür müsste $a$ die Hypotenuse eines rechtwinkligen Dreiecks $ABC$ sein. Hier ist kein Winkel 90°. (5,42 cm ist die Höhe $h_c$ – siehe nächste Aufgabe.)'],
+     ['Ja: $b = 9 cm · cos 73° ≈ 2,63 cm$', 0, '$sin$, $cos$ und $tan$ gelten nur im rechtwinkligen Dreieck. Hier ist kein Winkel 90°.'],
+     ['Nein – dafür müsste auch die Seite $c$ gegeben sein.', 0, 'An der fehlenden Seite liegt es nicht. Der Grund ist: Das Dreieck hat keinen rechten Winkel.']],
+  k:'$γ = 180° − 73° − 37° = 70°$ ⇒ kein rechter Winkel',
+  s:['Prüfe zuerst: Gibt es einen rechten Winkel? Dritter Winkel: $$γ = 180° − 73° − 37° = 70°$$',
+     'Kein Winkel ist 90° ⇒ das Dreieck $ABC$ ist <b>nicht rechtwinklig</b>.',
+     '$sin$, $cos$ und $tan$ gelten nur im rechtwinkligen Dreieck ⇒ so kannst du $b$ nicht direkt berechnen.',
+     'Der Trick: Zeichne eine Höhe ein. Dann entstehen zwei rechtwinklige Teildreiecke (nächste Aufgabe).'],
+  e:'Nicht direkt möglich – $ABC$ ist nicht rechtwinklig.',
+  c:[[9*sind(37),2],[9*cosd(73),2]] },
+
+{ t:'Strecke b mit der Höhe h_c',
+  q:'Berechne zuerst die Höhe $h_c$ und damit die Länge $b$.', geg:['$a = 9 cm$', '$α = 73°$', '$β = 37°$'],
+  fig:() => tri({ P:D5A, s:{ a:'9 cm', b:'b = ?' }, w:{ A:'73°', B:'37°' }, h:{ von:'C', t:'h_c', o:-1 } }),
+  figL:() => tri({ P:D5A, s:{ a:'9 cm', b:'b' }, f:{ a:'hyp', b:'ges' }, w:{ A:'73°', B:'37°' }, h:{ von:'C', t:'h_c', o:-1 } }),
+  o:[['$h_c ≈ 5,42 cm$;  $b ≈ 5,67 cm$', 1],
+     ['$h_c ≈ 5,42 cm$;  $b ≈ 5,18 cm$', 0, 'Die Höhe stimmt. Dann hast du aber mit $sin 73°$ multipliziert. $b$ ist im linken Teildreieck die Hypotenuse – sie muss länger sein als $h_c$: teile durch $sin 73°$.'],
+     ['$h_c ≈ 7,19 cm$;  $b ≈ 7,52 cm$', 0, 'Du hast $9 cm · cos 37°$ gerechnet. Die Höhe $h_c$ liegt dem Winkel $β$ gegenüber ⇒ Sinus.'],
+     ['$h_c ≈ 8,61 cm$;  $b ≈ 14,31 cm$', 0, 'Die Winkel sind vertauscht: Im rechten Teildreieck (mit $a$) liegt $h_c$ dem Winkel $β = 37°$ gegenüber.']],
+  k:'$h_c = 9 cm · sin 37° ≈ 5,42 cm$;  $b = @f{5,42 cm}{sin 73°} ≈ 5,67 cm$',
+  s:['Die Höhe $h_c$ teilt das Dreieck $ABC$ in zwei rechtwinklige Teildreiecke.',
+     'Rechtes Teildreieck (mit dem Winkel $β$): Die Hypotenuse ist $a = 9 cm$, $h_c$ liegt $β$ gegenüber ⇒ Sinus. $$sin β = @f{h_c}{a}  ⇒  h_c = 9 cm · sin 37° ≈ 5,42 cm$$',
+     'Linkes Teildreieck (mit dem Winkel $α$): Die Hypotenuse ist $b$, $h_c$ liegt $α$ gegenüber ⇒ Sinus. $$sin α = @f{h_c}{b}  ⇒  b = @f{h_c}{sin α}$$',
+     'Einsetzen: $$b = @f{5,42 cm}{sin 73°} ≈ 5,67 cm$$'],
+  e:'$h_c ≈ 5,42 cm$;  $b ≈ 5,67 cm$',
+  m:'Mit dem ungerundeten Wert für $h_c$ erhältst du $b ≈ 5,66 cm$ – kleine Rundungsunterschiede sind in Ordnung.',
+  c:[[9*sind(37),2],[5.42/sind(73),2],[9*sind(37)/sind(73),2],[5.42*sind(73),2],[9*cosd(37),2],[7.19/sind(73),2],[9*sind(73),2],[8.61/sind(37),2]] },
+
+{ t:'Strecke a mit der Höhe h_b',
+  q:'Berechne zuerst die Höhe $h_b$ und damit die Länge $a$.', geg:['$c = 11 cm$', '$α = 41°$', '$γ = 66°$'],
+  fig:() => tri({ P:D5B, s:{ c:'11 cm', a:'a = ?' }, w:{ A:'41°', C:'66°' }, h:{ von:'B', t:'h_b', o:-1 } }),
+  figL:() => tri({ P:D5B, s:{ c:'11 cm', a:'a' }, f:{ c:'hyp', a:'ges' }, w:{ A:'41°', C:'66°' }, h:{ von:'B', t:'h_b', o:-1 } }),
+  o:[['$h_b ≈ 7,22 cm$;  $a ≈ 7,90 cm$', 1],
+     ['$h_b ≈ 7,22 cm$;  $a ≈ 6,60 cm$', 0, 'Die Höhe stimmt. Dann hast du aber mit $sin 66°$ multipliziert. $a$ ist im Teildreieck die Hypotenuse – teile durch $sin 66°$.'],
+     ['$h_b ≈ 8,30 cm$;  $a ≈ 9,09 cm$', 0, 'Du hast $11 cm · cos 41°$ gerechnet. Die Höhe $h_b$ liegt dem Winkel $α$ gegenüber ⇒ Sinus.'],
+     ['$h_b ≈ 10,05 cm$;  $a ≈ 15,32 cm$', 0, 'Die Winkel sind vertauscht: Im Teildreieck mit der Seite $c$ liegt $h_b$ dem Winkel $α = 41°$ gegenüber.']],
+  k:'$h_b = 11 cm · sin 41° ≈ 7,22 cm$;  $a = @f{7,22 cm}{sin 66°} ≈ 7,90 cm$',
+  s:['Die Höhe $h_b$ geht von $B$ senkrecht auf die Seite $b$. Sie teilt das Dreieck in zwei rechtwinklige Teildreiecke.',
+     'Teildreieck mit dem Winkel $α$: Die Hypotenuse ist $c = 11 cm$, $h_b$ liegt $α$ gegenüber ⇒ Sinus. $$h_b = 11 cm · sin 41° ≈ 7,22 cm$$',
+     'Teildreieck mit dem Winkel $γ$: Die Hypotenuse ist $a$, $h_b$ liegt $γ$ gegenüber ⇒ Sinus. $$sin γ = @f{h_b}{a}  ⇒  a = @f{h_b}{sin γ}$$',
+     'Einsetzen: $$a = @f{7,22 cm}{sin 66°} ≈ 7,90 cm$$'],
+  e:'$h_b ≈ 7,22 cm$;  $a ≈ 7,90 cm$',
+  m:'Genau diese zwei Schritte fasst der Sinussatz in einer Formel zusammen: $@f{a}{sin α} = @f{c}{sin γ}$.',
+  c:[[11*sind(41),2],[7.22/sind(66),2],[7.22*sind(66),2],[11*cosd(41),2],[8.30/sind(66),2],[11*sind(66),2],[10.05/sind(41),2]] },
+
+{ t:'Der Sinussatz',
+  q:'Wie lautet der Sinussatz?',
+  fig:() => allg({}),
+  figL:() => allg({ f:{ a:'geg' }, w:{ A:{ t:'α', c:'geg' }, B:'β', C:'γ' } }),
+  o:[['$@f{a}{sin α} = @f{b}{sin β} = @f{c}{sin γ}$', 1],
+     ['$@f{a}{sin β} = @f{b}{sin γ} = @f{c}{sin α}$', 0, 'Seite und Winkel passen nicht zusammen: Zu jeder Seite gehört der <b>gegenüberliegende</b> Winkel – zu $a$ also $α$.'],
+     ['$a · sin α = b · sin β = c · sin γ$', 0, 'Beim Sinussatz wird jede Seite durch den Sinus ihres Gegenwinkels <b>geteilt</b>, nicht damit multipliziert.'],
+     ['$@f{a}{α} = @f{b}{β} = @f{c}{γ}$', 0, 'Hier fehlt der Sinus. Seiten und Winkel sind nicht einfach proportional.']],
+  k:'$@f{a}{sin α} = @f{b}{sin β} = @f{c}{sin γ}$',
+  s:['Über die Höhe $h_c$ gilt in den beiden Teildreiecken: $$h_c = b · sin α   @t{und}   h_c = a · sin β$$',
+     'Beide Terme beschreiben dieselbe Höhe: $$a · sin β = b · sin α$$',
+     'Teilst du beide Seiten durch $sin α$ und durch $sin β$, steht jede Seite über dem Sinus ihres Gegenwinkels: $$@f{a}{sin α} = @f{b}{sin β}$$',
+     'Mit einer anderen Höhe erhältst du genauso den dritten Bruch: $$@f{a}{sin α} = @f{b}{sin β} = @f{c}{sin γ}$$'],
+  e:'$@f{a}{sin α} = @f{b}{sin β} = @f{c}{sin γ}$',
+  m:'Seite und Gegenwinkel bilden immer ein Paar: $a$ und $α$, $b$ und $β$, $c$ und $γ$.' },
+
+{ t:'Voraussetzung für den Sinussatz',
+  q:'Wann kannst du den Sinussatz verwenden?',
+  fig:() => allg({}),
+  figL:() => allg({ f:{ a:'geg' }, w:{ A:{ t:'α', c:'geg' }, B:'β', C:'γ' } }),
+  o:[['In jedem Dreieck – bekannt sein muss ein Paar aus Seite und Gegenwinkel und eine weitere Größe.', 1],
+     ['Nur im rechtwinkligen Dreieck.', 0, 'Das gilt für $sin$, $cos$ und $tan$. Der Sinus<b>satz</b> gilt in jedem Dreieck.'],
+     ['In jedem Dreieck – bekannt sein müssen zwei Seiten und der Winkel dazwischen.', 0, 'Dann kennst du kein Paar aus Seite und Gegenwinkel. Das ist der Fall für den Kosinussatz.'],
+     ['In jedem Dreieck – bekannt sein müssen alle drei Seiten.', 0, 'Ohne Winkel hast du kein Paar aus Seite und Gegenwinkel. Das ist der Fall für den Kosinussatz.']],
+  k:'beliebiges Dreieck: Paar (Seite + Gegenwinkel) + 1 weitere Größe',
+  s:['Den Sinussatz darfst du in <b>jedem</b> Dreieck verwenden – ein rechter Winkel ist nicht nötig.',
+     'Du brauchst ein <b>Paar</b>: eine Seite und den gegenüberliegenden Winkel (z. B. $a$ und $α$, in der Skizze rot).',
+     'Dazu kommt noch eine weitere Größe: ein anderer Winkel oder eine andere Seite.',
+     'Dann kannst du die fehlende Größe des zweiten Paares berechnen: $$@f{a}{sin α} = @f{b}{sin β}$$'],
+  e:'beliebiges Dreieck: Paar (Seite + Gegenwinkel) + 1 weitere Größe' },
+
+{ t:'Strecke a mit dem Sinussatz',
+  q:'Gib die Länge der Strecke $a$ an.', geg:['$c = 11 cm$', '$α = 41°$', '$γ = 66°$'],
+  fig:() => tri({ P:D5B, s:{ c:'11 cm', a:'a = ?' }, w:{ A:'41°', C:'66°' } }),
+  figL:() => tri({ P:D5B, s:{ c:'11 cm', a:'a' }, f:{ c:'geg', a:'ank' }, w:{ A:{ t:'41°', c:'ank' }, C:{ t:'66°', c:'geg' } } }),
+  o:[['$a ≈ 7,90 cm$', 1],
+     ['$a ≈ 15,32 cm$', 0, 'Die Winkel sind vertauscht: Zu $a$ gehört der Gegenwinkel $α = 41°$, zu $c$ gehört $γ = 66°$.'],
+     ['$a ≈ 6,83 cm$', 0, 'Du hast mit den Winkeln selbst gerechnet ($11 · 41 : 66$). Im Sinussatz steht der <b>Sinus</b> der Winkel.'],
+     ['$a ≈ 7,22 cm$', 0, 'Das ist $11 cm · sin 41°$ – die Höhe $h_b$. Du musst noch durch $sin 66°$ teilen.']],
+  k:'$a = @f{11 cm · sin 41°}{sin 66°} ≈ 7,90 cm$',
+  s:['Kein rechter Winkel. Aber: $c = 11 cm$ und $γ = 66°$ liegen sich gegenüber ⇒ ein Paar ist bekannt ⇒ <b>Sinussatz</b>.',
+     'Gesucht ist $a$, der Gegenwinkel $α = 41°$ ist bekannt. Ansatz: $$@f{a}{sin α} = @f{c}{sin γ}$$',
+     'Nach $a$ umstellen (beide Seiten $· sin α$): $$a = @f{c · sin α}{sin γ}$$',
+     'Einsetzen und ausrechnen: $$a = @f{11 cm · sin 41°}{sin 66°} ≈ 7,90 cm$$'],
+  e:'$a ≈ 7,90 cm$',
+  c:[[11*sind(41)/sind(66),2],[11*sind(66)/sind(41),2],[11*41/66,2],[11*sind(41),2]] },
+
+{ t:'Winkel β mit dem Sinussatz',
+  q:'Gib das Maß des Winkels $β$ an.', geg:['$a = 8 cm$', '$b = 6 cm$', '$α = 65°$'],
+  fig:() => tri({ P:D5C, s:{ a:'8 cm', b:'6 cm' }, w:{ A:'65°', B:{ t:'β = ?', c:'ges' } } }),
+  figL:() => tri({ P:D5C, s:{ a:'8 cm', b:'6 cm' }, f:{ a:'geg', b:'ank' }, w:{ A:{ t:'65°', c:'geg' }, B:{ t:'β', c:'ank' } } }),
+  o:[['$β ≈ 42,82°$', 1],
+     ['$β ≈ 48,75°$', 0, 'Du hast mit den Winkeln selbst gerechnet ($6 · 65 : 8$). Im Sinussatz steht der <b>Sinus</b> der Winkel.'],
+     ['$β ≈ 137,18°$', 0, 'Das ist $180° − 42,82°$. Dieser Winkel passt nicht: Zusammen mit $α = 65°$ wären es schon mehr als 180°.'],
+     ['$β ≈ 0,68°$', 0, '0,68 ist erst der Sinuswert von $β$. Den Winkel bekommst du mit der Umkehrfunktion (SHIFT + sin).']],
+  k:'$sin β = @f{6 cm · sin 65°}{8 cm}  ⇒  β ≈ 42,82°$',
+  s:['Kein rechter Winkel. Aber: $a = 8 cm$ und $α = 65°$ liegen sich gegenüber ⇒ ein Paar ist bekannt ⇒ <b>Sinussatz</b>.',
+     'Gesucht ist $β$, die Gegenseite $b = 6 cm$ ist bekannt. Für Winkel schreibst du den Sinussatz am besten mit dem Sinus im Zähler: $$@f{sin β}{b} = @f{sin α}{a}$$',
+     'Nach $sin β$ umstellen (beide Seiten $· b$) und einsetzen: $$sin β = @f{6 cm · sin 65°}{8 cm} ≈ 0,68$$',
+     'Umkehrfunktion (SHIFT + sin) – rechne dabei mit dem ungerundeten Wert weiter: $$β ≈ 42,82°$$'],
+  e:'$β ≈ 42,82°$',
+  m:'Tippe am besten alles in einem Schritt ein: $sin^{−1}(6 · sin 65° : 8)$. So entstehen keine Rundungsfehler.',
+  c:[[asind(6*sind(65)/8),2],[6*65/8,2],[180-asind(6*sind(65)/8),2],[6*sind(65)/8,2]] }
+]});
+
+THEMEN.push({ nr:'1.6', titel:'Kosinussatz', sub:'Zwei Seiten und der Winkel dazwischen – oder drei Seiten', fragen:[
+{ t:'Strecke a – geht das mit dem Sinussatz?',
+  q:'Kannst du die Länge $a$ mit $sin$, $cos$, $tan$, dem Satz des Pythagoras oder dem Sinussatz berechnen?', geg:['$b = 4 cm$', '$c = 9 cm$', '$α = 73°$'],
+  fig:() => tri({ P:D6A, s:{ b:'4 cm', c:'9 cm', a:'a = ?' }, w:{ A:'73°' }, pad:[50,26,34,30] }),
+  o:[['Nein – es gibt keinen rechten Winkel und kein Paar aus Seite und Gegenwinkel.', 1],
+     ['Ja, mit dem Sinussatz – der Winkel $α$ ist ja bekannt.', 0, 'Zu $α$ gehört die Seite $a$ – und die ist gesucht. Zu $b$ und $c$ fehlen die Gegenwinkel. Es gibt also kein vollständiges Paar.'],
+     ['Ja, mit dem Satz des Pythagoras: $a = @w{4^2 + 9^2} cm$', 0, 'Der Satz des Pythagoras gilt nur im rechtwinkligen Dreieck. Hier ist $α = 73°$.'],
+     ['Ja: $a = 9 cm · sin 73°$', 0, '$sin$, $cos$ und $tan$ gelten nur im rechtwinkligen Dreieck. Hier ist kein rechter Winkel gegeben.']],
+  k:'kein rechter Winkel, kein Paar ⇒ neuer Satz nötig: Kosinussatz',
+  s:['Kein rechter Winkel ⇒ $sin$, $cos$, $tan$ und der Satz des Pythagoras gehen nicht.',
+     'Sinussatz? Dafür brauchst du ein Paar aus Seite und Gegenwinkel. Zu $α$ ist $a$ unbekannt, zu $b$ und $c$ sind $β$ und $γ$ unbekannt ⇒ kein Paar.',
+     'Gegeben sind zwei Seiten und der Winkel dazwischen (SWS). Genau dafür gibt es den <b>Kosinussatz</b>: $$a^2 = b^2 + c^2 − 2bc · cos α$$'],
+  e:'Mit den bisherigen Werkzeugen nicht möglich – hier brauchst du den Kosinussatz.' },
+
+{ t:'Der Kosinussatz',
+  q:'Wie lautet der Kosinussatz für die Seite $a$?',
+  fig:() => allg({}),
+  figL:() => allg({ f:{ a:'geg' }, w:{ A:{ t:'α', c:'geg' }, B:'β', C:'γ' } }),
+  o:[['$a^2 = b^2 + c^2 − 2bc · cos α$', 1],
+     ['$a^2 = b^2 + c^2 + 2bc · cos α$', 0, 'Achte auf das Vorzeichen: Vor $2bc · cos α$ steht ein Minus.'],
+     ['$a^2 = b^2 + c^2 − 2bc · sin α$', 0, 'Der Kosinus<b>satz</b> heißt so, weil in ihm der Kosinus steht.'],
+     ['$a^2 = b^2 + c^2 − 2ab · cos γ$', 0, 'Seiten und Winkel passen nicht zusammen: Steht links $a^2$, dann stehen rechts die beiden anderen Seiten $b$ und $c$ und der Winkel $α$ gegenüber von $a$.']],
+  k:'$a^2 = b^2 + c^2 − 2bc · cos α$',
+  s:['Den Kosinussatz gibt es für jede Seite: $$a^2 = b^2 + c^2 − 2bc · cos α$$ $$b^2 = a^2 + c^2 − 2ac · cos β$$ $$c^2 = a^2 + b^2 − 2ab · cos γ$$',
+     'Merkhilfe: Links steht die Seite, die dem Winkel im Kosinus gegenüberliegt. Rechts stehen die beiden anderen Seiten.',
+     'Für $α = 90°$ ist $cos α = 0$. Dann bleibt $a^2 = b^2 + c^2$ übrig – der Satz des Pythagoras ist ein Sonderfall des Kosinussatzes.'],
+  e:'$a^2 = b^2 + c^2 − 2bc · cos α$',
+  m:'Kosinussatz bei: 2 Seiten + eingeschlossener Winkel (SWS) ⇒ dritte Seite, oder 3 Seiten (SSS) ⇒ Winkel.' },
+
+{ t:'Strecke a mit dem Kosinussatz',
+  q:'Gib die Länge der Strecke $a$ an.', geg:['$b = 4 cm$', '$c = 9 cm$', '$α = 73°$'],
+  fig:() => tri({ P:D6A, s:{ b:'4 cm', c:'9 cm', a:'a = ?' }, w:{ A:'73°' }, pad:[50,26,34,30] }),
+  figL:() => tri({ P:D6A, s:{ b:'4 cm', c:'9 cm', a:'a' }, f:{ b:'ank', c:'ank', a:'ges' }, w:{ A:{ t:'73°', c:'ank' } }, pad:[50,26,34,30] }),
+  o:[['$a ≈ 8,71 cm$', 1],
+     ['$a ≈ 9,85 cm$', 0, 'Du hast nur $@w{4^2 + 9^2}$ gerechnet. Das gilt nur bei einem rechten Winkel – hier fehlt $− 2 · 4 · 9 · cos 73°$.'],
+     ['$a ≈ 10,87 cm$', 0, 'Vorzeichenfehler: Im Kosinussatz steht $− 2bc · cos α$, nicht plus.'],
+     ['$a ≈ 75,95 cm$', 0, '75,95 ist erst $a^2$. Am Ende musst du noch die Wurzel ziehen.']],
+  k:'$a^2 = 4^2 + 9^2 − 2 · 4 · 9 · cos 73° ≈ 75,95$  ⇒  $a ≈ 8,71 cm$',
+  s:['Kein rechter Winkel, kein Paar. Bekannt sind zwei Seiten und der Winkel dazwischen (SWS) ⇒ <b>Kosinussatz</b>.',
+     'Gesucht ist $a$, gegenüber liegt $α$: $$a^2 = b^2 + c^2 − 2bc · cos α$$',
+     'Einsetzen: $$a^2 = 4^2 + 9^2 − 2 · 4 · 9 · cos 73° ≈ 75,95$$',
+     'Wurzel ziehen: $$a = @w{75,95} cm ≈ 8,71 cm$$'],
+  e:'$a ≈ 8,71 cm$',
+  m:'Tippe die rechte Seite in einem Stück in den Taschenrechner – er beachtet Punkt vor Strich von selbst.',
+  c:[[Math.sqrt(97-72*cosd(73)),2],[97-72*cosd(73),2],[Math.sqrt(97),2],[Math.sqrt(97+72*cosd(73)),2]] },
+
+{ t:'Strecke b mit dem Kosinussatz',
+  q:'Gib die Länge der Strecke $b$ an.', geg:['$a = 6 cm$', '$c = 8 cm$', '$β = 48°$'],
+  fig:() => tri({ P:D6B, s:{ a:'6 cm', c:'8 cm', b:'b = ?' }, w:{ B:'48°' } }),
+  figL:() => tri({ P:D6B, s:{ a:'6 cm', c:'8 cm', b:'b' }, f:{ a:'ank', c:'ank', b:'ges' }, w:{ B:{ t:'48°', c:'ank' } } }),
+  o:[['$b ≈ 5,98 cm$', 1],
+     ['$b = 10 cm$', 0, 'Du hast nur $@w{6^2 + 8^2}$ gerechnet. Das gilt nur bei einem rechten Winkel – hier fehlt $− 2 · 6 · 8 · cos 48°$.'],
+     ['$b ≈ 12,82 cm$', 0, 'Vorzeichenfehler: Im Kosinussatz steht $− 2ac · cos β$, nicht plus.'],
+     ['$b ≈ 35,76 cm$', 0, '35,76 ist erst $b^2$. Am Ende musst du noch die Wurzel ziehen.']],
+  k:'$b^2 = 6^2 + 8^2 − 2 · 6 · 8 · cos 48° ≈ 35,76$  ⇒  $b ≈ 5,98 cm$',
+  s:['Kein rechter Winkel. Bekannt: $a = 6 cm$, $c = 8 cm$ und der Winkel $β$ dazwischen (SWS), kein Paar ⇒ <b>Kosinussatz</b>.',
+     'Gesucht ist $b$, gegenüber liegt $β$: $$b^2 = a^2 + c^2 − 2ac · cos β$$',
+     'Einsetzen: $$b^2 = 6^2 + 8^2 − 2 · 6 · 8 · cos 48° ≈ 35,76$$',
+     'Wurzel ziehen: $$b = @w{35,76} cm ≈ 5,98 cm$$'],
+  e:'$b ≈ 5,98 cm$',
+  c:[[Math.sqrt(100-96*cosd(48)),2],[100-96*cosd(48),2],[Math.sqrt(100+96*cosd(48)),2]] },
+
+{ t:'Winkel γ aus drei Seiten',
+  q:'Gib das Maß des Winkels $γ$ an.', geg:['$a = 5 cm$', '$b = 7 cm$', '$c = 9 cm$'],
+  fig:() => tri({ P:D6C, s:{ a:'5 cm', b:'7 cm', c:'9 cm' }, w:{ C:{ t:'γ = ?', c:'ges', aus:1 } }, pad:[34,30,34,30] }),
+  figL:() => tri({ P:D6C, s:{ a:'5 cm', b:'7 cm', c:'9 cm' }, f:{ c:'ges', a:'ank', b:'ank' }, w:{ C:{ t:'γ', c:'ges' } }, pad:[34,30,34,30] }),
+  o:[['$γ ≈ 95,74°$', 1],
+     ['$γ ≈ 84,26°$', 0, 'Vorzeichenfehler: Es kommt $cos γ = −0,1$ heraus (nicht $+0,1$). Ein negativer Kosinus gehört zu einem stumpfen Winkel.'],
+     ['$γ ≈ 33,56°$', 0, 'Das ist der Winkel $α$. Für $γ$ muss links die Seite $c$ stehen, die $γ$ gegenüberliegt.'],
+     ['$γ ≈ 5,74°$', 0, 'Du hast $sin^{−1}$ statt $cos^{−1}$ benutzt.']],
+  k:'$9^2 = 5^2 + 7^2 − 2 · 5 · 7 · cos γ  ⇒  cos γ = −0,1  ⇒  γ ≈ 95,74°$',
+  s:['Drei Seiten sind bekannt (SSS), kein Winkel ⇒ <b>Kosinussatz</b>.',
+     'Gesucht ist $γ$, gegenüber liegt $c$ – also die Formel mit $c^2$ links: $$c^2 = a^2 + b^2 − 2ab · cos γ$$',
+     'Einsetzen und zusammenfassen: $$9^2 = 5^2 + 7^2 − 2 · 5 · 7 · cos γ$$ $$81 = 74 − 70 · cos γ$$',
+     'Nach $cos γ$ auflösen (erst $− 74$, dann $: (−70)$): $$7 = −70 · cos γ  ⇒  cos γ = −0,1$$',
+     'Umkehrfunktion (SHIFT + cos): $$γ = cos^{−1}(−0,1) ≈ 95,74°$$'],
+  e:'$γ ≈ 95,74°$',
+  m:'Achtung: $74 − 70 · cos γ$ ist <b>nicht</b> $4 · cos γ$. Punkt vor Strich – erst die 74 auf die andere Seite bringen.',
+  c:[[acosd(-0.1),2],[acosd(0.1),2],[asind(0.1),2],[acosd(105/126),2]] },
+
+{ t:'Welcher Satz wann?',
+  q:'Wann nimmst du den Satz des Pythagoras, den Sinussatz oder den Kosinussatz? Welche Zuordnung stimmt?',
+  fig:() => allg({}),
+  o:[['rechtwinklig ⇒ Pythagoras oder sin, cos, tan<br>Paar aus Seite + Gegenwinkel ⇒ Sinussatz<br>SWS oder SSS ⇒ Kosinussatz', 1],
+     ['rechtwinklig ⇒ Pythagoras oder sin, cos, tan<br>Paar aus Seite + Gegenwinkel ⇒ Kosinussatz<br>SWS oder SSS ⇒ Sinussatz', 0, 'Sinussatz und Kosinussatz sind vertauscht. Im Sinussatz stehen die Paare $@f{a}{sin α}$ – deshalb brauchst du dafür ein Paar.'],
+     ['rechtwinklig ⇒ Sinussatz<br>nicht rechtwinklig ⇒ Kosinussatz', 0, 'Im rechtwinkligen Dreieck nimmst du den kürzesten Weg: Pythagoras oder sin, cos, tan. Sinussatz und Kosinussatz sind für Dreiecke ohne rechten Winkel.'],
+     ['Immer den Kosinussatz – er gilt in jedem Dreieck.', 0, 'Er gilt zwar in jedem Dreieck, aber du brauchst dafür SWS oder SSS. Mit einer Seite und zwei Winkeln kommst du damit nicht weiter.']],
+  k:'rechtwinklig? → Paar? → sonst Kosinussatz',
+  s:['<b>1. Frage: Ist das Dreieck rechtwinklig?</b> Dann Satz des Pythagoras (nur Seiten) oder $sin$, $cos$, $tan$ (mit Winkel).',
+     '<b>2. Frage: Ist ein Paar bekannt?</b> Nicht rechtwinklig, aber eine Seite und ihr gegenüberliegender Winkel sind bekannt (und eine weitere Größe) ⇒ Sinussatz.',
+     '<b>Sonst:</b> Nicht rechtwinklig und kein Paar: zwei Seiten und der eingeschlossene Winkel (SWS) oder drei Seiten (SSS) ⇒ Kosinussatz.'],
+  e:'rechtwinklig ⇒ Pythagoras / sin, cos, tan  ·  Paar ⇒ Sinussatz  ·  SWS, SSS ⇒ Kosinussatz',
+  m:'Prüfe immer zuerst, ob es einen rechten Winkel gibt – dann ist die Rechnung am kürzesten.' },
+
+{ t:'Welcher Satz passt hier?',
+  q:'Mit welchem Satz berechnest du die Länge $c$ – und wie lang ist $c$?', geg:['$b = 8 cm$', '$β = 50°$', '$γ = 65°$'],
+  fig:() => tri({ P:D6D, s:{ b:'8 cm', c:'c = ?' }, w:{ B:'50°', C:'65°' }, H:230 }),
+  figL:() => tri({ P:D6D, s:{ b:'8 cm', c:'c' }, f:{ b:'geg', c:'ank' }, w:{ B:{ t:'50°', c:'geg' }, C:{ t:'65°', c:'ank' } }, H:230 }),
+  o:[['Sinussatz:  $c ≈ 9,46 cm$', 1],
+     ['Kosinussatz:  $c ≈ 9,46 cm$', 0, 'Für den Kosinussatz bräuchtest du zwei Seiten und den Winkel dazwischen. Hier ist nur eine Seite gegeben.'],
+     ['Sinussatz:  $c ≈ 6,76 cm$', 0, 'Der Satz stimmt, aber die Winkel sind vertauscht: Zu $c$ gehört $γ = 65°$, zu $b$ gehört $β = 50°$.'],
+     ['Tangens:  $c ≈ 9,53 cm$', 0, 'Der Tangens gilt nur im rechtwinkligen Dreieck. Der dritte Winkel ist $α = 65°$ – es gibt keinen rechten Winkel.']],
+  k:'Paar $b$ und $β$ bekannt ⇒ Sinussatz:  $c = @f{8 cm · sin 65°}{sin 50°} ≈ 9,46 cm$',
+  s:['Rechter Winkel? Dritter Winkel: $α = 180° − 50° − 65° = 65°$ ⇒ kein rechter Winkel.',
+     'Paar? $b = 8 cm$ und $β = 50°$ liegen sich gegenüber ⇒ ein Paar ist bekannt ⇒ <b>Sinussatz</b>.',
+     'Gesucht ist $c$, der Gegenwinkel $γ = 65°$ ist bekannt: $$@f{c}{sin γ} = @f{b}{sin β}  ⇒  c = @f{b · sin γ}{sin β}$$',
+     'Einsetzen: $$c = @f{8 cm · sin 65°}{sin 50°} ≈ 9,46 cm$$'],
+  e:'Sinussatz:  $c ≈ 9,46 cm$',
+  c:[[8*sind(65)/sind(50),2],[8*sind(50)/sind(65),2],[8*tand(50),2]] }
+]});
+
+THEMEN.push({ nr:'1.7', titel:'Flächeninhalt im allgemeinen Dreieck', sub:'Von der Höhe zur Formel mit dem Sinus', fragen:[
+{ t:'Flächeninhalt mit Grundseite und Höhe',
+  q:'Berechne den Flächeninhalt des Dreiecks.', geg:['Grundseite $g = 8 cm$', 'Höhe $h = 3 cm$'],
+  fig:() => tri({ P:{ A:[0,0], B:[8,0], C:[4.6,3] }, ecken:{ A:'', B:'', C:'' }, s:{ c:'g = 8 cm' }, h:{ von:'C', t:'h = 3 cm', o:1 }, fill:'#eaf1f7' }),
+  o:[['$A = 12 cm^2$', 1],
+     ['$A = 24 cm^2$', 0, 'Das ist der Flächeninhalt des Rechtecks mit den Seiten 8 cm und 3 cm. Das Dreieck ist halb so groß.'],
+     ['$A = 11 cm^2$', 0, 'Du hast Grundseite und Höhe addiert. Sie werden multipliziert – und dann halbiert.'],
+     ['$A = 5,5 cm^2$', 0, 'Du hast Grundseite und Höhe addiert und dann halbiert. Sie werden multipliziert.']],
+  k:'$A = @f{1}{2} · 8 cm · 3 cm = 12 cm^2$',
+  s:['Ein Rechteck mit den Seiten $g$ und $h$ hat den Flächeninhalt $$A_{Rechteck} = g · h = 8 cm · 3 cm = 24 cm^2$$',
+     'Das Dreieck ist genau halb so groß wie dieses Rechteck: $$A_{Dreieck} = @f{1}{2} · g · h$$',
+     'Einsetzen: $$A = @f{1}{2} · 8 cm · 3 cm = 12 cm^2$$'],
+  e:'$A = 12 cm^2$',
+  m:'Die Höhe steht immer senkrecht auf der Grundseite.' },
+
+{ t:'Höhe h_c berechnen',
+  q:'Zeichne in Gedanken die Höhe $h_c$ ein und berechne sie.', geg:['$b = 6 cm$', '$c = 8 cm$', '$α = 40°$'],
+  fig:() => tri({ P:D7, s:{ b:'6 cm', c:'8 cm' }, w:{ A:'40°' }, h:{ von:'C', t:'h_c', o:-1 } }),
+  figL:() => tri({ P:D7, s:{ b:'6 cm', c:'8 cm' }, f:{ b:'hyp' }, w:{ A:'40°' }, h:{ von:'C', t:'h_c', o:-1 } }),
+  o:[['$h_c ≈ 3,86 cm$', 1],
+     ['$h_c ≈ 4,60 cm$', 0, 'Das ist $6 cm · cos 40°$ – das Stück der Grundseite neben der Höhe. Die Höhe liegt dem Winkel gegenüber ⇒ Sinus.'],
+     ['$h_c ≈ 5,03 cm$', 0, 'Das ist $6 cm · tan 40°$. 6 cm ist im Teildreieck aber die Hypotenuse ⇒ Sinus.'],
+     ['$h_c ≈ 9,33 cm$', 0, 'Du hast durch $sin 40°$ geteilt. Die Höhe ist eine Kathete und muss kürzer sein als die Hypotenuse (6 cm).']],
+  k:'$h_c = 6 cm · sin 40° ≈ 3,86 cm$',
+  s:['Die Höhe $h_c$ steht senkrecht auf der Seite $c$. Links entsteht ein rechtwinkliges Teildreieck mit dem Winkel $α = 40°$.',
+     'In diesem Teildreieck ist $b = 6 cm$ die Hypotenuse und $h_c$ die Gegenkathete von $α$ ⇒ Sinus: $$sin 40° = @f{h_c}{6 cm}$$',
+     'Nach $h_c$ umstellen: $$h_c = 6 cm · sin 40° ≈ 3,86 cm$$'],
+  e:'$h_c ≈ 3,86 cm$',
+  c:[[6*sind(40),2],[6*cosd(40),2],[6*tand(40),2],[6/sind(40),2]] },
+
+{ t:'Flächeninhalt mit der Höhe h_c',
+  q:'Berechne den Flächeninhalt des Dreiecks mit der Höhe aus der letzten Aufgabe.', geg:['$c = 8 cm$', '$h_c ≈ 3,86 cm$'],
+  fig:() => tri({ P:D7, s:{ b:'6 cm', c:'8 cm' }, w:{ A:'40°' }, h:{ von:'C', t:'3,86 cm', o:1 }, fill:'#eaf1f7' }),
+  o:[['$A ≈ 15,44 cm^2$', 1],
+     ['$A ≈ 30,88 cm^2$', 0, 'Du hast nur $c · h_c$ gerechnet. Beim Dreieck gehört der Faktor $@f{1}{2}$ dazu.'],
+     ['$A ≈ 11,58 cm^2$', 0, 'Du hast mit $b = 6 cm$ gerechnet. Zur Höhe $h_c$ gehört die Grundseite $c = 8 cm$.'],
+     ['$A ≈ 15,44 cm$', 0, 'Die Zahl stimmt, aber die Einheit nicht: Ein Flächeninhalt wird in $cm^2$ angegeben.']],
+  k:'$A = @f{1}{2} · 8 cm · 3,86 cm ≈ 15,44 cm^2$',
+  s:['Flächeninhalt eines Dreiecks: $$A = @f{1}{2} · @t{Grundseite} · @t{Höhe}$$',
+     'Die Höhe $h_c$ gehört zur Grundseite $c$: $$A = @f{1}{2} · c · h_c$$',
+     'Einsetzen: $$A = @f{1}{2} · 8 cm · 3,86 cm ≈ 15,44 cm^2$$'],
+  e:'$A ≈ 15,44 cm^2$',
+  m:'Achte auf die Einheit: $cm · cm = cm^2$.',
+  c:[[0.5*8*3.86,2],[8*3.86,2],[0.5*6*3.86,2]] },
+
+{ t:'Flächenformel mit dem Sinus',
+  q:'Berechne den Flächeninhalt direkt – ohne die Höhe einzeln auszurechnen.', geg:['$b = 6 cm$', '$c = 8 cm$', '$α = 40°$'],
+  fig:() => tri({ P:D7, s:{ b:'6 cm', c:'8 cm' }, w:{ A:'40°' }, fill:'#eaf1f7' }),
+  figL:() => tri({ P:D7, s:{ b:'b', c:'c' }, f:{ b:'ank', c:'ank' }, w:{ A:{ t:'α', c:'ges' } }, h:{ von:'C', t:'h_c', o:-1 }, fill:'#eaf1f7' }),
+  o:[['$A ≈ 15,43 cm^2$', 1],
+     ['$A ≈ 18,39 cm^2$', 0, 'Du hast $cos 40°$ benutzt. In der Flächenformel steht der Sinus, weil die Höhe $h_c = b · sin α$ ist.'],
+     ['$A ≈ 30,85 cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$.'],
+     ['$A = 24 cm^2$', 0, 'Hier fehlt $sin 40°$. $@f{1}{2} · b · c$ gilt nur, wenn der Winkel dazwischen 90° ist.']],
+  k:'$A = @f{1}{2} · 6 cm · 8 cm · sin 40° ≈ 15,43 cm^2$',
+  s:['Aus den letzten Aufgaben: Die Höhe ist $h_c = b · sin α$.',
+     'In die Flächenformel einsetzen: $$A = @f{1}{2} · c · h_c = @f{1}{2} · c · b · sin α$$',
+     'Die neue Formel: $$A = @f{1}{2} · b · c · sin α$$ Dabei ist $α$ der Winkel, den die beiden Seiten einschließen.',
+     'Einsetzen: $$A = @f{1}{2} · 6 cm · 8 cm · sin 40° ≈ 15,43 cm^2$$'],
+  e:'$A ≈ 15,43 cm^2$',
+  m:'Genauso gilt: $A = @f{1}{2} · a · c · sin β$ und $A = @f{1}{2} · a · b · sin γ$ – immer zwei Seiten und der Winkel dazwischen. (Mit der gerundeten Höhe kam vorhin 15,44 cm² heraus – das ist nur ein Rundungsunterschied.)',
+  c:[[24*sind(40),2],[24*cosd(40),2],[48*sind(40),2]] },
+
+{ t:'Flächenformel bei stumpfem Winkel',
+  q:'Gilt die Formel auch bei einem stumpfen Winkel? Berechne den Flächeninhalt.', geg:['$b = 5 cm$', '$c = 7 cm$', '$α = 120°$'],
+  fig:() => tri({ P:{ A:[0,0], B:[7,0], C:pol(5,120) }, s:{ b:'5 cm', c:'7 cm' }, w:{ A:{ t:'120°' } }, fill:'#eaf1f7', pad:[40,26,34,30] }),
+  o:[['$A ≈ 15,16 cm^2$', 1],
+     ['$A ≈ 30,31 cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$.'],
+     ['$A = −8,75 cm^2$', 0, 'Du hast $cos 120°$ benutzt. Ein Flächeninhalt kann nie negativ sein – in der Formel steht der Sinus.'],
+     ['$A = 17,5 cm^2$', 0, 'Hier fehlt $sin 120°$. $@f{1}{2} · b · c$ gilt nur, wenn der Winkel dazwischen 90° ist.']],
+  k:'$A = @f{1}{2} · 5 cm · 7 cm · sin 120° ≈ 15,16 cm^2$',
+  s:['Bei einem stumpfen Winkel liegt die Höhe $h_c$ außerhalb des Dreiecks. Die Formel gilt trotzdem, denn $sin 120° = sin 60°$.',
+     'Zwei Seiten und der eingeschlossene Winkel sind bekannt: $$A = @f{1}{2} · b · c · sin α$$',
+     'Einsetzen: $$A = @f{1}{2} · 5 cm · 7 cm · sin 120° ≈ 15,16 cm^2$$'],
+  e:'$A ≈ 15,16 cm^2$',
+  m:'Die Formel $A = @f{1}{2} · b · c · sin α$ gilt in jedem Dreieck.',
+  c:[[17.5*sind(120),2],[35*sind(120),2],[17.5*cosd(120),2]] }
+]});
+
+['Pia','Start','Drohne'].forEach(w => AUFRECHT.add(w));
+/* rechtwinkliges Dreieck A, B (rechts), C_n (oben) mit wanderndem Punkt */
+const wander = (c, b, o) => tri(Object.assign({ P:{ A:[0,0], B:[c,0], C:[0,b] }, rw:'A', pad:[66,26,40,30] }, o));
+/* 1.9: B_n auf [AB], C_n oben */
+function beide(o){
+  return geo({ P:{ A:[0,0], Bn:[o.bn,0], Cn:[0,o.cn], B:[o.b,0] }, poly:[{ p:['A','Bn','Cn'], f:'#eaf1f7' }],
+    seg:[['A','Bn',{ t:o.tb }], ['A','Cn',{ t:o.tc }], ['Bn','Cn',{ t:o.th, c:o.hc }], ['Bn','B',{ d:'4 4', w:1.3 }]],
+    rw:[['Bn','A','Cn']], ang:o.ang || [], lab:{ A:['A',-1,1], Bn:[o.nb || 'B_n',0,1.2], Cn:[o.nc || 'C_n',-1,-0.6], B:['B',0.6,1] }, dot:['Bn','B'],
+    pad:[76,24,34,36], box:['A','B','Cn'], cen:['A','Bn','Cn'], H:o.H || 200, alt:'Dreieck mit wandernden Punkten' });
+}
+function parabel(o){
+  return koord({ x:[0,o.xmax], y:[0,o.ymax], ex:o.ex, ey:o.ey, sx:o.sx, sy:o.sy, tx:o.tx, ty:o.ty, xn:'x', yn:o.yn || 'A', alt:'Parabel', zeichne:(X, Y) => {
+    let s = kurve(X, Y, o.f, o.x1, o.x2, 'ank', 90);
+    s += strich(X(o.S[0]), Y(0), X(o.S[0]), Y(o.S[1]), 'ges', 1) + strich(X(0), Y(o.S[1]), X(o.S[0]), Y(o.S[1]), 'ges', 1) + punkt(X(o.S[0]), Y(o.S[1]), 'ges') +
+         txt(X(o.S[0]) + 8, Y(o.S[1]) - 12, o.St, { fs:13.5, c:'ges', b:1, a:'start' });
+    return s;
+  } });
+}
+/* 1.10 Musteraufgabe */
+function muster(o){
+  const x = 3, E = pol(6 - 0.5 * x, 70);
+  return geo({ P:{ A:[0,0], B:[8,0], C:pol(6,70), D:[x,0], E:E }, poly:[{ p:['A','D','E'], f:'#fdeee5' }],
+    seg:[['A','B'], ['B','C'], ['C','A'], ['D','E',{ c:'ges' }], ['A','D',{ w:0.01, t:'x', o:1, tc:'ges', ab:12 }], ['C','E',{ w:0.01, t:'0,5x', o:1, tc:'ges', ab:14 }]].concat(o && o.ae ? [['A','E',{ w:3.4, c:'gruen' }]] : []),
+    ang:[['B','A','C',{ t:'70°' }]], lab:{ A:['A',-1,1], B:['B',1,1], C:['C',0,-1], D:['D_n',0.2,1.25], E:['E_n',-1.2,-0.2] }, dot:['D','E'],
+    pad:[52,26,30,38], cen:['A','B','C'], box:['A','B','C'], H:230, alt:'Dreieck ABC mit den Punkten D_n und E_n' });
+}
+
+THEMEN.push({ nr:'1.8', titel:'Funktionale Abhängigkeit', sub:'Erst mit einer Zahl rechnen, dann mit x', fragen:[
+{ t:'Vorwissen: Flächeninhalt im rechtwinkligen Dreieck',
+  q:'Berechne den Flächeninhalt des Dreiecks $ABC$.', geg:['rechter Winkel bei $A$', '$@l{AB} = 5 cm$', '$@l{AC} = 3 cm$'],
+  fig:() => wander(5, 3, { s:{ c:'5 cm', b:'3 cm' }, fill:'#eaf1f7' }),
+  o:[['$A = 7,5 cm^2$', 1],
+     ['$A = 15 cm^2$', 0, 'Das ist der Flächeninhalt des Rechtecks mit den Seiten 5 cm und 3 cm. Das Dreieck ist halb so groß.'],
+     ['$A = 8 cm^2$', 0, 'Du hast die beiden Seiten addiert. Sie werden multipliziert – und dann halbiert.'],
+     ['$A = 4 cm^2$', 0, 'Du hast die Seiten addiert und halbiert. Die Seiten werden multipliziert.']],
+  k:'$A = @f{1}{2} · 5 cm · 3 cm = 7,5 cm^2$',
+  s:['Im rechtwinkligen Dreieck stehen die beiden Katheten senkrecht aufeinander. Die eine ist die Grundseite, die andere die Höhe.',
+     'Flächeninhalt: $$A = @f{1}{2} · @l{AB} · @l{AC}$$',
+     'Einsetzen: $$A = @f{1}{2} · 5 cm · 3 cm = 7,5 cm^2$$'],
+  e:'$A = 7,5 cm^2$' },
+
+{ t:'Vorwissen: Term vereinfachen',
+  q:'Vereinfache den Term $@f{1}{2} · 6 · x + 2x$.',
+  o:[['$5x$', 1],
+     ['$8x$', 0, 'Rechne zuerst $@f{1}{2} · 6 = 3$. Dann steht da $3x + 2x$.'],
+     ['$5x^2$', 0, '$3x + 2x$ sind zusammen $5x$. Ein $x^2$ entsteht nur beim Multiplizieren ($x · x$).'],
+     ['$3x + 2$', 0, 'Beim zweiten Summanden fehlt das $x$ – und danach kannst du $3x + 2x$ noch zusammenfassen.']],
+  k:'$@f{1}{2} · 6 · x + 2x = 3x + 2x = 5x$',
+  s:['Punkt vor Strich: Rechne zuerst das Produkt aus. $$@f{1}{2} · 6 · x = 3x$$',
+     'Dann steht da: $$3x + 2x$$',
+     'Gleichartige Terme zusammenfassen: $$3x + 2x = 5x$$'],
+  e:'$5x$' },
+
+{ t:'Vorwissen: Zahl in einen Term einsetzen',
+  q:'Berechne den Wert des Terms $@w{36 + x^2}$ für $x = 2,5$.',
+  o:[['$6,5$', 1],
+     ['$8,5$', 0, 'Du hast die Wurzel einzeln gezogen: $@w{36 + x^2}$ ist <b>nicht</b> $6 + x$. Erst alles unter der Wurzel ausrechnen.'],
+     ['$42,25$', 0, 'Das ist der Wert unter der Wurzel. Am Ende musst du noch die Wurzel ziehen.'],
+     ['$≈ 6,20$', 0, 'Du hast $x$ nicht quadriert: $2,5^2 = 6,25$.']],
+  k:'$@w{36 + 2,5^2} = @w{42,25} = 6,5$',
+  s:['Setze für $x$ die Zahl 2,5 ein: $$@w{36 + 2,5^2}$$',
+     'Erst das Quadrat, dann die Summe: $$= @w{36 + 6,25} = @w{42,25}$$',
+     'Zum Schluss die Wurzel ziehen: $$= 6,5$$'],
+  e:'$6,5$',
+  c:[[Math.sqrt(42.25),1],[Math.sqrt(38.5),2]] },
+
+{ t:'Pias Drohne',
+  q:'Pia steht 6 m vom Startplatz entfernt. Die Drohne steigt senkrecht nach oben und ist jetzt 8 m hoch. Wie weit ist die Drohne von Pia entfernt?',
+  fig:() => tri({ P:{ A:[0,0], B:[6,0], C:[6,8] }, ecken:{ A:'Pia', B:'Start', C:'Drohne' }, rw:'B', s:{ c:'6 m', a:'8 m', b:'d = ?' }, H:240, pad:[70,26,70,30] }),
+  figL:() => tri({ P:{ A:[0,0], B:[6,0], C:[6,8] }, ecken:{ A:'Pia', B:'Start', C:'Drohne' }, rw:'B', s:{ c:'6 m', a:'8 m', b:'d' }, f:{ b:'hyp', a:'ank', c:'ank' }, H:240, pad:[70,26,70,30] }),
+  o:[['$d = 10 @t{m}$', 1],
+     ['$d = 14 @t{m}$', 0, 'Du hast die beiden Strecken addiert. Die Drohne ist auf dem direkten (schrägen) Weg näher.'],
+     ['$d = 100 @t{m}$', 0, '100 ist erst $d^2$. Am Ende musst du noch die Wurzel ziehen.'],
+     ['$d ≈ 5,29 @t{m}$', 0, 'Du hast $@w{8^2 − 6^2}$ gerechnet. Gesucht ist die Hypotenuse ⇒ plus.']],
+  k:'$d^2 = 6^2 + 8^2 = 100  ⇒  d = 10 @t{m}$',
+  s:['Am Startplatz ist ein rechter Winkel: Die Drohne steigt senkrecht zum Boden.',
+     'Die Entfernung $d$ liegt gegenüber vom rechten Winkel ⇒ Hypotenuse ⇒ Satz des Pythagoras: $$d^2 = 6^2 + 8^2 = 36 + 64 = 100$$',
+     'Wurzel ziehen: $$d = @w{100} @t{m} = 10 @t{m}$$'],
+  e:'$d = 10 @t{m}$',
+  m:'Für jede andere Höhe ist es dieselbe Rechnung – nur die Höhe ändert sich. Genau das ist die Idee der funktionalen Abhängigkeit.',
+  c:[[Math.sqrt(28),2]] },
+
+{ t:'Term für die Länge BCₙ',
+  q:'Die Punkte $C_n$ wandern nach oben: $@l{AC_n} = x cm$. Es bleibt $@l{AB} = 5 cm$ und der rechte Winkel bei $A$. Gib den Term für die Länge $@l{BC_n}(x)$ an.',
+  fig:() => wander(5, 4, { ecken:{ A:'A', B:'B', C:'C_n' }, s:{ c:'5 cm', b:'x cm' } }),
+  figL:() => wander(5, 4, { ecken:{ A:'A', B:'B', C:'C_n' }, s:{ c:'5 cm', b:'x cm' }, f:{ a:'hyp' } }),
+  o:[['$@l{BC_n}(x) = @w{25 + x^2} cm$', 1],
+     ['$@l{BC_n}(x) = (5 + x) cm$', 0, 'Die Hypotenuse ist nicht die Summe der Katheten. Im rechtwinkligen Dreieck gilt der Satz des Pythagoras.'],
+     ['$@l{BC_n}(x) = @w{25 + x} cm$', 0, 'Auch $x$ muss quadriert werden: $5^2 + x^2$.'],
+     ['$@l{BC_n}(x) = @w{25 − x^2} cm$', 0, 'Minus rechnest du nur, wenn eine Kathete gesucht ist. $@s{BC_n}$ ist die Hypotenuse ⇒ plus.']],
+  k:'$@l{BC_n}^2 = 5^2 + x^2  ⇒  @l{BC_n}(x) = @w{25 + x^2} cm$',
+  s:['<b>Erst mit einer Zahl</b>, zum Beispiel $x = 3$: $$@l{BC_1}^2 = 5^2 + 3^2 = 34$$ $$@l{BC_1} = @w{34} cm ≈ 5,83 cm$$',
+     '<b>Dann dieselbe Rechnung mit $x$</b> – überall, wo eben die 3 stand, steht jetzt $x$: $$@l{BC_n}^2 = 5^2 + x^2$$',
+     'Wurzel ziehen, vereinfachen und die Einheit ergänzen: $$@l{BC_n}(x) = @w{25 + x^2} cm$$',
+     'Probe mit $x = 3$: $@w{25 + 3^2} = @w{34} ≈ 5,83$ ✓'],
+  e:'$@l{BC_n}(x) = @w{25 + x^2} cm$',
+  m:'So gehst du immer vor: ① Rechne zuerst mit einer Zahl. ② Schreibe die gleiche Rechnung mit $x$. ③ Vereinfache und ergänze die Einheit.',
+  c:[[Math.sqrt(34),2]] },
+
+{ t:'Term für den Flächeninhalt',
+  q:'Gleiche Dreiecke wie eben: $@l{AB} = 5 cm$, $@l{AC_n} = x cm$, rechter Winkel bei $A$. Gib den Term für den Flächeninhalt $A(x)$ an.',
+  fig:() => wander(5, 4, { ecken:{ A:'A', B:'B', C:'C_n' }, s:{ c:'5 cm', b:'x cm' }, fill:'#eaf1f7' }),
+  o:[['$A(x) = 2,5x cm^2$', 1],
+     ['$A(x) = 5x cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$ – $5 · x$ wäre das Rechteck.'],
+     ['$A(x) = 2,5x^2 cm^2$', 0, 'Nur eine der beiden Katheten ist $x$ lang. Die andere bleibt 5 cm.'],
+     ['$A(x) = (2,5 + x) cm^2$', 0, 'Die Katheten werden multipliziert, nicht addiert.']],
+  k:'$A(x) = @f{1}{2} · 5 · x cm^2 = 2,5x cm^2$',
+  s:['<b>Erst mit einer Zahl</b>, zum Beispiel $x = 3$: $$A_1 = @f{1}{2} · 5 · 3 cm^2 = 7,5 cm^2$$',
+     '<b>Dann dieselbe Rechnung mit $x$:</b> $$A(x) = @f{1}{2} · 5 · x cm^2$$',
+     'Vereinfachen: $$A(x) = 2,5x cm^2$$',
+     'Probe mit $x = 3$: $2,5 · 3 = 7,5$ ✓'],
+  e:'$A(x) = 2,5x cm^2$' },
+
+{ t:'Mit dem Term rechnen',
+  q:'Für die Dreiecke $ABC_n$ gilt $A(x) = 2,5x cm^2$. Wie groß ist der Flächeninhalt für $x = 6$?',
+  o:[['$A(6) = 15 cm^2$', 1],
+     ['$A(6) = 8,5 cm^2$', 0, '$2,5x$ bedeutet $2,5 · x$ – nicht $2,5 + x$.'],
+     ['$A(6) = 30 cm^2$', 0, 'Der Faktor $@f{1}{2}$ steckt schon im Term ($@f{1}{2} · 5 = 2,5$). Du musst nur noch einsetzen.'],
+     ['$A(6) = 7,5 cm^2$', 0, 'Das ist der Flächeninhalt für $x = 3$.']],
+  k:'$A(6) = 2,5 · 6 cm^2 = 15 cm^2$',
+  s:['Der Term $A(x)$ gilt für <b>alle</b> Dreiecke $ABC_n$. Du musst nur noch die Zahl für $x$ einsetzen.',
+     'Einsetzen: $$A(6) = 2,5 · 6 cm^2 = 15 cm^2$$'],
+  e:'$A(6) = 15 cm^2$',
+  m:'Einsetzen statt jedes Mal neu rechnen – dafür lohnt sich der Term.' }
+]});
+
+THEMEN.push({ nr:'1.9', titel:'Flächeninhalt in Abhängigkeit von x', sub:'Zwei Seiten ändern sich – größter und kleinster Wert mit dem Taschenrechner', fragen:[
+{ t:'Erst mit einer Zahl',
+  q:'Im rechtwinkligen Dreieck $AB_nC_n$ (rechter Winkel bei $A$) gilt $@l{AB_n} = (8 − x) cm$ und $@l{AC_n} = 2x cm$. Berechne den Flächeninhalt für $x = 2$.',
+  fig:() => beide({ bn:6, cn:4, b:8, tb:'(8 − x) cm', tc:'2x cm' }),
+  figL:() => beide({ bn:6, cn:4, b:8, tb:'6 cm', tc:'4 cm', nb:'B_1', nc:'C_1' }),
+  o:[['$A_1 = 12 cm^2$', 1],
+     ['$A_1 = 24 cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$.'],
+     ['$A_1 = 16 cm^2$', 0, 'Du hast mit 8 cm gerechnet. Für $x = 2$ ist $@l{AB_1} = (8 − 2) cm = 6 cm$.'],
+     ['$A_1 = 6 cm^2$', 0, 'Du hast mit 2 cm gerechnet. Für $x = 2$ ist $@l{AC_1} = 2 · 2 cm = 4 cm$.']],
+  k:'$A_1 = @f{1}{2} · 6 · 4 cm^2 = 12 cm^2$',
+  s:['Setze $x = 2$ in beide Seitenlängen ein: $$@l{AB_1} = (8 − 2) cm = 6 cm$$ $$@l{AC_1} = 2 · 2 cm = 4 cm$$',
+     'Die beiden Katheten sind Grundseite und Höhe: $$A_1 = @f{1}{2} · 6 · 4 cm^2 = 12 cm^2$$'],
+  e:'$A_1 = 12 cm^2$' },
+
+{ t:'Term A(x) aufstellen',
+  q:'Gleiche Dreiecke: $@l{AB_n} = (8 − x) cm$ und $@l{AC_n} = 2x cm$, rechter Winkel bei $A$. Gib den Term für den Flächeninhalt an.',
+  fig:() => beide({ bn:6, cn:4, b:8, tb:'(8 − x) cm', tc:'2x cm' }),
+  o:[['$A(x) = (−x^2 + 8x) cm^2$', 1],
+     ['$A(x) = (−2x^2 + 16x) cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$.'],
+     ['$A(x) = (−x^2 + 8) cm^2$', 0, 'Beim Ausmultiplizieren fehlt ein $x$: $(8 − x) · x = 8x − x^2$.'],
+     ['$A(x) = (x^2 + 8x) cm^2$', 0, 'Vorzeichenfehler: $(−x) · x = −x^2$.']],
+  k:'$A(x) = @f{1}{2} · (8 − x) · 2x cm^2 = (−x^2 + 8x) cm^2$',
+  s:['Mit der Zahl $x = 2$ hast du gerechnet: $A_1 = @f{1}{2} · 6 · 4 cm^2$. Jetzt dieselbe Rechnung mit $x$: $$A(x) = @f{1}{2} · (8 − x) · 2x cm^2$$',
+     'Verrechne zuerst $@f{1}{2}$ mit $2x$: $$A(x) = (8 − x) · x cm^2$$',
+     'Klammer ausmultiplizieren und ordnen: $$A(x) = (8x − x^2) cm^2 = (−x^2 + 8x) cm^2$$',
+     'Probe mit $x = 2$: $−2^2 + 8 · 2 = −4 + 16 = 12$ ✓'],
+  e:'$A(x) = (−x^2 + 8x) cm^2$',
+  m:'Tipp: Verrechne $@f{1}{2}$ zuerst mit einer der beiden Seiten – dann wird das Ausmultiplizieren leichter.' },
+
+{ t:'Welche Werte darf x annehmen?',
+  q:'$@l{AB_n} = (8 − x) cm$ und $@l{AC_n} = 2x cm$. Welche Werte darf $x$ annehmen, damit ein Dreieck entsteht?',
+  fig:() => beide({ bn:6, cn:4, b:8, tb:'(8 − x) cm', tc:'2x cm' }),
+  o:[['$0 < x < 8$', 1],
+     ['$0 < x < 4$', 0, 'Probiere $x = 5$: Dann ist $@l{AB_n} = 3 cm$ und $@l{AC_n} = 10 cm$ – dieses Dreieck gibt es.'],
+     ['$x > 0$', 0, 'Auch die Seite $(8 − x) cm$ muss länger als 0 cm sein. Für $x = 9$ wäre sie negativ.'],
+     ['$0 < x < 16$', 0, 'Für $x = 10$ wäre $@l{AB_n} = (8 − 10) cm$ negativ – das geht nicht.']],
+  k:'$8 − x > 0$ und $2x > 0$  ⇒  $0 < x < 8$',
+  s:['Jede Seite muss länger als 0 cm sein.',
+     'Seite $@s{AB_n}$: $$8 − x > 0  ⇒  x < 8$$',
+     'Seite $@s{AC_n}$: $$2x > 0  ⇒  x > 0$$',
+     'Beides zusammen: $$0 < x < 8$$'],
+  e:'$0 < x < 8$' },
+
+{ t:'Eingabe in den Taschenrechner',
+  q:'Du suchst den größten Wert von $A(x) = −x^2 + 8x$ mit dem Taschenrechner (MENU → A: Gleichung/Funkt → 2: Polynom → Grad 2). Was gibst du für $a$, $b$ und $c$ ein?',
+  o:[['$a = −1$;  $b = 8$;  $c = 0$', 1],
+     ['$a = 1$;  $b = 8$;  $c = 0$', 0, 'Das Minus vor $x^2$ gehört dazu: $−x^2 = −1 · x^2$.'],
+     ['$a = 8$;  $b = −1$;  $c = 0$', 0, '$a$ gehört zu $x^2$, $b$ gehört zu $x$ – also genau umgekehrt.'],
+     ['$a = −1$;  $b = 8$;  $c = 1$', 0, 'Eine Zahl ohne $x$ gibt es im Term nicht – dann ist $c = 0$.']],
+  k:'$A(x) = −1 · x^2 + 8 · x + 0$',
+  s:['Bringe den Term in die Form $a · x^2 + b · x + c$: $$A(x) = −1 · x^2 + 8 · x + 0$$',
+     'Ablesen: $$a = −1;   b = 8;   c = 0$$',
+     'Am Taschenrechner: MENU → A: Gleichung/Funkt → 2: Polynom → Grad 2. Dann $a$, $b$, $c$ eingeben – jeweils mit = bestätigen.',
+     'Mit = weiterblättern: Erst kommen $x_1$ und $x_2$, danach der x-Wert und der y-Wert des Scheitelpunkts.'],
+  e:'$a = −1$;  $b = 8$;  $c = 0$' },
+
+{ t:'Größter Flächeninhalt',
+  q:'Der Taschenrechner zeigt für $A(x) = −x^2 + 8x$ nacheinander: $x_1 = 8$, $x_2 = 0$, x-Wert des Maximums $= 4$, y-Wert des Maximums $= 16$. Wie lautet die Antwort?',
+  fig:() => parabel({ xmax:9, ymax:18, ex:30, ey:10, sx:1, sy:2, tx:[2,4,6,8], ty:[4,8,12,16], f:x => -x * x + 8 * x, x1:0, x2:8, S:[4,16], St:'S(? | ?)' }),
+  figL:() => parabel({ xmax:9, ymax:18, ex:30, ey:10, sx:1, sy:2, tx:[2,4,6,8], ty:[4,8,12,16], f:x => -x * x + 8 * x, x1:0, x2:8, S:[4,16], St:'S(4 | 16)' }),
+  o:[['$A_{max} = 16 cm^2$  für  $x = 4$', 1],
+     ['$A_{max} = 4 cm^2$  für  $x = 16$', 0, 'x-Wert und y-Wert sind vertauscht: Der x-Wert sagt, <b>wo</b> das Maximum liegt, der y-Wert, <b>wie groß</b> es ist.'],
+     ['$A_{max} = 0 cm^2$  für  $x = 8$', 0, '$x_1 = 8$ und $x_2 = 0$ sind die Nullstellen – dort ist der Flächeninhalt 0. Das Maximum steht danach.'],
+     ['$A_{max} = 32 cm^2$  für  $x = 4$', 0, 'Rechne nach: $A(4) = −4^2 + 8 · 4 = −16 + 32 = 16$.']],
+  k:'Scheitelpunkt $S(4 | 16)$  ⇒  $A_{max} = 16 cm^2$ für $x = 4$',
+  s:['$A(x) = −x^2 + 8x$ ist ein quadratischer Term. Sein Graph ist eine Parabel.',
+     'Minus vor $x^2$ ⇒ die Parabel ist nach unten geöffnet. Der größte Wert liegt im Scheitelpunkt – genau den berechnet der Taschenrechner.',
+     'x-Wert des Maximums: $x = 4$. y-Wert des Maximums: $16$. $$A_{max} = 16 cm^2   @t{für}   x = 4$$',
+     'Prüfen: Liegt $x = 4$ im erlaubten Bereich $0 < x < 8$? Ja ✓'],
+  e:'$A_{max} = 16 cm^2$  für  $x = 4$',
+  m:'Die Nullstellen 0 und 8 sind genau die Grenzen des erlaubten Bereichs – der Scheitelpunkt liegt in der Mitte dazwischen.' },
+
+{ t:'Kürzeste Hypotenuse',
+  q:'Für die Hypotenuse gilt $@l{B_nC_n}(x) = @w{5x^2 − 16x + 64} cm$. Der Taschenrechner liefert für den Term <b>unter der Wurzel</b>: x-Wert $= 1,6$; y-Wert $= 51,2$. Wie lang ist die kürzeste Hypotenuse $@s{B_0C_0}$?',
+  fig:() => beide({ bn:6.4, cn:3.2, b:8, tb:'(8 − x) cm', tc:'2x cm', th:'?', hc:'ges' }),
+  o:[['$@l{B_0C_0} ≈ 7,16 cm$  für  $x = 1,6$', 1],
+     ['$@l{B_0C_0} = 51,2 cm$  für  $x = 1,6$', 0, '51,2 ist der kleinste Wert <b>unter der Wurzel</b>. Am Ende musst du noch die Wurzel ziehen.'],
+     ['$@l{B_0C_0} = 1,6 cm$', 0, '1,6 ist der Wert von $x$, für den die Hypotenuse am kürzesten ist – nicht ihre Länge.'],
+     ['$@l{B_0C_0} = 8 cm$  für  $x = 0$', 0, 'Für $x = 0$ gibt es gar kein Dreieck – und $@w{51,2}$ ist kleiner als 8.']],
+  k:'$@l{B_0C_0} = @w{51,2} cm ≈ 7,16 cm$  für  $x = 1,6$',
+  s:['So entsteht der Term – Satz des Pythagoras mit beiden Katheten: $$@l{B_nC_n}^2 = (8 − x)^2 + (2x)^2$$',
+     'Binomische Formel und zusammenfassen: $$@l{B_nC_n}^2 = 64 − 16x + x^2 + 4x^2 = 5x^2 − 16x + 64$$',
+     'In den Taschenrechner kommt <b>nur der Term unter der Wurzel</b>: $a = 5$; $b = −16$; $c = 64$. Er liefert $x = 1,6$ und den y-Wert $51,2$.',
+     'Die Wurzel ziehst du erst ganz am Ende: $$@l{B_0C_0} = @w{51,2} cm ≈ 7,16 cm$$'],
+  e:'$@l{B_0C_0} ≈ 7,16 cm$  für  $x = 1,6$',
+  m:'Kleinster Term unter der Wurzel = kürzeste Strecke. Achtung: $(8 − x)^2$ ist <b>nicht</b> $64 − x^2$, sondern $64 − 16x + x^2$.',
+  c:[[Math.sqrt(51.2),2],[5*1.6*1.6-16*1.6+64,1]] },
+
+{ t:'Für Füchse: mit sin 40°',
+  q:'Jetzt ist der Winkel bei $A$ kein rechter Winkel mehr, sondern 40°. Es gilt $A(x) = (−x^2 + 6x) · sin 40° cm^2$. Für $−x^2 + 6x$ liefert der Taschenrechner den Scheitelpunkt $S(3 | 9)$. Bestimme $A_{max}$.',
+  geg:['$@l{AB_n} = (12 − 2x) cm$', '$@l{AC_n} = x cm$', '$∢B_nAC_n = 40°$'],
+  fig:() => geo({ P:{ A:[0,0], Bn:[6,0], Cn:pol(3,40), B:[12,0] }, poly:[{ p:['A','Bn','Cn'], f:'#eaf1f7' }],
+        seg:[['A','Bn',{ t:'(12 − 2x) cm' }], ['A','Cn',{ t:'x cm' }], ['Bn','Cn'], ['Bn','B',{ d:'4 4', w:1.3 }]], ang:[['Bn','A','Cn',{ t:'40°', r:36, d:54 }]],
+        lab:{ A:['A',-1,1], Bn:['B_n',0,1.2], Cn:['C_n',0,-1], B:['B',0.6,1] }, dot:['Bn','B'], pad:[34,30,30,36], box:['A','B','Cn'], cen:['A','Bn','Cn'], H:150 }),
+  o:[['$A_{max} ≈ 5,79 cm^2$  für  $x = 3$', 1],
+     ['$A_{max} = 9 cm^2$  für  $x = 3$', 0, 'Der Faktor $sin 40°$ fehlt noch: Der y-Wert 9 gehört nur zur Klammer $(−x^2 + 6x)$.'],
+     ['$A_{max} ≈ 1,93 cm^2$  für  $x = 3$', 0, 'Du hast den x-Wert 3 mit $sin 40°$ multipliziert. Der größte Wert der Klammer ist der y-Wert 9.'],
+     ['$A_{max} = 0 cm^2$  für  $x = 6$', 0, '$x = 6$ ist eine Nullstelle – dort ist der Flächeninhalt 0.']],
+  k:'$A_{max} = 9 · sin 40° cm^2 ≈ 5,79 cm^2$  für  $x = 3$',
+  s:['$sin 40°$ ist eine feste Zahl (etwa 0,64). Sie ändert sich nicht, wenn sich $x$ ändert.',
+     'Der Flächeninhalt ist deshalb am größten, wenn die Klammer $(−x^2 + 6x)$ am größten ist. Das ist im Scheitelpunkt: $x = 3$, Wert der Klammer: 9.',
+     'Jetzt noch mit dem festen Faktor multiplizieren: $$A_{max} = 9 · sin 40° cm^2 ≈ 5,79 cm^2$$'],
+  e:'$A_{max} ≈ 5,79 cm^2$  für  $x = 3$',
+  m:'Bei $A(x) = (…) · sin α$ ist $sin α$ ein fester Faktor: Scheitelpunkt der Klammer bestimmen, dann mit $sin α$ multiplizieren.',
+  c:[[9*sind(40),2],[3*sind(40),2],[sind(40),2]] }
+]});
+
+THEMEN.push({ nr:'1.10', titel:'Funktionale Abhängigkeit im Prüfungsstil', sub:'Mit Fahrplan zur Abschlussprüfung', fragen:[
+{ t:'Flächeninhalt für x = 4',
+  q:'Im rechtwinkligen Dreieck $AB_nC_n$ (rechter Winkel bei $A$) gilt $@l{AB_n} = (10 − x) cm$ und $@l{AC_n} = x cm$. Berechne den Flächeninhalt für $x = 4$.',
+  fig:() => beide({ bn:6, cn:4, b:10, tb:'(10 − x) cm', tc:'x cm' }),
+  figL:() => beide({ bn:6, cn:4, b:10, tb:'6 cm', tc:'4 cm', nb:'B_1', nc:'C_1' }),
+  o:[['$A = 12 cm^2$', 1],
+     ['$A = 24 cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$.'],
+     ['$A = 20 cm^2$', 0, 'Du hast mit 10 cm gerechnet. Für $x = 4$ ist $@l{AB_1} = (10 − 4) cm = 6 cm$.'],
+     ['$A = 10 cm^2$', 0, 'Du hast die Seiten addiert. Sie werden multipliziert – und dann halbiert.']],
+  k:'$A = @f{1}{2} · 6 · 4 cm^2 = 12 cm^2$',
+  s:['Setze $x = 4$ ein: $$@l{AB_1} = (10 − 4) cm = 6 cm,   @l{AC_1} = 4 cm$$',
+     'Rechtwinkliges Dreieck ⇒ die Katheten sind Grundseite und Höhe: $$A = @f{1}{2} · 6 · 4 cm^2 = 12 cm^2$$'],
+  e:'$A = 12 cm^2$' },
+
+{ t:'Term A(x) aufstellen',
+  q:'Gleiche Dreiecke: $@l{AB_n} = (10 − x) cm$ und $@l{AC_n} = x cm$, rechter Winkel bei $A$. Stelle $A(x)$ auf.',
+  fig:() => beide({ bn:6, cn:4, b:10, tb:'(10 − x) cm', tc:'x cm' }),
+  o:[['$A(x) = (−0,5x^2 + 5x) cm^2$', 1],
+     ['$A(x) = (−x^2 + 10x) cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$.'],
+     ['$A(x) = (−0,5x^2 + 10x) cm^2$', 0, 'Der Faktor $@f{1}{2}$ gehört zu beiden Summanden: $@f{1}{2} · 10x = 5x$.'],
+     ['$A(x) = (0,5x^2 + 5x) cm^2$', 0, 'Vorzeichenfehler: $(−x) · x = −x^2$.']],
+  k:'$A(x) = @f{1}{2} · (10 − x) · x cm^2 = (−0,5x^2 + 5x) cm^2$',
+  s:['Dieselbe Rechnung wie mit der Zahl – jetzt mit $x$: $$A(x) = @f{1}{2} · (10 − x) · x cm^2$$',
+     'Klammer ausmultiplizieren: $$A(x) = @f{1}{2} · (10x − x^2) cm^2$$',
+     '$@f{1}{2}$ mit beiden Summanden multiplizieren und ordnen: $$A(x) = (−0,5x^2 + 5x) cm^2$$',
+     'Probe mit $x = 4$: $−0,5 · 16 + 5 · 4 = −8 + 20 = 12$ ✓'],
+  e:'$A(x) = (−0,5x^2 + 5x) cm^2$' },
+
+{ t:'Größter Flächeninhalt',
+  q:'Für welches $x$ ist der Flächeninhalt $A(x) = (−0,5x^2 + 5x) cm^2$ am größten – und wie groß ist er dann?',
+  fig:() => parabel({ xmax:11, ymax:14, ex:26, ey:13, sx:1, sy:2, tx:[2,4,6,8,10], ty:[4,8,12], f:x => -0.5 * x * x + 5 * x, x1:0, x2:10, S:[5,12.5], St:'S(? | ?)' }),
+  figL:() => parabel({ xmax:11, ymax:14, ex:26, ey:13, sx:1, sy:2, tx:[2,4,6,8,10], ty:[4,8,12], f:x => -0.5 * x * x + 5 * x, x1:0, x2:10, S:[5,12.5], St:'S(5 | 12,5)' }),
+  o:[['$x = 5$;  $A_{max} = 12,5 cm^2$', 1],
+     ['$x = 10$;  $A_{max} = 0 cm^2$', 0, '$x = 10$ ist eine Nullstelle – dort ist der Flächeninhalt 0. Das Maximum liegt im Scheitelpunkt.'],
+     ['$x = 5$;  $A_{max} = 25 cm^2$', 0, 'Rechne nach: $A(5) = −0,5 · 25 + 5 · 5 = −12,5 + 25 = 12,5$.'],
+     ['$x = 12,5$;  $A_{max} = 5 cm^2$', 0, 'x-Wert und y-Wert sind vertauscht – und $x = 12,5$ liegt gar nicht im erlaubten Bereich $0 < x < 10$.']],
+  k:'TR: $a = −0,5$; $b = 5$; $c = 0$  ⇒  $A_{max} = 12,5 cm^2$ für $x = 5$',
+  s:['Quadratischer Term mit Minus vor $x^2$ ⇒ nach unten geöffnete Parabel ⇒ größter Wert im Scheitelpunkt.',
+     'Taschenrechner (MENU → A: Gleichung/Funkt → 2: Polynom → Grad 2): $$a = −0,5;   b = 5;   c = 0$$',
+     'Mit = durchblättern bis zum Maximum: x-Wert $= 5$, y-Wert $= 12,5$. $$A_{max} = 12,5 cm^2   @t{für}   x = 5$$',
+     'Prüfen: $x = 5$ liegt im erlaubten Bereich $0 < x < 10$ ✓'],
+  e:'$A_{max} = 12,5 cm^2$  für  $x = 5$' },
+
+{ t:'Skizze lesen: Wie lang ist AEₙ?',
+  q:'Im Dreieck $ABC$ gilt $@l{AB} = 8 cm$, $@l{AC} = 6 cm$ und $∢BAC = 70°$. Die Punkte $E_n$ liegen auf $@s{AC}$ mit $@l{CE_n} = 0,5x cm$. Wie lang ist die Strecke $@s{AE_n}$?',
+  fig:() => muster(),
+  figL:() => muster({ ae:1 }),
+  o:[['$@l{AE_n} = (6 − 0,5x) cm$', 1],
+     ['$@l{AE_n} = 0,5x cm$', 0, 'Das ist die Strecke $@s{CE_n}$ – sie wird von $C$ aus gemessen. Gesucht ist das Stück von $A$ bis $E_n$.'],
+     ['$@l{AE_n} = (6 + 0,5x) cm$', 0, '$E_n$ liegt auf der Strecke $@s{AC}$. $@s{AE_n}$ ist also kürzer als 6 cm – du musst abziehen.'],
+     ['$@l{AE_n} = (6 − x) cm$', 0, 'Abgezogen wird die Strecke $@s{CE_n}$ – und die ist $0,5x cm$ lang, nicht $x cm$.']],
+  k:'$@l{AE_n} = @l{AC} − @l{CE_n} = (6 − 0,5x) cm$',
+  s:['Trage in der Skizze ein, was gegeben ist: $@l{AD_n} = x cm$ (von $A$ aus) und $@l{CE_n} = 0,5x cm$ (von $C$ aus).',
+     'Die Strecke $@s{AC}$ besteht aus zwei Teilen: $@s{AE_n}$ und $@s{CE_n}$. $$@l{AE_n} = @l{AC} − @l{CE_n}$$',
+     'Einsetzen: $$@l{AE_n} = (6 − 0,5x) cm$$',
+     'Probe mit $x = 2$: $@l{CE_1} = 1 cm$, also $@l{AE_1} = 5 cm$. Term: $6 − 0,5 · 2 = 5$ ✓'],
+  e:'$@l{AE_n} = (6 − 0,5x) cm$',
+  m:'Fahrplan Schritt ①: Skizze – Gegebenes eintragen, veränderliche Strecken mit $x$ beschriften. Achte darauf, von welchem Punkt aus gemessen wird.' },
+
+{ t:'A(x) mit eingeschlossenem Winkel',
+  q:'Für die Dreiecke $AD_nE_n$ gilt $@l{AD_n} = x cm$, $@l{AE_n} = (6 − 0,5x) cm$ und $∢BAC = 70°$. Welcher Term beschreibt den Flächeninhalt?',
+  fig:() => muster(),
+  o:[['$A(x) = (−0,25x^2 + 3x) · sin 70° cm^2$', 1],
+     ['$A(x) = (−0,5x^2 + 6x) · sin 70° cm^2$', 0, 'Hier fehlt der Faktor $@f{1}{2}$.'],
+     ['$A(x) = (−0,25x^2 + 3x) cm^2$', 0, 'Das Dreieck ist nicht rechtwinklig. Der Faktor $sin 70°$ gehört dazu.'],
+     ['$A(x) = (−0,25x^2 + 3x) · cos 70° cm^2$', 0, 'In der Flächenformel steht der Sinus des eingeschlossenen Winkels, nicht der Kosinus.']],
+  k:'$A(x) = @f{1}{2} · x · (6 − 0,5x) · sin 70° cm^2 = (−0,25x^2 + 3x) · sin 70° cm^2$',
+  s:['Kein rechter Winkel, aber zwei Seiten und der eingeschlossene Winkel ⇒ Flächenformel $A = @f{1}{2} · b · c · sin α$.',
+     '<b>Erst mit einer Zahl</b>, $x = 2$: $@l{AD_1} = 2 cm$, $@l{AE_1} = 5 cm$. $$A = @f{1}{2} · 2 · 5 · sin 70° cm^2 ≈ 4,70 cm^2$$',
+     '<b>Dann mit $x$:</b> $$A(x) = @f{1}{2} · x · (6 − 0,5x) · sin 70° cm^2$$',
+     'Ausmultiplizieren ($@f{1}{2} · x · 6 = 3x$ und $@f{1}{2} · x · 0,5x = 0,25x^2$): $$A(x) = (−0,25x^2 + 3x) · sin 70° cm^2$$'],
+  e:'$A(x) = (−0,25x^2 + 3x) · sin 70° cm^2$',
+  c:[[5*sind(70),2]] },
+
+{ t:'Größter Flächeninhalt mit sin 70°',
+  q:'Unter den Dreiecken $AD_nE_n$ mit $A(x) = (−0,25x^2 + 3x) · sin 70° cm^2$ hat das Dreieck $AD_0E_0$ den größten Flächeninhalt. Bestimme $x$ und $A_{max}$.',
+  fig:() => muster(),
+  o:[['$x = 6$;  $A_{max} ≈ 8,46 cm^2$', 1],
+     ['$x = 6$;  $A_{max} = 9 cm^2$', 0, 'Der Faktor $sin 70°$ fehlt noch: Der y-Wert 9 gehört nur zur Klammer.'],
+     ['$x = 12$;  $A_{max} = 0 cm^2$', 0, '$x = 12$ ist eine Nullstelle – dort ist der Flächeninhalt 0. Außerdem darf $x$ höchstens 8 sein.'],
+     ['$x = 3$;  $A_{max} ≈ 6,34 cm^2$', 0, 'Bei $x = 3$ ist der Flächeninhalt noch nicht am größten. Für die Klammer liefert der Taschenrechner den Scheitelpunkt $S(6 | 9)$.']],
+  k:'TR: $a = −0,25$; $b = 3$; $c = 0$  ⇒  $x = 6$;  $A_{max} = 9 · sin 70° cm^2 ≈ 8,46 cm^2$',
+  s:['$sin 70°$ ist ein fester Faktor. Am größten wird der Flächeninhalt, wenn die Klammer $(−0,25x^2 + 3x)$ am größten ist.',
+     'Taschenrechner mit dem Term in der Klammer: $$a = −0,25;   b = 3;   c = 0$$ Scheitelpunkt: x-Wert $= 6$, y-Wert $= 9$.',
+     'Mit dem festen Faktor multiplizieren: $$A_{max} = 9 · sin 70° cm^2 ≈ 8,46 cm^2$$',
+     'Prüfen: $D_n$ liegt auf $@s{AB}$ (8 cm lang), also $0 < x ≤ 8$. $x = 6$ liegt im erlaubten Bereich ✓'],
+  e:'$x = 6$;  $A_{max} ≈ 8,46 cm^2$',
+  c:[[9*sind(70),2],[6.75*sind(70),2]] },
+
+{ t:'So spricht die Abschlussprüfung',
+  q:'In der Aufgabe steht: „Zeige, dass für den Flächeninhalt gilt: $A(x) = (−0,25x^2 + 3x) · sin 70° cm^2$.“ Was musst du tun?',
+  o:[['Den Rechenweg aufschreiben, bis genau dieser Term herauskommt.', 1],
+     ['Nichts rechnen – das Ergebnis steht ja schon da.', 0, 'Das Ergebnis steht da, damit du damit weiterrechnen kannst. Punkte gibt es für den Weg dorthin.'],
+     ['Eine Zahl für $x$ einsetzen und nachrechnen.', 0, 'Das ist eine gute Probe – aber kein Nachweis. Der Term muss für alle $x$ gelten, also musst du mit $x$ rechnen.'],
+     ['Den Term in den Taschenrechner eingeben und den Scheitelpunkt ablesen.', 0, 'Das brauchst du erst, wenn nach dem größten oder kleinsten Wert gefragt ist.']],
+  k:'„Zeige, dass …“ = Rechenweg bis zum angegebenen Term',
+  s:['<b>„Zeige, dass gilt: …“</b> Das Ergebnis steht schon da. Schreibe den Rechenweg auf, bis genau dieser Term herauskommt.',
+     '<b>„… in Abhängigkeit von $x$“</b> Mache die Rechnung mit $x$ statt mit einer Zahl.',
+     '<b>„Gib an, welche Werte $x$ annehmen kann.“</b> Alle Längen müssen größer als 0 sein bzw. der Punkt muss auf der Strecke liegen.',
+     '<b>„Unter den Dreiecken hat das Dreieck … den größten Flächeninhalt.“</b> Mit dem Taschenrechner den Scheitelpunkt bestimmen.',
+     '<b>„Das Dreieck … ist gleichschenklig.“</b> Schreibe die Bedingung als Gleichung auf und löse nach $x$ auf.'],
+  e:'Rechenweg aufschreiben, bis genau der angegebene Term herauskommt.',
+  m:'Vorteil bei „Zeige, dass …“: Du kannst mit dem angegebenen Term weiterrechnen, auch wenn dir der Nachweis nicht gelingt.' }
+]});
+
+THEMEN.push({ nr:'1.12', titel:'Trigonometrie in Körpern', sub:'Das passende Dreieck im Quader und in der Pyramide finden', fragen:[
+{ t:'Flächendiagonale im Quader',
+  q:'Quader $ABCDEFGH$ mit $@l{AB} = 8 cm$, $@l{BC} = 6 cm$ und $@l{CG} = 4 cm$. Berechne die Länge der Diagonale $@s{AC}$ der Grundfläche.',
+  fig:() => quader({ a:8, b:6, c:4, kanten:{ AB:'8 cm', BC:'6 cm', CG:'4 cm' }, linien:[['A','C']] }),
+  figL:() => quader({ a:8, b:6, c:4, kanten:{ AB:'8 cm', BC:'6 cm', CG:'4 cm' }, dreieck:['A','B','C'], linien:[['A','C',{ c:'hyp' }]], rw:[['A','B','C',{ r:13 }]] }),
+  o:[['$@l{AC} = 10 cm$', 1],
+     ['$@l{AC} = 14 cm$', 0, 'Du hast die beiden Kanten addiert. Die Diagonale ist der direkte Weg – Satz des Pythagoras.'],
+     ['$@l{AC} = 100 cm$', 0, '100 ist erst $@l{AC}^2$. Am Ende musst du noch die Wurzel ziehen.'],
+     ['$@l{AC} ≈ 5,29 cm$', 0, 'Du hast $@w{8^2 − 6^2}$ gerechnet. $@s{AC}$ ist die Hypotenuse ⇒ plus.']],
+  k:'$@l{AC} = @w{8^2 + 6^2} cm = 10 cm$',
+  s:['Suche ein Dreieck, in dem $@s{AC}$ liegt und von dem du zwei Größen kennst: das Dreieck $ABC$ in der Grundfläche.',
+     'Die Grundfläche ist ein Rechteck ⇒ rechter Winkel bei $B$. Im Schrägbild sieht er nicht wie 90° aus – er ist es trotzdem!',
+     'Nur Seiten, rechter Winkel ⇒ Satz des Pythagoras: $$@l{AC}^2 = 8^2 + 6^2 = 100$$',
+     'Wurzel ziehen: $$@l{AC} = 10 cm$$'],
+  e:'$@l{AC} = 10 cm$',
+  m:'Im Schrägbild sind rechte Winkel oft verzerrt. Überlege immer: Welche Kanten stehen im echten Körper senkrecht aufeinander?',
+  c:[[Math.sqrt(28),2]] },
+
+{ t:'Raumdiagonale im Quader',
+  q:'Gleicher Quader ($@l{AB} = 8 cm$, $@l{BC} = 6 cm$, $@l{CG} = 4 cm$). Du weißt schon: $@l{AC} = 10 cm$. Berechne die Länge der Raumdiagonale $@s{AG}$.',
+  fig:() => quader({ a:8, b:6, c:4, kanten:{ AB:'8 cm', BC:'6 cm', CG:'4 cm' }, linien:[['A','C',{ c:'grau', w:1.6, d:'4 4' }], ['A','G']] }),
+  figL:() => quader({ a:8, b:6, c:4, kanten:{ CG:'4 cm' }, dreieck:['A','C','G'], linien:[['A','C',{ c:'ank' }], ['C','G',{ c:'ank' }], ['A','G',{ c:'hyp' }]], rw:[['A','C','G',{ r:13 }]] }),
+  o:[['$@l{AG} ≈ 10,77 cm$', 1],
+     ['$@l{AG} = 14 cm$', 0, 'Du hast $10 + 4$ gerechnet. Im rechtwinkligen Dreieck $ACG$ gilt der Satz des Pythagoras.'],
+     ['$@l{AG} = 18 cm$', 0, 'Du hast alle drei Kanten addiert. Die Raumdiagonale ist der direkte Weg durch den Quader.'],
+     ['$@l{AG} ≈ 9,17 cm$', 0, 'Du hast $@w{10^2 − 4^2}$ gerechnet. $@s{AG}$ ist die Hypotenuse ⇒ plus.']],
+  k:'$@l{AG} = @w{10^2 + 4^2} cm = @w{116} cm ≈ 10,77 cm$',
+  s:['Das passende Dreieck ist $ACG$: Es enthält die Raumdiagonale $@s{AG}$, die Flächendiagonale $@s{AC}$ und die Kante $@s{CG}$.',
+     'Die Kante $@s{CG}$ steht senkrecht auf der Grundfläche ⇒ rechter Winkel bei $C$.',
+     '$@s{AG}$ liegt gegenüber vom rechten Winkel ⇒ Hypotenuse ⇒ Satz des Pythagoras: $$@l{AG}^2 = 10^2 + 4^2 = 116$$',
+     'Wurzel ziehen: $$@l{AG} = @w{116} cm ≈ 10,77 cm$$'],
+  e:'$@l{AG} ≈ 10,77 cm$',
+  c:[[Math.sqrt(116),2],[Math.sqrt(84),2]] },
+
+{ t:'Neigungswinkel der Raumdiagonale',
+  q:'Gleicher Quader: $@l{AC} = 10 cm$ und $@l{CG} = 4 cm$. Unter welchem Winkel $∢CAG$ steigt die Raumdiagonale $@s{AG}$ gegenüber der Grundfläche an?',
+  fig:() => quader({ a:8, b:6, c:4, kanten:{ CG:'4 cm' }, dreieck:['A','C','G'], linien:[['A','C',{ c:'std', w:1.8 }], ['A','G',{ c:'std', w:1.8 }]], ang:[['C','A','G',{ t:'?', c:'ges', r:40, d:54 }]] }),
+  figL:() => quader({ a:8, b:6, c:4, kanten:{ CG:'4 cm' }, dreieck:['A','C','G'], linien:[['A','C',{ c:'ank' }], ['C','G',{ c:'geg' }], ['A','G',{ c:'hyp' }]], rw:[['A','C','G',{ r:13 }]], ang:[['C','A','G',{ t:'?', c:'ges', r:40, d:54 }]] }),
+  o:[['$∢CAG ≈ 21,80°$', 1],
+     ['$∢CAG ≈ 68,20°$', 0, 'Du hast $tan^{−1}(@f{10}{4})$ gerechnet – das ist der Winkel bei $G$. Vom Winkel bei $A$ aus liegt $@s{CG}$ (4 cm) gegenüber.'],
+     ['$∢CAG ≈ 23,58°$', 0, 'Du hast $sin^{−1}(@f{4}{10})$ gerechnet. 10 cm ist aber nicht die Hypotenuse – die Hypotenuse ist $@s{AG}$.'],
+     ['$∢CAG ≈ 66,42°$', 0, 'Du hast $cos^{−1}(@f{4}{10})$ gerechnet. 4 cm und 10 cm sind die beiden Katheten ⇒ Tangens.']],
+  k:'$tan ∢CAG = @f{4 cm}{10 cm}  ⇒  ∢CAG ≈ 21,80°$',
+  s:['Das Dreieck $ACG$ ist rechtwinklig bei $C$ (die Kante $@s{CG}$ steht senkrecht auf der Grundfläche).',
+     'Vom Winkel bei $A$ aus: $@s{CG}$ liegt gegenüber ⇒ Gegenkathete (4 cm), $@s{AC}$ liegt an ⇒ Ankathete (10 cm). Beide Katheten ⇒ Tangens.',
+     'Formel aufstellen: $$tan ∢CAG = @f{4 cm}{10 cm} = 0,4$$',
+     'Umkehrfunktion (SHIFT + tan): $$∢CAG = tan^{−1}(0,4) ≈ 21,80°$$'],
+  e:'$∢CAG ≈ 21,80°$',
+  c:[[atand(0.4),2],[atand(2.5),2],[asind(0.4),2],[acosd(0.4),2]] },
+
+{ t:'Welcher Zusammenhang im Dreieck ACF?',
+  q:'Im gleichen Quader kennst du im Dreieck $ACF$ alle drei Seiten: $@l{AC} = 10 cm$, $@l{AF} ≈ 8,94 cm$, $@l{CF} ≈ 7,21 cm$. Womit berechnest du den Winkel $∢CAF$?',
+  fig:() => quader({ a:8, b:6, c:4, dreieck:['A','C','F'], linien:[['A','C',{ c:'std', w:1.8 }], ['A','F',{ c:'std', w:1.8 }], ['C','F',{ c:'std', w:1.8 }]], ang:[['C','A','F',{ t:'?', c:'ges', r:34, d:48 }]] }),
+  o:[['Kosinussatz', 1],
+     ['Tangens', 0, 'Das Dreieck $ACF$ hat keinen rechten Winkel: Alle drei Seiten sind Flächendiagonalen, sie liegen schräg im Quader.'],
+     ['Sinussatz', 0, 'Für den Sinussatz brauchst du ein Paar aus Seite und Gegenwinkel. Hier ist noch gar kein Winkel bekannt.'],
+     ['Satz des Pythagoras', 0, 'Der Satz des Pythagoras liefert nur Seiten – und das Dreieck $ACF$ ist nicht rechtwinklig.']],
+  k:'drei Seiten bekannt, kein rechter Winkel ⇒ Kosinussatz',
+  s:['<b>1. Frage: rechtwinklig?</b> Nein. $@s{AC}$, $@s{AF}$ und $@s{CF}$ sind alle drei Flächendiagonalen und liegen schräg im Quader. An keiner Ecke des Dreiecks steht eine Kante senkrecht auf einer Fläche.',
+     '<b>2. Frage: Paar bekannt?</b> Nein – es ist noch kein Winkel bekannt.',
+     'Drei Seiten (SSS) ⇒ <b>Kosinussatz</b>.',
+     'So wurden die Seiten berechnet (jeweils Pythagoras in einer Seitenfläche): $$@l{AF} = @w{8^2 + 4^2} cm ≈ 8,94 cm$$ $$@l{CF} = @w{6^2 + 4^2} cm ≈ 7,21 cm$$'],
+  e:'Kosinussatz (SSS)',
+  m:'Achtung, Falle: Nicht jedes Dreieck im Quader ist rechtwinklig. Ein rechter Winkel entsteht nur dort, wo eine Kante senkrecht auf einer Fläche steht.',
+  c:[[Math.sqrt(80),2],[Math.sqrt(52),2]] },
+
+{ t:'Winkel im Dreieck ACF',
+  q:'Dreieck $ACF$ mit $@l{AC} = 10 cm$, $@l{AF} ≈ 8,94 cm$ und $@l{CF} ≈ 7,21 cm$. Berechne das Maß des Winkels $∢CAF$.',
+  fig:() => quader({ a:8, b:6, c:4, dreieck:['A','C','F'], linien:[['A','C',{ c:'std', w:1.8 }], ['A','F',{ c:'std', w:1.8 }], ['C','F',{ c:'std', w:1.8 }]], ang:[['C','A','F',{ t:'?', c:'ges', r:34, d:48 }]] }),
+  figL:() => quader({ a:8, b:6, c:4, dreieck:['A','C','F'], linien:[['A','C',{ c:'ank' }], ['A','F',{ c:'ank' }], ['C','F',{ c:'ges' }]], ang:[['C','A','F',{ t:'?', c:'ges', r:34, d:48 }]] }),
+  o:[['$∢CAF ≈ 44,31°$', 1],
+     ['$∢CAF ≈ 75,64°$', 0, 'Das ist der Winkel bei $F$. Für $∢CAF$ muss links die Seite stehen, die $A$ gegenüberliegt: $@l{CF}^2$.'],
+     ['$∢CAF ≈ 60,05°$', 0, 'Das ist der Winkel bei $C$. Für $∢CAF$ muss links die Seite stehen, die $A$ gegenüberliegt: $@l{CF}^2$.'],
+     ['$∢CAF ≈ 135,69°$', 0, 'Vorzeichenfehler beim Auflösen: Der Kosinus ist hier positiv – der Winkel ist also kleiner als 90°.']],
+  k:'$7,21^2 = 10^2 + 8,94^2 − 2 · 10 · 8,94 · cos ∢CAF  ⇒  ∢CAF ≈ 44,31°$',
+  s:['Drei Seiten ⇒ Kosinussatz. Der gesuchte Winkel liegt bei $A$, gegenüber liegt $@s{CF}$ – diese Seite steht links: $$@l{CF}^2 = @l{AC}^2 + @l{AF}^2 − 2 · @l{AC} · @l{AF} · cos ∢CAF$$',
+     'Einsetzen: $$7,21^2 = 10^2 + 8,94^2@t{ }− 2 · 10 · 8,94 · cos ∢CAF$$ $$51,98 = 179,92 − 178,8 · cos ∢CAF$$',
+     'Nach dem Kosinus auflösen (erst $− 179,92$, dann $: (−178,8)$): $$cos ∢CAF = @f{127,94}{178,8}$$',
+     'Umkehrfunktion (SHIFT + cos): $$∢CAF ≈ 44,31°$$'],
+  e:'$∢CAF ≈ 44,31°$',
+  c:[[acosd(128/(20*Math.sqrt(80))),2],[acosd(32/(2*Math.sqrt(80)*Math.sqrt(52))),2],[acosd(72/(20*Math.sqrt(52))),2],[180-acosd(128/(20*Math.sqrt(80))),2],[7.21*7.21,2],[100+8.94*8.94,2],[2*10*8.94,1],[100+8.94*8.94-7.21*7.21,2]] },
+
+{ t:'Seitenkante der Pyramide',
+  q:'Gerade Pyramide $ABCDS$ mit quadratischer Grundfläche: Diagonale $@l{AC} = 10 cm$, Höhe $@l{MS} = 12 cm$ ($M$ ist der Mittelpunkt der Grundfläche). Berechne die Länge der Seitenkante $@s{AS}$.',
+  fig:() => pyramide({ a:7.07, h:12, linien:[['A','S']] }),
+  figL:() => pyramide({ a:7.07, h:12, dreieck:['A','M','S'], linien:[['A','M',{ c:'ank' }], ['M','S',{ c:'ank' }], ['A','S',{ c:'hyp' }]], rw:[['A','M','S',{ r:12 }]] }),
+  o:[['$@l{AS} = 13 cm$', 1],
+     ['$@l{AS} ≈ 15,62 cm$', 0, 'Du hast mit der ganzen Diagonale (10 cm) gerechnet. Im Dreieck $AMS$ brauchst du nur die Hälfte: $@l{AM} = 5 cm$.'],
+     ['$@l{AS} = 17 cm$', 0, 'Du hast $5 + 12$ gerechnet. Im rechtwinkligen Dreieck $AMS$ gilt der Satz des Pythagoras.'],
+     ['$@l{AS} ≈ 10,91 cm$', 0, 'Du hast $@w{12^2 − 5^2}$ gerechnet. $@s{AS}$ ist die Hypotenuse ⇒ plus.']],
+  k:'$@l{AS} = @w{5^2 + 12^2} cm = 13 cm$',
+  s:['Das passende Dreieck ist $AMS$: Es enthält die Seitenkante $@s{AS}$, die Höhe $@s{MS}$ und die halbe Diagonale $@s{AM}$.',
+     '$M$ ist der Mittelpunkt der Diagonale: $$@l{AM} = 10 cm : 2 = 5 cm$$',
+     'Die Höhe steht senkrecht auf der Grundfläche ⇒ rechter Winkel bei $M$ ⇒ Satz des Pythagoras: $$@l{AS}^2 = 5^2 + 12^2 = 169$$',
+     'Wurzel ziehen: $$@l{AS} = 13 cm$$'],
+  e:'$@l{AS} = 13 cm$',
+  m:'In der geraden Pyramide ist der rechte Winkel immer bei $M$ – dem Fußpunkt der Höhe.',
+  c:[[Math.sqrt(244),2],[Math.sqrt(119),2]] },
+
+{ t:'Neigungswinkel der Seitenkante',
+  q:'Gleiche Pyramide: $@l{AM} = 5 cm$, $@l{MS} = 12 cm$. Unter welchem Winkel $∢MAS$ ist die Seitenkante $@s{AS}$ gegen die Grundfläche geneigt?',
+  fig:() => pyramide({ a:7.07, h:12, dreieck:['A','M','S'], linien:[['A','M',{ c:'std', w:1.8 }], ['A','S',{ c:'std', w:1.8 }]], ang:[['M','A','S',{ t:'?', c:'ges', r:22, d:36 }]] }),
+  figL:() => pyramide({ a:7.07, h:12, dreieck:['A','M','S'], linien:[['A','M',{ c:'ank' }], ['M','S',{ c:'geg' }], ['A','S',{ c:'hyp' }]], rw:[['A','M','S',{ r:12 }]], ang:[['M','A','S',{ t:'?', c:'ges', r:22, d:36 }]] }),
+  o:[['$∢MAS ≈ 67,38°$', 1],
+     ['$∢MAS ≈ 22,62°$', 0, 'Du hast $tan^{−1}(@f{5}{12})$ gerechnet – das ist der Winkel bei $S$. Vom Winkel bei $A$ aus liegt die Höhe (12 cm) gegenüber.'],
+     ['$∢MAS ≈ 50,19°$', 0, 'Du hast mit der ganzen Diagonale (10 cm) gerechnet. Im Dreieck $AMS$ ist die Ankathete $@l{AM} = 5 cm$.'],
+     ['$∢MAS ≈ 24,62°$', 0, 'Du hast $sin^{−1}(@f{5}{12})$ gerechnet. 5 cm und 12 cm sind die beiden Katheten ⇒ Tangens.']],
+  k:'$tan ∢MAS = @f{12 cm}{5 cm}  ⇒  ∢MAS ≈ 67,38°$',
+  s:['Das Dreieck $AMS$ ist rechtwinklig bei $M$.',
+     'Vom Winkel bei $A$ aus: Die Höhe $@s{MS}$ liegt gegenüber ⇒ Gegenkathete (12 cm), $@s{AM}$ liegt an ⇒ Ankathete (5 cm). Beide Katheten ⇒ Tangens.',
+     'Formel aufstellen: $$tan ∢MAS = @f{12 cm}{5 cm} = 2,4$$',
+     'Umkehrfunktion (SHIFT + tan): $$∢MAS = tan^{−1}(2,4) ≈ 67,38°$$'],
+  e:'$∢MAS ≈ 67,38°$',
+  c:[[atand(12/5),2],[atand(5/12),2],[atand(1.2),2],[asind(5/12),2]] }
+]});
+
+/* ---------- Ablauf ---------- */
+(function(){
+  const KEY = 'walkin-trigo-10c-v1', MIXKEY = KEY + '-mix';
+  let stand = {};
+  try { stand = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { stand = {}; }
+  const sichern = () => { try { localStorage.setItem(KEY, JSON.stringify(stand)); } catch (e) {} };
+
+  THEMEN.forEach(t => t.fragen.forEach((f, i) => { f.id = t.nr + '/' + (i + 1); f.thema = t; f.nr = i + 1; }));
+  const ALLE = [].concat.apply([], THEMEN.map(t => t.fragen));
+  const sitzung = {};
+  let mix = null;
+
+  const $ = id => document.getElementById(id);
+  const main = $('main'), chips = $('chips'), kopfKlein = $('kopfKlein'), kopfGross = $('kopfGross'), heim = $('heim'),
+        nav = $('nav'), bZur = $('zurueck'), bWei = $('weiter');
+  const mische = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+  const S = f => sitzung[f.id] || (sitzung[f.id] = { reihe: mische(f.o.map((_, i) => i)), falsch: [], gesehen: false });
+  const geloest = f => stand[f.id] === 1 || stand[f.id] === 2;
+  const frisch = f => !!(sitzung[f.id] && sitzung[f.id].neu);           /* im Mix: wird noch einmal neu gelöst */
+  const erledigt = f => geloest(f) && !frisch(f);
+  const klasse = f => frisch(f) ? (sitzung[f.id].falsch.length ? 'offen' : '') : stand[f.id] === 1 ? 'gut' : stand[f.id] === 2 ? 'spaet' : stand[f.id] === 3 ? 'offen' : '';
+  const geh = h => { if (location.hash === '#' + h) zeige(); else location.hash = h; };
+
+  function neuerMix(){
+    const offen = mische(ALLE.filter(f => stand[f.id] !== 1)), rest = mische(ALLE.filter(f => stand[f.id] === 1));
+    mix = offen.concat(rest).slice(0, 10);
+    mix.forEach(f => { sitzung[f.id] = { reihe: mische(f.o.map((_, i) => i)), falsch: [], gesehen: false, neu: true }; });
+    try { sessionStorage.setItem(MIXKEY, JSON.stringify(mix.map(f => f.id))); } catch (e) {}
+  }
+  function lauf(key){
+    if (key === 'mix'){
+      if (!mix){
+        try { const ids = JSON.parse(sessionStorage.getItem(MIXKEY) || 'null'); if (ids) mix = ids.map(id => ALLE.find(f => f.id === id)).filter(Boolean); } catch (e) {}
+        if (!mix || !mix.length) neuerMix();
+      }
+      return { key:'mix', nr:'Mix', titel:'Gemischtes Training', fragen:mix };
+    }
+    const t = THEMEN.find(t => t.nr === key);
+    return t ? { key:t.nr, nr:t.nr, titel:t.titel, fragen:t.fragen } : null;
+  }
+
+  function aufgabentext(f){
+    let h = '<div class="aufgabentext">' + fmt(f.q);
+    if (f.geg) h += '<div class="geg">' + f.geg.map(g => '<span class="g1">' + fmt(g) + '</span>').join('') + '</div>';
+    return h + '</div>';
+  }
+  const figur = fn => fn ? '<div class="figbox">' + fn() + '</div>' : '';
+
+  function setzeKopf(klein, gross, mitHeim){
+    kopfKlein.textContent = klein; kopfGross.textContent = gross;
+    /* im Quiz: zurück zur Themenliste; auf der Themenliste (nur im Paket mit Startseite): zurück zur Startseite */
+    if (mitHeim){ heim.hidden = false; heim.textContent = '‹ Themen'; heim.onclick = () => geh(''); }
+    else if (window.STARTSEITE){ heim.hidden = false; heim.textContent = '‹ Startseite'; heim.onclick = () => { location.href = window.STARTSEITE; }; }
+    else heim.hidden = true;
+  }
+  function setzeChips(L, n){
+    if (!L){ chips.innerHTML = ''; chips.hidden = true; return; }
+    chips.hidden = false;
+    chips.innerHTML = L.fragen.map((f, i) => '<button type="button" class="' + klasse(f) + (i + 1 === n ? ' an' : '') + '" data-n="' + (i + 1) + '" aria-label="Aufgabe ' + (i + 1) + '">' + (i + 1) + '</button>').join('') +
+      '<button type="button" data-n="a"' + (n === 'a' ? ' class="an"' : '') + '>Auswertung</button>';
+    chips.querySelectorAll('button').forEach(b => { b.onclick = () => geh(b.dataset.n === 'a' ? 'a/' + L.key : 'q/' + L.key + '/' + b.dataset.n); });
+    const an = chips.querySelector('.an'); if (an && an.scrollIntoView) an.scrollIntoView({ block:'nearest', inline:'center' });
+  }
+  function setzeNav(zt, zf, wt, wf){
+    nav.hidden = false; bZur.textContent = zt; bZur.onclick = zf; bWei.textContent = wt; bWei.onclick = wf;
+  }
+  const herkunft = (L, f) => L.key === 'mix' ? ' · aus ' + f.thema.nr + ' ' + f.thema.titel : '';
+
+  /* ----- Start ----- */
+  function zeigeStart(){
+    setzeKopf('Mathe 10c · Kapitel 1 Trigonometrie', 'Walk-in-Quiz', false); setzeChips(null); nav.hidden = true;
+    const gesamt = ALLE.length, gut = ALLE.filter(geloest).length;
+    let h = '<section class="karte"><h2>So funktioniert’s</h2><ol class="start">' +
+      '<li><b>Thema antippen</b> – dort findest du die Walk-in-Aufgaben aus dem Unterricht.</li>' +
+      '<li><b>Erst selbst rechnen</b> – auf einem Blatt, mit dem Taschenrechner (er muss auf Grad stehen: „D“ im Display).</li>' +
+      '<li><b>Ergebnis antippen.</b> Bei einem Fehler bekommst du einen Hinweis und darfst es noch einmal versuchen.</li>' +
+      '<li>Über <b>„Ausführliche Erklärung“</b> siehst du den Lösungsweg Schritt für Schritt.</li></ol></section>';
+    h += '<section class="karte"><h2>Themen</h2><div class="hinweis-klein">' + gut + ' von ' + gesamt + ' Aufgaben gelöst</div><div class="themen">';
+    THEMEN.forEach(t => {
+      const n = t.fragen.length, g = t.fragen.filter(geloest).length;
+      h += '<button type="button" class="thema' + (g === n ? ' fertig' : '') + '" data-t="' + t.nr + '"><span class="tn">' + t.nr + '</span><span class="tt">' + t.titel +
+           '<small>' + t.sub + '</small></span><span class="tp">' + g + ' / ' + n + '<span class="balken"><i style="width:' + Math.round(100 * g / n) + '%"></i></span></span></button>';
+    });
+    h += '<button type="button" class="thema mix" data-t="mix"><span class="tn">Mix</span><span class="tt">Gemischtes Training<small>10 zufällige Aufgaben aus allen Themen – ideal vor der Schulaufgabe</small></span></button>';
+    h += '</div></section>';
+    h += '<section class="karte"><div class="legende"><span><i style="background:#bfe6cf"></i>beim 1. Versuch richtig</span><span><i style="background:#ffe9a3"></i>mit Hilfe gelöst</span><span><i style="background:#f7c9c9"></i>noch offen</span></div>' +
+      '<p class="hinweis-klein">Dein Fortschritt wird nur auf diesem Gerät gespeichert. Die Aufgaben funktionieren auch ohne Internet, sobald die Seite geladen ist.</p>' +
+      '<button type="button" class="gross k-leise" id="loeschen">Fortschritt löschen</button></section>';
+    main.innerHTML = h;
+    main.querySelectorAll('.thema').forEach(b => { b.onclick = () => {
+      if (b.dataset.t === 'mix'){ neuerMix(); geh('q/mix/1'); return; }
+      const t = THEMEN.find(t => t.nr === b.dataset.t), i = t.fragen.findIndex(f => !geloest(f));
+      geh(i < 0 ? 'a/' + t.nr : 'q/' + t.nr + '/' + (i + 1));
+    }; });
+    const l = $('loeschen'); let sicher = false;
+    l.onclick = () => {
+      if (!sicher){ sicher = true; l.textContent = 'Wirklich alles löschen? Dann noch einmal tippen.'; return; }
+      stand = {}; Object.keys(sitzung).forEach(k => delete sitzung[k]); sichern(); zeigeStart();
+    };
+  }
+
+  /* ----- Aufgabe ----- */
+  function zeigeFrage(L, n){
+    const f = L.fragen[n - 1], s = S(f), N = L.fragen.length;
+    setzeKopf('Mathe 10c · Walk-in-Quiz', L.nr + ' ' + L.titel, true); setzeChips(L, n);
+    const lang = f.o.some(o => o[0].replace(/<[^>]+>|\$|@\w\{|\}/g, '').length > 19 || o[0].indexOf('<br>') >= 0);
+    let h = '<section class="karte"><div class="zaehler"><span>Aufgabe ' + n + ' von ' + N + herkunft(L, f) + '</span></div><h2>' + f.t + '</h2>' +
+      aufgabentext(f) + figur(f.fig) + '<div class="wahl' + (lang ? ' eins' : '') + '" id="wahl">';
+    s.reihe.forEach(i => { h += '<button type="button" data-i="' + i + '">' + fmt(f.o[i][0]) + '</button>'; });
+    h += '</div><div class="fb" id="fb"></div><div id="nach"></div></section>';
+    main.innerHTML = h;
+    const wahl = $('wahl'), fb = $('fb'), nach = $('nach');
+    const knopf = i => wahl.querySelector('button[data-i="' + i + '"]');
+    const richtigI = f.o.findIndex(o => o[1]);
+    function fertig(neu){
+      wahl.querySelectorAll('button').forEach(b => { b.disabled = true; if (+b.dataset.i !== richtigI && !b.classList.contains('falsch')) b.classList.add('aus'); });
+      knopf(richtigI).classList.add('richtig');
+      fb.innerHTML = '<div class="ja"><b class="kopf">' + (neu ? 'Richtig! ' : 'Gelöst: ') + '</b>' + fmt(f.k || f.e) + '</div>';
+      nach.innerHTML = '<button type="button" class="gross k-erkl" id="zurErkl">Ausführliche Erklärung ansehen ›</button>';
+      $('zurErkl').onclick = () => geh('e/' + L.key + '/' + n);
+    }
+    function offenLink(){
+      nach.innerHTML = '<button type="button" class="gross k-leise" id="zurErkl">Ich komme nicht weiter – zur ausführlichen Erklärung</button>';
+      $('zurErkl').onclick = () => geh('e/' + L.key + '/' + n);
+    }
+    s.falsch.forEach(i => { const b = knopf(i); b.classList.add('falsch'); b.disabled = true; });
+    if (erledigt(f)) fertig(false); else offenLink();
+    wahl.querySelectorAll('button').forEach(b => { b.onclick = () => {
+      const i = +b.dataset.i;
+      if (f.o[i][1]){
+        stand[f.id] = (s.falsch.length || s.gesehen) ? (stand[f.id] === 1 ? 1 : 2) : 1; s.neu = false; sichern(); fertig(true); setzeChips(L, n);
+      } else {
+        b.classList.add('falsch'); b.disabled = true; s.falsch.push(i);
+        if (!geloest(f)){ stand[f.id] = 3; sichern(); }
+        fb.innerHTML = '<div class="nein"><b class="kopf">Noch nicht. </b>' + fmt(f.o[i][2] || '') + ' <span class="hinweis-klein">Versuche es noch einmal.</span></div>';
+        setzeChips(L, n);
+      }
+    }; });
+    setzeNav(n > 1 ? '‹ Zurück' : '‹ Themen', () => geh(n > 1 ? 'q/' + L.key + '/' + (n - 1) : ''),
+             n < N ? 'Weiter ›' : 'Auswertung ›', () => geh(n < N ? 'q/' + L.key + '/' + (n + 1) : 'a/' + L.key));
+  }
+
+  /* ----- Erklärung ----- */
+  function zeigeErkl(L, n){
+    const f = L.fragen[n - 1], s = S(f), N = L.fragen.length;
+    if (!erledigt(f)){ s.gesehen = true; if (!stand[f.id]){ stand[f.id] = 3; sichern(); } }
+    setzeKopf('Mathe 10c · Walk-in-Quiz', L.nr + ' ' + L.titel, true); setzeChips(L, n);
+    let h = '<section class="karte"><div class="zaehler"><span>Ausführliche Erklärung · Aufgabe ' + n + herkunft(L, f) + '</span></div><h2>' + f.t + '</h2>' +
+      aufgabentext(f) + figur(f.figL || f.fig) + '<ol class="schritte" id="schritte">';
+    f.s.forEach((x, i) => { h += '<li' + (i ? ' hidden' : '') + '>' + fmt(x) + '</li>'; });
+    h += '</ol><div class="knoepfe" id="knoepfe"><button type="button" class="k-zeile" id="mehr">Nächster Schritt</button><button type="button" class="k-alles" id="alles">Alles zeigen</button></div>' +
+      '<div id="ende" hidden><div class="ok"><small>Ergebnis</small>' + fmt(f.e) + '</div>' + (f.m ? '<div class="merk">' + fmt(f.m) + '</div>' : '') +
+      '</div></section>';
+    main.innerHTML = h;
+    const li = [].slice.call($('schritte').children); let offen = 1;
+    function stelle(){
+      li.forEach((e, i) => { e.hidden = i >= offen; });
+      if (offen >= li.length){ $('knoepfe').hidden = true; $('ende').hidden = false; }
+    }
+    $('mehr').onclick = () => { offen++; stelle(); const e = offen >= li.length ? $('ende') : li[offen - 1]; if (e.scrollIntoView) e.scrollIntoView({ block:'nearest', behavior:'smooth' }); };
+    $('alles').onclick = () => { offen = li.length; stelle(); };
+    stelle();
+    setzeNav('‹ Zur Aufgabe', () => geh('q/' + L.key + '/' + n),
+             n < N ? 'Nächste Aufgabe ›' : 'Auswertung ›', () => geh(n < N ? 'q/' + L.key + '/' + (n + 1) : 'a/' + L.key));
+  }
+
+  /* ----- Auswertung ----- */
+  function zeigeAuswertung(L){
+    const N = L.fragen.length, gut = L.fragen.filter(f => stand[f.id] === 1 && !frisch(f)).length, gel = L.fragen.filter(erledigt).length;
+    setzeKopf('Mathe 10c · Walk-in-Quiz', L.nr + ' ' + L.titel, true); setzeChips(L, 'a');
+    let text;
+    if (gel < N) text = 'Du hast ' + gel + ' von ' + N + ' Aufgaben gelöst. Tippe auf eine offene Aufgabe, um weiterzumachen.';
+    else if (gut === N) text = 'Stark – alles beim ersten Versuch richtig. Dieses Thema sitzt!';
+    else if (gut >= 0.7 * N) text = 'Gut gemacht! Schau dir bei den gelben Aufgaben die ausführliche Erklärung noch einmal an.';
+    else text = 'Hier lohnt sich eine zweite Runde: Lies die ausführlichen Erklärungen und übe das Thema dann noch einmal.';
+    let h = '<section class="karte"><h2>Auswertung</h2><p>Beim <b>ersten Versuch</b> richtig:</p><div class="punkte">' + gut + ' / ' + N + '</div><div class="aufgabentext">' + text + '</div><ul class="liste">';
+    L.fragen.forEach((f, i) => {
+      const k = klasse(f);
+      h += '<li><span class="mark ' + k + '">' + (k === 'gut' || k === 'spaet' ? '✓' : k === 'offen' ? '!' : '') + '</span><span class="lt">' + (i + 1) + '. ' + f.t + (L.key === 'mix' ? ' <span class="hinweis-klein">(' + f.thema.nr + ')</span>' : '') + '</span>' +
+           '<button type="button" data-q="' + (i + 1) + '">' + (erledigt(f) ? 'Erklärung' : 'Lösen') + '</button></li>';
+    });
+    h += '</ul><div class="legende"><span><i style="background:#bfe6cf"></i>beim 1. Versuch richtig</span><span><i style="background:#ffe9a3"></i>mit Hilfe gelöst</span><span><i style="background:#f7c9c9"></i>noch offen</span></div>' +
+      '<button type="button" class="gross k-grau" id="nochmal">' + (L.key === 'mix' ? 'Neuer Mix mit 10 Aufgaben' : 'Dieses Thema noch einmal üben') + '</button></section>';
+    main.innerHTML = h;
+    main.querySelectorAll('.liste button').forEach(b => { b.onclick = () => { const f = L.fragen[b.dataset.q - 1]; geh((erledigt(f) ? 'e/' : 'q/') + L.key + '/' + b.dataset.q); }; });
+    $('nochmal').onclick = () => {
+      if (L.key === 'mix') neuerMix();
+      else { L.fragen.forEach(f => { delete stand[f.id]; delete sitzung[f.id]; }); sichern(); }
+      geh('q/' + L.key + '/1');
+    };
+    const i = THEMEN.findIndex(t => t.nr === L.key), naechstes = i >= 0 && i < THEMEN.length - 1 ? THEMEN[i + 1] : null;
+    setzeNav('‹ Themen', () => geh(''), naechstes ? 'Thema ' + naechstes.nr + ' ›' : 'Zur Übersicht ›', () => geh(naechstes ? 'q/' + naechstes.nr + '/1' : ''));
+  }
+
+  function zeige(){
+    const h = decodeURIComponent(location.hash.replace(/^#/, '')), t = h.split('/');
+    const L = t[1] ? lauf(t[1]) : null, n = parseInt(t[2], 10);
+    if (L && (t[0] === 'q' || t[0] === 'e') && n >= 1 && n <= L.fragen.length){ if (t[0] === 'q') zeigeFrage(L, n); else zeigeErkl(L, n); }
+    else if (L && t[0] === 'a') zeigeAuswertung(L);
+    else zeigeStart();
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', zeige);
+  window.WALKIN = { THEMEN, ALLE };
+  zeige();
+})();
+</script>
+
+<script>window.Formel && window.Formel.auto();</script>
+</body>
+</html>
