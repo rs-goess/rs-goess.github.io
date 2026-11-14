@@ -80,3 +80,8 @@ a:focus-visible{outline:3px solid var(--lila);outline-offset:3px}
 .fuss{color:#8A94A2;text-align:center;font-size:13.5px;margin:28px 12px 0;line-height:1.45}
 @media (max-width:360px){.kopf h1{font-size:31px}.kachel{grid-template-columns:50px minmax(0,1fr) 18px;gap:12px;padding:16px 14px}.kachel .bild{width:50px;height:50px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Physik-Klassen und leere Klassenseiten */
+.f-petrol .bild{background:#DFF1F1;color:#0F6E73}
+.leer{margin-top:12px;border:1px dashed #C9D1DC;border-radius:var(--r);padding:20px 18px;color:var(--text2);font-size:15.5px;line-height:1.45}
+.leer b{display:block;color:var(--text);font-size:17px;margin-bottom:4px}
