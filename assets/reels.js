@@ -268,8 +268,8 @@
     if (ziel) ziel.el.scrollIntoView({ behavior: 'smooth' });
   });
 
-  /* Instagram zeigt oben eine Kopfzeile (54 px, Kanalname) und darunter das Video im Format 4:5. */
-  var IG_KOPF = 54, IG_FORMAT = 1.25;
+  /* Instagram zeigt oben eine Kopfzeile (Kanalname) und darunter das Video im Format 4:5. */
+  var IG_KOPF = 36, IG_FORMAT = 1.25;   // 36 statt 54: so endet der Kasten genau unter dem Video
   function passeAn() {
     karten.forEach(function (k) {
       if (!k.ig) return;
