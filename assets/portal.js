@@ -4,7 +4,14 @@
    link/linktext sind freiwillig. Vergangene Termine verschwinden von selbst. */
 var TERMINE = [
   { klasse: 'm10', datum: '2026-11-17', titel: '1. Schulaufgabe', link: 'material.html', linktext: 'Zum Übungsmaterial' },
-  { klasse: 'm5',  datum: '2026-12-17', titel: '2. Leistungstest' }
+  { klasse: 'm5',  datum: '2026-12-17', titel: '2. Leistungstest' },
+  { klasse: 'm5',  datum: '2027-02-22', titel: '3. Leistungstest' },
+  { klasse: 'm5',  datum: '2027-04-26', titel: '4. Leistungstest' },
+  { klasse: 'm5',  datum: '2027-06-24', titel: '5. Leistungstest' },
+  { klasse: 'm6',  datum: '2026-11-19', titel: '2. Leistungstest' },
+  { klasse: 'm6',  datum: '2027-02-25', titel: '3. Leistungstest' },
+  { klasse: 'm6',  datum: '2027-04-29', titel: '4. Leistungstest' },
+  { klasse: 'm6',  datum: '2027-06-17', titel: '5. Leistungstest' }
 ];
 
 (function () {
