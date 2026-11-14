@@ -1,0 +1,11 @@
+{
+  "name": "Übungsseiten Mathe und Physik",
+  "short_name": "Üben",
+  "display": "minimal-ui",
+  "background_color": "#FFF9F0",
+  "theme_color": "#FFF9F0",
+  "icons": [
+    { "src": "bilder/app-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "bilder/app-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
