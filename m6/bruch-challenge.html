@@ -68,6 +68,9 @@ body.playing canvas{cursor:none}
 /* ---------- Screens ---------- */
 .screen{position:fixed;top:0;left:0;right:0;bottom:0;z-index:10;overflow:auto;-webkit-overflow-scrolling:touch;
   display:flex;padding:16px;background:rgba(29,43,74,.18)}
+/* Pause: Aufgabe und Tafeln verdecken, danach kommt eine neue Aufgabe */
+body.pausiert #taskcard{visibility:hidden}
+#pause{background:#1d2b4a}
 .card{margin:auto;width:100%;max-width:520px;background:var(--paper);border:3px solid var(--ink);border-radius:28px;
   padding:20px 22px 22px;box-shadow:0 8px 0 rgba(29,43,74,.35)}
 .card.wide{max-width:900px}
@@ -262,7 +265,7 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
 <section class="screen" id="pause" hidden>
   <div class="card" style="max-width:380px;text-align:center">
     <p class="over-title">Pause</p>
-    <p class="how">Kurz durchatmen. Die Tafeln warten auf dich.</p>
+    <p class="how">Kurz durchatmen. Danach geht es mit einer neuen Aufgabe weiter.</p>
     <div class="row">
       <button class="btn" id="btnResume">Weiter</button>
       <button class="btn sec" id="btnQuit">Zum Menü</button>
@@ -1210,8 +1213,8 @@ function gameOver(){
   renderHs($('#overHs'),list,entry.t,10);
   $('#over').hidden=false;
 }
-function pause(){ if(G.state!=='play') return; G.state='pause'; document.body.classList.remove('playing'); $('#pause').hidden=false; }
-function resume(){ if(G.state!=='pause') return; G.state='play'; document.body.classList.add('playing'); $('#pause').hidden=true; }
+function pause(){ if(G.state!=='play') return; G.state='pause'; G.pausedInTask=(G.phase==='fall'); document.body.classList.remove('playing'); document.body.classList.add('pausiert'); $('#pause').hidden=false; }
+function resume(){ if(G.state!=='pause') return; G.state='play'; document.body.classList.add('playing'); document.body.classList.remove('pausiert'); $('#pause').hidden=true; if(G.pausedInTask){ G.pausedInTask=false; nextTask(); } }
 
 /* ================= Menü-Logik ================= */
 var opBoxes=$$('#ops input'), startBtn=$('#btnStart'), nameIn=$('#name');
@@ -1233,7 +1236,7 @@ startBtn.addEventListener('click',function(){ readMenu(); startGame(); });
 $('#btnAgain').addEventListener('click',startGame);
 $('#btnMenu').addEventListener('click',showMenu);
 $('#btnResume').addEventListener('click',resume);
-$('#btnQuit').addEventListener('click',showMenu);
+$('#btnQuit').addEventListener('click',function(){ document.body.classList.remove('pausiert'); showMenu(); });
 $('#btnPause').addEventListener('click',pause);
 $('#btnSound').addEventListener('click',function(){ S.sound=!S.sound; saveSettings(); updateSound(); if(S.sound) sfx.hit(); });
 $('#btnClear').addEventListener('click',function(){
