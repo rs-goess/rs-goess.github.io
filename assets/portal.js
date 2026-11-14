@@ -3,7 +3,7 @@
    klasse = Ordnername (m5, m6, m10, p7, p8, p9, p10), datum = JJJJ-MM-TT.
    link/linktext sind freiwillig. Vergangene Termine verschwinden von selbst. */
 var TERMINE = [
-  { klasse: 'm10', datum: '2026-11-16', titel: '1. Schulaufgabe', link: 'material.html', linktext: 'Zum Übungsmaterial' },
+  { klasse: 'm10', datum: '2026-11-17', titel: '1. Schulaufgabe', link: 'material.html', linktext: 'Zum Übungsmaterial' },
   { klasse: 'm5',  datum: '2026-12-17', titel: '2. Leistungstest' }
 ];
 
