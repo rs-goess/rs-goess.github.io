@@ -349,7 +349,7 @@ var KM = (function () {
       intro: '<b>Warum oben und unten antippen?</b> Kürzen heißt: Zähler und Nenner durch <b>dieselbe Zahl</b> teilen. Deshalb wählst du immer eine Zahl oben und eine Zahl unten aus und gibst dann ein, durch welche Zahl du beide teilst.',
       neu: function () { return einzel([2, 3, 4, 5], 9, 60); } },
     { nr: 2, name: 'Großer Teiler', text: 'Mit dem größten Teiler geht es in einem Schritt', farbe: '#3b77a8',
-      intro: 'Du darfst in mehreren Schritten kürzen – unter „Dein Rechenweg“ siehst du jedes Zwischenergebnis. ★★★ gibt es aber nur mit dem größten Teiler.',
+      intro: 'Du darfst in mehreren Schritten kürzen. ★★★ gibt es aber nur mit dem größten Teiler.',
       neu: function () { return einzel([6, 8, 9, 12, 14, 15, 16, 18], 7, 120); } },
     { nr: 3, name: 'Erstes Malnehmen', text: 'Oben und unten steht dieselbe Zahl – kürze sie weg', farbe: '#8e5bd6', mal: true,
       intro: '<b>Neu:</b> Beim Malnehmen schreibst du alles auf <b>einen</b> Bruchstrich. Steht oben und unten dieselbe Zahl, kürzt du sie mit sich selbst – übrig bleibt 1.',
@@ -532,7 +532,8 @@ if (typeof module !== 'undefined') module.exports = KM;
     var L = A.L;
     $('auftrag').textContent = !mehr() ? 'Kürze vollständig.' : (L.selbst ? 'Kürze vor dem Malnehmen. Rechne dann selbst aus.' : 'Kürze vor dem Malnehmen.');
     var orig = $('orig');
-    if (mehr()) { orig.hidden = false; orig.innerHTML = original() + '<span>=</span>'; } else orig.hidden = true;
+    /* Ausgangsaufgabe nur zeigen, solange das Vorzeichen gewählt wird – danach reicht der eine Bruchstrich */
+    if (mehr() && A.vzOffen) { orig.hidden = false; orig.innerHTML = original(); } else orig.hidden = true;
 
     var bild = $('bild');
     if (A.vzOffen) {
@@ -554,7 +555,7 @@ if (typeof module !== 'undefined') module.exports = KM;
     Array.prototype.forEach.call(bild.querySelectorAll('.tok'), function (t) {
       t.onclick = function () { tippeToken(t.getAttribute('data-s'), +t.getAttribute('data-i')); };
     });
-    $('weg').innerHTML = wegHTML();
+    $('weg').innerHTML = '';
     linie();
     if (A.fertig || A.ergOffen) { $('unter').textContent = ''; return; }
     $('unter').innerHTML = schrittLeiste();
@@ -714,7 +715,7 @@ if (typeof module !== 'undefined') module.exports = KM;
     var o = obenW(), u = untenW(), vz = vzZeichen();
     zeichne();
     $('erg').className = 'erg eingabe';
-    $('erg').innerHTML = (A.verlauf.length ? '' : '<span>=</span>' + vz + bruchHTML(o.join(' · '), u.join(' · '))) + '<span>=</span>' + vz +
+    $('erg').innerHTML = '<span>=</span>' + vz +
       '<span class="bruch"><span>' + ergKasten('z') + '</span><span class="s"></span><span>' + ergKasten('n') + '</span></span>';
     $('erg').hidden = false;
     Array.prototype.forEach.call(document.querySelectorAll('.ekasten'), function (k) {
@@ -760,7 +761,7 @@ if (typeof module !== 'undefined') module.exports = KM;
     R.sterne.push(st);
     var e = '', v = neg ? '<span class="vz">−</span>' : '';
     if (mehr()) {
-      e = (A.verlauf.length ? '' : '<span>=</span>' + v + bruchHTML(o.join(' · '), u.join(' · '))) + '<span>=</span>' + v + (N === 1 ? Z : bruchHTML(Z, N));
+      e = '<span>=</span>' + v + (N === 1 ? Z : bruchHTML(Z, N));
       if (N > 1 && Z > N) e += '<span>=</span>' + v + Math.floor(Z / N) + (Z % N ? bruchHTML(Z % N, N) : '');
     }
     $('erg').className = 'erg';
