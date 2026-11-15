@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Formel-Umsteller – Formeln umstellen üben</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230B6E8A'/%3E%3Ctext x='32' y='42' font-size='30' text-anchor='middle' fill='%23fff' font-family='Arial' font-weight='bold'%3E%E2%87%84%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --a:#13A5A0; --b:#0B6E8A; --hell:#E2F5F3; --grund:#EDF7F6;
+  --card:#fff; --ink:#12264A; --muted:#5B6B88; --line:#DCE4EE;
+  --op:#E8590C; --op-l:#FFF0E6; --weg:#D92D20; --ziel:#1D5BD8; --ziel-l:#E5EEFF;
+  --ok:#1E9E5A; --ok-l:#E2F6EA; --gold:#FFC23C; --gold-d:#B7791F;
+  --r:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--grund);color:var(--ink);font-family:Nunito,system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:500;font-size:17px;line-height:1.45;min-height:100vh;min-height:100dvh}
+h1,h2,h3,.disp{font-family:Unbounded,Nunito,system-ui,sans-serif;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:disabled{cursor:default}
+a{color:inherit}
+.wrap{max-width:600px;margin:0 auto;padding:14px 16px 32px}
+.hidden{display:none!important}
+.katex{font-size:1.08em}
+
+/* Kopf */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back{flex:none;width:42px;height:42px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-decoration:none;color:var(--b);box-shadow:0 1px 0 var(--line)}
+.back svg{width:18px;height:18px}
+.top h1{font-size:19px;margin:0;flex:1;line-height:1.15}
+.score{background:var(--gold);border-radius:999px;padding:6px 12px;font-weight:900;font-size:15px;white-space:nowrap;color:#3A2A00}
+
+/* Menü */
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:20px 18px 18px;color:#fff;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 14px 30px -18px var(--b)}
+.hero::before{content:"";position:absolute;right:-40px;top:-50px;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero::after{content:"";position:absolute;right:40px;bottom:-70px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero > *{position:relative;z-index:1}
+.hero .kopfzeile{display:flex;gap:14px;align-items:center}
+.hero .ico{flex:none;width:66px;height:66px;border-radius:20px;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.hero .ico svg{width:46px;height:46px}
+.hero .ober{font-size:12.5px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;opacity:.9}
+.hero h2{margin:2px 0 0;font-size:24px;line-height:1.1}
+.hero p{margin:12px 0 0;font-size:15.5px;opacity:.95}
+.rang{margin-top:16px;background:rgba(255,255,255,.16);border-radius:16px;padding:11px 13px;display:grid;grid-template-columns:40px 1fr;gap:4px 12px;align-items:center}
+.rang .med{grid-row:span 2;width:40px;height:40px;border-radius:50%;background:var(--gold);display:grid;place-items:center;color:#3A2A00;font-weight:900;box-shadow:inset 0 -3px 0 rgba(0,0,0,.15)}
+.rang .med svg{width:22px;height:22px}
+.rang b{font-size:16px;line-height:1.2}
+.rang b small{font-weight:700;opacity:.85;font-size:13px;margin-left:6px}
+.rang .balken{height:8px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden}
+.rang .balken i{display:block;height:100%;border-radius:99px;background:var(--gold);width:0;transition:width .6s}
+
+.abschn{font-size:13px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:22px 2px 10px}
+.howto{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:0 2px 0 var(--line);margin-top:14px;display:grid;gap:9px}
+.howto div{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:15.5px}
+.howto .nr{width:28px;height:28px;border-radius:50%;background:var(--hell);color:var(--b);display:grid;place-items:center;font-weight:900;font-size:14px}
+.fz{font-weight:800}
+.fz.op{color:var(--op)} .fz.weg{color:var(--weg);text-decoration:line-through} .fz.ziel{color:var(--ziel)}
+.levels{display:grid;gap:10px}
+.lv{display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:13px;align-items:center;text-align:left;background:var(--card);border-radius:var(--r);padding:13px 14px;box-shadow:0 2px 0 var(--line);transition:transform .08s;width:100%}
+.lv:active{transform:scale(.985)}
+.lv .n{width:50px;height:50px;border-radius:15px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;display:grid;place-items:center;font-family:Unbounded,sans-serif;font-weight:700;font-size:19px}
+.lv b{display:block;font-weight:900;font-size:17px;line-height:1.2}
+.lv .sub{display:block;color:var(--muted);font-size:14px;line-height:1.3}
+.lv .ex{display:block;margin-top:4px;color:var(--ink);font-size:15px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.lv .st{font-weight:900;font-size:14px;color:var(--gold-d);text-align:right;white-space:nowrap}
+.lv .st small{display:block;color:var(--muted);font-weight:700;font-size:11.5px}
+.lv.zu{opacity:.62;box-shadow:none;border:2px dashed var(--line);cursor:default}
+.lv.zu:active{transform:none}
+.lv.zu .n{background:#B8C2D3}
+.spick{background:var(--card);border-radius:var(--r);box-shadow:0 2px 0 var(--line);margin-top:14px}
+.spick summary{list-style:none;padding:14px 16px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:10px}
+.spick summary::-webkit-details-marker{display:none}
+.spick summary::after{content:"";margin-left:auto;width:9px;height:9px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.spick[open] summary::after{transform:rotate(-135deg)}
+.spick ul{list-style:none;margin:0;padding:0 16px 14px;display:grid;gap:2px}
+.spick li{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:14.5px;color:var(--muted)}
+.spick li span:last-child{color:var(--ink);font-size:16px;white-space:nowrap}
+.fuss{color:var(--muted);text-align:center;font-size:13.5px;margin:22px 8px 0}
+.klassenwahl{display:grid;gap:10px}
+.klassenwahl a{display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;border-radius:var(--r);padding:16px;font-weight:900;font-size:18px;box-shadow:0 10px 24px -16px rgba(0,0,0,.5)}
+.klassenwahl a small{display:block;font-weight:600;font-size:14px;opacity:.92}
+
+/* Spiel */
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.chip{background:var(--hell);color:var(--b);border-radius:999px;padding:7px 12px;font-weight:900;font-size:14px;white-space:nowrap}
+.dots{display:flex;gap:5px;align-items:center;margin-left:auto}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--line);display:block}
+.dots i.jetzt{background:transparent;box-shadow:inset 0 0 0 2.5px var(--b)}
+.dots i.s1{background:#E3A86B} .dots i.s2{background:#9FB3C8} .dots i.s3{background:var(--gold)}
+.streak{background:var(--ink);color:var(--gold);border-radius:999px;padding:5px 10px;font-weight:900;font-size:13px;white-space:nowrap}
+.streak.bump{animation:bump .4s}
+@keyframes bump{40%{transform:scale(1.2)}}
+.zu-menue{width:36px;height:36px;border-radius:50%;background:var(--card);display:grid;place-items:center;color:var(--muted);box-shadow:0 1px 0 var(--line);flex:none}
+.zu-menue svg{width:15px;height:15px}
+.card{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:0 2px 0 var(--line);margin-bottom:12px}
+.auftrag{display:flex;align-items:center;gap:12px}
+.auftrag .zl{flex:none;min-width:54px;height:54px;padding:0 8px;border-radius:16px;background:var(--ziel-l);display:grid;place-items:center;font-size:24px}
+.auftrag .lbl{font-size:13.5px;color:var(--muted);font-weight:800;line-height:1.2}
+.auftrag .was{font-weight:900;font-size:19px;line-height:1.25}
+.auftrag .was .katex{font-size:1.1em}
+.auftrag .hw{font-size:12.5px;color:var(--muted);font-weight:700}
+
+/* Rechenweg im Heft */
+.heft{padding:10px 10px 12px;background-color:#fff;
+  background-image:linear-gradient(#E9EEF5 1px,transparent 1px),linear-gradient(90deg,#E9EEF5 1px,transparent 1px);
+  background-size:20px 20px;background-position:-1px -1px;max-height:52vh;overflow:auto;scroll-behavior:smooth}
+.zeile{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) 100px;align-items:center;gap:0 8px;padding:7px 4px;border-radius:12px;font-size:19px}
+.zeile .l{text-align:right;overflow-x:auto;overflow-y:hidden}
+.zeile .r{text-align:left;overflow-x:auto;overflow-y:hidden}
+.zeile .gl{font-size:20px}
+.zeile .katex-html,.opb .katex-html,.ergebnis .katex-html{white-space:nowrap}
+.zeile .u{overflow-x:auto}
+.zeile .u{color:var(--op);font-weight:800;white-space:nowrap;border-left:2.5px solid var(--op);padding-left:8px;min-height:30px;display:flex;align-items:center}
+.zeile .u:empty{border-left-color:transparent}
+.zeile.zw{font-size:16px;opacity:.95;background:rgba(255,240,230,.65);padding:5px 4px}
+.zeile.zw .u{border:0;font-size:11.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.zeile.fertig{background:var(--ok-l);box-shadow:inset 0 0 0 2px var(--ok)}
+.zeile.umweg{background:#FFF6CC;box-shadow:inset 0 0 0 2px var(--gold)}
+.zeile .nrk{display:none}
+.auftauchen{animation:auf .35s cubic-bezier(.2,.7,.3,1) both}
+.auftauchen.spaet{animation-delay:.6s}
+.pop{animation:pop2 .35s both}
+@keyframes auf{from{opacity:0;transform:translateY(8px)}}
+@keyframes pop2{from{opacity:0;transform:scale(.6)}}
+.legende{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;font-size:13px;color:var(--muted);font-weight:700;margin:-4px 0 12px}
+.legende span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:currentColor}
+.legende .o{color:var(--op)} .legende .w{color:var(--weg)} .legende .z{color:var(--ziel)}
+.legende span b{color:var(--muted);font-weight:700}
+
+.wahl .lbl{font-weight:900;margin-bottom:10px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.wahl .lbl small{white-space:nowrap}
+.wahl .lbl small{color:var(--muted);font-weight:700;font-size:13px}
+.ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.opb{position:relative;min-height:58px;border-radius:15px;background:var(--op-l);border:2px solid #FFD8BF;color:var(--op);font-weight:900;font-size:20px;padding:6px 10px;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 0 #FFD0B0;transition:transform .08s;overflow:hidden}
+.opb .katex{font-size:1.05em}
+.opb:active{transform:translateY(2px);box-shadow:0 1px 0 #FFD0B0}
+.opb:disabled{opacity:.5}
+.opb .txt{font-size:15px}
+.opb.tipp{animation:puls 1.1s infinite;border-color:var(--gold);background:#FFF7D6}
+@keyframes puls{0%,100%{box-shadow:0 0 0 0 rgba(255,194,60,.75)}60%{box-shadow:0 0 0 9px rgba(255,194,60,0)}}
+.ops-leer{grid-column:1/-1;color:var(--muted);text-align:center;font-weight:700;padding:8px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.btn{border-radius:14px;padding:12px;font-weight:900;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn svg{width:19px;height:19px;flex:none}
+.btn.pri{background:linear-gradient(135deg,var(--a),var(--b));color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.btn.pri:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.sec{background:var(--card);color:var(--b);box-shadow:0 2px 0 var(--line)}
+.btn.sec:disabled{opacity:.45}
+.btn.gelb{background:#FFF4CF;color:#7A5300;box-shadow:0 2px 0 #F3DC8E}
+.meldung{border-radius:14px;padding:11px 14px;font-weight:700;font-size:15.5px;margin-bottom:12px;animation:auf .3s both}
+.meldung.info{background:var(--ziel-l);color:#17407F}
+.meldung.tipp{background:#FFF4CF;color:#5E4300;border:2px solid #F3DC8E}
+.meldung.tipp b{display:block;margin-bottom:2px}
+.meldung .btn{margin-top:10px;width:100%;min-height:44px}
+
+/* Overlays */
+.ov{position:fixed;inset:0;background:rgba(18,38,74,.68);display:grid;place-items:center;padding:16px;z-index:20;overflow:auto}
+.ov .box{background:var(--card);border-radius:26px;padding:24px 20px 20px;max-width:470px;width:100%;text-align:center;animation:pop2 .3s both;max-height:calc(100dvh - 32px);overflow:auto}
+.ov h2{font-size:23px;line-height:1.15;margin:4px 0 8px}
+.ov p{color:var(--muted);margin:0 0 14px}
+.ov .btn{width:100%;font-size:17px}
+.ov .btn + .btn{margin-top:8px}
+.sterne{display:flex;justify-content:center;gap:6px;margin:4px 0 6px}
+.sterne svg{width:52px;height:52px}
+.sterne svg.an{animation:stern .5s both}
+.sterne svg:nth-child(2).an{animation-delay:.15s}
+.sterne svg:nth-child(3).an{animation-delay:.3s}
+@keyframes stern{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.25)}100%{transform:none}}
+.ergebnis{background:var(--ok-l);border-radius:16px;padding:12px;margin:6px 0 12px;font-size:21px;overflow-x:auto}
+.zahlen{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.zahlen span{background:#F1F4F9;border-radius:12px;padding:7px 11px;font-weight:800;font-size:14px}
+.zahlen span.bonus{background:#FFF4CF;color:#7A5300}
+.weg-box{text-align:left;background:#F6F8FB;border-radius:14px;padding:11px 13px;margin-bottom:12px;font-size:14.5px;color:var(--muted);font-weight:700}
+.weg-box .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.weg-box .chips > span{background:var(--op-l);color:var(--op);border:1.5px solid #FFD8BF;border-radius:10px;padding:4px 9px;font-size:16px}
+.intro ol{text-align:left;margin:4px 0 16px;padding:0;list-style:none;display:grid;gap:11px;counter-reset:s}
+.intro li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:11px;align-items:start;font-size:16px;font-weight:600}
+.intro li::before{content:counter(s);width:32px;height:32px;border-radius:50%;background:var(--hell);color:var(--b);display:grid;place-items:center;font-weight:900}
+.toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:30;background:var(--ink);color:#fff;border-radius:16px;padding:11px 16px;font-weight:800;box-shadow:0 12px 30px -10px rgba(0,0,0,.5);animation:toast 3.2s both;max-width:92vw;text-align:center}
+.toast b{color:var(--gold)}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,-20px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-20px)}}
+#konfetti{position:fixed;inset:0;pointer-events:none;z-index:40}
+@media (max-width:420px){
+  .zeile{font-size:17px;gap:0 6px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) 84px}
+  .zeile.zw{font-size:14px}
+  .opb{font-size:18px;min-height:54px}
+  .hero h2{font-size:21px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="konfetti"></canvas>
+<div class="wrap">
+  <header class="top">
+    <a class="back" id="zurueck" href="../" aria-label="Zurück"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4l-6 6 6 6"/></svg></a>
+    <h1>Formel-Umsteller</h1>
+    <span class="score" id="score">★ 0</span>
+  </header>
+
+  <!-- Klassenwahl (ohne ?k=…) -->
+  <section id="wahl" class="hidden">
+    <p style="color:var(--muted);margin:0 0 14px">Wähle deine Klasse.</p>
+    <nav class="klassenwahl" id="klassenwahl"></nav>
+  </section>
+
+  <!-- Menü -->
+  <section id="menue" class="hidden">
+    <div class="hero">
+      <div class="kopfzeile">
+        <div class="ico" id="heroIco"></div>
+        <div><div class="ober" id="heroOber"></div><h2 id="heroTitel"></h2></div>
+      </div>
+      <p id="heroText"></p>
+      <div class="rang">
+        <span class="med"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.6l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg></span>
+        <b id="rangName"></b>
+        <span class="balken"><i id="rangBalken"></i></span>
+      </div>
+    </div>
+    <div class="howto">
+      <div><span class="nr">1</span><span>Bring die <span class="fz ziel">gesuchte Größe</span> allein auf eine Seite.</span></div>
+      <div><span class="nr">2</span><span>Tippe eine Umformung an – sie passiert auf <b>beiden</b> Seiten. <span class="fz op">Orange</span> = deine Umformung, <span class="fz weg">rot</span> = kürzt sich weg.</span></div>
+      <div><span class="nr">3</span><span>★★★ für den kürzesten Weg ohne Tipp. Umwege sind erlaubt – mit „Schritt zurück“ probierst du es anders.</span></div>
+    </div>
+    <div class="abschn">Level</div>
+    <div class="levels" id="levels"></div>
+    <details class="spick">
+      <summary>Spickzettel: deine Formeln</summary>
+      <ul id="spick"></ul>
+    </details>
+    <p class="fuss">Dein Fortschritt wird nur auf diesem Gerät gespeichert.</p>
+  </section>
+
+  <!-- Spiel -->
+  <section id="spiel" class="hidden">
+    <div class="bar">
+      <button class="zu-menue" id="abbrechen" aria-label="Zum Menü"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M3 3l10 10M13 3L3 13"/></svg></button>
+      <span class="chip" id="chip"></span>
+      <span class="streak hidden" id="streak"></span>
+      <span class="dots" id="dots"></span>
+    </div>
+    <div class="card auftrag">
+      <span class="zl" id="zielBox"></span>
+      <div><div class="lbl" id="formelName"></div><div class="was" id="auftrag"></div><div class="hw" id="hinweis"></div></div>
+    </div>
+    <div class="card heft" id="heft"></div>
+    <div class="legende"><span class="z"><b>gesucht</b></span><span class="o"><b>deine Umformung</b></span><span class="w"><b>kürzt sich weg</b></span></div>
+    <div id="meldung"></div>
+    <div class="card wahl">
+      <div class="lbl">Was machst du auf beiden Seiten?<small id="schrittInfo"></small></div>
+      <div class="ops" id="ops"></div>
+    </div>
+    <div class="acts">
+      <button class="btn sec" id="zurueckBtn" disabled><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5L3 9l4 4"/><path d="M3 9h9a5 5 0 0 1 0 10h-2"/></svg>Schritt zurück</button>
+      <button class="btn gelb" id="tippBtn"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 15h5M8.5 18h3M10 2a5.5 5.5 0 0 0-3.2 10c.5.4.7.9.7 1.5V15h5v-1.5c0-.6.3-1.1.7-1.5A5.5 5.5 0 0 0 10 2z"/></svg>Tipp</button>
+    </div>
+  </section>
+</div>
+
+<!-- Einführung -->
+<div class="ov hidden" id="intro"><div class="box intro">
+  <h2>So funktioniert's</h2>
+  <ol>
+    <li><span>Du bekommst eine Formel und sollst sie nach der <span class="fz ziel">gesuchten Größe</span> umstellen.</span></li>
+    <li><span>Unten stehen mögliche Umformungen. Was du antippst, passiert auf <b>beiden Seiten</b> der Gleichung – wie im Heft mit „<span class="fz op">| · t</span>“.</span></li>
+    <li><span>Im Zwischenschritt siehst du, was sich <span class="fz weg">wegkürzt</span>. Nicht jede Umformung hilft – probier aus und geh notfalls einen Schritt zurück.</span></li>
+    <li><span><b>★★★</b> kürzester Weg ohne Tipp &nbsp;·&nbsp; <b>★★</b> geschafft &nbsp;·&nbsp; <b>★</b> mit Tipp. Sammle Sterne und steig im Rang auf!</span></li>
+  </ol>
+  <button class="btn pri" id="introOk">Los geht's</button>
+</div></div>
+
+<!-- Aufgabe gelöst -->
+<div class="ov hidden" id="geloest"><div class="box">
+  <div class="sterne" id="gSterne"></div>
+  <h2 id="gTitel"></h2>
+  <p id="gText"></p>
+  <div class="ergebnis" id="gErgebnis"></div>
+  <div class="zahlen" id="gZahlen"></div>
+  <div class="weg-box hidden" id="gWeg"></div>
+  <button class="btn pri" id="gWeiter">Nächste Aufgabe</button>
+</div></div>
+
+<!-- Runde fertig -->
+<div class="ov hidden" id="runde"><div class="box">
+  <div class="sterne" id="rSterne"></div>
+  <h2 id="rTitel"></h2>
+  <p id="rText"></p>
+  <div class="zahlen" id="rZahlen"></div>
+  <button class="btn pri" id="rNochmal">Nochmal spielen</button>
+  <button class="btn sec" id="rMenue">Zum Menü</button>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script>
+/* ===================== Umstell-Engine =====================
+   Gleichung = { l: Ausdruck, r: Ausdruck }
+   Ausdruck  = { t: [Term, ...] }            (Summe)
+   Term      = { c: [zähler, nenner], f: [Faktor, ...], neu?, cneu? }
+   Faktor    = { v: 'name' } oder { g: Ausdruck }, dazu e: [z, n] (Exponent)
+   ========================================================== */
+var UE = (function () {
+  'use strict';
+
+  /* ---------- Brüche ---------- */
+  function ggt(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var h = a % b; a = b; b = h; } return a || 1; }
+  function Q(n, d) { if (d === undefined) d = 1; if (d < 0) { n = -n; d = -d; } var g = ggt(n, d); return [n / g, d / g]; }
+  function qadd(a, b) { return Q(a[0] * b[1] + b[0] * a[1], a[1] * b[1]); }
+  function qmul(a, b) { return Q(a[0] * b[0], a[1] * b[1]); }
+  function qinv(a) { return Q(a[1], a[0]); }
+  function qneg(a) { return [-a[0], a[1]]; }
+  function qeq(a, b) { return a[0] === b[0] && a[1] === b[1]; }
+  function qint(a) { return a[1] === 1; }
+  function isqrt(n) { if (n < 0) return null; var r = Math.round(Math.sqrt(n)); return r * r === n ? r : null; }
+  function qpow(a, e) { // e ganzzahlig oder 1/2
+    if (qint(e)) {
+      var n = e[0], r = [1, 1], b = n < 0 ? qinv(a) : a;
+      for (var i = 0; i < Math.abs(n); i++) r = qmul(r, b);
+      return r;
+    }
+    if (e[0] === 1 && e[1] === 2) {
+      if (a[0] < 0) return null;
+      var z = isqrt(a[0]), d = isqrt(a[1]);
+      return (z === null || d === null) ? null : [z, d];
+    }
+    return null;
+  }
+
+  /* ---------- Schlüssel (ohne Markierungen) ---------- */
+  function facBase(f) { return f.v != null ? 'v:' + f.v : 'g(' + exprKey(f.g) + ')'; }
+  function shapeKey(t) { return t.f.map(function (f) { return facBase(f) + '^' + f.e[0] + '/' + f.e[1]; }).sort().join('*'); }
+  function termKey(t) { return t.c[0] + '/' + t.c[1] + '|' + shapeKey(t); }
+  function exprKey(x) { return x.t.map(termKey).sort().join(' + '); }
+  function eqKey(q) { return exprKey(q.l) + ' = ' + exprKey(q.r); }
+
+  /* ---------- Kopieren / Markierungen löschen ---------- */
+  function cFac(f, keep) { var o = { e: f.e.slice() }; if (f.v != null) o.v = f.v; else o.g = cExpr(f.g, keep); if (keep && f.neu) o.neu = true; return o; }
+  function cTerm(t, keep) { var o = { c: t.c.slice(), f: t.f.map(function (f) { return cFac(f, keep); }) }; if (keep) { if (t.neu) o.neu = true; if (t.cneu) o.cneu = true; } return o; }
+  function cExpr(x, keep) { return { t: x.t.map(function (t) { return cTerm(t, keep); }) }; }
+  function cEq(q, keep) { return { l: cExpr(q.l, keep), r: cExpr(q.r, keep) }; }
+
+  /* ---------- Normalisieren ---------- */
+  function powTerm(t, e) {
+    var c = qpow(t.c, e); if (!c) return null;
+    var fs = [];
+    for (var i = 0; i < t.f.length; i++) {
+      var ne = qmul(t.f[i].e, e);
+      if (!qint(e) && !qint(ne)) return null;
+      var nf = cFac(t.f[i], true); nf.e = ne; fs.push(nf);
+    }
+    return { c: c, f: fs };
+  }
+
+  function normTerm(t) {
+    var c = t.c.slice(), cneu = !!t.cneu, fs = [];
+    for (var i = 0; i < t.f.length; i++) {
+      var f = t.f[i];
+      if (f.g) {
+        var g = normExpr(f.g);
+        if (g.t.length === 0) { // Null in der Klammer
+          if (f.e[0] > 0) return { c: [0, 1], f: [] };
+        }
+        if (g.t.length === 1) {
+          var r = powTerm(g.t[0], f.e);
+          if (r) {
+            if (!qeq(r.c, [1, 1])) { c = qmul(c, r.c); if (f.neu) cneu = true; }
+            for (var j = 0; j < r.f.length; j++) { var ff = r.f[j]; if (f.neu) ff.neu = true; fs.push(ff); }
+            continue;
+          }
+        }
+        var nf = { g: g, e: f.e.slice() }; if (f.neu) nf.neu = true; fs.push(nf);
+      } else fs.push(cFac(f, true));
+    }
+    var out = [];
+    for (var k = 0; k < fs.length; k++) {
+      var b = facBase(fs[k]), ex = null;
+      for (var m = 0; m < out.length; m++) if (facBase(out[m]) === b) { ex = out[m]; break; }
+      if (ex) { ex.e = qadd(ex.e, fs[k].e); if (fs[k].neu || ex.neu) ex.neu = true; }
+      else out.push(fs[k]);
+    }
+    out = out.filter(function (f) { return f.e[0] !== 0; });
+    var o = { c: c, f: out };
+    if (t.neu) o.neu = true;
+    if (cneu && !(Math.abs(c[0]) === 1 && c[1] === 1)) o.cneu = true;
+    return o;
+  }
+
+  function normExpr(x) {
+    var ts = [];
+    for (var i = 0; i < x.t.length; i++) {
+      var t = normTerm(x.t[i]);
+      if (t.c[0] === 0) continue;
+      // Term = 1·(Klammer)  → Klammer auflösen (Assoziativität)
+      if (t.f.length === 1 && t.f[0].g && qeq(t.f[0].e, [1, 1]) && qeq(t.c, [1, 1])) {
+        var inner = t.f[0].g.t;
+        for (var j = 0; j < inner.length; j++) { var it = cTerm(inner[j], true); if (t.f[0].neu || t.neu) it.neu = true; ts.push(it); }
+        continue;
+      }
+      ts.push(t);
+    }
+    var out = [];
+    for (var k = 0; k < ts.length; k++) {
+      var s = shapeKey(ts[k]), ex = null;
+      for (var m = 0; m < out.length; m++) if (shapeKey(out[m]) === s) { ex = out[m]; break; }
+      if (ex) { ex.c = qadd(ex.c, ts[k].c); ex.neu = true; }
+      else out.push(ts[k]);
+    }
+    return { t: out.filter(function (t) { return t.c[0] !== 0; }) };
+  }
+
+  /* ---------- Parser ---------- */
+  function tokenize(s) {
+    var re = /\s*(?:([A-Za-z]+[0-9]*(?:_[A-Za-z0-9]+)?)|(\d+)|(\S))/g, m, out = [];
+    while ((m = re.exec(s)) !== null) {
+      if (m[1]) out.push({ k: 'id', v: m[1] });
+      else if (m[2]) out.push({ k: 'num', v: +m[2] });
+      else if (m[3]) out.push({ k: 'op', v: m[3] });
+    }
+    return out;
+  }
+  function V(name) { return { t: [{ c: [1, 1], f: [{ v: name, e: [1, 1] }] }] }; }
+  function N(n) { return { t: [{ c: [n, 1], f: [] }] }; }
+  function single(x) { return x.t.length === 1; }
+  function asGroupTerm(x) { return single(x) ? cTerm(x.t[0]) : { c: [1, 1], f: [{ g: cExpr(x), e: [1, 1] }] }; }
+  function mulX(a, b) { var A = asGroupTerm(a), B = asGroupTerm(b); return normExpr({ t: [{ c: qmul(A.c, B.c), f: A.f.concat(B.f) }] }); }
+  function invTerm(T) { return { c: qinv(T.c), f: T.f.map(function (f) { var o = cFac(f); o.e = qneg(f.e); return o; }) }; }
+  function divX(a, b) { var B = asGroupTerm(b); return mulX(a, { t: [invTerm(B)] }); }
+  function addX(a, b) { return normExpr({ t: cExpr(a).t.concat(cExpr(b).t) }); }
+  function negX(a) { return normExpr({ t: a.t.map(function (t) { var o = cTerm(t); o.c = qneg(o.c); return o; }) }); }
+  function powX(a, n) { var A = asGroupTerm(a); var r = powTerm(A, [n, 1]); return normExpr({ t: [r] }); }
+
+  function parseExpr(str) {
+    var tk = tokenize(str), p = 0;
+    function peek() { return tk[p]; }
+    function eat(v) { if (tk[p] && tk[p].v === v) { p++; return true; } return false; }
+    function sum() {
+      var x = prod();
+      while (peek() && (peek().v === '+' || peek().v === '-')) {
+        var o = tk[p++].v, y = prod();
+        x = o === '+' ? addX(x, y) : addX(x, negX(y));
+      }
+      return x;
+    }
+    function prod() {
+      var x = unary();
+      while (peek() && (peek().v === '*' || peek().v === '/')) {
+        var o = tk[p++].v, y = unary();
+        x = o === '*' ? mulX(x, y) : divX(x, y);
+      }
+      return x;
+    }
+    function unary() { if (eat('-')) return negX(unary()); return power(); }
+    function power() {
+      var x = atom();
+      if (eat('^')) { var n = tk[p++].v; x = powX(x, n); }
+      return x;
+    }
+    function atom() {
+      var t = tk[p++];
+      if (!t) throw new Error('Formel zu Ende: ' + str);
+      if (t.k === 'num') return N(t.v);
+      if (t.k === 'id') return V(t.v);
+      if (t.v === '(') { var x = sum(); if (!eat(')')) throw new Error(') fehlt: ' + str); return x; }
+      throw new Error('Unerwartet ' + t.v + ' in ' + str);
+    }
+    var r = sum();
+    if (p < tk.length) throw new Error('Rest in ' + str);
+    return r;
+  }
+  function parseEq(str) { var s = str.split('='); return { l: parseExpr(s[0]), r: parseExpr(s[1]) }; }
+
+  /* ---------- Abfragen ---------- */
+  function exprHas(x, v) {
+    for (var i = 0; i < x.t.length; i++) for (var j = 0; j < x.t[i].f.length; j++) {
+      var f = x.t[i].f[j];
+      if (f.v === v) return true;
+      if (f.g && exprHas(f.g, v)) return true;
+    }
+    return false;
+  }
+  function facHas(f, v) { return f.v === v || (f.g ? exprHas(f.g, v) : false); }
+  function varsOf(x, out) {
+    out = out || [];
+    x.t.forEach(function (t) { t.f.forEach(function (f) { if (f.v != null) { if (out.indexOf(f.v) < 0) out.push(f.v); } else varsOf(f.g, out); }); });
+    return out;
+  }
+  function isolated(x, v) { return x.t.length === 1 && qeq(x.t[0].c, [1, 1]) && x.t[0].f.length === 1 && x.t[0].f[0].v === v && qeq(x.t[0].f[0].e, [1, 1]); }
+  function solvedSide(q, v) {
+    if (isolated(q.l, v) && !exprHas(q.r, v)) return 'l';
+    if (isolated(q.r, v) && !exprHas(q.l, v)) return 'r';
+    return null;
+  }
+  function complexity(x) {
+    var n = 0;
+    x.t.forEach(function (t) {
+      n += 1 + (t.c[1] !== 1 ? 1 : 0) + (Math.abs(t.c[0]) !== 1 ? 1 : 0);
+      t.f.forEach(function (f) { n += 1 + Math.abs(f.e[0]) - 1 + (f.e[1] !== 1 ? 2 : 0); if (f.g) n += 1 + complexity(f.g); });
+    });
+    return n;
+  }
+  function eqComplexity(q) { return complexity(q.l) + complexity(q.r); }
+
+  /* ---------- Umformungen ---------- */
+  // typ: 'mul' | 'div' | 'add' | 'sqrt' | 'inv'
+  function opKey(op) { return op.typ + (op.M ? '|' + termKey(op.M) : ''); }
+
+  function mulSide(S, M) {
+    // M: Term (Koeffizient + Faktoren), wird markiert
+    var Mf = M.f.map(function (f) { var o = cFac(f); o.neu = true; return o; });
+    var coefChange = !qeq(M.c, [1, 1]);
+    if (S.t.length === 0) return { t: [] };
+    if (M.f.length === 0 && qeq(M.c, [-1, 1])) { // mal (−1): verteilen
+      return normExpr({ t: S.t.map(function (t) { var o = cTerm(t); o.c = qneg(o.c); o.cneu = true; return o; }) });
+    }
+    if (S.t.length === 1) {
+      var T = cTerm(S.t[0]);
+      var nt = { c: qmul(T.c, M.c), f: T.f.concat(Mf) };
+      if (coefChange) nt.cneu = true;
+      return normExpr({ t: [nt] });
+    }
+    var nt2 = { c: M.c.slice(), f: [{ g: cExpr(S), e: [1, 1] }].concat(Mf) };
+    if (coefChange) nt2.cneu = true;
+    return normExpr({ t: [nt2] });
+  }
+  function addSide(S, M) { var m = cTerm(M); m.neu = true; return normExpr({ t: cExpr(S).t.concat([m]) }); }
+  function sqrtSide(S) {
+    if (S.t.length === 1) {
+      var r = powTerm(S.t[0], [1, 2]);
+      if (r) { r.f.forEach(function (f) { f.neu = true; }); return normExpr({ t: [r] }); }
+    }
+    return { t: [{ c: [1, 1], f: [{ g: cExpr(S), e: [1, 2], neu: true }] }] };
+  }
+  function invSide(S) { return normExpr({ t: [invTerm(cTerm(S.t[0]))] }); }
+
+  function apply(q, op) {
+    var a = cEq(q, false);
+    if (op.typ === 'mul') return { l: mulSide(a.l, op.M), r: mulSide(a.r, op.M) };
+    if (op.typ === 'div') { var I = invTerm(op.M); return { l: mulSide(a.l, I), r: mulSide(a.r, I) }; }
+    if (op.typ === 'add') return { l: addSide(a.l, op.M), r: addSide(a.r, op.M) };
+    if (op.typ === 'sqrt') return { l: sqrtSide(a.l), r: sqrtSide(a.r) };
+    if (op.typ === 'inv') return { l: invSide(a.l), r: invSide(a.r) };
+    throw new Error('Unbekannte Umformung');
+  }
+
+  function facTerm(f, e) { var o = cFac(f); o.e = e; return { c: [1, 1], f: [o] }; }
+
+  function candidates(q, ziel, opts) {
+    opts = opts || {};
+    var ops = [], seen = {};
+    function push(op, prio) { var k = opKey(op); if (!seen[k]) { seen[k] = 1; op.key = k; op.prio = prio; ops.push(op); } }
+    var seiten = [q.l, q.r];
+    if (!exprHas(q.l, ziel) && exprHas(q.r, ziel)) seiten = [q.r, q.l]; // Seite mit der gesuchten Größe zuerst
+    seiten.forEach(function (S) {
+      var hatZiel = exprHas(S, ziel), b = hatZiel ? 0 : 20;
+      if (S.t.length === 1) {
+        var T = S.t[0];
+        var pos = [], neg = [];
+        T.f.forEach(function (f) {
+          var zf = facHas(f, ziel);
+          if (f.e[0] > 0) { if (qint(f.e)) push({ typ: 'div', M: facTerm(f, f.e) }, b + (zf ? 15 : 4)); if (!zf) pos.push(f); }
+          else { if (qint(f.e)) push({ typ: 'mul', M: facTerm(f, qneg(f.e)) }, b + (zf ? 1 : 2)); neg.push(f); }
+        });
+        if (T.c[0] < 0) push({ typ: 'mul', M: { c: [-1, 1], f: [] } }, b + 3);
+        if (T.c[1] !== 1) push({ typ: 'mul', M: { c: [T.c[1], 1], f: [] } }, b + 2);
+        if (Math.abs(T.c[0]) !== 1) push({ typ: 'div', M: { c: [Math.abs(T.c[0]), 1], f: [] } }, b + 3);
+        var posInt = pos.filter(function (f) { return qint(f.e); });
+        if (hatZiel && posInt.length >= 2) push({ typ: 'div', M: { c: [1, 1], f: posInt.map(function (f) { return cFac(f); }) } }, b + 3);
+        var negInt = neg.filter(function (f) { return qint(f.e); });
+        if (negInt.length >= 2) push({ typ: 'mul', M: { c: [1, 1], f: negInt.map(function (f) { var o = cFac(f); o.e = qneg(f.e); return o; }) } }, b + 2);
+        if (qeq(T.c, [1, 1]) && T.f.length === 1 && qeq(T.f[0].e, [2, 1])) push({ typ: 'sqrt' }, 5);
+      } else {
+        S.t.forEach(function (t) {
+          var m = cTerm(t); m.c = qneg(m.c);
+          var zt = t.f.some(function (f) { return facHas(f, ziel); });
+          push({ typ: 'add', M: m }, b + (zt ? 15 : 1));
+        });
+      }
+    });
+    if (opts.kehrwert && q.l.t.length === 1 && q.r.t.length === 1) {
+      var hatNenner = [q.l.t[0], q.r.t[0]].some(function (t) { return t.c[1] !== 1 || t.f.some(function (f) { return f.e[0] < 0; }); });
+      if (hatNenner) push({ typ: 'inv' }, 6);
+    }
+    ops.sort(function (a, c) { return a.prio - c.prio; });
+    return ops;
+  }
+
+  // Bewertung aller möglichen nächsten Schritte: welche führen auf kürzestem Weg zum Ziel?
+  function bestMoves(q, ziel, opts) {
+    var d0 = solve(q, ziel, opts).dist, out = [];
+    if (!isFinite(d0) || d0 === 0) return { dist: d0, best: [] };
+    candidates(q, ziel, opts).forEach(function (op) {
+      var nq = apply(q, op);
+      if (!nq.l.t.length || !nq.r.t.length) return;
+      var d = solve(nq, ziel, opts).dist;
+      if (d === d0 - 1) out.push(op);
+    });
+    return { dist: d0, best: out };
+  }
+
+  /* ---------- Kürzester Weg (Breitensuche) ---------- */
+  var cache = {};
+  function solve(q, ziel, opts) {
+    opts = opts || {};
+    var k0 = eqKey(q) + '#' + ziel + (opts.kehrwert ? 'K' : '');
+    if (cache[k0]) return cache[k0];
+    var res = { dist: Infinity, first: {}, path: null };
+    if (solvedSide(q, ziel)) { res.dist = 0; res.path = []; cache[k0] = res; return res; }
+    var maxD = opts.maxDepth || 7, cap = opts.cap || 6000, cx0 = eqComplexity(q);
+    var seen = {}; seen[eqKey(q)] = 0;
+    var front = [{ q: q, first: null, path: [] }], count = 0;
+    for (var d = 1; d <= maxD && front.length; d++) {
+      var next = [], found = false;
+      for (var i = 0; i < front.length; i++) {
+        var node = front[i], ops = candidates(node.q, ziel, opts);
+        for (var j = 0; j < ops.length; j++) {
+          var nq;
+          try { nq = apply(node.q, ops[j]); } catch (e) { continue; }
+          if (!nq.l.t.length || !nq.r.t.length) continue;
+          var key = eqKey(nq);
+          var first = node.first || ops[j].key;
+          if (solvedSide(nq, ziel)) {
+            found = true; res.first[first] = true;
+            if (!res.path) res.path = node.path.concat([ops[j]]);
+            continue;
+          }
+          if (seen[key] !== undefined && seen[key] < d) continue;
+          if (seen[key] === d) { // gleich tief über anderen ersten Zug erreichbar
+            continue;
+          }
+          if (eqComplexity(nq) > cx0 + 9) continue;
+          seen[key] = d;
+          if (++count > cap) break;
+          next.push({ q: nq, first: first, path: node.path.concat([ops[j]]) });
+        }
+      }
+      if (found) { res.dist = d; break; }
+      front = next;
+    }
+    cache[k0] = res;
+    return res;
+  }
+
+  return {
+    Q: Q, bestMoves: bestMoves, parseEq: parseEq, parseExpr: parseExpr, apply: apply, candidates: candidates, solve: solve,
+    solvedSide: solvedSide, exprHas: exprHas, varsOf: varsOf, eqKey: eqKey, termKey: termKey, opKey: opKey,
+    cEq: cEq, cExpr: cExpr, cTerm: cTerm, invTerm: invTerm, normExpr: normExpr, qeq: qeq, qint: qint, shapeKey: shapeKey, facBase: facBase
+  };
+})();
+
+</script>
+<script>
+/* ===================== LaTeX-Darstellung ===================== */
+var UR = (function () {
+  'use strict';
+  var FARBE = { op: '#E8590C', weg: '#D92D20', ziel: '#1D5BD8', tinte: '#12264A' };
+  var GRIECH = { rho: '\\rho', eta: '\\eta', th: '\\vartheta', dth: '\\Delta\\vartheta', Dth: '\\Delta\\vartheta', DT: '\\Delta T', lambda: '\\lambda', alpha: '\\alpha', omega: '\\omega', phi: '\\varphi' };
+  var EXTRA = {}; // eigene Darstellungen, z. B. nstern → n^{*}
+
+  function varTex(name) {
+    if (EXTRA[name]) return EXTRA[name];
+    var i = name.indexOf('_'), b = i < 0 ? name : name.slice(0, i), s = i < 0 ? '' : name.slice(i + 1);
+    var m = /^([A-Za-z]+?)([0-9]+)$/.exec(b);
+    if (!s && m && !GRIECH[b]) { b = m[1]; s = m[2]; }
+    var bt = GRIECH[b] || (b.length > 1 ? '\\mathrm{' + b + '}' : b);
+    if (!s) return bt;
+    var st = /^[0-9]+$/.test(s) ? s : '\\mathrm{' + s + '}';
+    return bt + '_{' + st + '}';
+  }
+  function col(c, s) { return '\\textcolor{' + c + '}{' + s + '}'; }
+  function weg(s) { return col(FARBE.weg, '\\cancel{' + s + '}'); }
+
+  // ctx: { ziel, marks (bool) }; nackt = Summen-Klammer darf entfallen (allein im Zähler/Nenner)
+  function facTex(f, ctx, absExp, nackt) {
+    var e = absExp ? [Math.abs(f.e[0]), f.e[1]] : f.e, s;
+    if (f.v != null) {
+      s = varTex(f.v);
+      if (ctx.ziel === f.v) s = col(FARBE.ziel, '\\boldsymbol{' + s + '}');
+      if (e[1] === 2 && e[0] === 1) s = '\\sqrt{' + s + '}';
+      else if (e[1] !== 1) s = s + '^{\\frac{' + e[0] + '}{' + e[1] + '}}';
+      else if (e[0] !== 1) s = s + '^{' + e[0] + '}';
+    } else {
+      var inner = exprTex(f.g, ctx);
+      if (e[1] === 2 && e[0] === 1) {
+        return ctx.marks && f.neu ? col(FARBE.op, '\\sqrt{' + col(FARBE.tinte, inner) + '}') : '\\sqrt{' + inner + '}';
+      }
+      var multi = f.g.t.length > 1;
+      if (e[0] !== 1 || (multi && !nackt)) s = '\\left(' + inner + '\\right)'; else s = inner;
+      if (e[0] !== 1) s += '^{' + e[0] + '}';
+    }
+    if (ctx.marks && f.neu) s = col(FARBE.op, s);
+    return s;
+  }
+
+  function termTex(t, ctx) { // ohne Vorzeichen
+    var p = Math.abs(t.c[0]), q = t.c[1];
+    var nf = t.f.filter(function (f) { return f.e[0] > 0; }), df = t.f.filter(function (f) { return f.e[0] < 0; });
+    var cm = ctx.marks && t.cneu;
+    function num(n) { return cm ? col(FARBE.op, String(n)) : String(n); }
+    var halbStil = df.length === 0 && p === 1 && q !== 1 && nf.length > 0; // 1/2 · m · v²
+    var bruch = df.length > 0 || (q !== 1 && !halbStil);
+    var nItems = nf.length + (p !== 1 ? 1 : 0), dItems = df.length + (q !== 1 ? 1 : 0);
+    var s;
+    if (halbStil) {
+      s = '\\frac{1}{' + num(q) + '} \\cdot ' + nf.map(function (f) { return facTex(f, ctx, true, false); }).join(' \\cdot ');
+    } else {
+      var numParts = [], denParts = [];
+      if (p !== 1) numParts.push(num(p));
+      nf.forEach(function (f) { numParts.push(facTex(f, ctx, true, bruch && nItems === 1)); });
+      if (q !== 1) denParts.push(num(q));
+      df.forEach(function (f) { denParts.push(facTex(f, ctx, true, dItems === 1)); });
+      if (!numParts.length) numParts.push(cm ? num(1) : '1');
+      s = bruch ? '\\frac{' + numParts.join(' \\cdot ') + '}{' + denParts.join(' \\cdot ') + '}' : numParts.join(' \\cdot ');
+    }
+    if (ctx.marks && t.neu) s = col(FARBE.op, s);
+    return s;
+  }
+
+  function exprTex(x, ctx) {
+    ctx = ctx || {};
+    if (!x.t.length) return '0';
+    var out = '', ts = x.t;
+    if (ts[0].c[0] < 0) { // positives Glied nach vorne (nur Darstellung)
+      var ip = -1; for (var k = 0; k < ts.length; k++) if (ts[k].c[0] > 0) { ip = k; break; }
+      if (ip > 0) ts = [ts[ip]].concat(ts.slice(0, ip), ts.slice(ip + 1));
+    }
+    ts.forEach(function (t, i) {
+      var neg = t.c[0] < 0, body = termTex(t, ctx);
+      var sign = neg ? '-' : (i ? '+' : '');
+      if (ctx.marks && t.neu && sign) sign = col(FARBE.op, sign);
+      out += (i ? ' ' + sign + ' ' : sign) + body;
+    });
+    return out;
+  }
+
+  /* ---------- Beschriftung der Umformungen ---------- */
+  function mTex(M, ctx) { // Term als Operand
+    var t = exprTex({ t: [M] }, ctx || {});
+    var klammer = M.c[0] < 0 || M.f.length > 1 || (M.f.length === 1 && Math.abs(M.c[0]) !== 1) ||
+      (M.f.length === 1 && M.f[0].g && M.f[0].g.t.length > 1 && M.f[0].e[0] === 1);
+    if (M.f.length === 1 && M.f[0].g && M.f[0].g.t.length > 1 && M.f[0].e[0] === 1) return '\\left(' + exprTex(M.f[0].g, ctx || {}) + '\\right)';
+    return klammer ? '\\left(' + t + '\\right)' : t;
+  }
+  function opTex(op, ctx) {
+    ctx = ctx || {};
+    if (op.typ === 'mul') return '\\cdot\\, ' + mTex(op.M, ctx);
+    if (op.typ === 'div') return ':\\, ' + mTex(op.M, ctx);
+    if (op.typ === 'add') {
+      var neg = op.M.c[0] < 0, m = { c: [Math.abs(op.M.c[0]), op.M.c[1]], f: op.M.f };
+      return (neg ? '-\\, ' : '+\\, ') + exprTex({ t: [m] }, ctx);
+    }
+    if (op.typ === 'sqrt') return '\\sqrt{\\;\\;}';
+    if (op.typ === 'inv') return '\\text{Kehrwert}';
+    return '?';
+  }
+  function opText(op) { // Klartext für Vorlesefunktion
+    var tx = { mul: 'mal ', div: 'geteilt durch ', add: '', sqrt: 'Wurzel ziehen', inv: 'Kehrwert bilden' }[op.typ];
+    return tx;
+  }
+
+  /* ---------- Zwischenschritt mit Kürzen ---------- */
+  function rawSide(S, op, ctx) {
+    var o = function (s) { return col(FARBE.op, s); };
+    if (op.typ === 'sqrt') return col(FARBE.op, '\\sqrt{' + col(FARBE.tinte, exprTex(S, ctx)) + '}');
+    if (op.typ === 'inv') {
+      var inner = exprTex(S, ctx);
+      return '\\frac{' + o('1') + '}{' + inner + '}';
+    }
+    if (op.typ === 'add') {
+      var mk = UE.shapeKey(op.M), strike = -1;
+      S.t.forEach(function (t, i) { if (strike < 0 && UE.shapeKey(t) === mk && UE.qeq(t.c, [-op.M.c[0], op.M.c[1]])) strike = i; });
+      var s = '';
+      S.t.forEach(function (t, i) {
+        var neg = t.c[0] < 0, body = termTex(t, ctx), sign = neg ? '-' : (i ? '+' : '');
+        var part = (i ? ' ' + sign + ' ' : sign) + body;
+        s += i === strike ? (i ? ' ' + weg(sign + ' ' + body) : weg(part)) : part;
+      });
+      var neg2 = op.M.c[0] < 0, m = { c: [Math.abs(op.M.c[0]), op.M.c[1]], f: op.M.f };
+      var add = (neg2 ? '-' : '+') + ' ' + exprTex({ t: [m] }, ctx);
+      s += ' ' + (strike >= 0 ? weg(add) : o(add));
+      return s;
+    }
+    // mal / geteilt
+    var mul = op.typ === 'mul', M = op.M;
+    if (S.t.length > 1) {
+      var inner2 = exprTex(S, ctx);
+      if (M.f.length === 0 && UE.qeq(M.c, [-1, 1])) return o('(-1)') + ' \\cdot \\left(' + inner2 + '\\right)';
+      return mul ? '\\left(' + inner2 + '\\right) \\cdot ' + o(mTex(M, ctx)) : '\\frac{' + inner2 + '}{' + o(mTex(M, ctx)) + '}';
+    }
+    var T = S.t[0];
+    var num = [], den = [];
+    var sgn = T.c[0] < 0 ? '-' : '';
+    // Zahlen
+    var p = Math.abs(T.c[0]), q = T.c[1], mp = Math.abs(M.c[0]), mq = M.c[1];
+    if (M.f.length === 0 && M.c[0] === -1) { // mal (−1)
+      return o('(-1)') + ' \\cdot ' + (sgn ? '\\left(' + exprTex(S, ctx) + '\\right)' : exprTex(S, ctx));
+    }
+    var opNumN = mul ? mp : mq, opDenN = mul ? mq : mp;
+    var pS = false, qS = false, oNS = false, oDS = false;
+    if (opNumN !== 1 && opNumN === q) { qS = true; oNS = true; }
+    if (opDenN !== 1 && opDenN === p) { pS = true; oDS = true; }
+    if (p !== 1) num.push(pS ? weg(p) : String(p));
+    if (q !== 1) den.push(qS ? weg(q) : String(q));
+    // Faktoren der Seite und der Umformung
+    var opFs = M.f.map(function (f) { return { f: f, e: mul ? f.e : [-f.e[0], f.e[1]], weg: false }; });
+    T.f.forEach(function (f) {
+      var b = UE.facBase(f), w = false;
+      opFs.forEach(function (of) {
+        if (!of.weg && UE.facBase(of.f) === b && of.e[0] === -f.e[0] && of.e[1] === f.e[1]) { of.weg = true; w = true; }
+      });
+      var tx = facTex(f, ctx, true, false);
+      (f.e[0] > 0 ? num : den).push(w ? weg(tx) : tx);
+    });
+    if (opNumN !== 1) num.push(oNS ? weg(opNumN) : o(String(opNumN)));
+    if (opDenN !== 1) den.push(oDS ? weg(opDenN) : o(String(opDenN)));
+    opFs.forEach(function (of) {
+      var ff = { e: of.e }; if (of.f.v != null) ff.v = of.f.v; else ff.g = of.f.g;
+      var tx = facTex(ff, ctx, true, false);
+      (of.e[0] > 0 ? num : den).push(of.weg ? weg(tx) : o(tx));
+    });
+    if (!num.length) num.push('1');
+    var s2 = den.length ? '\\frac{' + num.join(' \\cdot ') + '}{' + den.join(' \\cdot ') + '}' : num.join(' \\cdot ');
+    return sgn + s2;
+  }
+
+  return { FARBE: FARBE, EXTRA: EXTRA, varTex: varTex, exprTex: exprTex, termTex: termTex, opTex: opTex, opText: opText, rawSide: rawSide };
+})();
+
+</script>
+<script>
+/* ===================== Einstellungen =====================
+   Hier lassen sich Formeln und Klassen bequem ändern.
+   Schreibweise der Formeln: * mal, / geteilt, ^2 Quadrat, Klammern erlaubt.
+   Namen: v, F_G, rho_Fl, p_1, th (= ϑ), dth (= Δϑ), eta (= η) …
+   ========================================================= */
+var FORMELN = {
+  v:     { f: 'v = s/t',                    name: 'Geschwindigkeit' },
+  FG:    { f: 'F_G = m*g',                  name: 'Gewichtskraft' },
+  D:     { f: 'D = F/s',                    name: 'Federhärte' },
+  rho:   { f: 'rho = m/V',                  name: 'Dichte' },
+  p:     { f: 'p = F/A',                    name: 'Druck' },
+  pS:    { f: 'p = rho*g*h',                name: 'Schweredruck' },
+  FA:    { f: 'F_A = rho_Fl*g*V_K',         name: 'Auftriebskraft' },
+  T:     { f: 'T = th + 273',               name: 'Celsius in Kelvin', hinweis: 'T in K, ϑ in °C' },
+  boyle: { f: 'p_1*V_1 = p_2*V_2',          name: 'Gesetz von Boyle-Mariotte' },
+  gay:   { f: 'V_1/T_1 = V_2/T_2',          name: 'Gesetz von Gay-Lussac' },
+  amon:  { f: 'p_1/T_1 = p_2/T_2',          name: 'Gesetz von Amontons' },
+  gas:   { f: 'p_1*V_1/T_1 = p_2*V_2/T_2',  name: 'Allgemeine Zustandsgleichung' },
+  Wth:   { f: 'W_th = c*m*dth',             name: 'Erwärmungsgesetz' },
+  dth:   { f: 'dth = th_2 - th_1',          name: 'Temperaturänderung' },
+  Wth2:  { f: 'W_th = c*m*(th_2 - th_1)',   name: 'Erwärmungsgesetz (ausführlich)' },
+  PW:    { f: 'P = W/t',                    name: 'Leistung' },
+  W:     { f: 'W = F*s',                    name: 'Arbeit' },
+  Epot:  { f: 'E_pot = m*g*h',              name: 'Lageenergie' },
+  Ekin:  { f: 'E_kin = 1/2*m*v^2',          name: 'Bewegungsenergie' },
+  eta:   { f: 'eta = E_nutz/E_zu',          name: 'Wirkungsgrad' },
+  va:    { f: 'v = a*t',                    name: 'Beschleunigung: Geschwindigkeit' },
+  sa:    { f: 's = 1/2*a*t^2',              name: 'Beschleunigung: Weg' },
+  Fma:   { f: 'F = m*a',                    name: 'Grundgleichung der Mechanik' },
+  PUI:   { f: 'P = U*I',                    name: 'Elektrische Leistung' },
+  R:     { f: 'R = U/I',                    name: 'Elektrischer Widerstand' },
+  EPt:   { f: 'E = P*t',                    name: 'Elektrische Energie' },
+  trU:   { f: 'U_1/U_2 = N_1/N_2',          name: 'Transformator: Spannungen' },
+  trI:   { f: 'I_1/I_2 = N_2/N_1',          name: 'Transformator: Stromstärken' },
+  nN:    { f: 'n = N/t',                    name: 'Impulsrate' },
+  n0:    { f: 'n = nstern - n_0',           name: 'Nullrate abziehen' }
+};
+// Sonderzeichen-Darstellung für Namen, die nicht automatisch passen
+var EIGENE_ZEICHEN = { nstern: 'n^{*}' };
+
+/* Buchstaben-Formeln: Die Buchstaben a, b, c, d werden bei jeder Aufgabe zufällig ersetzt
+   (z. B. durch x, y, z, w). ab = ab welcher Jahrgangsstufe. fest = Buchstaben bleiben. */
+var VORLAGEN = [
+  { f: 'a = b*c', ab: 7 },     { f: 'a = b/c', ab: 7 },       { f: 'a = b + c', ab: 7 },     { f: 'a = b - c', ab: 7 },
+  { f: 'a = b*c*d', ab: 7 },   { f: 'a = 2*b', ab: 7 },       { f: 'a = b/3', ab: 7 },       { f: 'a = b + c + d', ab: 7 },
+  { f: 'a = b*c/d', ab: 7 },   { f: 'a*b = c*d', ab: 7 },     { f: 'a = b*c + d', ab: 7 },   { f: 'a/b = c/d', ab: 7 },
+  { f: 'a = b*c^2', ab: 9 },   { f: 'a = 1/2*b*c^2', ab: 9 }, { f: 'a = b*(c - d)', ab: 9 }, { f: 'a = (b + c)/d', ab: 9 },
+  { f: 'a = b/(c*d)', ab: 9 }, { f: 'a = b*c - d', ab: 9 },   { f: 'y = m*x + t', ab: 9, fest: true, name: 'Geradengleichung' }
+];
+var BUCHSTABEN = [['a', 'b', 'c', 'd'], ['x', 'y', 'z', 'w'], ['p', 'q', 'r', 'k'], ['u', 'v', 'w', 'r'], ['m', 'n', 'k', 's']];
+
+/* Klassen. formeln = was die Klasse schon kennt (Reihenfolge egal).
+   kehrwert: true = die Umformung „Kehrwert“ wird als Profi-Trick angeboten. */
+var KLASSEN = {
+  p7: {
+    titel: 'Physik 7a', stufe: 7, kehrwert: false,
+    formeln: ['v', 'FG', 'D'],            // später ergänzen: 'rho' (nach der Dichte-Stunde)
+    motto: 'Tempo-Training', text: 'Geschwindigkeit, Gewichtskraft und Federhärte – und Buchstaben-Formeln zum Warmwerden.',
+    farbe1: '#13A5A0', farbe2: '#0B6E8A', hell: '#E2F5F3', grund: '#EDF7F6', bild: 'tacho'
+  },
+  p8: {
+    titel: 'Physik 8b', stufe: 8, kehrwert: false,
+    formeln: ['v', 'FG', 'D'],            // später ergänzen: 'rho' (nach „Dichte berechnen“)
+    motto: 'Kraft-Training', text: 'Geschwindigkeit, Gewichtskraft und Federhärte – und Buchstaben-Formeln zum Warmwerden.',
+    farbe1: '#6366F1', farbe2: '#4338CA', hell: '#E9EAFE', grund: '#F0F1FB', bild: 'feder'
+  },
+  p9: {
+    titel: 'Physik 9b', stufe: 9, kehrwert: true,
+    formeln: ['p', 'pS', 'FA', 'T', 'boyle', 'gay', 'amon', 'gas', 'Wth', 'dth', 'Wth2', 'PW', 'W', 'Epot', 'Ekin', 'eta'],
+    motto: 'Druck & Wärme', text: 'Druck, Auftrieb, Gasgesetze bis zur allgemeinen Zustandsgleichung und das Erwärmungsgesetz.',
+    farbe1: '#12B886', farbe2: '#087F5B', hell: '#E0F6EE', grund: '#EEF7F3', bild: 'thermo'
+  },
+  p10: {
+    titel: 'Physik 10', stufe: 10, kehrwert: true,
+    formeln: ['v', 'va', 'sa', 'Fma', 'Ekin', 'Epot', 'PUI', 'R', 'EPt', 'trU', 'trI', 'eta', 'nN', 'n0'],
+    motto: 'Energie & Bewegung', text: 'Beschleunigte Bewegung, Energie, Transformator und Impulsrate.',
+    farbe1: '#8B5CF6', farbe2: '#5B21B6', hell: '#EFE9FE', grund: '#F3F0FB', bild: 'blitz'
+  }
+};
+
+var LEVEL = [
+  { name: 'Aufwärmen',      text: 'Buchstaben-Formeln – ein Schritt',       quelle: 'b',  min: 1, max: 1 },
+  { name: 'Deine Formeln',  text: 'Formeln aus dem Unterricht – ein Schritt', quelle: 'p',  min: 1, max: 1 },
+  { name: 'Zwei Schritte',  text: 'Buchstaben und Physik gemischt',          quelle: 'bp', min: 2, max: 2 },
+  { name: 'Profi',          text: 'Drei Schritte und mehr',                  quelle: 'bp', min: 3, max: 9 }
+];
+var AUFGABEN_PRO_RUNDE = 6;
+
+var RAENGE = [
+  { ab: 0,   name: 'Formel-Neuling' },
+  { ab: 10,  name: 'Umstell-Azubi' },
+  { ab: 30,  name: 'Formel-Profi' },
+  { ab: 60,  name: 'Umstell-Meister' },
+  { ab: 100, name: 'Formel-Legende' },
+  { ab: 160, name: 'Großmeister der Formeln' }
+];
+
+</script>
+<script>
+/* ===================== Spiel ===================== */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function tex(node, s) {
+    try { if (window.katex) { katex.render('\\displaystyle ' + s, node, { throwOnError: false, strict: false }); return node; } } catch (e) { /* weiter */ }
+    node.textContent = s.replace(/\\textcolor\{[^}]*\}/g, '').replace(/\\[a-z]+/g, ' ').replace(/[{}]/g, '');
+    return node;
+  }
+  function texEl(tag, cls, s) { return tex(el(tag, cls), s); }
+  function mischen(a, rnd) { rnd = rnd || Math.random; a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var h = a[i]; a[i] = a[j]; a[j] = h; } return a; }
+  function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function zufall(seed) { var x = seed || 1; return function () { x ^= x << 13; x ^= x >>> 17; x ^= x << 5; return ((x >>> 0) % 100000) / 100000; }; }
+  var STERN = '<svg viewBox="0 0 24 24"><path d="M12 2.6l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z" fill="FARBE" stroke="RAND" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+  function sternSvg(an) { return STERN.replace('FARBE', an ? '#FFC23C' : '#E3E8F0').replace('RAND', an ? '#D99A0B' : '#D3DAE5'); }
+
+  Object.keys(EIGENE_ZEICHEN).forEach(function (k) { UR.EXTRA[k] = EIGENE_ZEICHEN[k]; });
+
+  var BILDER = {
+    tacho: '<svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 34a17 17 0 1 1 32 0"/><path d="M24 31l8.5-11"/><circle cx="24" cy="31" r="2.6" fill="#fff"/><path d="M12.5 21.5l2.6 1.6M24 13v3M35.5 21.5l-2.6 1.6"/></svg>',
+    feder: '<svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5h20"/><path d="M24 5v4l-8 3 16 4-16 4 16 4-8 3v4"/><rect x="15" y="31" width="18" height="12" rx="3" fill="rgba(255,255,255,.25)"/></svg>',
+    thermo: '<svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 28V9a5 5 0 0 1 10 0v19a8 8 0 1 1-10 0z"/><path d="M24 22v12"/><circle cx="24" cy="34" r="3" fill="#fff"/><path d="M35 12h5M35 18h5M35 24h4"/></svg>',
+    blitz: '<svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M27 4L11 27h11l-3 17 17-24H25z" fill="rgba(255,255,255,.22)"/></svg>'
+  };
+
+  /* ---------- Klasse ---------- */
+  var kId = new URLSearchParams(location.search).get('k');
+  var KL = KLASSEN[kId];
+  if (!KL) {
+    $('wahl').classList.remove('hidden');
+    Object.keys(KLASSEN).forEach(function (id) {
+      var k = KLASSEN[id], a = el('a');
+      a.href = '?k=' + id; a.style.background = 'linear-gradient(135deg,' + k.farbe1 + ',' + k.farbe2 + ')';
+      a.innerHTML = '<span style="width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.2);display:grid;place-items:center;flex:none">' + BILDER[k.bild].replace('viewBox', 'width="30" height="30" viewBox') + '</span><span>' + k.titel + '<small>' + k.motto + '</small></span>';
+      $('klassenwahl').appendChild(a);
+    });
+    $('score').classList.add('hidden');
+    return;
+  }
+  var root = document.documentElement.style;
+  root.setProperty('--a', KL.farbe1); root.setProperty('--b', KL.farbe2); root.setProperty('--hell', KL.hell); root.setProperty('--grund', KL.grund);
+  document.title = 'Formel-Umsteller – ' + KL.titel;
+  $('zurueck').href = '../' + kId + '/';
+  var OPTS = { kehrwert: !!KL.kehrwert };
+  var NOK = { kehrwert: false };
+
+  /* ---------- Speicher ---------- */
+  var SKEY = 'formel-umsteller-' + kId;
+  var daten = { best: {}, fertig: {}, sterne: 0, punkte: 0, intro: false };
+  try { var gesp = JSON.parse(localStorage.getItem(SKEY) || 'null'); if (gesp) for (var gk in gesp) daten[gk] = gesp[gk]; } catch (e) { /* ohne Speicher */ }
+  function speichern() { try { localStorage.setItem(SKEY, JSON.stringify(daten)); } catch (e) { /* egal */ } }
+
+  /* ---------- Aufgaben-Pool ---------- */
+  var POOL = [];
+  function poolPush(f, name, quelle, vorlage) {
+    var q = UE.parseEq(f);
+    var vars = UE.varsOf(q.l).concat(UE.varsOf(q.r)).filter(function (v, i, a) { return a.indexOf(v) === i; });
+    vars.forEach(function (z) {
+      if (UE.solvedSide(q, z)) return;
+      var d = UE.solve(q, z, NOK).dist;
+      if (!isFinite(d)) return;
+      POOL.push({ f: f, ziel: z, name: name, quelle: quelle, opt: d, vorlage: vorlage, hinweis: vorlage ? '' : (FORMELN_BY_F[f] && FORMELN_BY_F[f].hinweis) || '' });
+    });
+  }
+  var FORMELN_BY_F = {};
+  KL.formeln.forEach(function (id) { var F = FORMELN[id]; if (!F) return; FORMELN_BY_F[F.f] = F; poolPush(F.f, F.name, 'p', null); });
+  VORLAGEN.forEach(function (V) { if (V.ab <= KL.stufe) poolPush(V.f, V.name || 'Buchstaben-Formel', 'b', V); });
+
+  function levelPool(L) {
+    return POOL.filter(function (t) { return L.quelle.indexOf(t.quelle) >= 0 && t.opt >= L.min && t.opt <= L.max; });
+  }
+  function aufgabeBauen(t) {
+    var f = t.f, ziel = t.ziel;
+    if (t.vorlage && !t.vorlage.fest) {
+      var set = BUCHSTABEN[Math.floor(Math.random() * BUCHSTABEN.length)], perm = mischen(set), map = {};
+      ['a', 'b', 'c', 'd'].forEach(function (b, i) { map[b] = perm[i]; });
+      f = f.replace(/\b[a-d]\b/g, function (m) { return map[m]; });
+      ziel = map[ziel] || ziel;
+    }
+    return { f: f, q: UE.parseEq(f), ziel: ziel, name: t.name, opt: t.opt, hinweis: t.hinweis };
+  }
+
+  /* ---------- Rang ---------- */
+  function rangVon(s) { var r = RAENGE[0], n = null; for (var i = 0; i < RAENGE.length; i++) { if (s >= RAENGE[i].ab) { r = RAENGE[i]; n = RAENGE[i + 1] || null; } } return { r: r, n: n }; }
+
+  /* ---------- Menü ---------- */
+  function zeigeMenue() {
+    $('spiel').classList.add('hidden'); $('menue').classList.remove('hidden');
+    $('heroIco').innerHTML = BILDER[KL.bild]; $('heroOber').textContent = KL.titel + ' · Formeln umstellen';
+    $('heroTitel').textContent = KL.motto; $('heroText').textContent = KL.text;
+    var rg = rangVon(daten.sterne);
+    $('rangName').innerHTML = rg.r.name + '<small>' + daten.sterne + ' ★' + (rg.n ? ' · noch ' + (rg.n.ab - daten.sterne) + ' bis „' + rg.n.name + '“' : '') + '</small>';
+    setTimeout(function () { $('rangBalken').style.width = (rg.n ? Math.round(100 * (daten.sterne - rg.r.ab) / (rg.n.ab - rg.r.ab)) : 100) + '%'; }, 60);
+    $('score').textContent = '★ ' + daten.sterne;
+    var box = $('levels'); box.innerHTML = '';
+    var nr = 0, vorherFertig = true;
+    LEVEL.forEach(function (L, i) {
+      var pool = levelPool(L); if (!pool.length) return;
+      nr++;
+      var offen = nr === 1 || vorherFertig;
+      var b = el('button', 'lv' + (offen ? '' : ' zu'));
+      var bsp = aufgabeBauen(pool[Math.floor(Math.random() * pool.length)]);
+      b.appendChild(el('span', 'n', offen ? String(nr) : '<svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><rect x="4" y="9" width="12" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg>'));
+      var mid = el('span'); mid.appendChild(el('b', null, L.name)); mid.appendChild(el('span', 'sub', offen ? L.text : 'Schließe erst das Level davor ab.'));
+      if (offen) { var ex = el('span', 'ex'); tex(ex, UR.exprTex(bsp.q.l, { ziel: bsp.ziel }) + ' = ' + UR.exprTex(bsp.q.r, { ziel: bsp.ziel })); mid.appendChild(ex); }
+      b.appendChild(mid);
+      var best = daten.best[i] || 0;
+      b.appendChild(el('span', 'st', offen ? ('★ ' + best + '/' + AUFGABEN_PRO_RUNDE * 3 + '<small>' + (daten.fertig[i] ? 'Bestwert' : 'neu') + '</small>') : ''));
+      if (offen) b.onclick = function () { starteRunde(i); };
+      else b.disabled = true;
+      box.appendChild(b);
+      vorherFertig = !!daten.fertig[i];
+    });
+    var ul = $('spick'); ul.innerHTML = '';
+    KL.formeln.forEach(function (id) {
+      var F = FORMELN[id]; if (!F) return; var q = UE.parseEq(F.f);
+      var li = el('li'); li.appendChild(el('span', null, F.name)); li.appendChild(texEl('span', null, UR.exprTex(q.l) + ' = ' + UR.exprTex(q.r)));
+      ul.appendChild(li);
+    });
+    if (!daten.intro) $('intro').classList.remove('hidden');
+  }
+  $('introOk').onclick = function () { $('intro').classList.add('hidden'); daten.intro = true; speichern(); };
+
+  /* ---------- Runde ---------- */
+  var R = null;   // Runde
+  var A = null;   // aktuelle Aufgabe
+  function starteRunde(li) {
+    var pool = levelPool(LEVEL[li]), liste = [], letzte = null;
+    while (liste.length < AUFGABEN_PRO_RUNDE) {
+      var m = mischen(pool);
+      for (var i = 0; i < m.length && liste.length < AUFGABEN_PRO_RUNDE; i++) {
+        if (letzte && m[i].f === letzte.f && pool.length > 2) continue;
+        liste.push(m[i]); letzte = m[i];
+      }
+      if (pool.length <= 2 && liste.length === 0) break;
+    }
+    R = { li: li, nr: LEVEL.filter(function (L, j) { return j <= li && levelPool(L).length; }).length, liste: liste, i: 0, sterne: [], punkte: 0, serie: 0, profi: 0 };
+    $('menue').classList.add('hidden'); $('spiel').classList.remove('hidden');
+    starteAufgabe();
+  }
+  function starteAufgabe() {
+    var t = aufgabeBauen(R.liste[R.i]);
+    var s = UE.solve(t.q, t.ziel, NOK);
+    A = { t: t, opt: s.dist, weg: s.path, hist: [{ q: t.q, op: null, raw: null }], zuege: 0, zurueck: 0, tipp: false, tippOp: null, umwegZeile: -1, fertig: false };
+    distSetzen(A.hist[0]);
+    $('chip').textContent = 'Level ' + R.nr + ' · ' + (R.i + 1) + '/' + R.liste.length;
+    var dots = $('dots'); dots.innerHTML = '';
+    for (var i = 0; i < R.liste.length; i++) dots.appendChild(el('i', i < R.i ? 's' + R.sterne[i] : i === R.i ? 'jetzt' : ''));
+    var st = $('streak'); if (R.serie >= 2) { st.textContent = R.serie + '× Profi-Serie'; st.classList.remove('hidden'); } else st.classList.add('hidden');
+    tex($('zielBox'), UR.exprTex({ t: [{ c: [1, 1], f: [{ v: t.ziel, e: [1, 1] }] }] }, { ziel: t.ziel }));
+    $('formelName').textContent = t.name;
+    $('auftrag').innerHTML = 'Stelle nach '; $('auftrag').appendChild(texEl('span', null, UR.exprTex({ t: [{ c: [1, 1], f: [{ v: t.ziel, e: [1, 1] }] }] }, { ziel: t.ziel }))); $('auftrag').appendChild(document.createTextNode(' um.'));
+    $('hinweis').textContent = t.hinweis || '';
+    $('meldung').innerHTML = '';
+    zeichne(false);
+  }
+  function distSetzen(h) {
+    h.d = UE.solve(h.q, A.t.ziel, NOK).dist;
+    h.dK = OPTS.kehrwert ? UE.solve(h.q, A.t.ziel, OPTS).dist : h.d;
+  }
+
+  /* ---------- Zeichnen ---------- */
+  function zeile(cls, lTex, rTex, uTex) {
+    var z = el('div', 'zeile ' + cls);
+    z.appendChild(texEl('span', 'l', lTex)); z.appendChild(texEl('span', 'gl', '='));
+    z.appendChild(texEl('span', 'r', rTex));
+    var u = el('span', 'u'); if (uTex) tex(u, uTex); z.appendChild(u);
+    return z;
+  }
+  function zeichne(anim) {
+    var heft = $('heft'); heft.innerHTML = '';
+    var H = A.hist, ziel = A.t.ziel, last = H.length - 1;
+    H.forEach(function (h, i) {
+      if (i > 0 && i === last && h.raw) {
+        var zw = zeile('zw' + (anim ? ' auftauchen' : ''), h.raw.l, h.raw.r, '');
+        zw.querySelector('.u').textContent = 'kürzen';
+        heft.appendChild(zw);
+      }
+      var fertigSeite = UE.solvedSide(h.q, ziel);
+      var cls = (i === last && anim && i > 0 ? 'auftauchen spaet ' : '') + (i === A.umwegZeile ? 'umweg ' : '');
+      var z = zeile(cls, UR.exprTex(h.q.l, { ziel: ziel, marks: i > 0 }), UR.exprTex(h.q.r, { ziel: ziel, marks: i > 0 }), h.op ? UR.opTex(h.op) : '');
+      if (h.op && i === last - 1 && anim) z.querySelector('.u').classList.add('pop');
+      if (h.op && h.op.typ === 'inv') { var u = z.querySelector('.u'); u.innerHTML = ''; u.textContent = 'Kehrwert'; }
+      heft.appendChild(z);
+      if (i === last && fertigSeite) {
+        var q = h.q, links = fertigSeite === 'l' ? q.l : q.r, rechts = fertigSeite === 'l' ? q.r : q.l;
+        var zf = zeile('fertig' + (anim ? ' auftauchen spaet' : ''), UR.exprTex(links, { ziel: ziel }), UR.exprTex(rechts, { ziel: ziel }), '');
+        zf.querySelector('.u').textContent = fertigSeite === 'r' ? 'Seiten getauscht' : '';
+        zf.querySelector('.u').style.cssText = 'border:0;color:var(--ok);font-size:12px;white-space:normal;line-height:1.1';
+        if (fertigSeite === 'r') heft.appendChild(zf); else z.classList.add('fertig');
+      }
+    });
+    setTimeout(function () { heft.scrollTop = heft.scrollHeight; }, anim ? 650 : 0);
+    $('zurueckBtn').disabled = H.length < 2 || A.fertig;
+    $('tippBtn').disabled = A.fertig;
+    zeichneOps(anim);
+    var n = H.length - 1;
+    $('schrittInfo').textContent = n ? n + (n === 1 ? ' Schritt' : ' Schritte') : '';
+  }
+  function zeichneOps(anim) {
+    var box = $('ops'); box.innerHTML = '';
+    if (A.fertig) { box.appendChild(el('div', 'ops-leer', 'Geschafft!')); return; }
+    var q = A.hist[A.hist.length - 1].q;
+    var alle = UE.candidates(q, A.t.ziel, OPTS);
+    // höchstens 6 anzeigen, die besten sind immer dabei; Reihenfolge fest je Zustand (gleich nach „zurück“)
+    var bestK = {};
+    UE.bestMoves(q, A.t.ziel, NOK).best.forEach(function (o) { bestK[o.key] = 1; });
+    if (OPTS.kehrwert) UE.bestMoves(q, A.t.ziel, OPTS).best.forEach(function (o) { bestK[o.key] = 1; });
+    var rnd = zufall(hash(UE.eqKey(q) + A.t.ziel));
+    var gut = alle.filter(function (o) { return bestK[o.key]; }).slice(0, 2), rest = mischen(alle.filter(function (o) { return gut.indexOf(o) < 0; }), rnd);
+    var wahl = mischen(gut.concat(rest).slice(0, 6), rnd);
+    if (!wahl.length) box.appendChild(el('div', 'ops-leer', 'Keine Umformung möglich – geh einen Schritt zurück.'));
+    wahl.forEach(function (op) {
+      var b = el('button', 'opb');
+      if (op.typ === 'inv') b.innerHTML = '<span class="txt">⇅ Kehrwert</span>';
+      else if (op.typ === 'sqrt') { tex(b, '\\sqrt{\\phantom{x}}'); b.appendChild(el('span', 'txt', 'Wurzel ziehen')); }
+      else tex(b, UR.opTex(op));
+      b.setAttribute('aria-label', 'Umformung ' + b.textContent);
+      if (A.tippOp && A.tippOp === op.key) b.classList.add('tipp');
+      if (anim) { b.disabled = true; setTimeout(function () { b.disabled = false; }, 950); }
+      b.onclick = function () { umformen(op); };
+      box.appendChild(b);
+    });
+  }
+
+  /* ---------- Spielzüge ---------- */
+  function umformen(op) {
+    if (A.fertig) return;
+    var H = A.hist, cur = H[H.length - 1], nq;
+    try { nq = UE.apply(cur.q, op); } catch (e) { return; }
+    if (!nq.l.t.length || !nq.r.t.length) { meldung('info', 'Diese Umformung würde eine Seite zu 0 machen. Probier eine andere.'); return; }
+    var raw = { l: UR.rawSide(cur.q.l, op, { ziel: A.t.ziel }), r: UR.rawSide(cur.q.r, op, { ziel: A.t.ziel }) };
+    cur.op = op;
+    var h = { q: nq, op: null, raw: raw }; H.push(h); distSetzen(h);
+    A.zuege++; A.tippOp = null; A.umwegZeile = -1;
+    $('meldung').innerHTML = '';
+    if (UE.solvedSide(nq, A.t.ziel)) { A.fertig = true; zeichne(true); setTimeout(geloest, 1300); return; }
+    zeichne(true);
+    if (UE.exprHas(nq.l, A.t.ziel) && UE.exprHas(nq.r, A.t.ziel)) setTimeout(function () { meldung('info', 'Achtung: Die gesuchte Größe steht jetzt auf beiden Seiten. Oft hilft ein Schritt zurück.'); }, 900);
+    else if (!isFinite(h.d) && !isFinite(h.dK)) setTimeout(function () { meldung('info', 'Das wird gerade ziemlich kompliziert. Geh lieber einen Schritt zurück.'); }, 900);
+  }
+  function schrittZurueck() {
+    if (A.hist.length < 2 || A.fertig) return;
+    A.hist.pop(); A.hist[A.hist.length - 1].op = null; A.zurueck++; A.tippOp = null; A.umwegZeile = -1;
+    $('meldung').innerHTML = '';
+    zeichne(false);
+  }
+  function zurueckZu(i) {
+    A.hist.length = i + 1; A.hist[i].op = null; A.zurueck++; A.umwegZeile = -1;
+    var b = UE.bestMoves(A.hist[i].q, A.t.ziel, NOK).best[0];
+    A.tippOp = b ? b.key : null;
+    $('meldung').innerHTML = '';
+    zeichne(false);
+    if (b) meldung('tipp', '<b>Jetzt du!</b>' + erklaerung(b, A.hist[i].q));
+  }
+  function meldung(art, html, knopf) {
+    var m = $('meldung'); m.innerHTML = '';
+    var d = el('div', 'meldung ' + art, html);
+    if (knopf) { var b = el('button', 'btn sec', knopf.text); b.onclick = knopf.fn; d.appendChild(b); }
+    m.appendChild(d);
+  }
+  function opT(op) { var s = el('span'); tex(s, '|\\; ' + UR.opTex(op)); if (op.typ === 'inv') s.textContent = '| Kehrwert'; return '<span style="color:var(--op);white-space:nowrap">' + s.innerHTML + '</span>'; }
+  function erklaerung(op, q) {
+    var ziel = A.t.ziel, M = op.M, mt = '';
+    if (M) { var s = el('span'); tex(s, UR.exprTex({ t: [M] }, {})); mt = s.innerHTML; }
+    var zielT = (function () { var s = el('span'); tex(s, UR.varTex(ziel)); return '<span style="color:var(--ziel)">' + s.innerHTML + '</span>'; })();
+    var txt;
+    if (op.typ === 'mul' && M.f.length === 0 && M.c[0] === -1) txt = 'Vor ' + zielT + ' steht ein Minus. Mit ' + opT(op) + ' wird es positiv.';
+    else if (op.typ === 'mul' && M.f.length === 0) txt = 'Die Zahl ' + M.c[0] + ' im Nenner stört. Mit ' + opT(op) + ' ist der Bruch weg.';
+    else if (op.typ === 'mul' && M.f.some(function (f) { return f.v === ziel || (f.g && UE.exprHas(f.g, ziel)); })) txt = zielT + ' steht im Nenner. Hol es mit ' + opT(op) + ' aus dem Bruch heraus.';
+    else if (op.typ === 'mul') txt = mt + ' steht im Nenner und stört. Mit ' + opT(op) + ' verschwindet der Bruch auf dieser Seite.';
+    else if (op.typ === 'div' && M.f.length === 0) txt = 'Die Zahl ' + M.c[0] + ' ist mit ' + zielT + ' malgenommen. Teile durch ' + M.c[0] + '.';
+    else if (op.typ === 'div' && M.f.length > 1) txt = 'Gleich mehrere Faktoren hängen an ' + zielT + '. Teile durch alle auf einmal: ' + opT(op) + ' – das spart Schritte.';
+    else if (op.typ === 'div') txt = mt + ' ist mit ' + zielT + ' malgenommen. Teile durch ' + mt + ' – dann kürzt es sich weg: ' + opT(op) + '.';
+    else if (op.typ === 'add') txt = 'Auf der Seite von ' + zielT + ' steht noch ein Summand, der stört. Rechne das Gegenteil: ' + opT(op) + '.';
+    else if (op.typ === 'sqrt') txt = zielT + ' steht im Quadrat allein da. Zieh auf beiden Seiten die Wurzel.';
+    else if (op.typ === 'inv') txt = 'Profi-Trick: Bilde auf beiden Seiten den Kehrwert – dann steht ' + zielT + ' im Zähler.';
+    else txt = 'Probier ' + opT(op) + '.';
+    return ' ' + txt;
+  }
+  function tipp() {
+    if (A.fertig) return;
+    A.tipp = true;
+    var H = A.hist;
+    // 1. Wurde unterwegs ein Umweg gemacht?
+    for (var i = 0; i < H.length - 1; i++) {
+      var besser = H[i + 1].d < H[i].d || (OPTS.kehrwert && H[i + 1].dK < H[i].dK);
+      if (!besser && isFinite(H[i].d)) {
+        var b = UE.bestMoves(H[i].q, A.t.ziel, NOK).best[0];
+        A.umwegZeile = i; A.tippOp = null; zeichne(false);
+        var ii = i;
+        meldung('tipp', '<b>Hier gab es einen einfacheren Weg.</b> In der markierten Zeile hast du ' + opT(H[i].op) + ' gewählt. Geschickter wäre ' + (b ? opT(b) : 'eine andere Umformung') + ' gewesen.',
+          { text: 'Zurück zu dieser Zeile', fn: function () { zurueckZu(ii); } });
+        return;
+      }
+    }
+    // 2. Auf Kurs: nächsten besten Schritt zeigen
+    var q = H[H.length - 1].q, best = UE.bestMoves(q, A.t.ziel, NOK).best;
+    if (!best.length && OPTS.kehrwert) best = UE.bestMoves(q, A.t.ziel, OPTS).best;
+    if (!best.length) { meldung('tipp', '<b>Hier wird es knifflig.</b> Geh ein paar Schritte zurück und versuch es anders.'); return; }
+    A.tippOp = best[0].key; zeichneOps(false);
+    meldung('tipp', '<b>Tipp:</b>' + erklaerung(best[0], q));
+  }
+  $('zurueckBtn').onclick = schrittZurueck;
+  $('tippBtn').onclick = tipp;
+  $('abbrechen').onclick = function () { if (A && A.hist.length > 1 && !A.fertig && !confirm('Runde abbrechen? Die Sterne dieser Runde gehen verloren.')) return; zeigeMenue(); };
+
+  /* ---------- Gelöst ---------- */
+  function geloest() {
+    var opt = A.opt, n = A.zuege, sterne = A.tipp ? 1 : (n <= opt ? 3 : 2);
+    var trick = !A.tipp && n < opt;
+    var p = sterne * 10, extras = [];
+    if (sterne === 3) { R.serie++; p += 10; extras.push('<span class="bonus">Profi-Bonus +10</span>'); R.profi++; } else R.serie = 0;
+    if (R.serie >= 2) { var sb = 5 * (Math.min(R.serie, 5) - 1); p += sb; extras.push('<span class="bonus">' + R.serie + '× Serie +' + sb + '</span>'); }
+    if (trick) { p += 10; extras.push('<span class="bonus">Kehrwert-Trick +10</span>'); }
+    R.sterne.push(sterne); R.punkte += p;
+    var vorher = rangVon(daten.sterne).r;
+    daten.sterne += sterne; daten.punkte += p; speichern();
+    $('score').textContent = '★ ' + daten.sterne;
+    var gs = $('gSterne'); gs.innerHTML = '';
+    for (var i = 0; i < 3; i++) { var w = el('span', null, sternSvg(i < sterne)); var sv = w.firstChild; if (i < sterne) sv.classList.add('an'); gs.appendChild(sv); }
+    $('gTitel').textContent = sterne === 3 ? (trick ? 'Genial – kürzer als gedacht!' : 'Profi-Weg!') : sterne === 2 ? 'Geschafft!' : 'Gelöst – mit Tipp';
+    $('gText').textContent = sterne === 3 ? 'Du hast ohne Hilfe den kürzesten Weg gefunden.' : sterne === 2 ? 'Richtig umgestellt. Es ginge noch etwas kürzer:' : 'Gut, dass du drangeblieben bist. Nächstes Mal schaffst du es allein!';
+    var H = A.hist, q = H[H.length - 1].q, s = UE.solvedSide(q, A.t.ziel);
+    tex($('gErgebnis'), UR.exprTex(s === 'l' ? q.l : q.r, { ziel: A.t.ziel }) + ' = ' + UR.exprTex(s === 'l' ? q.r : q.l, { ziel: A.t.ziel }));
+    $('gZahlen').innerHTML = '<span>Deine Schritte: ' + n + '</span><span>Kürzester Weg: ' + opt + '</span><span>+' + p + ' Punkte</span>' + extras.join('');
+    var wb = $('gWeg');
+    if (sterne < 3 && A.weg && A.weg.length) {
+      wb.innerHTML = 'So geht es in ' + A.weg.length + (A.weg.length === 1 ? ' Schritt' : ' Schritten') + ':';
+      var ch = el('div', 'chips');
+      A.weg.forEach(function (op) { var c = el('span'); if (op.typ === 'inv') c.textContent = 'Kehrwert'; else tex(c, UR.opTex(op)); ch.appendChild(c); });
+      wb.appendChild(ch); wb.classList.remove('hidden');
+    } else wb.classList.add('hidden');
+    $('gWeiter').textContent = R.i + 1 < R.liste.length ? 'Nächste Aufgabe' : 'Runde auswerten';
+    $('geloest').classList.remove('hidden');
+    if (sterne === 3) konfetti(sterne === 3 && trick ? 160 : 90);
+    var nachher = rangVon(daten.sterne).r;
+    if (nachher !== vorher) setTimeout(function () { toast('Neuer Rang: <b>' + nachher.name + '</b>'); konfetti(200); }, 700);
+  }
+  $('gWeiter').onclick = function () {
+    $('geloest').classList.add('hidden');
+    R.i++;
+    if (R.i < R.liste.length) starteAufgabe(); else rundeEnde();
+  };
+  function rundeEnde() {
+    var summe = R.sterne.reduce(function (a, b) { return a + b; }, 0), max = R.liste.length * 3;
+    var neuFrei = false;
+    if (!daten.fertig[R.li]) { daten.fertig[R.li] = true; neuFrei = true; }
+    var rekord = summe > (daten.best[R.li] || 0);
+    if (rekord) daten.best[R.li] = summe;
+    speichern();
+    var rs = $('rSterne'); rs.innerHTML = '';
+    var anteil = summe / max, ganz = anteil >= .85 ? 3 : anteil >= .6 ? 2 : 1;
+    for (var i = 0; i < 3; i++) { var w = el('span', null, sternSvg(i < ganz)); var sv = w.firstChild; if (i < ganz) sv.classList.add('an'); rs.appendChild(sv); }
+    $('rTitel').textContent = ganz === 3 ? 'Starke Runde!' : ganz === 2 ? 'Gute Runde!' : 'Runde geschafft!';
+    var naechstes = null;
+    for (var j = R.li + 1; j < LEVEL.length; j++) if (levelPool(LEVEL[j]).length) { naechstes = LEVEL[j]; break; }
+    $('rText').textContent = (neuFrei && naechstes ? 'Neues Level freigeschaltet: „' + naechstes.name + '“. ' : '') + (R.profi ? R.profi + '× hast du den kürzesten Weg ohne Hilfe gefunden.' : 'Tipp: Überleg vor jedem Schritt, was die gesuchte Größe gerade „festhält“.');
+    $('rZahlen').innerHTML = '<span>★ ' + summe + ' von ' + max + '</span><span>' + R.punkte + ' Punkte</span>' + (rekord ? '<span class="bonus">Neuer Bestwert!</span>' : '');
+    $('runde').classList.remove('hidden');
+    if (ganz >= 2) konfetti(ganz === 3 ? 220 : 120);
+  }
+  $('rNochmal').onclick = function () { $('runde').classList.add('hidden'); starteRunde(R.li); };
+  $('rMenue').onclick = function () { $('runde').classList.add('hidden'); zeigeMenue(); };
+
+  /* ---------- Effekte ---------- */
+  function toast(html) { var t = el('div', 'toast', html); document.body.appendChild(t); setTimeout(function () { t.remove(); }, 3300); }
+  var cv = $('konfetti'), cx = cv.getContext && cv.getContext('2d'), teile = [], laeuft = false;
+  function konfetti(n) {
+    if (!cx || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    cv.width = innerWidth; cv.height = innerHeight;
+    var farben = [KL.farbe1, KL.farbe2, '#FFC23C', '#E8590C', '#1D5BD8', '#ffffff'];
+    for (var i = 0; i < n; i++) teile.push({ x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .35, vx: (Math.random() - .5) * 14, vy: -Math.random() * 13 - 4, r: Math.random() * 6 + 4, w: Math.random() * 6, c: farben[i % farben.length], a: Math.random() * 6, t: 0 });
+    if (!laeuft) { laeuft = true; requestAnimationFrame(schritt); }
+  }
+  function schritt() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    teile = teile.filter(function (p) { return p.t < 140 && p.y < cv.height + 20; });
+    teile.forEach(function (p) {
+      p.t++; p.vy += .35; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.a += .2;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c; cx.globalAlpha = Math.max(0, 1 - p.t / 140);
+      cx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2 + p.w / 3); cx.restore();
+    });
+    if (teile.length) requestAnimationFrame(schritt); else { laeuft = false; cx.clearRect(0, 0, cv.width, cv.height); }
+  }
+
+  zeigeMenue();
+})();
+
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
