@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7cc4f4">
+<title>Kürz-Meister – Mathe 6c</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231d2b4a'/%3E%3Cpath d='M14 32h36' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M22 24l20-14M22 54l20-14' stroke='%23e5484d' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#1d2b4a; --paper:#fffdf6; --line:#d9d4c5; --mute:#7b7f8e;
+  --orange:#ff8a3d; --yellow:#ffc93c; --green:#2fa866; --red:#e5484d; --blue:#3b77a8; --lila:#8e5bd6;
+  --font:"Baloo 2","Fredoka","Nunito",ui-rounded,"SF Pro Rounded","Segoe UI Rounded","Arial Rounded MT Bold","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#7cc4f4;font-family:var(--font);color:var(--ink);
+  -webkit-user-select:none;user-select:none;touch-action:manipulation}
+body{background:radial-gradient(circle at 20% 10%,#a8dbff 0,#7cc4f4 45%,#5fb0ea 100%) fixed;min-height:100vh;min-height:100dvh;
+  padding:max(12px,env(safe-area-inset-top)) 12px max(24px,env(safe-area-inset-bottom))}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto}
+.card{background:var(--paper);border:3px solid var(--ink);border-radius:26px;padding:18px 18px 20px;box-shadow:0 7px 0 rgba(29,43,74,.32)}
+.btn{font-weight:800;font-size:20px;color:var(--ink);background:var(--yellow);border:3px solid var(--ink);
+  border-radius:999px;padding:9px 24px;box-shadow:0 5px 0 var(--ink);cursor:pointer;line-height:1.2}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn.sec{background:#fff;font-size:17px}
+.btn.gruen{background:#7fdc9f}
+.btn:disabled{background:#e8e2d0;color:#a8a396;border-color:#a8a396;box-shadow:0 5px 0 #a8a396;cursor:not-allowed;transform:none}
+.zurueck{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:15px;color:var(--ink);background:rgba(255,253,246,.9);
+  border:2.5px solid var(--ink);border-radius:999px;padding:6px 14px 6px 10px;text-decoration:none;margin-bottom:12px}
+.zurueck svg{width:16px;height:16px}
+
+/* ---------- Menü ---------- */
+.logo{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.logo svg{width:70px;height:70px;flex:none;transform:rotate(-6deg)}
+.logo h1{margin:0;font-size:clamp(32px,8vw,52px);line-height:.95;font-weight:900;letter-spacing:-.5px}
+.logo h1 i{font-style:normal;color:var(--red)}
+.logo small{display:block;font-size:15px;font-weight:700;color:var(--mute);margin-top:4px}
+.how{font-size:16px;line-height:1.4;margin:10px 0 4px;color:#3c4763}
+.rang{display:flex;align-items:center;gap:10px;background:#f6f2e6;border:3px solid var(--line);border-radius:18px;padding:8px 12px;margin:14px 0 6px;font-weight:700}
+.rang b{font-size:22px}
+.rang .st{margin-left:auto;font-size:20px;white-space:nowrap}
+.levels{display:grid;gap:10px;margin-top:12px}
+.lv{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:12px;text-align:left;width:100%;cursor:pointer;
+  background:#fff;border:3px solid var(--ink);border-radius:20px;padding:10px 14px;box-shadow:0 4px 0 var(--ink)}
+.lv:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.lv .nr{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;font-weight:900;color:#fff;background:var(--c)}
+.lv b{display:block;font-size:19px;line-height:1.15}
+.lv small{display:block;font-size:14px;color:var(--mute);font-weight:600;line-height:1.25;margin-top:2px}
+.lv .sterne{font-size:18px;white-space:nowrap;letter-spacing:1px}
+.lv.zu{opacity:.55;cursor:not-allowed;box-shadow:0 4px 0 #a8a396;border-color:#a8a396}
+.lv.zu .nr{background:#b9b3a3}
+.stern{color:#e8b500}.stern.leer{color:#d6d0bf}
+
+/* ---------- Spiel ---------- */
+.hud{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.pill{background:rgba(255,253,246,.95);border:3px solid var(--ink);border-radius:999px;padding:5px 14px;font-weight:800;font-size:16px;box-shadow:0 3px 0 rgba(29,43,74,.25)}
+.hud .pill.lvn{margin-right:auto}
+.punkte{display:flex;gap:6px}
+.punkte i{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--ink);background:#fff}
+.punkte i.f{background:var(--yellow)}
+.punkte i.a{background:var(--orange)}
+.auftrag{text-align:center;font-weight:800;font-size:20px;margin:0 0 4px}
+.unter{text-align:center;color:var(--mute);font-weight:700;font-size:15px;margin:0 0 6px;min-height:21px}
+.zeile{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:30px;font-weight:800;margin:4px 0 2px}
+.zeile.orig{font-size:24px;color:#3c4763}
+.vz{font-size:34px;font-weight:900;min-width:20px;text-align:center}
+.bruch{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.bruch .s{display:block;width:100%;height:4px;border-radius:3px;background:var(--ink);margin:4px 0}
+.klein .bruch .s{height:3px;margin:2px 0}
+.oben,.unten{display:flex;align-items:flex-end;justify-content:center;gap:2px}
+.unten{align-items:flex-start}
+.mal{font-size:24px;color:var(--mute);padding:0 2px;align-self:center}
+.tok{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer;border-radius:14px;padding:2px 6px;min-width:46px;
+  border:3px solid transparent;transition:background .12s,border-color .12s}
+.unten .tok{flex-direction:column-reverse}
+.tok .alt{font-size:22px;color:var(--mute);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:3px;line-height:1.05}
+.tok .neu{font-size:40px;line-height:1.05}
+.tok .neu.rot{color:var(--red)}
+.tok.sel{background:#fff1b8;border-color:var(--ink)}
+.tok.tipp{animation:tipp 1s ease-in-out infinite}
+@keyframes tipp{0%,100%{background:transparent}50%{background:#ffe08a}}
+.tok.wackel{animation:wackel .4s}
+@keyframes wackel{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.tok.eins .neu{color:#9aa0ad}
+.erg{display:flex;align-items:center;justify-content:center;gap:10px;font-size:30px;font-weight:800;margin-top:6px;color:var(--green)}
+.erg .bruch .s{background:var(--green)}
+
+.feld{margin-top:12px;border-top:3px dashed var(--line);padding-top:12px}
+.frage{text-align:center;font-weight:800;font-size:19px;margin-bottom:10px}
+.frage .z{display:inline-block;min-width:54px;padding:2px 10px;border:3px solid var(--ink);border-radius:12px;background:#fff;font-size:24px;margin-left:6px;vertical-align:middle}
+.tasten{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:400px;margin:0 auto}
+.taste{font-weight:800;font-size:24px;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px 0;box-shadow:0 3px 0 var(--ink);cursor:pointer}
+.taste:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink)}
+.taste.ok{grid-column:span 4;background:var(--green);color:#fff}
+@media (min-width:720px){
+  .tok .neu{font-size:54px}
+  .tok .alt{font-size:28px}
+  .zeile{font-size:36px}
+  .zeile.orig{font-size:30px}
+  .tok{min-width:60px}
+}
+.taste.del{background:#f4f0e4}
+.vzwahl{display:flex;justify-content:center;gap:16px}
+.vzwahl .btn{font-size:30px;min-width:120px}
+.aktionen{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px}
+.aktionen .btn{font-size:17px;padding:8px 18px}
+.meldung{margin-top:12px;border-radius:16px;padding:10px 14px;font-weight:700;font-size:16px;line-height:1.35;border:3px solid var(--ink)}
+.meldung.gut{background:#c9f3d6}
+.meldung.fehler{background:#ffd3d0}
+.meldung.tipp{background:#fff1b8}
+.meldung.info{background:#e3effa}
+.geschafft{text-align:center}
+.geschafft .sterne{font-size:44px;letter-spacing:4px;margin:4px 0}
+
+/* ---------- Rundenende ---------- */
+.ende{text-align:center}
+.ende h2{margin:0;font-size:34px;font-weight:900}
+.ende .sterne{font-size:40px;letter-spacing:3px;margin:8px 0}
+.liste{display:grid;gap:6px;margin:12px auto 4px;max-width:420px;text-align:left}
+.liste div{display:flex;justify-content:space-between;align-items:center;background:#f6f2e6;border-radius:12px;padding:6px 12px;font-weight:700}
+.klein{font-size:20px}
+.fuss{text-align:center;color:rgba(29,43,74,.7);font-size:13px;font-weight:700;margin-top:14px}
+@media (max-width:480px){
+  .zeile{font-size:26px;gap:6px}
+  .tok{min-width:38px;padding:2px 3px}
+  .tok .neu{font-size:32px}
+  .tok .alt{font-size:19px}
+  .taste{font-size:21px;padding:7px 0}
+  .card{padding:14px 12px 16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= Menü ================= -->
+<section id="menue">
+  <a class="zurueck" href="index.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Mathe 6c</a>
+  <div class="card">
+    <div class="logo">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#fffdf6" stroke="#1d2b4a" stroke-width="4"/><text x="32" y="27" text-anchor="middle" font-size="22" font-weight="900" fill="#1d2b4a" font-family="sans-serif">12</text><path d="M14 33h36" stroke="#1d2b4a" stroke-width="4" stroke-linecap="round"/><text x="32" y="55" text-anchor="middle" font-size="22" font-weight="900" fill="#1d2b4a" font-family="sans-serif">18</text><path d="M18 26L46 10M18 55L46 39" stroke="#e5484d" stroke-width="4.5" stroke-linecap="round"/></svg>
+      <div><h1>Kürz-<i>Meister</i></h1><small>Mathe 6c · Kürzen Schritt für Schritt</small></div>
+    </div>
+    <p class="how">Tippe eine Zahl <b>oben</b> und eine Zahl <b>unten</b> an. Dann gibst du ein, durch welche Zahl du beide teilst. Bist du fertig, tippst du auf „Fertig“.<br>★★★ gibt es nur, wenn du ohne Fehler und mit möglichst wenigen Schritten kürzt.</p>
+    <div class="rang"><span id="rangName">Kürz-Lehrling</span><span class="st" id="rangSterne"></span></div>
+    <div class="levels" id="levels"></div>
+  </div>
+  <p class="fuss">Dein Fortschritt wird nur auf diesem Gerät gespeichert.</p>
+</section>
+
+<!-- ================= Spiel ================= -->
+<section id="spiel" hidden>
+  <div class="hud">
+    <span class="pill lvn" id="hudLevel">Level 1</span>
+    <span class="pill punkte" id="hudPunkte"></span>
+    <button class="btn sec" id="btnAbbruch" style="font-size:15px;padding:5px 14px">Menü</button>
+  </div>
+  <div class="card">
+    <p class="auftrag" id="auftrag">Kürze vollständig.</p>
+    <p class="unter" id="unter"></p>
+    <div class="zeile orig klein" id="orig" hidden></div>
+    <div class="zeile" id="bild"></div>
+    <div class="erg" id="erg" hidden></div>
+    <div class="feld" id="feld"></div>
+    <div id="meldung"></div>
+    <div class="aktionen" id="aktionen">
+      <button class="btn sec" id="btnZurueck">↶ Schritt zurück</button>
+      <button class="btn sec" id="btnTipp">💡 Tipp</button>
+      <button class="btn gruen" id="btnFertig">✓ Fertig</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Rundenende ================= -->
+<section id="ende" hidden>
+  <div class="card ende">
+    <h2 id="endeTitel">Runde geschafft!</h2>
+    <div class="sterne" id="endeSterne"></div>
+    <p class="how" id="endeText"></p>
+    <div class="liste" id="endeListe"></div>
+    <div class="aktionen">
+      <button class="btn" id="btnNochmal">Nochmal</button>
+      <button class="btn gruen" id="btnWeiter" hidden>Nächstes Level</button>
+      <button class="btn sec" id="btnMenue">Zum Menü</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* =====================================================================
+   Kürz-Meister – Engine (ohne Bildschirm, in Node testbar)
+   Eine Aufgabe = Faktoren {n, d, neg}. Gekürzt wird immer ein Zähler
+   mit einem Nenner (auch über Kreuz) durch einen gemeinsamen Teiler.
+   ===================================================================== */
+var KM = (function () {
+  'use strict';
+  function ggt(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  function ri(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function prod(a) { return a.reduce(function (p, x) { return p * x; }, 1); }
+
+  /* Paare (i, j) mit gemeinsamem Teiler > 1 */
+  function paare(oben, unten) {
+    var r = [];
+    for (var i = 0; i < oben.length; i++) for (var j = 0; j < unten.length; j++) {
+      var g = ggt(oben[i], unten[j]); if (g > 1) r.push({ i: i, j: j, g: g });
+    }
+    return r;
+  }
+  /* kleinste Zahl von Kürz-Schritten bis nichts mehr geht (Breitensuche, immer mit dem ggT) */
+  function optimal(oben, unten) {
+    var start = { o: oben.slice(), u: unten.slice(), k: 0 }, q = [start], seen = {};
+    seen[oben.join(',') + '|' + unten.join(',')] = 1;
+    while (q.length) {
+      var s = q.shift(), p = paare(s.o, s.u);
+      if (!p.length) return s.k;
+      for (var x = 0; x < p.length; x++) {
+        var o = s.o.slice(), u = s.u.slice();
+        o[p[x].i] /= p[x].g; u[p[x].j] /= p[x].g;
+        var key = o.join(',') + '|' + u.join(',');
+        if (!seen[key]) { seen[key] = 1; q.push({ o: o, u: u, k: s.k + 1 }); }
+      }
+      if (q.length > 20000) break;
+    }
+    return 9;
+  }
+
+  /* ---------- Aufgaben je Level ---------- */
+  function teilerfremd(maxN) { // echter, vollständig gekürzter Bruch p/q
+    for (;;) { var q = ri(2, maxN), p = ri(1, q - 1); if (ggt(p, q) === 1) return [p, q]; }
+  }
+  function einzel(kListe, maxQ, maxWert) {
+    for (;;) {
+      var b = teilerfremd(maxQ), k = pick(kListe), n = b[0] * k, d = b[1] * k;
+      if (d <= maxWert) return { faktoren: [{ n: n, d: d, neg: false }] };
+    }
+  }
+  function zweiUeberKreuz(minPaare, maxWert) {
+    for (var v = 0; v < 5000; v++) {
+      var a = ri(1, maxWert), b = ri(2, maxWert), c = ri(1, maxWert), d = ri(2, maxWert);
+      if (ggt(a, b) !== 1 || ggt(c, d) !== 1 || a >= 2 * b || c >= 2 * d) continue;
+      var p1 = ggt(a, d) > 1 ? 1 : 0, p2 = ggt(c, b) > 1 ? 1 : 0;
+      if (p1 + p2 < minPaare || (minPaare === 1 && p1 + p2 > 1)) continue;
+      if (a === d || b === c) continue;
+      return { faktoren: [{ n: a, d: b, neg: false }, { n: c, d: d, neg: false }] };
+    }
+  }
+  /* große, aber "schöne" Teiler wie im Test: 11/48 · 32/121 */
+  function grosseZahlen() {
+    var T = [7, 8, 9, 11, 12, 13, 14, 15, 16];
+    for (var v = 0; v < 5000; v++) {
+      var m1 = pick(T), m2 = pick(T), p = ri(1, 5), q = ri(1, 5), r = ri(1, 5), s = ri(1, 5);
+      var a = p * m1, d = q * m1, c = r * m2, b = s * m2;
+      if (m1 === m2) continue;
+      if (ggt(a, b) !== 1 || ggt(c, d) !== 1) continue;
+      if (Math.max(a, b, c, d) > 130 || Math.min(b, d) < 10) continue;
+      if (ggt(p, q) !== 1 || ggt(r, s) !== 1) continue;
+      return { faktoren: [{ n: a, d: b, neg: Math.random() < .5 }, { n: c, d: d, neg: Math.random() < .35 }] };
+    }
+  }
+  function dreiFaktoren() {
+    for (var v = 0; v < 20000; v++) {
+      var f = [];
+      for (var k = 0; k < 3; k++) {
+        var d = ri(3, 40), n = ri(1, 40);
+        if (ggt(n, d) !== 1 || n > 2 * d) { k--; continue; }
+        f.push({ n: n, d: d, neg: false });
+      }
+      var o = f.map(function (x) { return x.n; }), u = f.map(function (x) { return x.d; });
+      var p = paare(o, u).length;
+      if (p < 3) continue;
+      var opt = optimal(o, u);
+      if (opt < 3 || opt > 5) continue;
+      var Z = prod(o), N = prod(u), g = ggt(Z, N);
+      if (N / g > 40 || Z / g > 40) continue;
+      var negs = ri(1, 3), idx = [0, 1, 2].sort(function () { return Math.random() - .5; });
+      for (var w = 0; w < negs; w++) f[idx[w]].neg = true;
+      return { faktoren: f };
+    }
+  }
+
+  var LEVEL = [
+    { nr: 1, name: 'Aufwärmen', text: 'Einfache Brüche vollständig kürzen', farbe: '#2fa866',
+      neu: function () { return einzel([2, 3, 4, 5], 9, 60); } },
+    { nr: 2, name: 'Großer Teiler', text: 'Mit dem größten Teiler geht es in einem Schritt', farbe: '#3b77a8',
+      neu: function () { return einzel([6, 8, 9, 12, 14, 15, 16, 18], 7, 120); } },
+    { nr: 3, name: 'Besondere Teiler', text: 'Versteckte Teiler wie 11, 13, 17 oder 25', farbe: '#8e5bd6',
+      neu: function () { return einzel([11, 13, 17, 19, 25, 24], 8, 160); } },
+    { nr: 4, name: 'Kürzen beim Malnehmen', text: 'Zwei Brüche auf einem Bruchstrich – kürze über Kreuz', farbe: '#ff8a3d', mal: true,
+      neu: function (k) { return zweiUeberKreuz(k < 3 ? 1 : 2, 30); } },
+    { nr: 5, name: 'Testniveau', text: 'Große Zahlen, drei Brüche und Minuszeichen', farbe: '#e5484d', mal: true, vorzeichen: true,
+      neu: function (k) { return k % 2 === 0 ? grosseZahlen() : dreiFaktoren(); } }
+  ];
+  var PRO_RUNDE = 6;
+
+  function aufgabe(lv, k) {
+    var a = LEVEL[lv - 1].neu(k);
+    a.level = lv;
+    var o = a.faktoren.map(function (f) { return f.n; }), u = a.faktoren.map(function (f) { return f.d; });
+    a.opt = optimal(o, u);
+    a.negativ = a.faktoren.filter(function (f) { return f.neg; }).length % 2 === 1;
+    return a;
+  }
+  function runde(lv) {
+    var r = [], schluessel = {};
+    for (var k = 0; k < PRO_RUNDE; k++) {
+      var a, key, v = 0;
+      do { a = aufgabe(lv, k); key = JSON.stringify(a.faktoren); v++; } while (schluessel[key] && v < 50);
+      schluessel[key] = 1; r.push(a);
+    }
+    return r;
+  }
+  return { ggt: ggt, paare: paare, optimal: optimal, aufgabe: aufgabe, runde: runde, LEVEL: LEVEL, PRO_RUNDE: PRO_RUNDE, prod: prod };
+})();
+if (typeof module !== 'undefined') module.exports = KM;
+</script>
+
+<script>
+/* =====================================================================
+   Kürz-Meister – Oberfläche
+   ===================================================================== */
+(function () {
+  'use strict';
+  if (typeof document === 'undefined') return;
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'kuerzmeister-m6';
+  var mem = {};
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); if (v !== null) return JSON.parse(v); } catch (e) {} return (k in mem) ? mem[k] : d; },
+    set: function (k, v) { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  var P = store.get(KEY, { best: {}, frei: 1 });
+  var ALLE = /[?&]alle/.test(location.search);
+
+  function sterneHTML(n, max) {
+    var s = ''; for (var i = 0; i < (max || 3); i++) s += '<span class="stern' + (i < n ? '' : ' leer') + '">★</span>'; return s;
+  }
+  function gesamt() { var s = 0; for (var k in P.best) s += P.best[k]; return s; }
+  var RAENGE = [[0, 'Kürz-Lehrling'], [20, 'Kürz-Geselle'], [45, 'Kürz-Profi'], [70, 'Kürz-Meister'], [88, 'Kürz-Großmeister']];
+
+  /* ---------------- Menü ---------------- */
+  function zeigeMenue() {
+    $('spiel').hidden = true; $('ende').hidden = true; $('menue').hidden = false;
+    var g = gesamt(), rang = RAENGE[0][1];
+    RAENGE.forEach(function (r) { if (g >= r[0]) rang = r[1]; });
+    $('rangName').innerHTML = 'Dein Rang: <b>' + rang + '</b>';
+    $('rangSterne').innerHTML = g + ' / ' + (KM.LEVEL.length * KM.PRO_RUNDE * 3) + ' <span class="stern">★</span>';
+    var h = '';
+    KM.LEVEL.forEach(function (L) {
+      var frei = ALLE || L.nr <= P.frei, best = P.best[L.nr] || 0;
+      h += '<button class="lv' + (frei ? '' : ' zu') + '" data-lv="' + L.nr + '" style="--c:' + L.farbe + '">' +
+        '<span class="nr">' + (frei ? L.nr : '🔒') + '</span><span><b>' + L.name + '</b><small>' + L.text + '</small></span>' +
+        '<span class="sterne">' + (best ? best + ' <span class="stern">★</span>' : '') + '</span></button>';
+    });
+    $('levels').innerHTML = h;
+    Array.prototype.forEach.call(document.querySelectorAll('.lv'), function (b) {
+      b.onclick = function () {
+        var lv = +b.getAttribute('data-lv');
+        if (!(ALLE || lv <= P.frei)) { b.classList.add('wackel'); setTimeout(function () { b.classList.remove('wackel'); }, 400); return; }
+        starteRunde(lv);
+      };
+    });
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------------- Runde ---------------- */
+  var R = null; // {lv, aufgaben, nr, sterne:[]}
+  var A = null; // aktuelle Aufgabe + Zustand
+  function starteRunde(lv) {
+    R = { lv: lv, aufgaben: KM.runde(lv), nr: 0, sterne: [] };
+    $('menue').hidden = true; $('ende').hidden = true; $('spiel').hidden = false;
+    starteAufgabe();
+  }
+  function starteAufgabe() {
+    var a = R.aufgaben[R.nr], L = KM.LEVEL[R.lv - 1];
+    A = {
+      a: a, L: L,
+      oben: a.faktoren.map(function (f) { return [f.n]; }),
+      unten: a.faktoren.map(function (f) { return [f.d]; }),
+      verlauf: [], fehler: 0, tipp: false, schritte: 0,
+      selO: -1, selU: -1, eingabe: '', fertig: false,
+      vzOffen: !!L.vorzeichen, vzWahl: null
+    };
+    $('hudLevel').textContent = 'Level ' + R.lv + ' · ' + L.name;
+    var p = '';
+    for (var i = 0; i < KM.PRO_RUNDE; i++) p += '<i class="' + (i < R.nr ? 'f' : (i === R.nr ? 'a' : '')) + '"></i>';
+    $('hudPunkte').innerHTML = p;
+    $('meldung').innerHTML = '';
+    $('erg').hidden = true;
+    zeichne();
+    window.scrollTo(0, 0);
+  }
+  function wert(stapel) { return stapel[stapel.length - 1]; }
+  function obenW() { return A.oben.map(wert); }
+  function untenW() { return A.unten.map(wert); }
+
+  /* ---------------- Zeichnen ---------------- */
+  function bruchHTML(n, d) { return '<span class="bruch"><span>' + n + '</span><span class="s"></span><span>' + d + '</span></span>'; }
+  function original() {
+    var f = A.a.faktoren, h = '';
+    f.forEach(function (x, i) {
+      if (i) h += '<span class="mal">·</span>';
+      var b = bruchHTML(x.n, x.d);
+      if (x.neg) b = (i ? '(' : '') + '<span class="vz">−</span>' + b + (i ? ')' : '');
+      h += b;
+    });
+    return h;
+  }
+  function tokHTML(stapel, seite, idx) {
+    var h = '', cls = 'tok';
+    if ((seite === 'o' && A.selO === idx) || (seite === 'u' && A.selU === idx)) cls += ' sel';
+    if (A.tippPaar && ((seite === 'o' && A.tippPaar.i === idx) || (seite === 'u' && A.tippPaar.j === idx))) cls += ' tipp';
+    if (wert(stapel) === 1 && stapel.length > 1) cls += ' eins';
+    var alt = stapel.slice(0, -1);
+    // oben: alte Zahlen unten (näher am Bruchstrich), neue darüber -> column; Reihenfolge in DOM: neu zuerst
+    h += '<span class="' + cls + '" data-s="' + seite + '" data-i="' + idx + '">';
+    h += '<span class="neu' + (stapel.length > 1 ? ' rot' : '') + '">' + wert(stapel) + '</span>';
+    for (var k = alt.length - 1; k >= 0; k--) h += '<span class="alt">' + alt[k] + '</span>';
+    h += '</span>';
+    return h;
+  }
+  function zeichne() {
+    var L = A.L, mehr = A.a.faktoren.length > 1;
+    $('auftrag').textContent = mehr ? 'Kürze vor dem Malnehmen. Rechne dann aus.' : 'Kürze vollständig.';
+    var orig = $('orig');
+    if (mehr) { orig.hidden = false; orig.innerHTML = original() + '<span>=</span>'; } else orig.hidden = true;
+
+    var bild = $('bild');
+    if (A.vzOffen) {
+      bild.innerHTML = '';
+      $('unter').textContent = 'Zuerst das Vorzeichen: Wird das Ergebnis positiv oder negativ?';
+      $('feld').innerHTML = '<div class="vzwahl"><button class="btn" id="vzPlus">+</button><button class="btn" id="vzMinus">−</button></div>';
+      $('vzPlus').onclick = function () { vorzeichen(false); };
+      $('vzMinus').onclick = function () { vorzeichen(true); };
+      setAktionen(false);
+      return;
+    }
+    var o = '', u = '';
+    A.oben.forEach(function (s, i) { if (i) o += '<span class="mal">·</span>'; o += tokHTML(s, 'o', i); });
+    A.unten.forEach(function (s, i) { if (i) u += '<span class="mal">·</span>'; u += tokHTML(s, 'u', i); });
+    var vz = '';
+    if (L.vorzeichen) vz = '<span class="vz">' + (A.a.negativ ? '−' : '+') + '</span>';
+    else if (mehr && A.a.negativ) vz = '<span class="vz">−</span>';
+    bild.innerHTML = vz + '<span class="bruch"><span class="oben">' + o + '</span><span class="s"></span><span class="unten">' + u + '</span></span>';
+    Array.prototype.forEach.call(bild.querySelectorAll('.tok'), function (t) {
+      t.onclick = function () { tippeToken(t.getAttribute('data-s'), +t.getAttribute('data-i')); };
+    });
+    if (A.fertig) { $('unter').textContent = ''; return; }
+    if (A.selO >= 0 && A.selU >= 0) {
+      $('unter').textContent = '';
+      zeigeTasten();
+    } else {
+      $('unter').textContent = A.selO >= 0 ? 'Jetzt eine Zahl unten antippen.' : (A.selU >= 0 ? 'Jetzt eine Zahl oben antippen.' : 'Tippe eine Zahl oben und eine Zahl unten an.');
+      $('feld').innerHTML = '';
+    }
+    setAktionen(true);
+  }
+  function setAktionen(an) {
+    $('aktionen').hidden = !an;
+    $('btnZurueck').disabled = !A.verlauf.length;
+  }
+  function zeigeTasten() {
+    var a = wert(A.oben[A.selO]), b = wert(A.unten[A.selU]);
+    var h = '<div class="frage">Kürze ' + a + ' und ' + b + ' mit <span class="z" id="anzeige">' + (A.eingabe || '&nbsp;') + '</span></div><div class="tasten">';
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 0].forEach(function (z) { h += '<button class="taste" data-z="' + z + '">' + z + '</button>'; });
+    h += '<button class="taste del" data-z="del" aria-label="löschen">⌫</button><button class="taste ok" data-z="ok">Kürzen</button></div>';
+    $('feld').innerHTML = h;
+    Array.prototype.forEach.call(document.querySelectorAll('.taste'), function (t) {
+      t.onclick = function () { taste(t.getAttribute('data-z')); };
+    });
+  }
+
+  /* ---------------- Aktionen ---------------- */
+  function meldung(art, text) { $('meldung').innerHTML = text ? '<div class="meldung ' + art + '">' + text + '</div>' : ''; }
+  function vorzeichen(neg) {
+    var minus = A.a.faktoren.filter(function (f) { return f.neg; }).length;
+    if (neg === A.a.negativ) {
+      A.vzOffen = false;
+      meldung('gut', 'Richtig! ' + (minus === 1 ? 'Ein Minuszeichen' : minus + ' Minuszeichen') + ' → das Ergebnis ist ' + (A.a.negativ ? 'negativ' : 'positiv') + '. Jetzt kürzen.');
+    } else {
+      A.fehler++;
+      meldung('fehler', 'Zähle die Minuszeichen: Es sind ' + minus + '. ' + (minus % 2 ? 'Ungerade Anzahl → negativ.' : 'Gerade Anzahl → positiv.'));
+    }
+    zeichne();
+  }
+  function tippeToken(seite, i) {
+    if (A.fertig) return;
+    A.tippPaar = null;
+    if (seite === 'o') A.selO = (A.selO === i ? -1 : i); else A.selU = (A.selU === i ? -1 : i);
+    A.eingabe = '';
+    meldung('', '');
+    zeichne();
+  }
+  function taste(z) {
+    if (z === 'del') { A.eingabe = A.eingabe.slice(0, -1); }
+    else if (z === 'ok') { return kuerzen(); }
+    else if (A.eingabe.length < 3) { A.eingabe = (A.eingabe === '0' ? '' : A.eingabe) + z; }
+    $('anzeige').innerHTML = A.eingabe || '&nbsp;';
+  }
+  function wackeln() {
+    Array.prototype.forEach.call(document.querySelectorAll('.tok.sel'), function (t) {
+      t.classList.add('wackel'); setTimeout(function () { t.classList.remove('wackel'); }, 400);
+    });
+  }
+  function kuerzen() {
+    var k = parseInt(A.eingabe, 10), a = wert(A.oben[A.selO]), b = wert(A.unten[A.selU]);
+    if (!k) { meldung('info', 'Gib zuerst eine Zahl ein.'); return; }
+    if (k === 1) { meldung('info', 'Mit 1 kürzen ändert nichts. Suche einen Teiler größer als 1.'); A.eingabe = ''; zeigeTasten(); return; }
+    var fa = a % k !== 0, fb = b % k !== 0;
+    if (fa || fb) {
+      A.fehler++;
+      var wer = fa && fb ? a + ' und ' + b + ' sind' : (fa ? a : b) + ' ist';
+      var g = KM.ggt(a, b);
+      meldung('fehler', wer + ' nicht durch ' + k + ' teilbar.' + (g === 1 ? ' Diese beiden Zahlen haben gar keinen gemeinsamen Teiler – wähle ein anderes Paar.' : ''));
+      A.eingabe = ''; wackeln(); zeigeTasten(); return;
+    }
+    A.verlauf.push({ i: A.selO, j: A.selU });
+    A.oben[A.selO].push(a / k); A.unten[A.selU].push(b / k);
+    A.schritte++;
+    var nochGgt = KM.ggt(a / k, b / k);
+    var txt = a + ' : ' + k + ' = ' + (a / k) + ' und ' + b + ' : ' + k + ' = ' + (b / k) + '.';
+    if (nochGgt > 1) txt += ' Die beiden lassen sich noch weiter kürzen!';
+    meldung('gut', txt);
+    A.selO = -1; A.selU = -1; A.eingabe = '';
+    zeichne();
+  }
+  function schrittZurueck() {
+    if (!A.verlauf.length || A.fertig) return;
+    var v = A.verlauf.pop();
+    A.oben[v.i].pop(); A.unten[v.j].pop();
+    A.selO = -1; A.selU = -1; A.eingabe = ''; A.tippPaar = null;
+    meldung('', ''); zeichne();
+  }
+  function tipp() {
+    if (A.fertig || A.vzOffen) return;
+    var p = KM.paare(obenW(), untenW());
+    if (!p.length) { meldung('tipp', 'Hier lässt sich nichts mehr kürzen. Tippe auf „Fertig“.'); return; }
+    p.sort(function (x, y) { return y.g - x.g; });
+    A.tipp = true; A.tippPaar = p[0]; A.selO = -1; A.selU = -1;
+    var mehr = A.a.faktoren.length > 1;
+    meldung('tipp', '<b>Tipp:</b> ' + obenW()[p[0].i] + ' und ' + untenW()[p[0].j] + ' haben den gemeinsamen Teiler <b>' + p[0].g + '</b>.' +
+      (mehr && A.a.faktoren.length > 1 && p[0].i !== p[0].j ? ' Das ist über Kreuz – das darfst du, weil alles auf einem Bruchstrich steht.' : ''));
+    zeichne();
+  }
+  function fertig() {
+    if (A.fertig || A.vzOffen) return;
+    var o = obenW(), u = untenW(), p = KM.paare(o, u);
+    if (p.length) {
+      A.fehler++;
+      meldung('fehler', 'Da kann man noch kürzen! Schau dir jede Zahl oben mit jeder Zahl unten an.');
+      return;
+    }
+    A.fertig = true; A.selO = -1; A.selU = -1;
+    var Z = KM.prod(o), N = KM.prod(u), mehr = A.a.faktoren.length > 1, neg = mehr && A.a.negativ;
+    var st = A.tipp ? 1 : ((A.fehler === 0 && A.schritte <= A.a.opt) ? 3 : 2);
+    R.sterne.push(st);
+    var e = '';
+    if (mehr) {
+      e = '<span>=</span>' + (neg ? '<span class="vz">−</span>' : '') + bruchHTML(o.join(' · '), u.join(' · ')) + '<span>=</span>' + (neg ? '<span class="vz">−</span>' : '') + (N === 1 ? Z : bruchHTML(Z, N));
+      if (N > 1 && Z > N) e += '<span>=</span>' + (neg ? '<span class="vz">−</span>' : '') + Math.floor(Z / N) + (Z % N ? bruchHTML(Z % N, N) : '');
+    }
+    $('erg').innerHTML = e; $('erg').hidden = !mehr;
+    var lob = st === 3 ? (A.schritte === 1 ? 'Perfekt – in einem Schritt mit dem größten Teiler!' : 'Perfekt – fehlerfrei und mit den wenigsten Schritten!')
+      : st === 2 ? (A.fehler ? 'Geschafft! Beim nächsten Mal ohne Fehler für ★★★.' : 'Geschafft! Mit dem größten gemeinsamen Teiler ginge es in ' + A.a.opt + (A.a.opt === 1 ? ' Schritt' : ' Schritten') + '.')
+      : 'Geschafft – mit Tipp.';
+    $('meldung').innerHTML = '<div class="meldung gut geschafft"><div class="sterne">' + sterneHTML(st) + '</div>' + lob +
+      '<div class="aktionen"><button class="btn" id="btnNaechste">' + (R.nr + 1 < KM.PRO_RUNDE ? 'Nächste Aufgabe →' : 'Zur Auswertung →') + '</button></div></div>';
+    $('btnNaechste').onclick = naechste;
+    zeichne();
+    $('aktionen').hidden = true;
+    $('feld').innerHTML = '';
+  }
+  function naechste() {
+    R.nr++;
+    if (R.nr < KM.PRO_RUNDE) starteAufgabe(); else rundenEnde();
+  }
+  function rundenEnde() {
+    var summe = R.sterne.reduce(function (a, b) { return a + b; }, 0), max = KM.PRO_RUNDE * 3;
+    if (!P.best[R.lv] || summe > P.best[R.lv]) P.best[R.lv] = summe;
+    var neuFrei = false;
+    if (R.lv >= P.frei && R.lv < KM.LEVEL.length) { P.frei = R.lv + 1; neuFrei = true; }
+    store.set(KEY, P);
+    $('spiel').hidden = true; $('ende').hidden = false;
+    $('endeTitel').textContent = summe >= max - 2 ? 'Meisterhaft!' : (summe >= max * .6 ? 'Stark gemacht!' : 'Runde geschafft!');
+    $('endeSterne').innerHTML = summe + ' / ' + max + ' <span class="stern">★</span>';
+    $('endeText').textContent = neuFrei ? 'Level ' + (R.lv + 1) + ' ist jetzt freigeschaltet.' : (R.lv === KM.LEVEL.length ? 'Du hast das schwerste Level geschafft.' : '');
+    var h = '';
+    R.sterne.forEach(function (s, i) { h += '<div><span>Aufgabe ' + (i + 1) + '</span><span>' + sterneHTML(s) + '</span></div>'; });
+    $('endeListe').innerHTML = h;
+    $('btnWeiter').hidden = !(R.lv < KM.LEVEL.length && (ALLE || R.lv + 1 <= P.frei));
+    window.scrollTo(0, 0);
+  }
+
+  /* Tastatur am PC: Ziffern, Rücktaste, Enter */
+  document.addEventListener('keydown', function (e) {
+    if ($('spiel').hidden || !A || A.fertig || !document.querySelector('.tasten')) return;
+    if (/^[0-9]$/.test(e.key)) taste(e.key);
+    else if (e.key === 'Backspace') taste('del');
+    else if (e.key === 'Enter') taste('ok');
+    else return;
+    e.preventDefault();
+  });
+
+  $('btnZurueck').onclick = schrittZurueck;
+  $('btnTipp').onclick = tipp;
+  $('btnFertig').onclick = fertig;
+  $('btnAbbruch').onclick = function () {
+    if (R && R.nr > 0 && !confirm('Runde abbrechen? Die Sterne dieser Runde gehen verloren.')) return;
+    zeigeMenue();
+  };
+  $('btnNochmal').onclick = function () { starteRunde(R.lv); };
+  $('btnWeiter').onclick = function () { starteRunde(R.lv + 1); };
+  $('btnMenue').onclick = zeigeMenue;
+  var m = location.search.match(/[?&]level=(\d)/);
+  if (m && (ALLE || +m[1] <= P.frei)) starteRunde(+m[1]); else zeigeMenue();
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
