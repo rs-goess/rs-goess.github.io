@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.4 Übung Gasgesetze – Lernpfad</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../assets/durchklick.css">
+<style>
+  /* Physik: Petrol statt Mathe-Blau */
+  :root{--blau:#0E7490;--petrol:#0B3B47;--mint:#bfebd3;--mint-text:#0f5132}
+  body{background:var(--petrol)}
+  .karte h2{color:var(--blau)}
+  .f .katex{font-size:1.05em}
+  .fahrplan{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+  .fahrplan div{border-radius:12px;padding:8px 10px;font-size:15px}
+  .fahrplan .li{background:#eef6f8;border:2px solid #9cc9d4}
+  .fahrplan .re{background:#fdf3ea;border:2px solid #f0b58f}
+  .fahrplan b{display:block;margin-bottom:2px}
+  .fahrplan ol{margin:2px 0 0;padding-left:20px}
+  /* Lösung in zwei Spalten wie auf dem Blatt */
+  .loesung{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:6px}
+  .spalte h4{margin:4px 0 2px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#6b7780}
+  .spalte .zeilen li{font-size:15.5px}
+  .antwort{grid-column:1/-1}
+  .zeilen li .lab{display:block;font-size:12.5px;font-weight:bold;color:#6b7780;text-transform:uppercase;letter-spacing:.04em}
+  .zeilen li.runden{border-left-color:var(--orange);background:var(--orange-hell)}
+  .zeilen li.runden .erg{display:inline-block;border-bottom:3px double var(--dunkel);font-weight:bold}
+  .leer-hinweis{font-size:14px;color:#9aa4ab;font-style:italic;margin:4px 0}
+  @media (max-width:520px){ .loesung,.fahrplan{grid-template-columns:1fr} }
+  /* Ergebnis prüfen */
+  .check{background:var(--grau);border-radius:12px;padding:10px 12px;margin:10px 0 4px}
+  .check label{font-weight:bold;font-size:15px;display:block;margin-bottom:6px}
+  .eingabe{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .eingabe input{font:inherit;font-size:17px;width:120px;padding:7px 10px;border:2px solid #c9d3da;border-radius:10px}
+  .eingabe select{font:inherit;font-size:15px;padding:7px 8px;border:2px solid #c9d3da;border-radius:10px;background:#fff;max-width:100%}
+  .eingabe .einh{font-weight:bold}
+  .eingabe button{border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:bold;background:var(--blau);color:#fff;cursor:pointer}
+  .rueck{margin-top:6px;font-size:15px;border-radius:8px;padding:6px 10px;display:none}
+  .rueck.gut{display:block;background:var(--gruen-hell);color:#1f6b41}
+  .rueck.fast{display:block;background:var(--gelb-hell);color:#7a5600}
+  .rueck.falsch{display:block;background:#fde8e8;color:#9b1c1c}
+  /* Quiz */
+  .quiz{list-style:none;margin:8px 0 0;padding:0}
+  .quiz li{border:1px solid #e3e3e3;border-radius:12px;padding:10px 12px;margin:8px 0}
+  .quiz .fr{font-size:16.5px;margin-bottom:6px}
+  .quiz .eingabe input{width:140px}
+  .quiz li.richtig{border-color:#9fd3b4;background:#f3fbf6}
+  .quiz .sel{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+  .punkte{font-weight:bold;color:var(--blau);margin-top:8px}
+  .regel{background:#eef6f8;border-radius:12px;padding:8px 12px;margin:8px 0;font-size:15px}
+  /* Tims Lösung */
+  .tim{border:2px dashed #6b7780;border-radius:12px;padding:8px 12px;margin:10px 0;font-size:15.5px;background:#fff}
+  .tim b{display:block;margin-bottom:4px}
+  .tim div{margin:2px 0}
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 9b · 2.4 Übung Gasgesetze</small>
+  <h1>Lernpfad zum Übungsblatt (Aufgabe 1–6)</h1>
+  <div class="chips" id="chips"></div>
+</header>
+<main id="main"></main>
+<nav><button id="zurueck" type="button">◀ Zurück</button><button id="weiter" type="button">Weiter ▶</button></nav>
+
+<script>
+/* =====================================================================
+   Inhalt. Formeln stehen zwischen $…$ (LaTeX, KaTeX).
+   Lösungsschritte: seite 'l' (links: geg. mit Umrechnung, ganz unten ges.) oder 'r' (rechts: Formel,
+   Umstellen, Einsetzen, Ergebnis, Runden). 'a' = Antwortsatz (ganze Breite).
+   check.fehler: typische falsche Ergebnisse mit gezielter Rückmeldung.
+   ===================================================================== */
+var U = function (e) { return '\\,' + (e === 'l' ? '\\ell' : '\\mathrm{' + e + '}'); };
+var C = '\\,{}^{\\circ}\\mathrm{C}';
+var PF = '\\;\\rightarrow\\;';
+
+/* ---------- Aufgabe 1: Umrechnen ---------- */
+var QUIZ = { chip: 'A1', titel: 'Aufgabe 1: Startklar – Umrechnen',
+  regel: '$T = \\vartheta + 273$ &nbsp;und&nbsp; $\\vartheta = T - 273$ &nbsp;(genauer: 273,15 – beides ist richtig)<br>' +
+         '$1' + U('bar') + ' = 1000' + U('hPa') + '$ &nbsp;·&nbsp; $1' + U('l') + ' = 1000' + U('cm^3') + '$ &nbsp;·&nbsp; $1' + U('m^3') + ' = 1000' + U('l') + '$',
+  fragen: [
+    { f: '$25' + C + '$', einh: 'K', ok: [298, 298.15], tipp: 'Rechne $25 + 273$.' },
+    { f: '$-18' + C + '$', einh: 'K', ok: [255, 255.15], tipp: 'Rechne $-18 + 273$ – minus 18 heißt: 18 weniger als 273 (nicht 291!).' },
+    { f: '$350' + U('K') + '$', einh: '°C', ok: [77, 76.85], tipp: 'Rückwärts: $\\vartheta = T - 273$.' },
+    { f: '$0' + U('K') + '$', einh: '°C', ok: [-273, -273.15], tipp: 'Rechne $0 - 273$. Das ist der absolute Nullpunkt – das Ergebnis ist negativ.' },
+    { f: '$1013' + U('hPa') + '$', einh: 'bar', ok: [1.013], tipp: 'Von hPa in bar: durch 1000 teilen.' },
+    { f: '$2{,}4' + U('bar') + '$', einh: 'hPa', ok: [2400], tipp: '$1' + U('bar') + ' = 1000' + U('hPa') + '$ – also mal 1000.' },
+    { f: '$750' + U('cm^3') + '$', einh: 'l', ok: [0.75], tipp: '$1000' + U('cm^3') + ' = 1' + U('l') + '$ – durch 1000 teilen.' },
+    { f: '$3{,}5' + U('m^3') + '$', einh: 'l', ok: [3500], tipp: '$1' + U('m^3') + ' = 1000' + U('dm^3') + ' = 1000' + U('l') + '$ – mal 1000.' }
+  ] };
+
+/* ---------- Aufgabe 2: Welches Gesetz? ---------- */
+var GROESSEN = ['Druck p', 'Volumen V', 'Temperatur T', 'keine – alle ändern sich'];
+var GESETZE = ['Gesetz von Boyle-Mariotte', 'Gesetz von Gay-Lussac', 'Gesetz von Amontons', 'allgemeine Zustandsgleichung'];
+var ZUORDNUNG = [
+  { s: 'Ein Autoreifen wird bei einer langen Autobahnfahrt warm.', k: 1, g: 2,
+    tipp: 'Kann sich ein Autoreifen beim Erwärmen stark ausdehnen? Was bleibt also (fast) gleich?' },
+  { s: 'Eine Spritze wird zugehalten und der Kolben langsam hineingedrückt.', k: 2, g: 0,
+    tipp: 'Volumen und Druck ändern sich. „Langsam“ heißt: Die Luft hat Zeit, Wärme abzugeben.' },
+  { s: 'Ein dehnbarer Luftballon kommt aus dem Zimmer in den kalten Garten.', k: 0, g: 1,
+    tipp: 'Ein dehnbarer Ballon passt sich dem Luftdruck außen an – und der ist im Garten genauso groß wie im Zimmer.' },
+  { s: 'Ein Wetterballon steigt in große Höhe auf.', k: 3, g: 3,
+    tipp: 'Oben ist es kälter, der Luftdruck ist kleiner und der Ballon wird größer.' }
+];
+var REGEL_GESETZE = 'Bleibt $T$ gleich → Boyle-Mariotte · bleibt $p$ gleich → Gay-Lussac · bleibt $V$ gleich → Amontons · ändert sich alles → allgemeine Zustandsgleichung';
+
+/* ---------- Rechenaufgaben ---------- */
+var AUFGABEN = [
+  { chip: 'A3', titel: 'Aufgabe 3: Die Fahrradpumpe',
+    text: 'Im Zylinder einer Fahrradpumpe befinden sich 0,30 l Luft bei einem Druck von 1,0 bar. Lukas hält die Öffnung zu und drückt den Kolben langsam hinein, bis die Luft nur noch 0,12 l einnimmt. Die Temperatur bleibt gleich. Berechne den Druck der Luft in der Pumpe.',
+    check: { einh: 'bar', exakt: 2.5, gerundet: 2.5, ziffern: 2,
+             fehler: [{ w: 0.4, t: '<b>Falsch umgestellt?</b> Je kleiner das Volumen, desto <b>größer</b> der Druck. Prüfe: $p_2 = \\dfrac{p_1 \\cdot V_1}{V_2}$.' }] },
+    schritte: [
+      { s: 'l', lab: 'geg.', z: '$p_1 = 1{,}0' + U('bar') + '$<br>$V_1 = 0{,}30' + U('l') + '$<br>$V_2 = 0{,}12' + U('l') + '$<br>$T_1 = T_2$ (Temperatur bleibt gleich)',
+        tipp: 'Schreibe alle Zahlen mit Formelzeichen und Einheit heraus. Vorher = Index 1, nachher = Index 2. Was steht im Text über die Temperatur?' },
+      { s: 'l', lab: 'ges.', z: '$p_2$', tipp: 'Wonach wird gefragt? Das gesuchte steht bei dir ganz unten links.' },
+      { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$<br>$T$ kürzt sich: $\\;p_1 \\cdot V_1 = p_2 \\cdot V_2$',
+        tipp: 'Starte mit der allgemeinen Zustandsgleichung. Was passiert mit $T$, wenn $T_1 = T_2$?' },
+      { s: 'r', lab: 'Umstellen', z: '$p_2 = \\dfrac{p_1 \\cdot V_1}{V_2}$', tipp: 'Beide Seiten durch $V_2$ teilen.' },
+      { s: 'r', lab: 'Einsetzen', z: '$p_2 = \\dfrac{1{,}0' + U('bar') + ' \\cdot 0{,}30' + U('l') + '}{0{,}12' + U('l') + '}$',
+        tipp: 'Zahlen <b>mit Einheiten</b> einsetzen. Die Einheit l kürzt sich, übrig bleibt bar.' },
+      { s: 'r', lab: 'Ergebnis', z: '$p_2 = 2{,}5' + U('bar') + '$', tipp: 'Taschenrechner: $1 \\cdot 0{,}3 : 0{,}12$.' },
+      { s: 'r', lab: 'Runden', cls: 'runden', z: 'Angaben: 1,0 bar · 0,30 l · 0,12 l → je <b>2 Ziffern</b><br>$p_2 =$ <span class="erg">$2{,}5' + U('bar') + '$</span>',
+        tipp: 'Die Angabe mit den wenigsten Ziffern bestimmt, wie genau das Ergebnis ist (mindestens 2).' },
+      { s: 'a', lab: 'Antwortsatz', z: 'Die Luft in der Pumpe hat dann einen Druck von 2,5 bar.', ende: true }
+    ] },
+
+  { chip: 'A4', titel: 'Aufgabe 4: Luftballon in der Sonne',
+    text: 'Ein Luftballon hat im 21 °C warmen Zimmer ein Volumen von 4,5 l. Mia legt ihn in die pralle Sonne. Dort dehnt er sich auf 4,8 l aus. Der Druck im Ballon bleibt ungefähr gleich. Berechne die Temperatur der Luft im Ballon in °C (auf ganze Grad gerundet).',
+    check: { einh: '°C', exakt: 40.6, gerundet: 41, ganzeGrad: true,
+             fehler: [{ w: 313.6, t: '<b>Fast!</b> Das ist $T_2$ in <b>Kelvin</b>. Gefragt ist die Temperatur in °C: $\\vartheta_2 = T_2 - 273$.' },
+                      { w: 22.4, t: '<b>Achtung:</b> Hast du mit °C gerechnet? Rechne $\\vartheta_1$ zuerst in <b>Kelvin</b> um.' },
+                      { w: 40, t: '<b>Fast!</b> Hast du einmal mit 273 und einmal mit 273,15 gerechnet? Nimm überall dieselbe Zahl – dann kommt 41 °C heraus.' },
+                      { w: 2.6, t: '<b>Falsch umgestellt?</b> Der Ballon wird größer, also muss es wärmer werden. Prüfe: $T_2 = \\dfrac{V_2 \\cdot T_1}{V_1}$.' }] },
+    schritte: [
+      { s: 'l', lab: 'geg.', z: '$V_1 = 4{,}5' + U('l') + '$<br>$\\vartheta_1 = 21' + C + PF + 'T_1 = 21 + 273 = 294' + U('K') + '$<br>$V_2 = 4{,}8' + U('l') + '$<br>$p_1 = p_2$',
+        tipp: 'Die Temperatur rechnest du gleich beim Aufschreiben in Kelvin um: $T = \\vartheta + 273$.' },
+      { s: 'l', lab: 'ges.', z: '$T_2$ bzw. $\\vartheta_2$', tipp: 'Gesucht ist die Temperatur nachher. Du rechnest sie erst in Kelvin aus und am Ende in °C um.' },
+      { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$<br>$p$ kürzt sich: $\\;\\dfrac{V_1}{T_1} = \\dfrac{V_2}{T_2}$',
+        tipp: 'Welche Größe bleibt gleich? Die kürzt sich aus der allgemeinen Zustandsgleichung heraus.' },
+      { s: 'r', lab: 'Umstellen', z: '$T_2 = \\dfrac{V_2 \\cdot T_1}{V_1}$',
+        tipp: 'Die gesuchte Größe steht unten im Bruch. Nimm zuerst beide Seiten mal $T_2$ und mal $T_1$ (über Kreuz): $V_1 \\cdot T_2 = V_2 \\cdot T_1$. Dann durch $V_1$ teilen.' },
+      { s: 'r', lab: 'Einsetzen', z: '$T_2 = \\dfrac{4{,}8' + U('l') + ' \\cdot 294' + U('K') + '}{4{,}5' + U('l') + '}$', tipp: 'l kürzt sich, übrig bleibt K.' },
+      { s: 'r', lab: 'Ergebnis', z: '$T_2 = 313{,}6' + U('K') + ' \\approx 314' + U('K') + '$', tipp: 'Taschenrechner: $4{,}8 \\cdot 294 : 4{,}5$.' },
+      { s: 'r', lab: 'In °C umrechnen', cls: 'runden', z: '$\\vartheta_2 = 314 - 273 =$ <span class="erg">$41' + C + '$</span>',
+        tipp: 'Zurück in °C: $\\vartheta = T - 273$. Auf ganze Grad runden.' },
+      { s: 'a', lab: 'Antwortsatz', z: 'Die Luft im Ballon ist etwa 41 °C warm.', ende: true }
+    ] },
+
+  { chip: 'A5', titel: 'Aufgabe 5: Die Gefriertruhe klemmt',
+    text: 'Beim Öffnen einer Gefriertruhe strömt warme Küchenluft (20 °C) hinein. Nach dem Schließen kühlt die eingeschlossene Luft auf −18 °C ab. Beim Schließen hatte sie einen Druck von 1,0 bar. Das Volumen der Truhe bleibt gleich.<br><b>a)</b> Berechne den Druck der Luft in der Truhe nach dem Abkühlen.',
+    check: { einh: 'bar', exakt: 0.8703, gerundet: 0.87, ziffern: 2,
+             fehler: [{ w: -0.9, t: '<b>Achtung:</b> Hast du mit °C gerechnet? Die Temperaturen müssen in <b>Kelvin</b> eingesetzt werden.' },
+                      { w: 1.149, t: '<b>Falsch umgestellt?</b> Die Luft kühlt ab – der Druck muss also <b>kleiner</b> werden. Prüfe: $p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$.' }] },
+    schritte: [
+      { s: 'l', lab: 'geg.', z: '$p_1 = 1{,}0' + U('bar') + '$<br>$\\vartheta_1 = 20' + C + PF + 'T_1 = 20 + 273 = 293' + U('K') + '$<br>$\\vartheta_2 = -18' + C + PF + 'T_2 = -18 + 273 = 255' + U('K') + '$<br>$V_1 = V_2$',
+        tipp: 'Temperaturen gleich in Kelvin umrechnen. Bei Minusgraden: $-18 + 273 = 255$ (nicht 291!).' },
+      { s: 'l', lab: 'ges.', z: '$p_2$' },
+      { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$<br>$V$ kürzt sich: $\\;\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$',
+        tipp: 'Das Volumen der Truhe bleibt gleich – was kürzt sich?' },
+      { s: 'r', lab: 'Umstellen', z: '$p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$', tipp: 'Beide Seiten mit $T_2$ malnehmen.' },
+      { s: 'r', lab: 'Einsetzen', z: '$p_2 = \\dfrac{1{,}0' + U('bar') + ' \\cdot 255' + U('K') + '}{293' + U('K') + '}$', tipp: 'K kürzt sich, übrig bleibt bar.' },
+      { s: 'r', lab: 'Ergebnis', z: '$p_2 = 0{,}870\\ldots' + U('bar') + '$', tipp: 'Taschenrechner: $1 \\cdot 255 : 293$.' },
+      { s: 'r', lab: 'Runden', cls: 'runden', z: 'Angaben: 1,0 bar · 20 °C · −18 °C → je <b>2 Ziffern</b><br>$p_2 \\approx$ <span class="erg">$0{,}87' + U('bar') + '$</span>',
+        tipp: 'Bei 0,870… zählt die Null vor dem Komma nicht mit – die erste Ziffer ist die 8.' },
+      { s: 'a', lab: 'Antwortsatz', z: 'Nach dem Abkühlen beträgt der Druck in der Truhe nur noch etwa 0,87 bar.', ende: true }
+    ],
+    nachher: { titel: 'b) Erkläre, warum sich der Deckel kurz danach nur schwer wieder öffnen lässt.',
+               tipp: 'Vergleiche den Druck innen (Ergebnis aus a) mit dem Luftdruck außen in der Küche (1,0 bar). Wer drückt stärker auf den Deckel?',
+               z: 'Innen ist der Druck (0,87 bar) kleiner als außen (1,0 bar). Die Luft außen drückt den Deckel deshalb stärker zu, als die Luft innen ihn nach oben drückt.' } },
+
+  { chip: 'A6', titel: 'Aufgabe 6: Fehlersuche im Marmeladenglas',
+    text: 'Ein Marmeladenglas wird mit 80 °C heißer Marmelade gefüllt und sofort zugeschraubt. Die Luft unter dem Deckel hat dann einen Druck von 1,0 bar. Danach kühlt das Glas auf 20 °C ab. Tim soll den Druck im abgekühlten Glas berechnen. In seiner Lösung stecken <b>zwei Fehler</b>.' +
+          '<div class="tim"><b>Tims Lösung:</b><div>geg.: $p_1 = 1{,}0' + U('bar') + '$; $\\vartheta_1 = 80' + C + '$; $\\vartheta_2 = 20' + C + '$; $V_1 = V_2$ &nbsp;&nbsp; ges.: $p_2$</div>' +
+          '<div>Formel: $\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$ &nbsp;&nbsp; Umstellen: $p_2 = \\dfrac{p_1 \\cdot T_1}{T_2}$</div>' +
+          '<div>Einsetzen: $p_2 = \\dfrac{1{,}0' + U('bar') + ' \\cdot 80' + C + '}{20' + C + '}$ &nbsp;&nbsp; Ergebnis: $p_2 = 4{,}0' + U('bar') + '$</div></div>',
+    vorher: { titel: 'a) Markiere die beiden Fehler und beschreibe sie.', knopf: 'Nächsten Fehler zeigen',
+              schritte: [
+                { s: 'a', tipp: 'Schau dir die Zeile <b>Umstellen</b> genau an: Wo muss $T_2$ landen, wenn du beide Seiten mit $T_2$ malnimmst?',
+                  z: '<b>1. Fehler – falsch umgestellt:</b> Richtig ist $p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$.' },
+                { s: 'a', tipp: 'Schau dir beim <b>Einsetzen</b> die Einheiten der Temperaturen an.',
+                  z: '<b>2. Fehler – °C statt Kelvin:</b> In den Gasgesetzen muss man die Temperaturen immer in <b>Kelvin</b> einsetzen.', ende: true }
+              ] },
+    checkTitel: 'b) Rechne richtig und prüfe dein Ergebnis:',
+    check: { einh: 'bar', exakt: 0.8300, gerundet: 0.83, ziffern: 2,
+             fehler: [{ w: 4.0, t: 'Das ist Tims Ergebnis – darin stecken ja die zwei Fehler.' },
+                      { w: 0.25, t: '<b>Richtig umgestellt</b> – aber mit °C gerechnet. Rechne die Temperaturen in <b>Kelvin</b> um.' },
+                      { w: 1.205, t: '<b>Kelvin stimmt</b> – aber falsch umgestellt (wie Tim). Beim Abkühlen muss der Druck kleiner werden.' }] },
+    schritte: [
+      { s: 'l', lab: 'geg.', z: '$p_1 = 1{,}0' + U('bar') + '$; $\\;V_1 = V_2$<br>$\\vartheta_1 = 80' + C + PF + 'T_1 = 80 + 273 = 353' + U('K') + '$<br>$\\vartheta_2 = 20' + C + PF + 'T_2 = 20 + 273 = 293' + U('K') + '$',
+        tipp: 'Diesmal die Temperaturen gleich beim geg. in Kelvin umrechnen.' },
+      { s: 'l', lab: 'ges.', z: '$p_2$' },
+      { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$ &nbsp;($V$ kürzt sich – das hatte Tim richtig)' },
+      { s: 'r', lab: 'Umstellen', z: '$p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$', tipp: 'Beide Seiten mit $T_2$ malnehmen – dann steht $T_2$ oben.' },
+      { s: 'r', lab: 'Einsetzen', z: '$p_2 = \\dfrac{1{,}0' + U('bar') + ' \\cdot 293' + U('K') + '}{353' + U('K') + '}$' },
+      { s: 'r', lab: 'Ergebnis', z: '$p_2 = 0{,}830\\ldots' + U('bar') + '$' },
+      { s: 'r', lab: 'Runden', cls: 'runden', z: 'Angaben: 1,0 bar · 80 °C · 20 °C → je <b>2 Ziffern</b><br>$p_2 \\approx$ <span class="erg">$0{,}83' + U('bar') + '$</span>' },
+      { s: 'a', lab: 'Antwortsatz', z: 'Im abgekühlten Glas herrscht nur noch ein Druck von etwa 0,83 bar.', ende: true }
+    ],
+    nachher: { titel: 'c) Begründe ohne Rechnung, warum Tims Ergebnis gar nicht stimmen kann.',
+               tipp: 'Das Glas kühlt ab, das Volumen bleibt gleich. Muss der Druck dann größer oder kleiner werden? Und was hat Tim herausbekommen?',
+               z: 'Beim Abkühlen bei gleichem Volumen muss der Druck kleiner werden (Gesetz von Amontons). Tims Ergebnis (4,0 bar) ist aber größer als der Anfangsdruck (1,0 bar). <span class="hinweis-klein">Deshalb wird übrigens der Deckel nach innen gezogen – der „Knackdeckel“ zeigt, dass das Glas dicht ist.</span>' } }
+];
+
+/* =====================================================================
+   Aufbau
+   ===================================================================== */
+function tex(x) {
+  if (window.katex) { try { return katex.renderToString(x, { throwOnError: false, strict: 'ignore' }); } catch (e) {} }
+  return x.replace(/\\dfrac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)').replace(/\\,|\\;|\\mathrm|\\cdot|\\ldots|\\approx|\\vartheta|\\circ|\\rightarrow|[{}\\^_]/g, function (m) {
+    return { '\\cdot': '·', '\\ldots': '…', '\\approx': '≈', '\\vartheta': 'ϑ', '\\circ': '°', '\\rightarrow': '→' }[m] || ''; });
+}
+function fmt(s) { return (s || '').replace(/\$([^$]+)\$/g, function (_, x) { return '<span class="f">' + tex(x) + '</span>'; }); }
+
+function zahl(s) {
+  s = String(s).replace(/[\s  ']/g, '');
+  if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+  s = s.replace('−', '-');
+  return s === '' ? NaN : Number(s);
+}
+function gleich(a, b) { return Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b)); }
+function nahe(a, b) { return Math.abs(a - b) <= Math.max(0.03 * Math.abs(b), 0.06); }
+
+var main = document.getElementById('main');
+function karte(chip, html) {
+  var sec = document.createElement('section'); sec.className = 'karte';
+  if (chip) sec.dataset.chip = chip;
+  sec.innerHTML = html; main.appendChild(sec); return sec;
+}
+
+/* ---------- Start ---------- */
+karte('Start',
+  '<h2>So arbeitest du mit dem Lernpfad</h2>' +
+  '<ol class="start"><li><b>Selbst rechnen:</b> Bearbeite die Aufgaben der Reihe nach auf deinem Blatt.</li>' +
+  '<li><b>Ergebnis prüfen:</b> Gib dein Ergebnis hier ein – du bekommst sofort eine Rückmeldung.</li>' +
+  '<li><b>Hängst du fest?</b> Hol dir einen <b>Tipp</b> oder deck den <b>nächsten Schritt</b> auf.</li>' +
+  '<li><b>Erst dann weiter</b> zur nächsten Aufgabe.</li></ol>' +
+  '<p style="margin:10px 0 4px"><b>So schreibst du jede Rechnung auf:</b></p>' +
+  '<div class="fahrplan"><div class="li"><b>links</b><ol><li>geg.: alles mit Formelzeichen und Einheit – Temperaturen <b>gleich in Kelvin</b> umrechnen</li><li>ganz unten: ges.</li></ol></div>' +
+  '<div class="re"><b>rechts</b><ol><li>Formel</li><li>Umstellen</li><li>Einsetzen (mit Einheiten!)</li><li>Ergebnis</li><li>sinnvoll runden</li></ol></div></div>' +
+  '<div class="merk"><b>Sinnvolle Ziffern:</b> Das Ergebnis bekommt so viele Ziffern wie die Angabe mit den <b>wenigsten</b> Ziffern – aber <b>mindestens 2</b>.</div>' +
+  '<p class="hinweis-klein">Danach schreibst du immer einen <b>Antwortsatz</b>. Die Formeln findest du im Heft (2.3) oder im Buch auf S. 46.</p>');
+
+/* ---------- Aufgabe 1: Quiz ---------- */
+(function () {
+  var q = QUIZ;
+  var html = '<h2>' + q.titel + '</h2><div class="aufgabentext">Rechne erst auf deinem Blatt – dann trag hier ein und prüfe.</div>' +
+    '<div class="regel">' + fmt(q.regel) + '</div><ul class="quiz">';
+  q.fragen.forEach(function (fr, i) {
+    html += '<li data-i="' + i + '"><div class="fr">' + fmt(fr.f) + ' = <b>?</b> ' + fr.einh + '</div>' +
+      '<div class="eingabe"><input inputmode="decimal" autocomplete="off" aria-label="Antwort"><span class="einh">' + fr.einh + '</span>' +
+      '<button type="button">Prüfen</button></div><div class="rueck"></div></li>';
+  });
+  html += '</ul><div class="punkte"></div>';
+  var sec = karte(q.chip, html);
+  var richtig = {}, versuche = {};
+  function punkte() {
+    var n = Object.keys(richtig).length;
+    sec.querySelector('.punkte').textContent = n + ' von ' + q.fragen.length + ' richtig' + (n === q.fragen.length ? ' – super, weiter geht’s! 🎉' : '');
+  }
+  [].forEach.call(sec.querySelectorAll('.quiz li'), function (li) {
+    var i = +li.dataset.i, fr = q.fragen[i], inp = li.querySelector('input'), rk = li.querySelector('.rueck');
+    function pruefen() {
+      var v = zahl(inp.value);
+      if (isNaN(v)) { rk.className = 'rueck fast'; rk.innerHTML = 'Gib eine Zahl ein (Komma ist erlaubt).'; return; }
+      if (fr.ok.some(function (o) { return gleich(v, o); })) {
+        rk.className = 'rueck gut';
+        rk.innerHTML = 'Richtig!' + (fr.ok.length > 1 ? ' <span class="hinweis-klein">(Mit 273 oder 273,15 – beides zählt.)</span>' : '');
+        li.classList.add('richtig'); richtig[i] = 1;
+      } else {
+        versuche[i] = (versuche[i] || 0) + 1;
+        rk.className = 'rueck falsch';
+        rk.innerHTML = 'Noch nicht. ' + fmt(fr.tipp) +
+          (versuche[i] >= 2 ? '<br><b>Lösung:</b> ' + String(fr.ok[0]).replace('.', ',') + ' ' + fr.einh : '');
+      }
+      punkte();
+    }
+    li.querySelector('button').onclick = pruefen;
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') pruefen(); });
+  });
+  punkte();
+})();
+
+/* ---------- Aufgabe 2: Zuordnen ---------- */
+(function () {
+  function auswahl(liste, name) {
+    return '<select aria-label="' + name + '"><option value="">' + name + ' …</option>' +
+      liste.map(function (t, i) { return '<option value="' + i + '">' + t + '</option>'; }).join('') + '</select>';
+  }
+  var html = '<h2>Aufgabe 2: Welches Gesetz passt?</h2><div class="aufgabentext">Gib an, welche Zustandsgröße gleich bleibt, und ordne das passende Gesetz zu.</div><ul class="quiz">';
+  ZUORDNUNG.forEach(function (z, i) {
+    html += '<li data-i="' + i + '"><div class="fr">' + z.s + '</div><div class="eingabe sel">' +
+      auswahl(GROESSEN, 'Das bleibt gleich') + auswahl(GESETZE, 'Gesetz') +
+      '<button type="button">Prüfen</button></div><div class="rueck"></div></li>';
+  });
+  html += '</ul><div class="punkte"></div>';
+  var sec = karte('A2', html), richtig = {}, versuche = {};
+  function punkte() {
+    var n = Object.keys(richtig).length;
+    sec.querySelector('.punkte').textContent = n + ' von ' + ZUORDNUNG.length + ' richtig' + (n === ZUORDNUNG.length ? ' – super, weiter geht’s! 🎉' : '');
+  }
+  [].forEach.call(sec.querySelectorAll('.quiz li'), function (li) {
+    var i = +li.dataset.i, z = ZUORDNUNG[i], sel = li.querySelectorAll('select'), rk = li.querySelector('.rueck');
+    li.querySelector('button').onclick = function () {
+      var k = sel[0].value, g = sel[1].value;
+      if (k === '' || g === '') { rk.className = 'rueck fast'; rk.innerHTML = 'Wähle bei beiden Feldern etwas aus.'; return; }
+      var kOk = +k === z.k, gOk = +g === z.g;
+      if (kOk && gOk) { rk.className = 'rueck gut'; rk.innerHTML = 'Richtig!'; li.classList.add('richtig'); richtig[i] = 1; }
+      else {
+        versuche[i] = (versuche[i] || 0) + 1;
+        rk.className = 'rueck falsch';
+        if (!kOk) rk.innerHTML = 'Die Größe, die gleich bleibt, stimmt noch nicht. ' + z.tipp;
+        else rk.innerHTML = 'Die Größe stimmt! Aber welches Gesetz gehört dazu? ' + fmt(REGEL_GESETZE);
+        if (versuche[i] >= 2) rk.innerHTML += '<br><b>Lösung:</b> ' + GROESSEN[z.k] + ' · ' + GESETZE[z.g];
+      }
+      punkte();
+    };
+  });
+  punkte();
+})();
+
+/* ---------- Aufgaben 3–6 ---------- */
+function schrittTeil(titel, frage, knopf) {
+  var t = document.createElement('div'); t.className = 'teil';
+  t.innerHTML = '<h3>' + fmt(titel) + '</h3>' + (frage ? '<p class="frage">' + frage + '</p>' : '') +
+    '<ul class="zeilen" data-s="a"></ul><div class="tipp-ort"></div>' +
+    '<div class="knoepfe"><button class="k-tipp" type="button">Tipp</button><button class="k-zeile" type="button">' + knopf + '</button>' +
+    '<button class="k-alles" type="button" style="display:none">Ganze Lösung</button></div><div class="fertig">✓ Fertig – vergleiche mit deinem Blatt.</div>';
+  return t;
+}
+
+AUFGABEN.forEach(function (a) {
+  var sec = karte(a.chip, '<h2>' + a.titel + '</h2><div class="aufgabentext">' + fmt(a.text) + '</div>');
+
+  if (a.vorher) {
+    var v = schrittTeil(a.vorher.titel, 'Erst selbst suchen – dann vergleichen.', a.vorher.knopf);
+    sec.appendChild(v); schrittweise(v, a.vorher.schritte);
+  }
+
+  /* Ergebnis prüfen */
+  var ck = document.createElement('div'); ck.className = 'check';
+  ck.innerHTML = '<label>' + (a.checkTitel || ('Prüfe dein Ergebnis' + (a.nachher ? ' zu a)' : '') + ':')) + '</label><div class="eingabe"><input inputmode="decimal" autocomplete="off" aria-label="Dein Ergebnis">' +
+    '<span class="einh">' + a.check.einh + '</span><button type="button">Prüfen</button></div><div class="rueck"></div>';
+  sec.appendChild(ck);
+  var inp = ck.querySelector('input'), rk = ck.querySelector('.rueck');
+  function pruefen() {
+    var v = zahl(inp.value), c = a.check, f = null;
+    if (isNaN(v)) { rk.className = 'rueck fast'; rk.innerHTML = 'Gib eine Zahl ein (Komma ist erlaubt).'; return; }
+    (c.fehler || []).forEach(function (x) { if (!f && nahe(v, x.w)) f = x; });
+    if (gleich(v, c.gerundet)) { rk.className = 'rueck gut'; rk.innerHTML = '<b>Richtig – und sinnvoll gerundet!</b> Vergleiche jetzt noch deinen Rechenweg.'; }
+    else if (Math.abs(v - c.exakt) / Math.abs(c.exakt) < 0.012) {
+      rk.className = 'rueck fast';
+      rk.innerHTML = '<b>Richtig gerechnet!</b> Aber runde noch ' + (c.ganzeGrad ? 'auf ganze Grad.' : 'auf ' + c.ziffern + ' sinnvolle Ziffern.');
+    }
+    else if (f) { rk.className = 'rueck falsch'; rk.innerHTML = fmt(f.t); }
+    else { rk.className = 'rueck falsch'; rk.innerHTML = 'Das stimmt noch nicht. Prüfe Umrechnung und Umstellen – oder hol dir unten einen Tipp.'; }
+  }
+  ck.querySelector('button').onclick = pruefen;
+  inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') pruefen(); });
+
+  /* Lösungsweg Schritt für Schritt */
+  var t = document.createElement('div'); t.className = 'teil';
+  t.innerHTML = '<h3>Lösungsweg Schritt für Schritt</h3><p class="frage">Erst selbst probieren – dann Schritt für Schritt vergleichen.</p>' +
+    '<div class="loesung"><div class="spalte"><h4>links auf dem Blatt</h4><ul class="zeilen" data-s="l"></ul></div>' +
+    '<div class="spalte"><h4>rechts auf dem Blatt</h4><ul class="zeilen" data-s="r"></ul><p class="leer-hinweis">… kommt nach der linken Seite</p></div>' +
+    '<div class="antwort"><ul class="zeilen" data-s="a"></ul></div></div>' +
+    '<div class="tipp-ort"></div><div class="knoepfe"><button class="k-tipp" type="button">Tipp</button>' +
+    '<button class="k-zeile" type="button">Nächster Schritt</button><button class="k-alles" type="button">Ganze Lösung</button></div>' +
+    '<div class="fertig">✓ Fertig – vergleiche mit deinem Blatt.</div>';
+  sec.appendChild(t);
+  schrittweise(t, a.schritte);
+
+  if (a.nachher) {
+    var b = schrittTeil(a.nachher.titel, '', 'Lösung zeigen');
+    sec.appendChild(b);
+    schrittweise(b, [{ s: 'a', z: a.nachher.z, tipp: a.nachher.tipp, ende: true }]);
+  }
+});
+
+function schrittweise(div, schritte) {
+  var ort = div.querySelector('.tipp-ort'), bt = div.querySelector('.k-tipp'), bz = div.querySelector('.k-zeile'),
+      ba = div.querySelector('.k-alles'), fe = div.querySelector('.fertig'), leer = div.querySelector('.leer-hinweis');
+  var n = 0, warn = false;
+  function status() {
+    var s = schritte[n];
+    bt.disabled = !s || !s.tipp || ort.innerHTML !== '';
+    bz.disabled = !s; ba.disabled = !s;
+    fe.style.display = s ? 'none' : 'block';
+    if (leer) leer.style.display = (s && s.s === 'l') ? 'block' : 'none';
+    if (!s) { ba.classList.remove('warnung'); ba.textContent = 'Ganze Lösung'; }
+  }
+  function zeige() {
+    var s = schritte[n]; if (!s) return;
+    var li = document.createElement('li');
+    li.innerHTML = (s.lab ? '<span class="lab">' + s.lab + '</span>' : '') + fmt(s.z);
+    if (s.ende) li.className = 'ende'; if (s.cls) li.className = s.cls;
+    div.querySelector('.zeilen[data-s="' + s.s + '"]').appendChild(li);
+    n++; ort.innerHTML = '';
+  }
+  bt.onclick = function () { var s = schritte[n]; if (s && s.tipp) ort.innerHTML = '<div class="tipp">' + fmt(s.tipp) + '</div>'; status(); };
+  bz.onclick = function () { zeige(); warn = false; ba.classList.remove('warnung'); ba.textContent = 'Ganze Lösung'; status(); };
+  ba.onclick = function () {
+    if (!warn) { warn = true; ba.classList.add('warnung'); ba.textContent = 'Wirklich? Erst selbst probieren! (nochmal tippen)'; return; }
+    while (n < schritte.length) zeige(); warn = false; status();
+  };
+  status();
+}
+
+/* ---------- Ende ---------- */
+karte('Ende', '<h2>Geschafft!</h2><div class="ok">Du hast das ganze Übungsblatt durchgearbeitet. Prüfe zum Schluss:</div>' +
+  '<ul><li>Steht überall <b>geg.</b> mit Formelzeichen und Einheit – und ganz unten <b>ges.</b>?</li><li>Hast du alle Temperaturen gleich beim geg. in <b>Kelvin</b> umgerechnet?</li>' +
+  '<li>Hast du beim Einsetzen die <b>Einheiten</b> mitgeschrieben?</li><li>Ist das Ergebnis <b>sinnvoll gerundet</b> und doppelt unterstrichen?</li>' +
+  '<li>Gibt es einen <b>Antwortsatz</b>?</li></ul><p><a class="link" href="material.html">‹ Zurück zum Material</a></p>');
+
+/* ---------- Navigation + Sprungleiste ---------- */
+(function () {
+  var karten = [].slice.call(document.querySelectorAll('.karte')), i = 0;
+  var chips = document.getElementById('chips'), chipKarte = [];
+  karten.forEach(function (k, j) {
+    if (k.dataset.chip) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = k.dataset.chip;
+      b.onclick = function () { zeigeK(j); }; chips.appendChild(b); chipKarte.push([b, j]);
+    }
+  });
+  function zeigeK(n) {
+    i = Math.max(0, Math.min(karten.length - 1, n));
+    karten.forEach(function (k, j) { k.classList.toggle('aktiv', j === i); });
+    var aktiv = null; chipKarte.forEach(function (c) { if (c[1] <= i) aktiv = c[0]; });
+    chipKarte.forEach(function (c) { c[0].classList.toggle('an', c[0] === aktiv); });
+    if (aktiv) aktiv.scrollIntoView({ inline: 'center', block: 'nearest' });
+    document.getElementById('zurueck').disabled = (i === 0);
+    document.getElementById('weiter').textContent = (i === karten.length - 1) ? 'Zum Start ↺' : 'Weiter ▶';
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('weiter').onclick = function () { zeigeK(i === karten.length - 1 ? 0 : i + 1); };
+  document.getElementById('zurueck').onclick = function () { zeigeK(i - 1); };
+  var start = parseInt((location.hash || '').slice(1), 10);
+  zeigeK(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>

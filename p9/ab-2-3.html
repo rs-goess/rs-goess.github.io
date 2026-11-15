@@ -70,6 +70,7 @@
    ===================================================================== */
 var U = function (e) { return '\\,' + (e === 'l' ? '\\ell' : '\\mathrm{' + e + '}'); };
 var C = '\\,{}^{\\circ}\\mathrm{C}';
+var PF = '\\;\\rightarrow\\;';
 
 var QUIZ = [
   { chip: 'Quiz: Temperatur', titel: 'Fit fürs Umrechnen 1: Temperatur in Kelvin',
@@ -108,11 +109,9 @@ var AUFGABEN = [
     text: 'In einer Spraydose herrscht bei 20 °C ein Druck von 4,0 bar. Im Sommer erwärmt sie sich im Auto auf 70 °C. Berechne den Druck.',
     check: { einh: 'bar', exakt: 4.6826, gerundet: 4.7, celsius: 14, ziffern: 2 },
     schritte: [
-      { s: 'l', lab: 'geg.', z: '$p_1 = 4{,}0' + U('bar') + '$<br>$\\vartheta_1 = 20' + C + '$<br>$\\vartheta_2 = 70' + C + '$<br>$V_1 = V_2$ (die Dose gibt nicht nach)',
-        tipp: 'Schreibe alle Zahlen mit Formelzeichen und Einheit heraus. Was weißt du über das Volumen einer Metalldose?' },
-      { s: 'l', lab: 'ges.', z: '$p_2$', tipp: 'Wonach wird in der Aufgabe gefragt?' },
-      { s: 'l', lab: 'Umrechnung', z: '$T_1 = 20 + 273 = 293' + U('K') + '$<br>$T_2 = 70 + 273 = 343' + U('K') + '$',
-        tipp: 'Temperaturen immer in Kelvin: $T = \\vartheta + 273$.' },
+      { s: 'l', lab: 'geg.', z: '$p_1 = 4{,}0' + U('bar') + '$<br>$\\vartheta_1 = 20' + C + PF + 'T_1 = 20 + 273 = 293' + U('K') + '$<br>$\\vartheta_2 = 70' + C + PF + 'T_2 = 70 + 273 = 343' + U('K') + '$<br>$V_1 = V_2$ (die Dose gibt nicht nach)',
+        tipp: 'Schreibe alle Zahlen mit Formelzeichen und Einheit heraus – Temperaturen gleich in Kelvin umrechnen: $T = \\vartheta + 273$. Was weißt du über das Volumen einer Metalldose?' },
+      { s: 'l', lab: 'ges.', z: '$p_2$', tipp: 'Wonach wird in der Aufgabe gefragt? Das Gesuchte steht ganz unten links.' },
       { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$<br>$V$ kürzt sich: $\\;\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$',
         tipp: 'Starte mit der allgemeinen Zustandsgleichung. Was passiert mit $V$, wenn $V_1 = V_2$?' },
       { s: 'r', lab: 'Umstellen', z: '$p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$', tipp: 'Beide Seiten mit $T_2$ malnehmen.' },
@@ -127,11 +126,9 @@ var AUFGABEN = [
     text: 'Ein Fußball wird in der 20 °C warmen Halle auf 1,8 bar aufgepumpt. Beim Training draußen hat die Luft im Ball −5 °C. Berechne den Druck im Ball, wenn das Volumen ungefähr gleich bleibt.',
     check: { einh: 'bar', exakt: 1.6464, gerundet: 1.6, celsius: -0.45, ziffern: 2 },
     schritte: [
-      { s: 'l', lab: 'geg.', z: '$p_1 = 1{,}8' + U('bar') + '$<br>$\\vartheta_1 = 20' + C + '$<br>$\\vartheta_2 = -5' + C + '$<br>$V_1 = V_2$',
-        tipp: 'Halle = vorher (Index 1), draußen = nachher (Index 2).' },
+      { s: 'l', lab: 'geg.', z: '$p_1 = 1{,}8' + U('bar') + '$; $\\;V_1 = V_2$<br>$\\vartheta_1 = 20' + C + PF + 'T_1 = 20 + 273 = 293' + U('K') + '$<br>$\\vartheta_2 = -5' + C + PF + 'T_2 = -5 + 273 = 268' + U('K') + '$',
+        tipp: 'Halle = vorher (Index 1), draußen = nachher (Index 2). Bei Minusgraden: $-5 + 273 = 268$ (nicht 278!).' },
       { s: 'l', lab: 'ges.', z: '$p_2$' },
-      { s: 'l', lab: 'Umrechnung', z: '$T_1 = 20 + 273 = 293' + U('K') + '$<br>$T_2 = -5 + 273 = 268' + U('K') + '$',
-        tipp: 'Bei Minusgraden: $-5 + 273 = 268$ (nicht 278!).' },
       { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$ &nbsp;($V$ kürzt sich)',
         tipp: 'Wie bei Aufgabe 2: Das Volumen bleibt gleich.' },
       { s: 'r', lab: 'Umstellen', z: '$p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$' },
@@ -145,11 +142,9 @@ var AUFGABEN = [
     text: 'Ein Wetterballon wird am Boden bei 15 °C und 1013 hPa mit 4,0 m³ Helium gefüllt. In 10 km Höhe herrschen −50 °C und 265 hPa. Die Hülle ist sehr dehnbar, sodass innen und außen der gleiche Druck herrscht.<br><b>a)</b> Berechne das Volumen des Ballons in 10 km Höhe.',
     check: { einh: 'm³', exakt: 11.84, gerundet: 12, celsius: -50.97, ziffern: 2 },
     schritte: [
-      { s: 'l', lab: 'geg.', z: '$V_1 = 4{,}0' + U('m^3') + '$<br>$p_1 = 1013' + U('hPa') + '$<br>$\\vartheta_1 = 15' + C + '$<br>$p_2 = 265' + U('hPa') + '$<br>$\\vartheta_2 = -50' + C + '$',
-        tipp: 'Am Boden = Zustand 1, in 10 km Höhe = Zustand 2. Diesmal ändern sich alle drei Größen.' },
+      { s: 'l', lab: 'geg.', z: '$V_1 = 4{,}0' + U('m^3') + '$<br>$p_1 = 1013' + U('hPa') + '$<br>$\\vartheta_1 = 15' + C + PF + 'T_1 = 15 + 273 = 288' + U('K') + '$<br>$p_2 = 265' + U('hPa') + '$<br>$\\vartheta_2 = -50' + C + PF + 'T_2 = -50 + 273 = 223' + U('K') + '$',
+        tipp: 'Am Boden = Zustand 1, in 10 km Höhe = Zustand 2. Diesmal ändern sich alle drei Größen. Die Drücke müssen nur dieselbe Einheit haben (beide hPa) – in Pa umrechnen ist nicht nötig.' },
       { s: 'l', lab: 'ges.', z: '$V_2$' },
-      { s: 'l', lab: 'Umrechnung', z: '$T_1 = 15 + 273 = 288' + U('K') + '$<br>$T_2 = -50 + 273 = 223' + U('K') + '$<br>Drücke beide in hPa – passt schon.',
-        tipp: 'Die Drücke müssen nur dieselbe Einheit haben (beide hPa), dann kürzt sich hPa. In Pa umrechnen ist nicht nötig.' },
       { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$' },
       { s: 'r', lab: 'Umstellen', z: '$V_2 = \\dfrac{p_1 \\cdot V_1 \\cdot T_2}{p_2 \\cdot T_1}$',
         tipp: 'Über Kreuz: mit $T_2$ malnehmen und durch $p_2$ teilen.' },
@@ -166,10 +161,9 @@ var AUFGABEN = [
     text: 'Eine Luftblase steigt aus 20 m Tiefe (3,0 bar, 8 °C) mit einem Volumen von 2,0 cm³ nach oben. An der Oberfläche herrschen 1,0 bar und 18 °C. Berechne ihr Volumen an der Oberfläche.',
     check: { einh: 'cm³', exakt: 6.2135, gerundet: 6.2, celsius: 13.5, ziffern: 2 },
     schritte: [
-      { s: 'l', lab: 'geg.', z: '$p_1 = 3{,}0' + U('bar') + '$<br>$V_1 = 2{,}0' + U('cm^3') + '$<br>$\\vartheta_1 = 8' + C + '$<br>$p_2 = 1{,}0' + U('bar') + '$<br>$\\vartheta_2 = 18' + C + '$',
+      { s: 'l', lab: 'geg.', z: '$p_1 = 3{,}0' + U('bar') + '$<br>$V_1 = 2{,}0' + U('cm^3') + '$<br>$\\vartheta_1 = 8' + C + PF + 'T_1 = 8 + 273 = 281' + U('K') + '$<br>$p_2 = 1{,}0' + U('bar') + '$<br>$\\vartheta_2 = 18' + C + PF + 'T_2 = 18 + 273 = 291' + U('K') + '$',
         tipp: 'Die 20 m Tiefe brauchst du nicht zum Rechnen – sie erklärt nur den hohen Druck.' },
       { s: 'l', lab: 'ges.', z: '$V_2$' },
-      { s: 'l', lab: 'Umrechnung', z: '$T_1 = 8 + 273 = 281' + U('K') + '$<br>$T_2 = 18 + 273 = 291' + U('K') + '$' },
       { s: 'r', lab: 'Formel', z: '$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$' },
       { s: 'r', lab: 'Umstellen', z: '$V_2 = \\dfrac{p_1 \\cdot V_1 \\cdot T_2}{p_2 \\cdot T_1}$' },
       { s: 'r', lab: 'Einsetzen', z: '$V_2 = \\dfrac{3{,}0' + U('bar') + ' \\cdot 2{,}0' + U('cm^3') + ' \\cdot 291' + U('K') + '}{1{,}0' + U('bar') + ' \\cdot 281' + U('K') + '}$' },
@@ -184,8 +178,8 @@ var AUFGABEN = [
    ===================================================================== */
 function tex(x) {
   if (window.katex) { try { return katex.renderToString(x, { throwOnError: false, strict: 'ignore' }); } catch (e) {} }
-  return x.replace(/\\dfrac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)').replace(/\\,|\\;|\\mathrm|\\cdot|\\ldots|\\approx|\\vartheta|\\circ|[{}\\^_]/g, function (m) {
-    return { '\\cdot': '·', '\\ldots': '…', '\\approx': '≈', '\\vartheta': 'ϑ', '\\circ': '°' }[m] || ''; });
+  return x.replace(/\\dfrac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)').replace(/\\,|\\;|\\mathrm|\\cdot|\\ldots|\\approx|\\vartheta|\\circ|\\rightarrow|[{}\\^_]/g, function (m) {
+    return { '\\cdot': '·', '\\ldots': '…', '\\approx': '≈', '\\vartheta': 'ϑ', '\\circ': '°', '\\rightarrow': '→' }[m] || ''; });
 }
 function fmt(s) { return (s || '').replace(/\$([^$]+)\$/g, function (_, x) { return '<span class="f">' + tex(x) + '</span>'; }); }
 
@@ -213,7 +207,7 @@ karte('Start',
   '<li><b>Ergebnis prüfen:</b> Gib dein Ergebnis ein – du bekommst sofort eine Rückmeldung.</li>' +
   '<li><b>Hängst du fest?</b> Hol dir einen <b>Tipp</b> oder den <b>nächsten Schritt</b>.</li></ol>' +
   '<p style="margin:10px 0 4px"><b>So schreibst du jede Rechnung auf:</b></p>' +
-  '<div class="fahrplan"><div class="li"><b>links</b><ol><li>geg.: mit Formelzeichen und Einheit</li><li>ges.</li><li>Umrechnung (°C → K)</li></ol></div>' +
+  '<div class="fahrplan"><div class="li"><b>links</b><ol><li>geg.: alles mit Formelzeichen und Einheit – Temperaturen <b>gleich in Kelvin</b> umrechnen</li><li>ganz unten: ges.</li></ol></div>' +
   '<div class="re"><b>rechts</b><ol><li>Formel</li><li>Umstellen</li><li>Einsetzen (mit Einheiten!)</li><li>Ergebnis</li><li>sinnvoll runden</li></ol></div></div>' +
   '<div class="merk"><b>Sinnvolle Ziffern:</b> Das Ergebnis bekommt so viele Ziffern wie die Angabe mit den <b>wenigsten</b> Ziffern – aber <b>mindestens 2</b>.<br>' +
   '<span class="hinweis-klein">Beispiel: 4,0 bar → 2 Ziffern · 1013 hPa → 4 Ziffern · 8 °C → 1 Ziffer (zählt als 2)</span></div>' +
@@ -332,7 +326,7 @@ function schrittweise(div, schritte) {
 
 /* ---------- Ende ---------- */
 karte('Ende', '<h2>Geschafft!</h2><div class="ok">Du hast alle Aufgaben der Rückseite durchgearbeitet. Prüfe zum Schluss:</div>' +
-  '<ul><li>Steht überall <b>geg.</b> und <b>ges.</b> mit Formelzeichen und Einheit?</li><li>Hast du alle Temperaturen in <b>Kelvin</b> eingesetzt?</li>' +
+  '<ul><li>Steht überall <b>geg.</b> mit Formelzeichen und Einheit – und ganz unten <b>ges.</b>?</li><li>Hast du alle Temperaturen gleich beim geg. in <b>Kelvin</b> umgerechnet?</li>' +
   '<li>Hast du beim Einsetzen die <b>Einheiten</b> mitgeschrieben?</li><li>Ist das Ergebnis <b>sinnvoll gerundet</b> und doppelt unterstrichen?</li>' +
   '<li>Gibt es einen <b>Antwortsatz</b>?</li></ul><p><a class="link" href="material.html">‹ Zurück zum Material</a></p>');
 
