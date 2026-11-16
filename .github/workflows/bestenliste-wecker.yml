@@ -1,0 +1,18 @@
+# Hält die Klassen-Bestenliste (Supabase, Gratis-Plan) wach:
+# Gratis-Projekte werden nach einer Woche ohne Aktivität pausiert (z. B. in den Ferien).
+# Diese Aktion fragt die Bestenliste alle zwei Tage einmal ab.
+name: Bestenliste wach halten
+on:
+  schedule:
+    - cron: '23 5 */2 * *'
+  workflow_dispatch:
+jobs:
+  wecken:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bestenliste abfragen
+        run: |
+          curl -sSf -X POST "https://sliitqxickadcoghewli.supabase.co/rest/v1/rpc/top_scores" \
+            -H "apikey: sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7" \
+            -H "Content-Type: application/json" \
+            -d '{"p_game":"m5-kopf","p_limit":1}'
