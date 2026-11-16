@@ -169,6 +169,25 @@ body.playing #foehn,body.pausiert #foehn{display:block}
   padding:7px 12px;margin:10px 0 0;color:#3c4763;text-align:left}
 .foehn-info svg{width:30px;height:30px;flex:none;margin-right:10px;color:#1d2b4a}
 @media (prefers-reduced-motion:reduce){#foehn.aktiv svg,#foehn.neu{animation:none}}
+
+/* ---------- Klassen-Bestenliste ---------- */
+.hstabs{display:flex;margin:-2px 0 6px;background:#e9e3d2;border-radius:12px;padding:3px}
+.hstabs button{flex:1;font:inherit;font-size:13px;font-weight:800;color:#7b7f8e;background:none;border:0;border-radius:9px;padding:6px 2px;cursor:pointer;white-space:nowrap}
+.hstabs button.an{background:#fff;color:var(--ink);box-shadow:0 1px 0 rgba(29,43,74,.25)}
+.hscap{font-size:12.5px;font-weight:700;color:var(--mute);margin:0 0 6px;line-height:1.3}
+.netstatus{font-size:13px;font-weight:700;color:var(--mute);margin:8px 0 0;line-height:1.3}
+.netstatus:empty{display:none}
+.netstatus.ok{color:var(--green)}
+.netstatus.warn{color:var(--red)}
+/* ---------- Föhn-Erklärung beim Start ---------- */
+#foehnTipp{position:fixed;left:10px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:5;max-width:min(260px,calc(100vw - 20px));
+  background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 12px;font-size:14px;font-weight:700;line-height:1.3;color:var(--ink);
+  box-shadow:0 4px 0 rgba(29,43,74,.3);opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s;pointer-events:none}
+#foehnTipp b{color:#1a8fb0}
+#foehnTipp::after{content:"";position:absolute;left:24px;bottom:-11px;width:16px;height:16px;background:#fff;
+  border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg)}
+#foehnTipp.zeigen{opacity:1;transform:none}
+body:not(.playing) #foehnTipp{display:none}
 </style>
 </head>
 <body>
@@ -187,6 +206,7 @@ body.playing #foehn,body.pausiert #foehn{display:block}
   </div>
 </div>
 <button id="foehn" type="button" aria-label="Föhn-Booster einsetzen"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(90 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(180 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(270 12 12)"/></g><circle cx="12" cy="12" r="2.3" fill="#ff8a3d" stroke="#1d2b4a" stroke-width="1.2"/></svg><span>Föhn</span><b id="foehnN">1</b></button>
+<div id="foehnTipp" aria-live="polite"><b>Das ist dein Föhn!</b> Tipp drauf, wenn es knapp wird – dann pustet er die Tafeln nach oben und du hast mehr Zeit. 5&nbsp;Richtige in Folge = ein neuer Föhn.</div>
 <div id="flash"></div>
 <div id="toast"><b></b><span></span></div>
 
@@ -226,12 +246,14 @@ body.playing #foehn,body.pausiert #foehn{display:block}
         </div>
 
         <label class="field"><h2 style="margin:0">Dein Name</h2>
-          <input id="name" type="text" maxlength="14" placeholder="für die Bestenliste" autocomplete="off" autocapitalize="words" spellcheck="false">
+          <input id="name" type="text" maxlength="14" placeholder="Spitzname, kein echter Name" autocomplete="off" autocapitalize="words" spellcheck="false">
         </label>
         <button class="btn block" id="btnStart">Los geht's!</button>
       </div>
       <div class="hsbox">
-        <h2>Bestenliste auf diesem Gerät</h2>
+        <h2>Bestenliste</h2>
+        <div class="hstabs" role="tablist"><button type="button" data-v="woche">Woche</button><button type="button" data-v="gesamt">Gesamt</button><button type="button" data-v="geraet">Mein Gerät</button></div>
+        <p class="hscap"></p>
         <div id="menuHs"></div>
         <button class="link" id="btnClear" hidden>Bestenliste löschen</button>
       </div>
@@ -273,8 +295,11 @@ body.playing #foehn,body.pausiert #foehn{display:block}
         </div>
       </div>
       <div class="hsbox">
-        <h2>Bestenliste auf diesem Gerät</h2>
+        <h2>Bestenliste</h2>
+        <div class="hstabs" role="tablist"><button type="button" data-v="woche">Woche</button><button type="button" data-v="gesamt">Gesamt</button><button type="button" data-v="geraet">Mein Gerät</button></div>
+        <p class="hscap"></p>
         <div id="overHs"></div>
+        <p class="netstatus" id="netStatus"></p>
       </div>
     </div>
   </div>
@@ -690,8 +715,8 @@ function renderHs(el,list,meT,max){
 function showMenu(){
   G.state='menu'; G.boards=[]; document.body.classList.remove('playing');
   $('#hud').hidden=true; $('#over').hidden=true; $('#pause').hidden=true; $('#menu').hidden=false;
-  var list=store.get(HS_KEY,[]); renderHs($('#menuHs'),list,0,8);
-  var bc=$('#btnClear'); bc.hidden=!list.length; bc.textContent='Bestenliste löschen'; bc.dataset.sure='';
+  var bc=$('#btnClear'); bc.textContent='Bestenliste löschen'; bc.dataset.sure='';
+  renderBoard('menu');
 }
 function gameOver(){
   G.state='over'; G.boards=[]; document.body.classList.remove('playing'); $('#hud').hidden=true; sfx.over();
@@ -704,7 +729,7 @@ function gameOver(){
   G.misses.forEach(function(m){ if(seen[m.text]) return; seen[m.text]=1;
     var c=document.createElement('span'); c.className='chip'; c.appendChild(document.createTextNode(m.text+' = ')); var b=document.createElement('b'); b.textContent=m.ans; c.appendChild(b); box.appendChild(c); });
   $('#missWrap').hidden=!G.misses.length;
-  renderHs($('#overHs'),list,entry.t,10);
+  G.lastEntry=entry; netAfterGame(entry);
   $('#over').hidden=false;
 }
 function pause(){ if(G.state!=='play') return; G.state='pause'; G.pausedInTask=(G.phase==='fall'); document.body.classList.remove('playing'); document.body.classList.add('pausiert'); $('#pause').hidden=false; }
@@ -760,7 +785,7 @@ window.addEventListener('orientationchange',function(){ setTimeout(resize,200); 
    Einsatz einmal pro Aufgabe: Lüfter fahren aus dem Boden und pusten die Tafeln
    ein paar Sekunden nach oben. Mit Föhn gibt es keinen Tempo-Bonus auf die Punkte. */
 var FOEHN={start:1,max:3,serie:5,dauer:6.5,ein:.5,aus:1.2,lift:1.4};
-function foehnReset(){ G.foehn=FOEHN.start; G.wind=0; G.windUsed=false; G.fanUp=0; G.fanRot=0; G.gusts=[]; G.gustT=0; updateFoehn(); }
+function foehnReset(){ G.foehn=FOEHN.start; G.wind=0; G.windUsed=false; G.fanUp=0; G.fanRot=0; G.gusts=[]; G.gustT=0; updateFoehn(); if(typeof foehnTipp==='function') foehnTipp(); }
 function windEnv(){ if(!(G.wind>0)) return 0; var e=Math.min(1,(FOEHN.dauer-G.wind)/FOEHN.ein,G.wind/FOEHN.aus); return e*e*(3-2*e); }
 function windF(b){
   var env=windEnv(); if(!env) return 1;
@@ -783,7 +808,7 @@ function foehnUse(){
   if(G.state!=='play') return;
   var el=document.getElementById('foehn');
   if(G.phase!=='fall' || G.windUsed || !(G.foehn>0)){ if(!(G.wind>0)){ el.classList.remove('neu'); void el.offsetWidth; } return; }
-  G.foehn--; G.windUsed=true; G.wind=FOEHN.dauer; updateFoehn();
+  G.foehn--; G.windUsed=true; G.wind=FOEHN.dauer; updateFoehn(); document.getElementById('foehnTipp').classList.remove('zeigen');
   tone(110,1.1,'sawtooth',.035,320); tone(240,1.3,'triangle',.05,700,.05);
 }
 function foehnSerie(){
@@ -856,6 +881,80 @@ function drawFoehn(){
     if(e.key==='f'||e.key==='F'||e.key===' '){ e.preventDefault(); foehnUse(); }
   });
 })();
+
+/* ================= Klassen-Bestenliste (Supabase) =================
+   Je Spiel eine eigene Liste; Einträge nur mit Spitznamen. Die Datenbank prüft
+   Namen (Wortfilter), Punkte (Plausibilität) und begrenzt die Einträge pro Minute. */
+var NET={url:'https://sliitqxickadcoghewli.supabase.co/rest/v1/',key:'sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7',game:'m5-kopf',klasse:'5a'};
+var HSV=store.get('bestenliste.ansicht.'+NET.game,'woche'); if(['woche','gesamt','geraet'].indexOf(HSV)<0) HSV='woche';
+var netReq={menu:0,over:0};
+function wochenStart(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-((d.getDay()+6)%7)); return d; }
+function netFetch(path,body,extra){
+  var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ctl) ctl.abort(); },7000);
+  var h={apikey:NET.key,'Content-Type':'application/json'}; if(extra) for(var k in extra) h[k]=extra[k];
+  return fetch(NET.url+path,{method:'POST',headers:h,body:JSON.stringify(body),signal:ctl?ctl.signal:undefined})
+    .then(function(r){ clearTimeout(to); return r; },function(e){ clearTimeout(to); throw e; });
+}
+function netTop(view){
+  return netFetch('rpc/top_scores',{p_game:NET.game,p_since:view==='woche'?wochenStart().toISOString():null,p_limit:10})
+    .then(function(r){ if(!r.ok) throw new Error('http'); return r.json(); });
+}
+function nameOk(n){ return typeof n==='string' && n.length>=2 && n.length<=14 && /^[A-Za-z0-9ÄÖÜäöüß .\-_]+$/.test(n); }
+function netSend(e){
+  return netFetch('scores',{game:NET.game,name:e.n,score:e.s,level:e.l,ops:String(e.o||'').slice(0,24)},{Prefer:'return=minimal'})
+    .then(function(r){ if(r.ok) return 'ok'; return r.text().then(function(t){ return /nicht erlaubt/.test(t)?'name':(/Zu viele/.test(t)?'viele':'fehler'); }); },
+          function(){ return 'offline'; });
+}
+var HSCAP={woche:'Klasse '+NET.klasse+' – diese Woche (ab Montag)',gesamt:'Klasse '+NET.klasse+' – alle Zeiten',geraet:'Nur auf diesem Gerät'};
+function renderBoard(where,me){
+  var el=document.getElementById(where==='menu'?'menuHs':'overHs'), box=el.parentNode;
+  $$('.hstabs button').forEach(function(b){ b.classList.toggle('an',b.getAttribute('data-v')===HSV); b.setAttribute('aria-selected',b.getAttribute('data-v')===HSV?'true':'false'); });
+  box.querySelector('.hscap').textContent=HSCAP[HSV];
+  var max=where==='menu'?8:10, bc=$('#btnClear');
+  if(where==='menu'){ bc.hidden=!(HSV==='geraet' && store.get(HS_KEY,[]).length); }
+  if(HSV==='geraet'){ renderHs(el,store.get(HS_KEY,[]),me&&me.t?me.t:0,max); return; }
+  var id=++netReq[where];
+  el.textContent=''; var p=document.createElement('p'); p.className='empty'; p.textContent='Lädt …'; el.appendChild(p);
+  var myName=((me&&me.n)||S.name||'').toLowerCase();
+  netTop(HSV).then(function(rows){
+    if(id!==netReq[where]) return;
+    var list=rows.map(function(r){ var mine=myName && r.name.toLowerCase()===myName && (!me || !me.s || r.score===me.s || where==='menu'); return {n:r.name,s:r.score,l:r.level,o:r.ops,t:mine?'du':0}; });
+    renderHs(el,list,'du',max);
+    if(!rows.length) el.querySelector('.empty').textContent=HSV==='woche'?'Diese Woche noch kein Eintrag. Hol dir den ersten Platz!':'Noch kein Eintrag. Hol dir den ersten Platz!';
+  },function(){
+    if(id!==netReq[where]) return;
+    el.textContent=''; var q=document.createElement('p'); q.className='empty'; q.textContent='Die Klassen-Bestenliste ist gerade nicht erreichbar. Schau unter „Mein Gerät“.'; el.appendChild(q);
+  });
+}
+function netAfterGame(entry){
+  var st=$('#netStatus'); st.className='netstatus'; st.textContent='';
+  if(!(G.score>0)){ renderBoard('over',entry); return; }
+  if(!S.name){ st.className='netstatus warn'; st.textContent='Ohne Namen kommst du nicht in die Klassen-Bestenliste. Gib im Menü einen Spitznamen ein.'; renderBoard('over',entry); return; }
+  if(!nameOk(S.name)){ st.className='netstatus warn'; st.textContent='Dein Name enthält Zeichen, die nicht gehen. Nimm nur Buchstaben und Zahlen.'; renderBoard('over',entry); return; }
+  st.textContent='Wird in die Klassen-Bestenliste eingetragen …';
+  netSend(entry).then(function(res){
+    if(res==='ok'){ st.className='netstatus ok'; st.textContent='In der Klassen-Bestenliste gespeichert.'; }
+    else if(res==='name'){ st.className='netstatus warn'; st.textContent='Dieser Name ist nicht erlaubt. Bitte wähle im Menü einen anderen Spitznamen.'; }
+    else if(res==='viele'){ st.className='netstatus warn'; st.textContent='Gerade spielen sehr viele – dein Ergebnis wurde nur auf diesem Gerät gespeichert.'; }
+    else { st.className='netstatus warn'; st.textContent='Keine Verbindung – dein Ergebnis ist nur auf diesem Gerät gespeichert.'; }
+    renderBoard('over',entry);
+  });
+}
+$$('.hstabs button').forEach(function(b){
+  b.addEventListener('click',function(){
+    HSV=b.getAttribute('data-v'); store.set('bestenliste.ansicht.'+NET.game,HSV);
+    renderBoard(G.state==='over'?'over':'menu',G.state==='over'?G.lastEntry:null);
+  });
+});
+var foehnTippT=0;
+function foehnTipp(){
+  var key='foehn.tipps.'+NET.game, n=store.get(key,0), el=document.getElementById('foehnTipp');
+  if(n>=5){ el.classList.remove('zeigen'); return; }
+  store.set(key,n+1);
+  clearTimeout(foehnTippT); el.classList.remove('zeigen');
+  setTimeout(function(){ el.classList.add('zeigen'); },700);
+  foehnTippT=setTimeout(function(){ el.classList.remove('zeigen'); },7500);
+}
 
 /* ================= Schleife ================= */
 var last=0;
