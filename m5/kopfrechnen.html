@@ -759,12 +759,15 @@ window.addEventListener('orientationchange',function(){ setTimeout(resize,200); 
    Start mit 1 Föhn, +1 für jede Serie von 5 Richtigen in Folge (höchstens 3).
    Einsatz einmal pro Aufgabe: Lüfter fahren aus dem Boden und pusten die Tafeln
    ein paar Sekunden nach oben. Mit Föhn gibt es keinen Tempo-Bonus auf die Punkte. */
-var FOEHN={start:1,max:3,serie:5,dauer:5,ein:.5,aus:1.1,lift:1.3};
+var FOEHN={start:1,max:3,serie:5,dauer:6.5,ein:.5,aus:1.2,lift:1.4};
 function foehnReset(){ G.foehn=FOEHN.start; G.wind=0; G.windUsed=false; G.fanUp=0; G.fanRot=0; G.gusts=[]; G.gustT=0; updateFoehn(); }
 function windEnv(){ if(!(G.wind>0)) return 0; var e=Math.min(1,(FOEHN.dauer-G.wind)/FOEHN.ein,G.wind/FOEHN.aus); return e*e*(3-2*e); }
 function windF(b){
-  var f=1-FOEHN.lift*windEnv();
-  if(f<0){ var top=(typeof spawnTop==='number'?spawnTop:hudH); if(b.y-b.bh/2-b.bw*1.12<top+12) f=0; }
+  var env=windEnv(); if(!env) return 1;
+  var top=(typeof spawnTop==='number'?spawnTop:hudH);
+  if(b.y-b.bh/2<top+10) return 1;                      // Tafel noch hinter der Aufgabe: erst ins Bild fallen lassen
+  var f=1-FOEHN.lift*env;
+  if(f<0 && b.y-b.bh/2-b.bw*1.12<top+12) f=0;           // nicht wieder hinter die Aufgabe pusten
   return f;
 }
 function fanR(){ return clamp(W*.085,26,62); }
