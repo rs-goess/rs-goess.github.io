@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.2 Versuchsanleitung – Wovon hängt die Induktionsspannung ab?</title>
+<link rel="stylesheet" href="../assets/durchklick.css">
+<style>
+  /* Physik: Petrol wie die anderen Physik-Lernpfade; Versuch = Blau */
+  :root{--blau:#0E7490;--petrol:#0B3B47;--versuch:#1565C0;--versuch-hell:#EAF2FC}
+  body{background:var(--petrol)}
+  .karte h2{color:var(--versuch)}
+  .schritt-nr{display:inline-block;background:var(--versuch);color:#fff;border-radius:999px;font-size:13px;font-weight:bold;
+              padding:2px 10px;margin-bottom:6px}
+  .bild img{border-radius:10px;border:1px solid #e3e3e3}
+  .bild.klein img{max-width:70%}
+  .paar{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .paar .bild{margin:0}
+  .forschung{border:2px dashed #F2B705;background:#FFF8DB;border-radius:12px;padding:10px 12px;margin:10px 0}
+  .forschung b.t{display:block;color:#8a6d00;font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+  .versuch{border:2px solid var(--versuch);background:var(--versuch-hell);border-radius:12px;padding:10px 12px;margin:10px 0}
+  .versuch b.t{display:block;color:var(--versuch);font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+  .versuch ol{margin:4px 0 0;padding-left:22px}
+  .versuch li{margin:4px 0}
+  .rollen{list-style:none;padding:0;margin:8px 0}
+  .rollen li{background:var(--grau);border-radius:10px;padding:7px 10px;margin:6px 0}
+  .rollen li b{color:var(--versuch)}
+  .ab{display:inline-block;background:#fff;border:2px solid var(--versuch);color:var(--versuch);border-radius:8px;
+      font-weight:bold;font-size:13px;padding:1px 8px;margin-left:4px}
+  .magnet{position:relative}
+  .magnet .pol{position:absolute;top:50%;transform:translateY(-50%);color:#fff;font-weight:bold;font-size:26px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  /* Teilschritte zum Aufdecken */
+  .teilschritte{list-style:none;margin:8px 0;padding:0;counter-reset:ts}
+  .teilschritte li{display:none;background:#f7fbff;border-left:4px solid var(--versuch);border-radius:6px;padding:8px 10px;margin:7px 0;
+                   counter-increment:ts;animation:rein .25s ease}
+  .teilschritte li::before{content:counter(ts) ". ";font-weight:bold;color:var(--versuch)}
+  .teilschritte li.zu{display:block}
+  .teilschritte li .lies{display:block;font-size:14.5px;color:#555;margin-top:3px}
+  .knopf{border:0;border-radius:10px;padding:10px 14px;font:inherit;font-size:15px;font-weight:bold;cursor:pointer;background:var(--versuch);color:#fff}
+  .knopf.grau{background:#e1e6ea;color:var(--dunkel)}
+  .knopf:disabled{opacity:.35;cursor:default}
+  /* Messwert-Helfer */
+  .mess{background:var(--grau);border-radius:12px;padding:10px 12px;margin:10px 0}
+  .mess h3{margin:0 0 6px;font-size:16px}
+  .mess .zeile{display:grid;grid-template-columns:7.5em repeat(3,1fr) 5.2em;gap:6px;align-items:center;margin:6px 0}
+  .mess .zeile span.l{font-weight:bold;font-size:15px}
+  .mess input{font:inherit;font-size:16px;width:100%;padding:6px 6px;border:2px solid #c9d3da;border-radius:8px;text-align:center}
+  .mess .max{font-weight:bold;text-align:center;border-radius:8px;padding:6px 2px;background:#fff;border:2px solid #9fd3b4;color:#1f6b41;min-height:38px}
+  .mess .kopf{font-size:12.5px;color:#6b7780;font-weight:bold;text-transform:uppercase;letter-spacing:.03em}
+  .mess .kopf span{text-align:center}
+  .mess .fazit{margin-top:6px;font-size:15px;display:none;border-radius:8px;padding:6px 10px;background:var(--gruen-hell);color:#1f6b41}
+  @media (max-width:420px){ .mess .zeile{grid-template-columns:5.6em repeat(3,1fr) 4.4em;gap:4px} }
+  /* Eingabe-Check */
+  .eing{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+  .eing label{font-weight:bold;min-width:7.5em}
+  .eing input{font:inherit;font-size:17px;width:100px;padding:6px 10px;border:2px solid #c9d3da;border-radius:10px}
+  .eing input.r{border-color:#2e8b57;background:#e6f4ec}
+  .eing input.f{border-color:#c00000;background:#fde8e8}
+  .rueck{margin-top:8px;font-size:15px;border-radius:8px;padding:7px 10px;display:none}
+  .rueck.gut{display:block;background:var(--gruen-hell);color:#1f6b41}
+  .rueck.falsch{display:block;background:#fde8e8;color:#9b1c1c}
+  /* Auswahl */
+  .mc{list-style:none;margin:8px 0;padding:0}
+  .mc li{margin:7px 0}
+  .mc button{width:100%;text-align:left;border:2px solid #d5dde3;background:#fff;border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;color:var(--dunkel);cursor:pointer}
+  .mc button.r{border-color:#2e8b57;background:#e6f4ec}
+  .mc button.f{border-color:#c00000;background:#fde8e8}
+  .frageblock{border-top:1px solid #e3e3e3;padding-top:10px;margin-top:12px}
+  .frageblock p{margin:0 0 4px;font-weight:bold}
+  .fb{font-size:14.5px;margin:4px 2px 0;color:#444}
+  .haken{list-style:none;padding:0;margin:8px 0}
+  .haken li{margin:6px 0}
+  .haken label{display:flex;gap:10px;align-items:flex-start;background:var(--grau);border-radius:10px;padding:9px 10px;cursor:pointer}
+  .haken input{width:20px;height:20px;margin-top:2px;flex:none}
+  .fortschritt{height:6px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;margin:2px 0 6px}
+  .fortschritt i{display:block;height:100%;background:var(--gelb);width:0;transition:width .25s}
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 10c · 2.2 Das Induktionsgesetz · Schülerversuch</small>
+  <h1>Wovon hängt die Induktionsspannung ab?</h1>
+  <div class="fortschritt"><i id="balken"></i></div>
+  <div class="chips" id="chips"></div>
+</header>
+<main id="main">
+
+<!-- 1 Start -->
+<section class="karte" data-chip="Start">
+  <h2>Versuchsanleitung Schritt für Schritt</h2>
+  <div class="forschung"><b class="t">Forschungsfrage</b>Wie kann man die Induktionsspannung vergrößern?</div>
+  <p>Ihr arbeitet in Gruppen zu 3 – 4. Klickt euch mit <b>Weiter</b> durch und tragt alles in euer <b>AB 2.2, Seite 1</b> ein.</p>
+  <p><b>Verteilt die Rollen:</b></p>
+  <ul class="rollen">
+    <li><b>Magnet-Profi:</b> bewegt den Magneten</li>
+    <li><b>Ableser/in:</b> beobachtet das Display und sagt den Wert laut</li>
+    <li><b>Protokoll:</b> notiert die Werte (hier oder im AB) – alle übertragen am Ende ins eigene AB</li>
+  </ul>
+  <div class="tipp">Verändert immer nur <b>eine</b> Sache – sonst wisst ihr nicht, woran es lag.</div>
+</section>
+
+<!-- 2 Material -->
+<section class="karte" data-chip="Material">
+  <span class="schritt-nr">Schritt 1</span>
+  <h2>Material prüfen</h2>
+  <p>In eurer Box sollten sein: <b>rote Spule, gelbe Spule, 2 Stabmagnete, Multimeter, 2 Kabel.</b></p>
+  <div class="paar">
+    <figure class="bild"><img src="bilder/versuch-2-2/spule-rot.jpg" alt="Rote Spule von Phywe" loading="lazy"><figcaption>rote Spule</figcaption></figure>
+    <figure class="bild"><img src="bilder/versuch-2-2/spule-gelb.jpg" alt="Gelbe Spule von Phywe" loading="lazy"><figcaption>gelbe Spule</figcaption></figure>
+  </div>
+  <figure class="bild magnet"><img src="bilder/versuch-2-2/stabmagnet.jpg" alt="Stabmagnet rot und grün" loading="lazy">
+    <figcaption>Stabmagnet: <b style="color:#c62828">rot = Nordpol (N)</b>, <b style="color:#1b5e4b">grün = Südpol (S)</b></figcaption></figure>
+  <div class="versuch"><b class="t">Auftrag</b>Lest die <b>Windungszahl</b> <i>n</i> auf beiden Spulen ab („Wdg.“) und tragt sie ins AB bei „Material“ ein. <span class="ab">AB</span></div>
+  <div class="eing"><label for="nRot">rote Spule: n =</label><input id="nRot" inputmode="numeric" autocomplete="off"></div>
+  <div class="eing"><label for="nGelb">gelbe Spule: n =</label><input id="nGelb" inputmode="numeric" autocomplete="off"></div>
+  <button class="knopf" type="button" id="nPruef">Prüfen</button>
+  <div class="rueck" id="nRueck"></div>
+</section>
+
+<!-- 3 Anschließen -->
+<section class="karte" data-chip="Anschließen">
+  <span class="schritt-nr">Schritt 2</span>
+  <h2>Multimeter an die Spule anschließen</h2>
+  <figure class="bild"><img src="bilder/versuch-2-2/multimeter-anschluss.jpg" alt="Multimeter mit Kabeln in COM und V-Ohm-Hz" loading="lazy">
+    <figcaption>Die Kabel stecken in <b>COM</b> und <b>VΩHz</b>.</figcaption></figure>
+  <div class="versuch"><b class="t">So geht’s</b><ol>
+    <li>Ein Kabel in die Buchse <b>COM</b> stecken.</li>
+    <li>Das andere Kabel in die Buchse <b>VΩHz</b> stecken.</li>
+    <li>Die freien Enden an die beiden Buchsen der <b>roten Spule</b> stecken.</li>
+  </ol></div>
+  <div class="tipp">Die Buchsen <b>10A</b> und <b>mA</b> bleiben frei – damit misst man die Stromstärke, nicht die Spannung.</div>
+</section>
+
+<!-- 4 Messbereich -->
+<section class="karte" data-chip="Messbereich">
+  <span class="schritt-nr">Schritt 3</span>
+  <h2>Multimeter einschalten und einstellen</h2>
+  <figure class="bild"><img src="bilder/versuch-2-2/bereich-200mv.jpg" alt="Drehschalter auf 200 mV" loading="lazy">
+    <figcaption>Drehschalter auf <b>200 mV</b></figcaption></figure>
+  <div class="versuch"><b class="t">So geht’s</b><ol>
+    <li><b>POWER</b> drücken.</li>
+    <li>Den Drehschalter auf <b>200 mV</b> stellen (kleinster Spannungsbereich – hier sieht man auch kleine Spannungen).</li>
+    <li>Im Display darf <b>kein „AC“</b> stehen. Falls doch: einmal <b>DC/AC</b> drücken.</li>
+  </ol></div>
+  <div class="tipp">Zeigt das Display nur eine <b>„1“</b> ganz links, ist die Spannung zu groß für den Bereich. Dreht dann eine Stufe weiter auf <b>2 V</b>.</div>
+  <figure class="bild klein"><img src="bilder/versuch-2-2/bereich-2v.jpg" alt="Drehschalter auf 2 V" loading="lazy"><figcaption>nur falls nötig: <b>2 V</b></figcaption></figure>
+</section>
+
+<!-- 5 Teil A -->
+<section class="karte" data-chip="Teil A">
+  <span class="schritt-nr">Schritt 4 · Teil A</span>
+  <h2>Grundversuch: Was zeigt das Messgerät an?</h2>
+  <p>Ihr arbeitet mit der <b>roten Spule</b> und <b>einem</b> Magneten. Beobachtet bei jedem Schritt: Zeigt das Display eine Zahl <b>ohne Vorzeichen (+)</b>, eine Zahl <b>mit Minus (–)</b> oder <b>0</b>? <span class="ab">AB Tabelle A</span></p>
+  <ol class="teilschritte" id="tsA">
+    <li>Schiebt den <b>Nordpol</b> (rot) zügig <b>in die Spule hinein</b>.<span class="lies">Ableser/in: Vorzeichen ansagen!</span></li>
+    <li>Lasst den Magneten <b>in der Spule ruhen</b>.<span class="lies">Was zeigt das Display jetzt?</span></li>
+    <li>Zieht den <b>Nordpol</b> zügig <b>aus der Spule heraus</b>.<span class="lies">Vergleicht mit Schritt 1.</span></li>
+    <li>Dreht den Magneten um und schiebt den <b>Südpol</b> (grün) <b>in die Spule hinein</b>.<span class="lies">Vergleicht wieder mit Schritt 1.</span></li>
+  </ol>
+  <button class="knopf" type="button" id="tsAKnopf">Ersten Schritt zeigen</button>
+  <div class="tipp">Die Zahl erscheint nur ganz kurz – genau hinschauen. Ein <b>Minus</b> vor der Zahl bedeutet: Die Spannung ist <b>umgepolt</b>.</div>
+</section>
+
+<!-- 6 Teil A Check -->
+<section class="karte" data-chip="Check A">
+  <span class="schritt-nr">Kurz-Check</span>
+  <h2>Was habt ihr in Teil A beobachtet?</h2>
+  <div id="checkA"></div>
+  <p class="hinweis-klein">Ergänzt danach im AB den Satz <b>„Ergebnis A“</b>. <span class="ab">AB</span></p>
+</section>
+
+<!-- 7 Teil B -->
+<section class="karte" data-chip="Teil B">
+  <span class="schritt-nr">Schritt 5 · Teil B</span>
+  <h2>Geschwindigkeit: langsam ↔ schnell</h2>
+  <div class="versuch"><b class="t">So geht’s</b><ol>
+    <li>Rote Spule, ein Magnet.</li>
+    <li>Schiebt den Nordpol <b>langsam</b> in die Spule. Lest den größten Wert ab.</li>
+    <li>Schiebt den Nordpol <b>schnell</b> in die Spule. Lest den größten Wert ab.</li>
+    <li>Jede Messung <b>dreimal</b> – ins AB kommt jeweils der <b>größte</b> Wert.</li>
+  </ol></div>
+  <div class="mess" data-teil="B"></div>
+</section>
+
+<!-- 8 Teil C -->
+<section class="karte" data-chip="Teil C">
+  <span class="schritt-nr">Schritt 6 · Teil C</span>
+  <h2>Windungszahl: rote ↔ gelbe Spule</h2>
+  <div class="versuch"><b class="t">So geht’s</b><ol>
+    <li>Ein Magnet, immer <b>gleich schnell</b> (zügig) hineinschieben.</li>
+    <li>Messt mit der <b>roten Spule</b>.</li>
+    <li>Steckt die Kabel auf die <b>gelbe Spule</b> um und messt noch einmal.</li>
+    <li>Jeweils dreimal messen, den größten Wert ins AB.</li>
+  </ol></div>
+  <div class="tipp">Damit der Vergleich fair ist, muss der Magnet bei beiden Spulen <b>gleich schnell</b> bewegt werden. Am besten bewegt immer dieselbe Person den Magneten.</div>
+  <div class="mess" data-teil="C"></div>
+</section>
+
+<!-- 9 Teil D -->
+<section class="karte" data-chip="Teil D">
+  <span class="schritt-nr">Schritt 7 · Teil D</span>
+  <h2>Magnet: 1 Magnet ↔ 2 Magnete</h2>
+  <div class="versuch"><b class="t">So geht’s</b><ol>
+    <li>Wieder die <b>rote Spule</b>.</li>
+    <li>Schiebt <b>einen</b> Magneten (Nordpol voraus) zügig in die Spule.</li>
+    <li>Legt <b>zwei Magnete</b> genau nebeneinander – <b>rot neben rot</b> (N neben N) – und schiebt beide gleich schnell hinein.</li>
+    <li>Jeweils dreimal messen, den größten Wert ins AB.</li>
+  </ol></div>
+  <div class="tipp">Passen beide Magnete zusammen nicht in die Spule, bewegt sie zügig <b>direkt an die Öffnung</b> heran – beim Vergleich mit einem Magneten genauso.</div>
+  <div class="mess" data-teil="D"></div>
+</section>
+
+<!-- 10 Auswertung -->
+<section class="karte" data-chip="Auswertung">
+  <span class="schritt-nr">Schritt 8</span>
+  <h2>Wann war die Spannung größer?</h2>
+  <p>Schaut auf eure Messwerte und füllt im AB die Spalte <b>„größer bei …“</b> aus. <span class="ab">AB</span></p>
+  <div id="eigene" class="box" style="display:none"></div>
+  <div id="checkBD"></div>
+</section>
+
+<!-- 11 Aufräumen -->
+<section class="karte" data-chip="Aufräumen">
+  <span class="schritt-nr">Schritt 9</span>
+  <h2>Aufräumen</h2>
+  <ul class="haken" id="haken">
+    <li><label><input type="checkbox"> Multimeter ausschalten (POWER).</label></li>
+    <li><label><input type="checkbox"> Kabel abstecken.</label></li>
+    <li><label><input type="checkbox"> Spulen, 2 Magnete, Multimeter und Kabel zurück in die Box.</label></li>
+    <li><label><input type="checkbox"> Alle Messwerte und die Windungszahlen stehen im AB.</label></li>
+  </ul>
+  <div class="ok" id="fertig" style="display:none"><b>Super, alles erledigt!</b> In der Besprechung klären wir, was alle Versuche gemeinsam haben.</div>
+  <p><a class="link" href="material.html">‹ Zurück zum Material</a></p>
+</section>
+
+</main>
+<nav><button id="zurueck" type="button">◀ Zurück</button><button id="weiter" type="button">Weiter ▶</button></nav>
+
+<script>
+/* =====================================================================
+   Versuchsanleitung 2.2 (Physik 10c) – Schritt für Schritt wie Learning Snacks.
+   Spulen der Schule: rot = 1600 Wdg., gelb = 400 Wdg. (Phywe).
+   Messwerte werden nur auf diesem Gerät gespeichert (localStorage).
+   ===================================================================== */
+var SPEICHER = 'versuch-2-2-p10';
+var daten = {};
+try { daten = JSON.parse(localStorage.getItem(SPEICHER) || '{}') || {}; } catch (e) { daten = {}; }
+function sichern() { try { localStorage.setItem(SPEICHER, JSON.stringify(daten)); } catch (e) {} }
+function zahl(s) { s = String(s).replace(/\s/g, '').replace(/−|–/g, '-').replace(',', '.'); return s === '' ? NaN : Number(s); }
+function deutsch(x) { return String(Math.round(x * 10) / 10).replace('.', ','); }
+
+/* ---------- Windungszahlen ---------- */
+(function () {
+  var r = document.getElementById('nRot'), g = document.getElementById('nGelb'), fb = document.getElementById('nRueck');
+  r.value = daten.nRot || ''; g.value = daten.nGelb || '';
+  document.getElementById('nPruef').onclick = function () {
+    var okR = zahl(r.value) === 1600, okG = zahl(g.value) === 400;
+    daten.nRot = r.value; daten.nGelb = g.value; sichern();
+    r.className = okR ? 'r' : 'f'; g.className = okG ? 'r' : 'f';
+    if (okR && okG) { fb.className = 'rueck gut'; fb.textContent = 'Richtig! Die rote Spule hat 4-mal so viele Windungen wie die gelbe.'; }
+    else { fb.className = 'rueck falsch'; fb.textContent = 'Noch nicht ganz – schaut genau auf die Zahl vor „Wdg.“ auf der Spule.'; }
+  };
+})();
+
+/* ---------- Teilschritte Teil A ---------- */
+(function () {
+  var lis = [].slice.call(document.querySelectorAll('#tsA li')), k = document.getElementById('tsAKnopf'), n = 0;
+  k.onclick = function () {
+    if (n < lis.length) { lis[n].classList.add('zu'); n++; }
+    k.textContent = n < lis.length ? 'Nächster Schritt' : 'Alle Schritte geschafft ✓';
+    k.disabled = n >= lis.length;
+  };
+})();
+
+/* ---------- Auswahl-Fragen ---------- */
+function frage(ziel, text, antworten) {
+  var d = document.createElement('div'); d.className = 'frageblock';
+  d.innerHTML = '<p>' + text + '</p><ul class="mc"></ul><div class="fb"></div>';
+  var ul = d.querySelector('ul'), fb = d.querySelector('.fb');
+  antworten.forEach(function (a) {
+    var li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.innerHTML = a.t;
+    b.onclick = function () {
+      [].forEach.call(ul.querySelectorAll('button'), function (x) { x.className = ''; });
+      b.className = a.ok ? 'r' : 'f'; fb.innerHTML = a.fb || (a.ok ? 'Richtig!' : 'Schaut noch einmal genau hin.');
+    };
+    li.appendChild(b); ul.appendChild(li);
+  });
+  document.getElementById(ziel).appendChild(d);
+}
+frage('checkA', 'Was zeigt das Display, wenn der Magnet in der Spule <b>ruht</b>?', [
+  { t: '0 – keine Spannung', ok: true, fb: 'Genau: Ohne Bewegung ändert sich die Magnetfeldstärke in der Spule nicht – also keine Induktionsspannung.' },
+  { t: 'den größten Wert', ok: false, fb: 'Nein – schaut noch einmal: Solange der Magnet still liegt, passiert nichts.' },
+  { t: 'denselben Wert wie beim Hineinschieben', ok: false, fb: 'Nein – die Anzeige geht zurück auf 0, sobald der Magnet ruht.' }]);
+frage('checkA', 'Nordpol <b>hinein</b> und Nordpol <b>heraus</b>: Wie ist das Vorzeichen?', [
+  { t: 'gleiches Vorzeichen', ok: false, fb: 'Prüft es noch einmal: Achtet auf das Minus im Display.' },
+  { t: 'entgegengesetztes Vorzeichen (+ ↔ –)', ok: true, fb: 'Richtig: Kehrt man die <b>Bewegungsrichtung</b> um, kehrt sich die <b>Polung</b> der Spannung um.' }]);
+frage('checkA', 'Nordpol <b>hinein</b> und Südpol <b>hinein</b>: Wie ist das Vorzeichen?', [
+  { t: 'gleiches Vorzeichen', ok: false, fb: 'Prüft es noch einmal: Achtet auf das Minus im Display.' },
+  { t: 'entgegengesetztes Vorzeichen (+ ↔ –)', ok: true, fb: 'Richtig: Auch wenn man den <b>Magnetpol</b> umkehrt, kehrt sich die Polung um.' }]);
+
+/* ---------- Messwert-Helfer B, C, D ---------- */
+var TEILE = {
+  B: { titel: 'Eure Messwerte (in mV)', a: 'langsam', b: 'schnell' },
+  C: { titel: 'Eure Messwerte (in mV)', a: 'rote Spule', b: 'gelbe Spule' },
+  D: { titel: 'Eure Messwerte (in mV)', a: '1 Magnet', b: '2 Magnete' }
+};
+function groesster(werte) {
+  var z = werte.map(zahl).filter(function (x) { return !isNaN(x); }).map(Math.abs);
+  return z.length ? Math.max.apply(null, z) : NaN;
+}
+[].forEach.call(document.querySelectorAll('.mess'), function (box) {
+  var t = box.dataset.teil, T = TEILE[t]; daten[t] = daten[t] || { a: ['', '', ''], b: ['', '', ''] };
+  function zeile(k, name) {
+    return '<div class="zeile"><span class="l">' + name + '</span>' + [0, 1, 2].map(function (i) {
+      return '<input inputmode="decimal" data-k="' + k + '" data-i="' + i + '" value="' + (daten[t][k][i] || '') + '" aria-label="' + name + ' Messung ' + (i + 1) + '">';
+    }).join('') + '<div class="max" id="max' + t + k + '"></div></div>';
+  }
+  box.innerHTML = '<h3>' + T.titel + '</h3>' +
+    '<div class="zeile kopf"><span></span><span>1.</span><span>2.</span><span>3.</span><span>ins AB</span></div>' +
+    zeile('a', T.a) + zeile('b', T.b) + '<div class="fazit" id="fazit' + t + '"></div>' +
+    '<div class="hinweis-klein">Das Vorzeichen spielt hier keine Rolle – es zählt der Betrag. Werte bleiben nur auf diesem Gerät.</div>';
+  function rechnen() {
+    var ma = groesster(daten[t].a), mb = groesster(daten[t].b);
+    document.getElementById('max' + t + 'a').textContent = isNaN(ma) ? '' : deutsch(ma) + ' mV';
+    document.getElementById('max' + t + 'b').textContent = isNaN(mb) ? '' : deutsch(mb) + ' mV';
+    var f = document.getElementById('fazit' + t);
+    if (!isNaN(ma) && !isNaN(mb) && ma !== mb) {
+      f.style.display = 'block';
+      f.innerHTML = 'Bei euch war die Spannung größer bei: <b>' + (mb > ma ? T.b : T.a) + '</b>.';
+    } else f.style.display = 'none';
+    eigeneZeigen();
+  }
+  [].forEach.call(box.querySelectorAll('input'), function (inp) {
+    inp.addEventListener('input', function () { daten[t][inp.dataset.k][inp.dataset.i] = inp.value; sichern(); rechnen(); });
+  });
+  rechnen();
+});
+function eigeneZeigen() {
+  var e = document.getElementById('eigene'); if (!e) return;
+  var z = [];
+  ['B', 'C', 'D'].forEach(function (t) {
+    if (!daten[t]) return;
+    var ma = groesster(daten[t].a), mb = groesster(daten[t].b);
+    if (!isNaN(ma) && !isNaN(mb)) z.push('<b>' + t + ':</b> ' + TEILE[t].a + ' ' + deutsch(ma) + ' mV · ' + TEILE[t].b + ' ' + deutsch(mb) + ' mV');
+  });
+  e.style.display = z.length ? 'block' : 'none';
+  e.innerHTML = '<b>Eure Werte:</b><br>' + z.join('<br>');
+}
+eigeneZeigen();
+
+frage('checkBD', '<b>B</b> – Die Spannung ist größer, wenn man den Magneten …', [
+  { t: '… schneller bewegt.', ok: true, fb: 'Richtig: Je schneller sich die Magnetfeldstärke in der Spule ändert, desto größer ist die Induktionsspannung.' },
+  { t: '… langsamer bewegt.', ok: false, fb: 'Vergleicht noch einmal eure Werte „langsam“ und „schnell“.' }]);
+frage('checkBD', '<b>C</b> – Die Spannung ist größer bei der Spule mit …', [
+  { t: '… mehr Windungen (rote Spule).', ok: true, fb: 'Richtig: In jeder Windung entsteht eine kleine Spannung – mehr Windungen, mehr Spannung.' },
+  { t: '… weniger Windungen (gelbe Spule).', ok: false, fb: 'Schaut noch einmal auf eure Werte und auf die Windungszahlen der Spulen.' }]);
+frage('checkBD', '<b>D</b> – Die Spannung ist größer mit …', [
+  { t: '… einem Magneten.', ok: false, fb: 'Vergleicht noch einmal eure Werte mit einem und mit zwei Magneten.' },
+  { t: '… zwei Magneten (stärkeres Magnetfeld).', ok: true, fb: 'Richtig: Ein stärkerer Magnet ändert die Magnetfeldstärke in der Spule stärker.' }]);
+
+/* ---------- Aufräumen ---------- */
+(function () {
+  var hs = [].slice.call(document.querySelectorAll('#haken input'));
+  hs.forEach(function (h) { h.onchange = function () {
+    document.getElementById('fertig').style.display = hs.every(function (x) { return x.checked; }) ? 'block' : 'none'; }; });
+})();
+
+/* ---------- Navigation + Sprungleiste ---------- */
+(function () {
+  var karten = [].slice.call(document.querySelectorAll('.karte')), i = 0;
+  var chips = document.getElementById('chips'), chipKarte = [];
+  karten.forEach(function (k, j) {
+    if (k.dataset.chip) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = k.dataset.chip;
+      b.onclick = function () { zeigeK(j); }; chips.appendChild(b); chipKarte.push([b, j]);
+    }
+  });
+  function zeigeK(n) {
+    i = Math.max(0, Math.min(karten.length - 1, n));
+    karten.forEach(function (k, j) { k.classList.toggle('aktiv', j === i); });
+    var aktiv = null; chipKarte.forEach(function (c) { if (c[1] <= i) aktiv = c[0]; });
+    chipKarte.forEach(function (c) { c[0].classList.toggle('an', c[0] === aktiv); });
+    if (aktiv) aktiv.scrollIntoView({ inline: 'center', block: 'nearest' });
+    document.getElementById('balken').style.width = Math.round(100 * i / (karten.length - 1)) + '%';
+    document.getElementById('zurueck').disabled = (i === 0);
+    document.getElementById('weiter').textContent = (i === karten.length - 1) ? 'Zum Start ↺' : 'Weiter ▶';
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('weiter').onclick = function () { zeigeK(i === karten.length - 1 ? 0 : i + 1); };
+  document.getElementById('zurueck').onclick = function () { zeigeK(i - 1); };
+  var start = parseInt((location.hash || '').slice(1), 10);
+  zeigeK(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
