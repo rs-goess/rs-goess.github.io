@@ -147,6 +147,28 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
 .chip{background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:3px 10px;margin:3px;font-weight:800;font-size:17px;white-space:nowrap}
 .chip b{color:var(--green)}
 @media (prefers-reduced-motion:reduce){#toast.go,#flash.go{animation-duration:.01s}}
+
+/* ---------- Föhn-Booster ---------- */
+#foehn{position:fixed;left:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:5;width:66px;height:66px;border-radius:50%;
+  border:3px solid var(--ink);background:#86e3f7;color:var(--ink);box-shadow:0 5px 0 var(--ink);display:none;padding:0;cursor:pointer;
+  font-family:inherit;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+body.playing #foehn,body.pausiert #foehn{display:block}
+#foehn svg{position:absolute;left:50%;top:7px;width:36px;height:36px;margin-left:-18px}
+#foehn span{position:absolute;bottom:7px;left:0;right:0;font-size:12px;font-weight:800;line-height:1;text-align:center}
+#foehn b{position:absolute;top:-9px;right:-9px;min-width:27px;height:27px;border-radius:14px;background:var(--yellow);border:2.5px solid var(--ink);
+  font-size:15px;font-weight:900;line-height:22px;padding:0 4px;text-align:center}
+#foehn.leer{background:#ece7d8;color:#a8a396;border-color:#a8a396;box-shadow:0 5px 0 #a8a396}
+#foehn.leer b{background:#ece7d8;border-color:#a8a396;color:#a8a396}
+#foehn.aktiv{background:#ffffff}
+#foehn.aktiv svg{animation:foehnDreh .35s linear infinite}
+#foehn.neu{animation:foehnPop .8s ease-out}
+#foehn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+@keyframes foehnDreh{to{transform:rotate(360deg)}}
+@keyframes foehnPop{0%{transform:scale(1)}25%{transform:scale(1.28)}55%{transform:scale(.94)}100%{transform:scale(1)}}
+.foehn-info{display:flex;align-items:center;font-size:13.5px;line-height:1.3;background:#e6f8fc;border:2.5px solid #a6dceb;border-radius:16px;
+  padding:7px 12px;margin:10px 0 0;color:#3c4763;text-align:left}
+.foehn-info svg{width:30px;height:30px;flex:none;margin-right:10px;color:#1d2b4a}
+@media (prefers-reduced-motion:reduce){#foehn.aktiv svg,#foehn.neu{animation:none}}
 </style>
 </head>
 <body>
@@ -164,6 +186,7 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
     <button class="ibtn" id="btnPause" aria-label="Pause"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg></button>
   </div>
 </div>
+<button id="foehn" type="button" aria-label="Föhn-Booster einsetzen"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(90 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(180 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(270 12 12)"/></g><circle cx="12" cy="12" r="2.3" fill="#ff8a3d" stroke="#1d2b4a" stroke-width="1.2"/></svg><span>Föhn</span><b id="foehnN">1</b></button>
 <div id="flash"></div>
 <div id="toast"><b></b><span></span></div>
 
@@ -184,6 +207,7 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
           <h1>Kopfrechen-<i>Challenge</i><small>Schieß die Tafel mit dem richtigen Ergebnis ab</small></h1>
         </div>
         <p class="how">Rechne im Kopf und triff die Tafel mit dem richtigen Ergebnis. Falsche Tafel getroffen oder die richtige verpasst? Dann ist ein Leben weg.</p>
+        <p class="foehn-info"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(90 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(180 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(270 12 12)"/></g><circle cx="12" cy="12" r="2.3" fill="#ff8a3d" stroke="#1d2b4a" stroke-width="1.2"/></svg><span><b>Föhn-Booster:</b> Tipp unten links auf den Föhn (PC: Taste F) – er pustet die Tafeln kurz nach oben. Einen hast du am Start, für 5 Richtige in Folge gibt es einen neuen (höchstens 3).</span></p>
 
         <h2>Was willst du üben?</h2>
         <div class="ops" id="ops">
@@ -461,6 +485,7 @@ function startGame(){
   G.misses=[]; G.boards=[]; G.deco=[]; G.parts=[]; G.floats=[]; G.tracers=[]; G.lastText=''; G.shake=0;
   $('#menu').hidden=true; $('#over').hidden=true; $('#pause').hidden=true; $('#hud').hidden=false;
   document.body.classList.add('playing');
+  foehnReset();
   resize(); updateHud(); nextTask();
 }
 function nextTask(){
@@ -475,11 +500,11 @@ function nextTask(){
     var b={val:v,correct:v===t.ans,xf:(i+.5)/n+(Math.random()-.5)*.16/n,ph:Math.random()*6.28,col:pick(CHUTES),alpha:0,fade:1};
     sizeBoard(b,n); b.x=b.xf*W; b.y=hudH*.45-stag[i]*H; b.vy=groundLine/G.fall; return b;
   });
-  G.phase='fall'; setTask(t.text+' = ?','');
+  G.phase='fall'; G.windUsed=false; G.wind=0; updateFoehn(); setTask(t.text+' = ?','');
 }
 function boardX(b){ return b.x+Math.sin(G.time*1.6+b.ph)*b.bw*.06; }
 function fail(t){ if(!t.failed){ t.failed=true; G.misses.push({text:t.text,ans:t.ans}); } }
-function endRound(sec,cls){ var t=G.task; G.phase='between'; G.phaseT=sec; setTask(t.text+' = '+t.ans,cls); G.boards.forEach(function(b){ b.fade=-1; }); }
+function endRound(sec,cls){ var t=G.task; G.phase='between'; G.phaseT=sec; if(G.wind>FOEHN.aus) G.wind=FOEHN.aus; setTask(t.text+' = '+t.ans,cls); G.boards.forEach(function(b){ b.fade=-1; }); }
 function loseLife(){
   G.lives--; G.streak=0; G.shake=.35; replay($('#flash')); sfx.wrong(); updateHud();
 }
@@ -497,8 +522,8 @@ function shoot(x,y,touch){
   G.boards.splice(G.boards.indexOf(hit),1);
   if(hit.correct){
     var prog=clamp(hit.y/groundLine,0,1);
-    var pts=10+2*(G.level-1)+Math.round(5*(1-prog))+2*Math.min(G.streak,5);
-    G.score+=pts; G.streak++; G.best=Math.max(G.best,G.streak); G.correct++;
+    var pts=10+2*(G.level-1)+(G.windUsed?0:Math.round(5*(1-prog)))+2*Math.min(G.streak,5);
+    G.score+=pts; G.streak++; foehnSerie(); G.best=Math.max(G.best,G.streak); G.correct++;
     explode(hit,bx,true); G.floats.push({x:bx,y:hit.y,text:'+'+pts,col:'#fff3a8',life:1});
     endRound(.55,'ok');
     if(G.correct%PER_LEVEL===0){ G.level++; toast('Stufe '+G.level,'Jetzt wird es schneller!'); sfx.level(); } else sfx.hit();
@@ -514,10 +539,10 @@ function missed(b){
   dust(boardX(b),groundLine,10); loseLife(); endRound(1.5,'bad');
 }
 function update(dt){
-  var i,b;
+  var i,b; foehnTick(dt);
   if(G.phase==='fall'){
     for(i=G.boards.length-1;i>=0;i--){
-      b=G.boards[i]; b.y+=b.vy*dt; b.alpha=Math.min(1,b.alpha+dt*4);
+      b=G.boards[i]; b.y+=b.vy*dt*windF(b); b.alpha=Math.min(1,b.alpha+dt*4);
       if(b.y+b.bh/2>=groundLine){
         G.boards.splice(i,1);
         if(b.correct){ missed(b); break; } else dust(boardX(b),groundLine,6);
@@ -617,6 +642,7 @@ function draw(){
   G.clouds.forEach(drawCloud);
   G.deco.forEach(drawBoard);
   G.boards.forEach(drawBoard);
+  drawFoehn();
   var c=cannonGeo();
   if(G.state==='play'||G.state==='pause'){
     var tx=c.cx+Math.cos(c.a)*c.len, ty=c.cy+Math.sin(c.a)*c.len;
@@ -729,6 +755,105 @@ document.addEventListener('keydown',function(e){
 document.addEventListener('visibilitychange',function(){ if(document.hidden) pause(); });
 window.addEventListener('resize',resize);
 window.addEventListener('orientationchange',function(){ setTimeout(resize,200); });
+
+/* ================= Föhn-Booster =================
+   Start mit 1 Föhn, +1 für jede Serie von 5 Richtigen in Folge (höchstens 3).
+   Einsatz einmal pro Aufgabe: Lüfter fahren aus dem Boden und pusten die Tafeln
+   ein paar Sekunden nach oben. Mit Föhn gibt es keinen Tempo-Bonus auf die Punkte. */
+var FOEHN={start:1,max:3,serie:5,dauer:5,ein:.5,aus:1.1,lift:1.3};
+function foehnReset(){ G.foehn=FOEHN.start; G.wind=0; G.windUsed=false; G.fanUp=0; G.fanRot=0; G.gusts=[]; G.gustT=0; updateFoehn(); }
+function windEnv(){ if(!(G.wind>0)) return 0; var e=Math.min(1,(FOEHN.dauer-G.wind)/FOEHN.ein,G.wind/FOEHN.aus); return e*e*(3-2*e); }
+function windF(b){
+  var f=1-FOEHN.lift*windEnv();
+  if(f<0){ var top=(typeof spawnTop==='number'?spawnTop:hudH); if(b.y-b.bh/2-b.bw*1.12<top+12) f=0; }
+  return f;
+}
+function fanR(){ return clamp(W*.085,26,62); }
+function fanXs(){ return [W*.29,W*.71]; }
+function updateFoehn(){
+  var el=document.getElementById('foehn'); if(!el) return;
+  document.getElementById('foehnN').textContent=G.foehn||0;
+  var akt=G.wind>0;
+  el.classList.toggle('aktiv',akt);
+  el.classList.toggle('leer',!akt && !(G.foehn>0));
+}
+function foehnUse(){
+  if(G.state!=='play') return;
+  var el=document.getElementById('foehn');
+  if(G.phase!=='fall' || G.windUsed || !(G.foehn>0)){ if(!(G.wind>0)){ el.classList.remove('neu'); void el.offsetWidth; } return; }
+  G.foehn--; G.windUsed=true; G.wind=FOEHN.dauer; updateFoehn();
+  tone(110,1.1,'sawtooth',.035,320); tone(240,1.3,'triangle',.05,700,.05);
+}
+function foehnSerie(){
+  if(G.streak>0 && G.streak%FOEHN.serie===0 && G.foehn<FOEHN.max){
+    G.foehn++; updateFoehn();
+    var el=document.getElementById('foehn'); el.classList.remove('neu'); void el.offsetWidth; el.classList.add('neu');
+    G.floats.push({x:70,y:groundLine-95,text:'+1 Föhn',col:'#9ff0ff',life:1.5});
+    tone(880,.12,'triangle',.12,0,.25); tone(1320,.18,'triangle',.12,0,.35);
+  }
+}
+function foehnTick(dt){
+  if(G.wind>0){
+    G.wind=Math.max(0,G.wind-dt);
+    if(G.phase!=='fall' && G.wind>FOEHN.aus) G.wind=FOEHN.aus;
+    if(G.wind===0) updateFoehn();
+  }
+  var env=windEnv(), tgt=G.wind>0?1:0;
+  G.fanUp+=(tgt-G.fanUp)*Math.min(1,dt*(tgt?8:3.5));
+  G.fanRot+=dt*(3+28*env);
+  if(env>.05){
+    G.gustT-=dt;
+    var fx=fanXs(), r=fanR();
+    while(G.gustT<0){
+      G.gustT+=.03/env;
+      G.gusts.push({x:pick(fx)+(Math.random()-.5)*r*1.7,y:groundLine-G.fanUp*r*.95,vx:(Math.random()-.5)*90,
+                    vy:-(560+Math.random()*420),len:22+Math.random()*44,life:.8+Math.random()*.6,ph:Math.random()*6.28});
+    }
+  }
+  for(var i=G.gusts.length-1;i>=0;i--){ var p=G.gusts[i]; p.life-=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; if(p.life<=0||p.y<-80) G.gusts.splice(i,1); }
+}
+function drawFan(x,r){
+  var h=r*1.0, cy=groundLine+r*.5-G.fanUp*(h+r*.3), ry=r*.34;
+  ctx.save(); ctx.beginPath(); ctx.rect(x-r*1.6,0,r*3.2,groundLine+3); ctx.clip();
+  ctx.lineJoin='round'; ctx.lineWidth=3; ctx.strokeStyle='#1d2b4a';
+  ctx.fillStyle='#3d4d74'; ctx.fillRect(x-r,cy,2*r,h+r);
+  ctx.beginPath(); ctx.moveTo(x-r,cy); ctx.lineTo(x-r,cy+h+r); ctx.moveTo(x+r,cy); ctx.lineTo(x+r,cy+h+r); ctx.stroke();
+  ctx.fillStyle='#ff8a3d'; ctx.fillRect(x-r+1.5,cy+h*.42,2*r-3,h*.16);
+  ctx.fillStyle='rgba(255,255,255,.14)'; ctx.fillRect(x-r*.78,cy+ry,r*.22,h);
+  ctx.fillStyle='#5a6b94'; ctx.beginPath(); ctx.ellipse(x,cy,r,ry,0,0,7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle='#1d2b4a'; ctx.beginPath(); ctx.ellipse(x,cy,r*.84,ry*.8,0,0,7); ctx.fill();
+  ctx.save(); ctx.beginPath(); ctx.ellipse(x,cy,r*.82,ry*.78,0,0,7); ctx.clip();
+  ctx.translate(x,cy); ctx.scale(1,ry/r*.8);
+  ctx.fillStyle='#dfe8f5';
+  for(var i=0;i<4;i++){ var a=G.fanRot+i*Math.PI/2; ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,r*.8,a,a+.62); ctx.closePath(); ctx.fill(); }
+  ctx.fillStyle='#ff8a3d'; ctx.beginPath(); ctx.arc(0,0,r*.17,0,7); ctx.fill();
+  ctx.restore();
+  ctx.strokeStyle='rgba(253,253,245,.5)'; ctx.lineWidth=1.4;
+  ctx.beginPath(); ctx.moveTo(x-r*.84,cy); ctx.lineTo(x+r*.84,cy); ctx.moveTo(x,cy-ry*.8); ctx.lineTo(x,cy+ry*.8); ctx.stroke();
+  ctx.restore();
+}
+function drawFoehn(){
+  if(!(G.state==='play'||G.state==='pause') || !G.gusts) return;
+  if(G.gusts.length){
+    ctx.save(); ctx.lineCap='round'; ctx.lineWidth=3.5;
+    G.gusts.forEach(function(p){
+      var a=clamp(p.life,0,1)*.75, w=Math.sin(G.time*9+p.ph)*7;
+      ctx.strokeStyle='rgba(255,255,255,'+a+')';
+      ctx.beginPath(); ctx.moveTo(p.x+w,p.y); ctx.quadraticCurveTo(p.x-w,p.y+p.len*.5,p.x+w*.4,p.y+p.len); ctx.stroke();
+    });
+    ctx.restore();
+  }
+  if(G.fanUp>.01){ var r=fanR(); fanXs().forEach(function(x){ drawFan(x,r); }); }
+}
+(function(){
+  var el=document.getElementById('foehn');
+  el.addEventListener('pointerdown',function(e){ e.preventDefault(); e.stopPropagation(); foehnUse(); });
+  el.addEventListener('click',function(e){ e.preventDefault(); });
+  document.addEventListener('keydown',function(e){
+    if(G.state!=='play' || (e.target && e.target.tagName==='INPUT')) return;
+    if(e.key==='f'||e.key==='F'||e.key===' '){ e.preventDefault(); foehnUse(); }
+  });
+})();
 
 /* ================= Schleife ================= */
 var last=0;
