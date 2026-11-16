@@ -171,12 +171,15 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
   .tpic{width:84px;height:84px}
   #tlabel{font-size:12px}
 }
-.op-kuerzen{--c:#e5484d}.op-bilder{--c:#14a89a}.op-plus{--c:#2fa866}.op-mal{--c:#ff8a3d}.op-geteilt{--c:#8e5bd6}
-.ops{grid-template-columns:repeat(5,minmax(0,1fr))}
+.op-kuerzen{--c:#e5484d}.op-bilder{--c:#14a89a}.op-plus{--c:#2fa866}.op-mal{--c:#ff8a3d}.op-geteilt{--c:#8e5bd6}.op-gemischt{--c:#2f86d6}
+.ops{grid-template-columns:repeat(6,minmax(0,1fr))}
+@media (max-width:560px){.ops{grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:14px 10px}}
+.tile b .gzt{font-size:.62em;margin-right:.06em}
 .tile b .br{font-size:.5em;line-height:1}
 .tile b svg{width:40px;height:40px;display:block;margin:0 auto}
-.op-kuerzen .tile b,.op-bilder .tile b{height:40px;display:flex;align-items:center;justify-content:center}
+.op-kuerzen .tile b,.op-bilder .tile b,.op-gemischt .tile b{height:40px;display:flex;align-items:center;justify-content:center}
 .op-plus .tile span.l{font-size:12.5px;letter-spacing:-.2px}
+.op-gemischt .tile>span{font-size:12.5px;letter-spacing:-.3px}
 @media (max-width:420px){.tile>span{font-size:12px;letter-spacing:-.2px}.op .tile{padding-left:0;padding-right:0}}
 @media (max-width:420px){.op-plus .tile span.l{font-size:11px;line-height:1.05;letter-spacing:-.2px}}
 .op{display:flex}.op .tile{flex:1;width:100%}
@@ -236,6 +239,7 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
           <label class="op op-plus"><input type="checkbox" value="plus"><span class="tile"><b>±</b><span class="l">Plus/<wbr>Minus</span></span></label>
           <label class="op op-mal"><input type="checkbox" value="mal"><span class="tile"><b>·</b><span>Mal</span></span></label>
           <label class="op op-geteilt"><input type="checkbox" value="geteilt"><span class="tile"><b>:</b><span>Geteilt</span></span></label>
+          <label class="op op-gemischt"><input type="checkbox" value="gemischt"><span class="tile"><b><span class="gzt">2</span><span class="br"><span>1</span><span>3</span></span></b><span>Gemischt</span></span></label>
         </div>
         <p id="opsinfo"></p>
         <p class="warn" id="warn" hidden>Wähle mindestens einen Bereich aus.</p>
@@ -743,7 +747,125 @@ function g6(L){
 }
 function genGeteilt(L){ var t=null, n=0; while(!t && n++<300) t=pickSub(L,[[1,g1],[2,g1b],[2,g2],[3,g3],[4,g4],[5,g5],[6,g6]])(L); return t; }
 
-var GEN={kuerzen:genKuerzen,bilder:genBilder,plus:genPlus,mal:genMal,geteilt:genGeteilt};
+/* =============== 6) Gemischte Zahlen umwandeln =============== */
+function mixParams(L){                     // [Ganze höchstens, mögliche Nenner]
+  if(L<=1) return [2,[2,3,4,5]];
+  if(L<=2) return [3,[2,3,4,5,6]];
+  if(L<=3) return [5,[2,3,4,5,6,8]];
+  if(L<=5) return [8,[2,3,4,5,6,7,8,9,10]];
+  return [12,[3,4,5,6,7,8,9,10,11,12,15]];
+}
+function mixBase(L){                       // w n/d mit gekürztem Bruchteil, Zähler des unechten Bruchs höchstens 99
+  var P=mixParams(L), w, d, n, t=0;
+  do{ w=ri(1,P[0]); d=pick(P[1]); n=ri(1,d-1); t++; }while((gcd(n,d)!==1 || w*d+n>99) && t<300);
+  if(gcd(n,d)!==1 || w*d+n>99) return null;
+  return {w:w,n:n,d:d,N:w*d+n};
+}
+function DM(w,n,d,neg){ return {t:'m',neg:!!neg,w:w,n:n,d:d}; }
+function gzExtra(N,L){ return (N>40?1:0)+(L>=6&&N>70?.5:0); }
+/* gemischte Zahl -> unechter Bruch */
+function gzUnecht(L,neg){
+  var x=mixBase(L); if(!x) return null;
+  var w=x.w, n=x.n, d=x.d, N=x.N, s=neg?-1:1, c=[];
+  function U(num,den,h){ if(num<=0||den<2) return null; var v=F(s*num,den); return C(v,DF(v.n,v.d),h); }
+  c.push(U(w+n,d,'Ganze mal Nenner!'));
+  c.push(U(w*n+d,d,'Ganze mal Nenner, nicht mal Zähler!'));
+  if(w<10&&n<10) c.push(U(w*10+n,d,'Nicht einfach nebeneinander schreiben!'));
+  c.push(U(w*d-n,d,neg?'Das Minus gilt für die ganze Zahl!':'Plus, nicht minus!'));
+  c.push(U(N,w*d,'Der Nenner bleibt gleich!'));
+  c.push(U(N+d,d,'Die Ganzen prüfen!')); c.push(U(N-d,d,'Die Ganzen prüfen!'));
+  c.push(U(N+1,d)); c.push(U(N-1,d)); c.push(U(N+2,d));
+  if(neg) c.push(C(F(N,d),DF(N,d),'Vorzeichen prüfen!'));
+  var q=dispHTML(DM(w,n,d,neg)), ans=C(F(s*N,d),DF(s*N,d));
+  var rv=neg ? q+opH('=')+dispHTML(ans.disp)
+             : q+opH('=')+dispHTML(DF(w*d,d))+opH('+')+dispHTML(DF(n,d))+opH('=')+dispHTML(ans.disp);
+  return {op:'gemischt',label:'Schreibe als unechten Bruch',q:q,ans:ans,cands:c.filter(Boolean),ask:1,rev:rv,
+          fb:fbFrac(ans,false),noNeg:!neg,extra:gzExtra(N,L),chk:{exp:s*N/d,reduced:true,form:'f'}};
+}
+/* unechter Bruch -> gemischte Zahl */
+function gzGemischt(L,neg){
+  var x=mixBase(L); if(!x) return null;
+  var w=x.w, n=x.n, d=x.d, N=x.N, s=neg?-1:1, c=[];
+  function M(ww,nn,dd,h){                 // gemischte Zahl als Tafel (Bruchteil gekürzt, echt)
+    if(ww<1||nn<1||dd<2) return null;
+    var f=F(nn,dd); if(f.n>=f.d) return null;
+    return C(F(s*(ww*f.d+f.n),f.d),DM(ww,f.n,f.d,neg),h);
+  }
+  if(L>=3 && !neg && Math.random()<.12){  // geht genau auf
+    var k=x.w, NN=k*d;
+    var q0=dispHTML(DF(NN,d));
+    var c0=[CI(k+1),CI(k-1),CI(k+2),CI(NN-d,'Geteilt, nicht minus!'),M(k-1,d-1,d,'Das geht genau auf!'),M(k,1,d,'Das geht genau auf!')];
+    if(d!==k) c0.push(CI(d,'Zähler geteilt durch Nenner!'));
+    return {op:'gemischt',label:'Wie viele Ganze sind das?',q:q0,ans:CI(k),cands:c0.filter(Boolean),ask:1,rev:q0+opH('=')+k,
+            fb:fbInt(k),noNeg:true,extra:gzExtra(NN,L),chk:{exp:k,form:'i'}};
+  }
+  c.push(M(w,n,N,'Der Nenner bleibt gleich!'));
+  c.push(M(w+1,n,d,'Die Ganzen prüfen!')); c.push(M(w-1,n,d,'Die Ganzen prüfen!'));
+  if(d-n!==n) c.push(M(w,d-n,d,'Den Rest prüfen!'));
+  if(w<d && w!==n) c.push(M(n,w,d,'Ganze und Rest vertauscht!'));
+  c.push(M(w,n+1,d)); c.push(M(w,n-1,d)); c.push(M(w+1,n-1,d)); c.push(M(w-1,n+1,d));
+  if(neg) c.push(C(F(N,d),DM(w,n,d,false),'Vorzeichen prüfen!'));
+  var q=dispHTML(DF(s*N,d)), ans=C(F(s*N,d),DM(w,n,d,neg));
+  var rv=neg ? q+opH('=')+dispHTML(ans.disp)
+             : q+opH('=')+w+opH('+')+dispHTML(DF(n,d))+opH('=')+dispHTML(ans.disp);
+  return {op:'gemischt',label:'Schreibe als gemischte Zahl',q:q,ans:ans,cands:c.filter(Boolean),ask:1,rev:rv,
+          fb:fbFrac(ans,true),noNeg:!neg,extra:gzExtra(N,L),chk:{exp:s*N/d,reduced:true,form:'m'}};
+}
+/* unechter Bruch, der noch gekürzt werden muss -> gemischte Zahl */
+function gzKuerz(L){
+  var x=mixBase(Math.min(L,5)); if(!x) return null;
+  var w=x.w, n=x.n, d=x.d, N=x.N, ks=[2,3,4,5].filter(function(k){ return N*k<=99 && d*k<=30; });
+  if(!ks.length) return null;
+  var k=pick(ks), NN=N*k, DD=d*k, c=[];
+  c.push(C(F(N,d),DM(w,n*k,DD),'Da geht noch mehr!',true));
+  function M(ww,nn,dd,h){ if(ww<1||nn<1||dd<2) return null; var f=F(nn,dd); if(f.n>=f.d) return null; return C(F(ww*f.d+f.n,f.d),DM(ww,f.n,f.d),h); }
+  c.push(M(w,n,DD,'Oben UND unten kürzen!'));
+  c.push(M(w+1,n,d,'Die Ganzen prüfen!')); c.push(M(w-1,n,d,'Die Ganzen prüfen!'));
+  if(d-n!==n) c.push(M(w,d-n,d,'Den Rest prüfen!'));
+  c.push(M(w,n+1,d)); c.push(M(w,n-1,d)); c.push(M(w+1,n-1,d));
+  var q=dispHTML(DF(NN,DD)), ans=C(F(N,d),DM(w,n,d));
+  return {op:'gemischt',label:'Gemischte Zahl, vollständig gekürzt',q:q,ans:ans,cands:c.filter(Boolean),ask:1,
+          rev:q+opH('=')+dispHTML(DF(N,d))+opH('=')+dispHTML(ans.disp),
+          fb:fbFrac(ans,true),noNeg:true,extra:1+gzExtra(NN,L),chk:{exp:N/d,reduced:true,form:'m'}};
+}
+/* Lücken: Zähler, Ganze oder Rest ergänzen */
+function gzLuecke(L){
+  var x=mixBase(L); if(!x) return null;
+  var w=x.w, n=x.n, d=x.d, N=x.N, f=ri(0,2), q, ans, c, e;
+  var full=dispHTML(DM(w,n,d))+opH('=')+dispHTML(DF(N,d)), fullR=dispHTML(DF(N,d))+opH('=')+dispHTML(DM(w,n,d));
+  if(f===0){
+    q=dispHTML(DM(w,n,d))+opH('=')+brH(LUECKE,d); ans=N; e=N;
+    c=[CI(w+n,'Ganze mal Nenner!'),CI(w*n+d,'Ganze mal Nenner, nicht mal Zähler!'),CI(w*d,'Den Zähler dazuzählen!'),
+       CI(w*d-n,'Plus, nicht minus!'),CI(N+1),CI(N-1),CI(N+d,'Die Ganzen prüfen!'),CI(N-d,'Die Ganzen prüfen!')];
+    if(w<10&&n<10) c.push(CI(w*10+n,'Nicht einfach nebeneinander schreiben!'));
+    return {op:'gemischt',label:'Ergänze die Lücke',q:q,ans:CI(ans),cands:c,rev:full,fb:fbInt(ans),noNeg:true,extra:gzExtra(N,L),chk:{exp:e,form:'i'}};
+  }
+  if(f===1){
+    q=dispHTML(DF(N,d))+opH('=')+'<span class="zahl"><span class="gz">'+LUECKE+'</span>'+brH(n,d)+'</span>'; ans=w; e=(N-n)/d;
+    c=[CI(w+1,'Die Ganzen prüfen!'),CI(w-1,'Die Ganzen prüfen!'),CI(w+2),CI(N-n,'Wie oft passt der Nenner hinein?')];
+    if(n!==w) c.push(CI(n,'Das ist der Rest!'));
+    if(d!==w) c.push(CI(d,'Das ist der Nenner!'));
+    return {op:'gemischt',label:'Ergänze die Lücke',q:q,ans:CI(ans),cands:c,rev:fullR,fb:fbInt(ans),noNeg:true,extra:gzExtra(N,L),chk:{exp:e,form:'i'}};
+  }
+  q=dispHTML(DF(N,d))+opH('=')+'<span class="zahl"><span class="gz">'+w+'</span>'+brH(LUECKE,d)+'</span>'; ans=n; e=N-w*d;
+  c=[CI(N-w,'Ganze mal Nenner abziehen!'),CI(n+d,'Da passt noch ein Ganzes!'),CI(n+1),CI(n-1),CI(n+2)];
+  if(d-n!==n) c.push(CI(d-n,'Den Rest prüfen!'));
+  if(w!==n) c.push(CI(w,'Das sind die Ganzen!'));
+  return {op:'gemischt',label:'Ergänze die Lücke',q:q,ans:CI(ans),cands:c,rev:fullR,fb:fbInt(ans),noNeg:true,extra:gzExtra(N,L),chk:{exp:e,form:'i'}};
+}
+function genGemischt(L){
+  var t=null, n=0;
+  while(!t && n++<300){
+    var r=Math.random();
+    if(L>=6 && r<.18) t=(Math.random()<.5?gzUnecht:gzGemischt)(L,true);
+    else if(L>=6 ? r<.34 : (L>=4 && r<.22)) t=gzKuerz(L);
+    else if(L>=6 ? r<.52 : (L>=4 ? r<.42 : (L>=2 && r<.3))) t=gzLuecke(L);
+    else t=(Math.random()<.5?gzUnecht:gzGemischt)(L,false);
+  }
+  return t;
+}
+
+var GEN={kuerzen:genKuerzen,bilder:genBilder,plus:genPlus,mal:genMal,geteilt:genGeteilt,gemischt:genGemischt};
 /* Aufgabe samt Tafeln (Anzahl n) erzeugen */
 function makeRound(op,L,n,nPic){
   for(var t=0;t<40;t++){
@@ -767,11 +889,11 @@ var store = {
 };
 var HS_KEY='bruchjagd.bestenliste.v1', SET_KEY='bruchjagd.einstellungen.v1';
 
-var OPS = { kuerzen:{sym:'Kürzen',name:'Kürzen & Erweitern'}, bilder:{sym:'Bilder',name:'Bruchteile in Bildern'}, plus:{sym:'±',name:'Plus & Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'} };
-var OP_ORDER = ['kuerzen','bilder','plus','mal','geteilt'];
+var OPS = { kuerzen:{sym:'Kürzen',name:'Kürzen & Erweitern'}, bilder:{sym:'Bilder',name:'Bruchteile in Bildern'}, plus:{sym:'±',name:'Plus & Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'}, gemischt:{sym:'Gemischt',name:'Gemischte Zahlen umwandeln'} };
+var OP_ORDER = ['kuerzen','bilder','plus','mal','geteilt','gemischt'];
 var LIVES = 5, PER_LEVEL = 5;
 /* Fallzeit in Sekunden: [Start, Minimum] – Bruchaufgaben brauchen mehr Zeit als Einmaleins */
-var FALL = { kuerzen:[13,6.5], bilder:[12.5,6.5], plus:[16,8.5], mal:[15,8], geteilt:[16,8.5] };
+var FALL = { kuerzen:[13,6.5], bilder:[12.5,6.5], plus:[16,8.5], mal:[15,8], geteilt:[16,8.5], gemischt:[14,7] };
 function fallTime(t,L){ var f=FALL[t.op]; return Math.max(f[1], f[0]*Math.pow(.95,L-1)) + (t.extra||0); }
 var FONT = '"Baloo 2","Fredoka","Nunito",ui-rounded,"SF Pro Rounded","Segoe UI Rounded","Arial Rounded MT Bold","Trebuchet MS","Segoe UI",system-ui,sans-serif';
 var CHUTES = [['#e5484d','#ff8f8f'],['#ffb020','#ffe08a'],['#2f86d6','#8cc4f5'],['#8e5bd6','#c7a8f2'],['#f0609e','#ffb1d0'],['#14a89a','#86e0d4']];
@@ -785,7 +907,7 @@ if(!S.ops.length) S.ops = ['kuerzen','bilder','plus','mal'];
 (function(){ // Voreinstellung per Link, z. B. ?ops=bilder oder ?ops=kuerzen,plus
   var q=''; try{ q=new URLSearchParams(location.search).get('ops')||''; }catch(e){}
   if(!q) return;
-  var alias={kuerzen:'kuerzen','kürzen':'kuerzen',erweitern:'kuerzen',bilder:'bilder',bild:'bilder',plus:'plus',minus:'plus',mal:'mal',geteilt:'geteilt',durch:'geteilt'};
+  var alias={kuerzen:'kuerzen','kürzen':'kuerzen',erweitern:'kuerzen',bilder:'bilder',bild:'bilder',plus:'plus',minus:'plus',mal:'mal',geteilt:'geteilt',durch:'geteilt',gemischt:'gemischt',gemischte:'gemischt',umwandeln:'gemischt'};
   var list=[]; q.toLowerCase().split(/[,; ]+/).forEach(function(k){ var o=alias[k]; if(o&&list.indexOf(o)<0) list.push(o); });
   if(list.length) S.ops=list;
 })();
@@ -1199,7 +1321,7 @@ function showMenu(){
   var list=store.get(HS_KEY,[]); renderHs($('#menuHs'),list,0,8);
   var bc=$('#btnClear'); bc.hidden=!list.length; bc.textContent='Bestenliste löschen'; bc.dataset.sure='';
 }
-function opsLabel(ops){ return ops.length===1?OPS[ops[0]].sym:OP_ORDER.filter(function(o){return ops.indexOf(o)>=0;}).map(function(o){return o==='kuerzen'?'K':(o==='bilder'?'B':OPS[o].sym);}).join(' '); }
+function opsLabel(ops){ return ops.length===1?OPS[ops[0]].sym:OP_ORDER.filter(function(o){return ops.indexOf(o)>=0;}).map(function(o){return o==='kuerzen'?'K':(o==='bilder'?'B':(o==='gemischt'?'G':OPS[o].sym));}).join(' '); }
 function gameOver(){
   G.state='over'; G.boards=[]; document.body.classList.remove('playing'); $('#hud').hidden=true; sfx.over();
   var entry={n:S.name||'Anonym',s:G.score,l:G.level,o:opsLabel(G.ops),t:Date.now()};
