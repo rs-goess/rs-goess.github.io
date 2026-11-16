@@ -1,7 +1,7 @@
 /* Countdown zum nächsten Leistungsnachweis auf den Klassen-Startseiten.
    Hier nur Schulaufgaben und Leistungstests eintragen (keine Stegreifaufgaben/Exen).
    klasse = Ordnername (m5, m6, m10, p7, p8, p9, p10), datum = JJJJ-MM-TT.
-   link/linktext sind freiwillig. Vergangene Termine verschwinden von selbst. */
+   stunde, link/linktext sind freiwillig. Vergangene Termine verschwinden von selbst. */
 var TERMINE = [
   { klasse: 'm10', datum: '2026-11-17', titel: '1. Schulaufgabe', link: 'material.html', linktext: 'Zum Übungsmaterial' },
   { klasse: 'm5',  datum: '2026-12-17', titel: '2. Leistungstest' },
@@ -11,7 +11,10 @@ var TERMINE = [
   { klasse: 'm6',  datum: '2026-11-19', titel: '2. Leistungstest' },
   { klasse: 'm6',  datum: '2027-02-25', titel: '3. Leistungstest' },
   { klasse: 'm6',  datum: '2027-04-29', titel: '4. Leistungstest' },
-  { klasse: 'm6',  datum: '2027-06-17', titel: '5. Leistungstest' }
+  { klasse: 'm6',  datum: '2027-06-17', titel: '5. Leistungstest' },
+  { klasse: 'p9',  datum: '2026-12-02', titel: '1. Schulaufgabe', stunde: '1. Stunde', link: 'material.html', linktext: 'Zum Material' },
+  { klasse: 'p10', datum: '2026-12-09', titel: '1. Schulaufgabe', stunde: '3. Stunde', link: 'material.html', linktext: 'Zum Material' },
+  { klasse: 'p8',  datum: '2026-12-18', titel: '1. Schulaufgabe', stunde: '3. Stunde', link: 'material.html', linktext: 'Zum Material' }
 ];
 
 (function () {
@@ -55,7 +58,7 @@ var TERMINE = [
       : naechster.tage === 1 ? 'Morgen: ' + naechster.t.titel
       : 'Noch ' + naechster.tage + ' Tage bis: ' + naechster.t.titel));
     var klein = document.createElement('small');
-    klein.appendChild(document.createTextNode(wann));
+    klein.appendChild(document.createTextNode(wann + (naechster.t.stunde ? ', ' + naechster.t.stunde : '')));
     if (naechster.t.link && naechster.tage > 0) {
       klein.appendChild(document.createTextNode(' · '));
       var a = document.createElement('a');
