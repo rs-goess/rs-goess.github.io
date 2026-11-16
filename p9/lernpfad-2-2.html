@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.2 Der absolute Nullpunkt – Selbstlernpfad</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../assets/durchklick.css">
+<style>
+  /* Physik: Petrol statt Mathe-Blau (wie 2.3 / 2.4) */
+  :root{--blau:#0E7490;--petrol:#0B3B47}
+  body{background:var(--petrol)}
+  .karte h2{color:var(--blau)}
+  .f .katex{font-size:1.05em}
+  .bild img{border-radius:10px}
+  .bild.rahmen img{border:1px solid #e3e3e3}
+  .auftrag{background:#fff6d6;border:2px solid #ffd23f;border-radius:12px;padding:10px 12px;margin:10px 0}
+  .auftrag b.t{display:block;color:#8a5a00;margin-bottom:2px}
+  .auftrag ol{margin:4px 0 0;padding-left:22px}
+  .auftrag li{margin:3px 0}
+  .forschung{border-left:5px solid var(--gelb);background:#fffbea;border-radius:8px;padding:8px 12px;margin:10px 0}
+  .forschung b.t{display:block;color:#8a6d00;font-size:14px;text-transform:uppercase;letter-spacing:.05em}
+  .klein{font-size:13.5px;color:#6b7780}
+  .liste2{margin:6px 0;padding-left:22px}
+  .liste2 li{margin:3px 0}
+  .zentral{text-align:center;font-size:18px;margin:6px 0}
+  .merk h3{margin:0 0 6px;color:#c2410c;font-size:17px}
+  .merk ol{margin:0;padding-left:22px}
+  .merk li{margin:4px 0}
+  .zweispaltig{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  @media (max-width:520px){ .zweispaltig{grid-template-columns:1fr} }
+  /* Quiz: Auswahl */
+  .mc{list-style:none;margin:8px 0;padding:0}
+  .mc li{margin:7px 0}
+  .mc button{width:100%;text-align:left;display:flex;gap:10px;align-items:flex-start;border:2px solid #d5dde3;background:#fff;
+             border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;color:var(--dunkel);cursor:pointer}
+  .mc button .kx{flex:none;width:22px;height:22px;border:2px solid #9aa8b2;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px}
+  .mc.einzel button .kx{border-radius:50%}
+  .mc.mehr button .kx{border-radius:5px}
+  .mc button.an{border-color:var(--blau);background:#eef7fa}
+  .mc button.an .kx{background:var(--blau);border-color:var(--blau);color:#fff}
+  .mc button.r{border-color:#2e8b57;background:#e6f4ec}
+  .mc button.r .kx{background:#2e8b57;border-color:#2e8b57;color:#fff}
+  .mc button.f{border-color:#c00000;background:#fde8e8}
+  .mc button.f .kx{background:#c00000;border-color:#c00000;color:#fff}
+  .mc button.fehlt{border-style:dashed;border-color:#2e8b57}
+  .mc button:disabled{cursor:default}
+  .mc .fb{font-size:14.5px;margin:3px 4px 0 34px;color:#444}
+  .qknopf{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .qknopf button{border:0;border-radius:10px;padding:9px 14px;font:inherit;font-size:15px;font-weight:bold;cursor:pointer}
+  .qknopf .pr{background:var(--blau);color:#fff}
+  .qknopf .nochmal{background:#e1e6ea;color:var(--dunkel)}
+  .qknopf .zeig{background:#e1e6ea;color:var(--dunkel)}
+  .qknopf button:disabled{opacity:.35;cursor:default}
+  .rueck{margin-top:8px;font-size:15px;border-radius:8px;padding:7px 10px;display:none}
+  .rueck.gut{display:block;background:var(--gruen-hell);color:#1f6b41}
+  .rueck.fast{display:block;background:var(--gelb-hell);color:#7a5600}
+  .rueck.falsch{display:block;background:#fde8e8;color:#9b1c1c}
+  /* Lückentext mit Wortspeicher */
+  .speicher{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 10px;min-height:42px;background:var(--grau);border-radius:12px;padding:8px}
+  .speicher button{border:2px solid var(--blau);background:#fff;color:var(--blau);border-radius:999px;padding:6px 14px;font:inherit;font-weight:bold;cursor:pointer}
+  .speicher button.weg{visibility:hidden}
+  .lt p{margin:8px 0;font-size:16.5px;line-height:2}
+  .luecke{display:inline-block;min-width:96px;border:0;border-bottom:2px solid #6b7780;background:#f7fbff;border-radius:6px 6px 0 0;
+          padding:1px 8px;font:inherit;font-weight:bold;color:var(--dunkel);cursor:pointer;text-align:center}
+  .luecke.ziel{outline:3px solid var(--gelb)}
+  .luecke.r{background:#e6f4ec;border-bottom-color:#2e8b57}
+  .luecke.f{background:#fde8e8;border-bottom-color:#c00000}
+  /* Eingabe */
+  .eingabe{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .eingabe input{font:inherit;font-size:17px;width:110px;padding:7px 10px;border:2px solid #c9d3da;border-radius:10px}
+  .eingabe .einh{font-weight:bold}
+  .eingabe button{border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:bold;background:var(--blau);color:#fff;cursor:pointer}
+  .blanks{list-style:none;margin:8px 0;padding:0}
+  .blanks li{border:1px solid #e3e3e3;border-radius:12px;padding:8px 12px;margin:7px 0;font-size:16.5px}
+  .blanks li.r{border-color:#9fd3b4;background:#f3fbf6}
+  .blanks li.f{border-color:#f0b4b4;background:#fff5f5}
+  .blanks input{font:inherit;font-size:17px;width:90px;padding:5px 8px;border:2px solid #c9d3da;border-radius:8px;margin:0 4px}
+  .blanks .lsg{font-size:14px;color:#1f6b41;margin-left:6px}
+  .check{background:var(--grau);border-radius:12px;padding:10px 12px;margin:10px 0 4px}
+  .check label{font-weight:bold;font-size:15px;display:block;margin-bottom:6px}
+  /* Tabelle */
+  .tab td.neu{background:#fff6d6}
+  /* Video mit Zustimmung */
+  .video{position:relative;width:100%;aspect-ratio:16/9;background:#0b2830;border-radius:12px;overflow:hidden;margin:6px 0}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .video .zustimmung{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#fff;text-align:center;padding:16px}
+  .video .zustimmung button{border:0;border-radius:999px;padding:12px 20px;font:inherit;font-weight:bold;background:var(--gelb);color:#222;cursor:pointer;font-size:16px}
+  .video .zustimmung small{opacity:.8;font-size:13px;max-width:380px}
+  /* Lösungsweg zweispaltig (wie 2.3 / 2.4) */
+  .loesung{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:6px}
+  .spalte h4{margin:4px 0 2px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#6b7780}
+  .antwort{grid-column:1/-1}
+  .zeilen li .lab{display:block;font-size:12.5px;font-weight:bold;color:#6b7780;text-transform:uppercase;letter-spacing:.04em}
+  .zeilen li.runden{border-left-color:var(--orange);background:var(--orange-hell)}
+  .zeilen li.runden .erg{display:inline-block;border-bottom:3px double var(--dunkel);font-weight:bold}
+  .leer-hinweis{font-size:14px;color:#9aa4ab;font-style:italic;margin:4px 0}
+  @media (max-width:520px){ .loesung{grid-template-columns:1fr} }
+  .pdfs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .pdfs a{display:inline-block;border-radius:10px;padding:8px 12px;font-weight:bold;font-size:15px;text-decoration:none;background:#e7f0f8;color:#285b85}
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 9b · 2.2 Der absolute Nullpunkt</small>
+  <h1>Selbstlernpfad: Wie kalt kann es werden?</h1>
+  <div class="chips" id="chips"></div>
+</header>
+<main id="main"></main>
+<nav><button id="zurueck" type="button">◀ Zurück</button><button id="weiter" type="button">Weiter ▶</button></nav>
+
+<script>
+/* =====================================================================
+   Selbstlernpfad 2.2 – Pendant zur interaktiven H5P-Präsi im ByCS-Kurs.
+   Formeln stehen zwischen $…$ (LaTeX, KaTeX).
+   ===================================================================== */
+var U = function (e) { return '\\,' + (e === 'l' ? '\\ell' : '\\mathrm{' + e + '}'); };
+var C = '\\,{}^{\\circ}\\mathrm{C}';
+var PF = '\\;\\rightarrow\\;';
+var B = 'bilder/2-2/';
+
+function tex(x) {
+  if (window.katex) { try { return katex.renderToString(x, { throwOnError: false, strict: 'ignore' }); } catch (e) {} }
+  return x.replace(/\\dfrac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)').replace(/\\,|\\;|\\mathrm|\\cdot|\\ldots|\\approx|\\vartheta|\\circ|\\rightarrow|\\ell|[{}\\^_]/g, function (m) {
+    return { '\\cdot': '·', '\\ldots': '…', '\\approx': '≈', '\\vartheta': 'ϑ', '\\circ': '°', '\\rightarrow': '→', '\\ell': 'l' }[m] || ''; });
+}
+function fmt(s) { return (s || '').replace(/\$([^$]+)\$/g, function (_, x) { return '<span class="f">' + tex(x) + '</span>'; }); }
+function zahl(s) {
+  s = String(s).replace(/[\s  ']/g, '').replace(/−|–/g, '-');
+  if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+  return s === '' ? NaN : Number(s);
+}
+function gleich(a, b) { return Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b)); }
+function mischen(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function bild(datei, alt, extra) { return '<figure class="bild rahmen' + (extra ? ' ' + extra : '') + '"><img src="' + B + datei + '" alt="' + alt + '" loading="lazy"></figure>'; }
+
+var main = document.getElementById('main');
+function karte(chip, html) {
+  var sec = document.createElement('section'); sec.className = 'karte';
+  if (chip) sec.dataset.chip = chip;
+  sec.innerHTML = html; main.appendChild(sec); return sec;
+}
+
+/* ---------- Quiz-Bausteine ---------- */
+/* Auswahlaufgabe: typ 'einzel' oder 'mehr'; antworten: [{t, ok, fb}] */
+function auswahl(sec, typ, frage, antworten) {
+  var box = document.createElement('div');
+  box.innerHTML = '<p><b>' + frage + '</b>' + (typ === 'mehr' ? ' <span class="klein">(mehrere Antworten möglich)</span>' : '') + '</p>' +
+    '<ul class="mc ' + typ + '"></ul><div class="qknopf"><button class="pr" type="button">Überprüfen</button>' +
+    '<button class="zeig" type="button" disabled>Lösung anzeigen</button><button class="nochmal" type="button" disabled>Nochmal</button></div><div class="rueck"></div>';
+  sec.appendChild(box);
+  var ul = box.querySelector('.mc'), rk = box.querySelector('.rueck'),
+      bp = box.querySelector('.pr'), bz = box.querySelector('.zeig'), bn = box.querySelector('.nochmal');
+  var knoepfe = [];
+  function aufbauen() {
+    ul.innerHTML = ''; knoepfe = []; rk.className = 'rueck'; rk.innerHTML = '';
+    mischen(antworten).forEach(function (a) {
+      var li = document.createElement('li');
+      var b = document.createElement('button'); b.type = 'button';
+      b.innerHTML = '<span class="kx"></span><span>' + fmt(a.t) + '</span>';
+      b.onclick = function () {
+        if (typ === 'einzel') knoepfe.forEach(function (k) { k.b.classList.remove('an'); });
+        b.classList.toggle('an');
+      };
+      li.appendChild(b); ul.appendChild(li); knoepfe.push({ b: b, a: a, li: li });
+    });
+    bp.disabled = false; bz.disabled = true; bn.disabled = true;
+  }
+  bp.onclick = function () {
+    var gewaehlt = knoepfe.filter(function (k) { return k.b.classList.contains('an'); });
+    if (!gewaehlt.length) { rk.className = 'rueck fast'; rk.innerHTML = 'Wähle zuerst eine Antwort aus.'; return; }
+    var alleRichtig = true;
+    knoepfe.forEach(function (k) {
+      var an = k.b.classList.contains('an');
+      k.b.disabled = true;
+      if (an) {
+        k.b.classList.add(k.a.ok ? 'r' : 'f'); k.b.querySelector('.kx').textContent = k.a.ok ? '✓' : '✗';
+        if (k.a.fb) { var d = document.createElement('div'); d.className = 'fb'; d.innerHTML = fmt(k.a.fb); k.li.appendChild(d); }
+      }
+      if (an !== !!k.a.ok) alleRichtig = false;
+    });
+    if (alleRichtig) { rk.className = 'rueck gut'; rk.innerHTML = '<b>Super, alles richtig!</b>'; }
+    else { rk.className = 'rueck falsch'; rk.innerHTML = 'Noch nicht ganz. Lies die Folie davor noch einmal – dann <b>Nochmal</b> oder <b>Lösung anzeigen</b>.'; }
+    bp.disabled = true; bz.disabled = alleRichtig; bn.disabled = false;
+  };
+  bz.onclick = function () {
+    knoepfe.forEach(function (k) { if (k.a.ok && !k.b.classList.contains('r')) { k.b.classList.add('fehlt'); k.b.querySelector('.kx').textContent = '✓'; } });
+    rk.className = 'rueck fast'; rk.innerHTML = 'Gestrichelt: Das wäre auch richtig gewesen.'; bz.disabled = true;
+  };
+  bn.onclick = aufbauen;
+  aufbauen();
+}
+
+/* Lückentext mit Wortspeicher: saetze mit [Wort] als Lücke */
+function lueckentext(sec, auftrag, saetze, tipp) {
+  var woerter = [];
+  var html = saetze.map(function (s) {
+    return '<p>' + s.replace(/\[([^\]]+)\]/g, function (_, w) { woerter.push(w); return '<button type="button" class="luecke" data-w="' + w + '">&nbsp;</button>'; }) + '</p>';
+  }).join('');
+  var box = document.createElement('div');
+  box.innerHTML = '<p><b>' + auftrag + '</b> <span class="klein">Tippe auf ein Wort – es kommt in die markierte Lücke. Tippe auf eine gefüllte Lücke, um sie zu leeren.</span></p>' +
+    '<div class="speicher"></div><div class="lt">' + html + '</div>' +
+    '<div class="qknopf"><button class="pr" type="button">Überprüfen</button><button class="zeig" type="button" disabled>Lösung anzeigen</button>' +
+    '<button class="nochmal" type="button" disabled>Nochmal</button></div><div class="rueck"></div>';
+  sec.appendChild(box);
+  var sp = box.querySelector('.speicher'), lk = [].slice.call(box.querySelectorAll('.luecke')), rk = box.querySelector('.rueck'),
+      bp = box.querySelector('.pr'), bz = box.querySelector('.zeig'), bn = box.querySelector('.nochmal'), ziel = null, fertig = false;
+  function markiere(l) { lk.forEach(function (x) { x.classList.remove('ziel'); }); ziel = l; if (l) l.classList.add('ziel'); }
+  function naechsteLeere() { for (var i = 0; i < lk.length; i++) if (!lk[i].dataset.v) return lk[i]; return null; }
+  function aufbauen() {
+    sp.innerHTML = ''; fertig = false; rk.className = 'rueck';
+    lk.forEach(function (l) { l.dataset.v = ''; l.innerHTML = '&nbsp;'; l.className = 'luecke'; l.disabled = false; });
+    mischen(woerter).forEach(function (w) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = w;
+      b.onclick = function () {
+        if (fertig) return;
+        var l = ziel && !ziel.dataset.v ? ziel : naechsteLeere(); if (!l) return;
+        l.dataset.v = w; l.textContent = w; l._quelle = b; b.classList.add('weg'); markiere(naechsteLeere());
+      };
+      sp.appendChild(b);
+    });
+    markiere(lk[0]); bp.disabled = false; bz.disabled = true; bn.disabled = true;
+  }
+  lk.forEach(function (l) {
+    l.onclick = function () {
+      if (fertig) return;
+      if (l.dataset.v) { l._quelle.classList.remove('weg'); l.dataset.v = ''; l.innerHTML = '&nbsp;'; }
+      markiere(l);
+    };
+  });
+  bp.onclick = function () {
+    if (naechsteLeere()) { rk.className = 'rueck fast'; rk.innerHTML = 'Fülle zuerst alle Lücken.'; return; }
+    fertig = true; markiere(null);
+    var n = 0;
+    lk.forEach(function (l) { var ok = l.dataset.v === l.dataset.w; if (ok) n++; l.classList.add(ok ? 'r' : 'f'); l.disabled = true; });
+    if (n === lk.length) { rk.className = 'rueck gut'; rk.innerHTML = '<b>Super!</b> ' + n + ' von ' + lk.length + ' richtig.'; }
+    else { rk.className = 'rueck falsch'; rk.innerHTML = n + ' von ' + lk.length + ' richtig. ' + fmt(tipp); }
+    bp.disabled = true; bz.disabled = n === lk.length; bn.disabled = false;
+  };
+  bz.onclick = function () { lk.forEach(function (l) { l.textContent = l.dataset.w; l.className = 'luecke r'; }); bz.disabled = true; };
+  bn.onclick = aufbauen;
+  aufbauen();
+}
+
+/* Lösungsweg Schritt für Schritt (wie 2.3 / 2.4) */
+function schrittweise(div, schritte) {
+  var ort = div.querySelector('.tipp-ort'), bt = div.querySelector('.k-tipp'), bz = div.querySelector('.k-zeile'),
+      ba = div.querySelector('.k-alles'), fe = div.querySelector('.fertig'), leer = div.querySelector('.leer-hinweis');
+  var n = 0, warn = false;
+  function status() {
+    var s = schritte[n];
+    bt.disabled = !s || !s.tipp || ort.innerHTML !== '';
+    bz.disabled = !s; ba.disabled = !s;
+    fe.style.display = s ? 'none' : 'block';
+    if (leer) leer.style.display = (s && s.s === 'l') ? 'block' : 'none';
+    if (!s) { ba.classList.remove('warnung'); ba.textContent = 'Ganze Lösung'; }
+  }
+  function zeige() {
+    var s = schritte[n]; if (!s) return;
+    var li = document.createElement('li');
+    li.innerHTML = (s.lab ? '<span class="lab">' + s.lab + '</span>' : '') + fmt(s.z);
+    if (s.ende) li.className = 'ende'; if (s.cls) li.className = s.cls;
+    div.querySelector('.zeilen[data-s="' + (s.s || 'a') + '"]').appendChild(li);
+    n++; ort.innerHTML = '';
+  }
+  bt.onclick = function () { var s = schritte[n]; if (s && s.tipp) ort.innerHTML = '<div class="tipp">' + fmt(s.tipp) + '</div>'; status(); };
+  bz.onclick = function () { zeige(); warn = false; ba.classList.remove('warnung'); ba.textContent = 'Ganze Lösung'; status(); };
+  ba.onclick = function () {
+    if (!warn) { warn = true; ba.classList.add('warnung'); ba.textContent = 'Wirklich? Erst selbst probieren! (nochmal tippen)'; return; }
+    while (n < schritte.length) zeige(); warn = false; status();
+  };
+  status();
+}
+function teilAufdecken(sec, titel, frage, schritte, knopf) {
+  var t = document.createElement('div'); t.className = 'teil';
+  t.innerHTML = '<h3>' + titel + '</h3>' + (frage ? '<p class="frage">' + frage + '</p>' : '') +
+    '<ul class="zeilen" data-s="a"></ul><div class="tipp-ort"></div><div class="knoepfe"><button class="k-tipp" type="button">Tipp</button>' +
+    '<button class="k-zeile" type="button">' + (knopf || 'Nächster Schritt') + '</button><button class="k-alles" type="button">Ganze Lösung</button></div>' +
+    '<div class="fertig">✓ Fertig – vergleiche mit deinem Blatt.</div>';
+  sec.appendChild(t); schrittweise(t, schritte); return t;
+}
+
+/* =====================================================================
+   Karten (Reihenfolge wie die interaktive Präsi in ByCS)
+   ===================================================================== */
+
+/* Folie 1 */
+karte('Start',
+  '<h2>Wie kalt kann es werden?</h2>' +
+  '<div class="zweispaltig"><div>' +
+  '<p>Heute arbeitest du <b>selbstständig</b>: mit einem Versuch, einem Diagramm und dem Teilchenmodell.</p>' +
+  '<div class="auftrag"><b class="t">Bevor du startest</b>Halte dein <b>Arbeitsblatt 2.2</b> und ein <b>Lineal</b> bereit. Klicke dich mit <b>Weiter</b> Karte für Karte durch.</div>' +
+  '<div class="pdfs"><a href="pdf/2-2-ab.pdf">Arbeitsblatt 2.2 (PDF)</a></div>' +
+  '</div><div>' + bild('leiter.png', 'Thermometer mit Temperaturen von 100 °C bis −196 °C, darunter ein Fragezeichen') + '</div></div>');
+
+/* Folie 2 – eigenes Bild statt Foto */
+karte('Erinnerung',
+  '<h2>Erinnerung: Zustandsgrößen eines Gases</h2>' +
+  '<figure class="bild"><svg viewBox="0 0 410 200" width="360" style="max-width:100%" role="img" aria-label="Fahrradreifen in der Sonne: Temperatur steigt, Druck steigt">' +
+  '<circle cx="52" cy="48" r="22" fill="#ffd23f"/><g stroke="#ffd23f" stroke-width="5" stroke-linecap="round">' +
+  '<path d="M52 12v-8M52 92v-8M16 48h-8M96 48h-8M27 23l-6-6M83 79l6 6M27 73l-6 6M83 17l6-6"/></g>' +
+  '<circle cx="200" cy="110" r="72" fill="none" stroke="#1f2f3d" stroke-width="16"/><circle cx="200" cy="110" r="58" fill="none" stroke="#6b7780" stroke-width="2"/>' +
+  '<circle cx="200" cy="110" r="8" fill="#6b7780"/><g stroke="#9aa8b2" stroke-width="1.5"><path d="M200 52v116M142 110h116M159 69l82 82M241 69l-82 82"/></g>' +
+  '<g font-family="Calibri,Segoe UI,Arial" font-weight="bold" font-size="18"><text x="292" y="62" fill="#c2410c">T ↑</text>' +
+  '<text x="292" y="112" fill="#0E7490">V ≈ gleich</text><text x="292" y="162" fill="#c00000">p ↑</text></g></svg>' +
+  '<figcaption>Fahrradreifen in der Sonne</figcaption></figure>' +
+  '<p>Ein eingeschlossenes Gas beschreibst du mit drei <b>Zustandsgrößen</b>:</p>' +
+  '<ul class="liste2"><li><b>Druck</b> <i>p</i></li><li><b>Volumen</b> <i>V</i></li><li><b>Temperatur</b> <i>T</i></li></ul>' +
+  '<p>Ändert sich eine Zustandsgröße, ändert sich immer mindestens eine weitere.</p>' +
+  '<div class="box"><i>Beispiel:</i> Der Fahrradreifen steht in der Sonne. Die Temperatur steigt, das Volumen bleibt fast gleich – also steigt der Druck.</div>');
+
+/* Folie 3 */
+karte(null,
+  '<h2>Erinnerung: Das Teilchenmodell</h2>' + bild('teilchen.png', 'Gasteilchen kalt mit kurzen Pfeilen, warm mit langen Pfeilen') +
+  '<p>Ein Gas besteht aus winzigen <b>Teilchen</b>. Sie fliegen ständig umher und stoßen gegen die Wände.</p>' +
+  '<p><b>Je höher die Temperatur, desto schneller</b> bewegen sich die Teilchen.</p>' +
+  '<p>Schnelle Teilchen stoßen öfter und heftiger gegen die Wände. Deshalb dehnt sich ein Gas beim Erwärmen aus – oder sein Druck steigt.</p>');
+
+/* Folie 4 */
+auswahl(karte(null, '<h2>Frage 1</h2>'), 'einzel', 'Ein Gas wird abgekühlt. Was passiert mit seinen Teilchen?', [
+  { t: 'Sie bewegen sich langsamer.', ok: true, fb: 'Genau: kälter = langsamer.' },
+  { t: 'Sie werden kleiner.', fb: 'Nein – die Teilchen selbst bleiben gleich groß.' },
+  { t: 'Sie bewegen sich schneller.', fb: 'Umgekehrt: Schneller werden sie beim Erwärmen.' },
+  { t: 'Es werden weniger Teilchen.', fb: 'Nein – das Gas ist eingeschlossen, die Anzahl bleibt gleich.' }
+]);
+
+/* Folie 5 */
+lueckentext(karte(null, '<h2>Frage 2</h2>'), 'Setze die Wörter an die richtige Stelle.', [
+  'Bleibt die Temperatur gleich, ist die Zustandsänderung [isotherm].',
+  'Bleibt der Druck gleich, ist die Zustandsänderung [isobar].',
+  'Bleibt das Volumen gleich, ist die Zustandsänderung [isochor].'
+], 'Tipp: <b>iso</b> = gleich, <b>therm</b> = Temperatur, <b>bar</b> = Druck, <b>chor</b> = Raum.');
+
+/* Folie 6 – Video erst nach Klick laden */
+var videoKarte = karte('Video',
+  '<h2>Was passiert mit dem Luftballon?</h2>' +
+  '<div class="video" id="video"><div class="zustimmung"><button type="button" id="videoStart">▶ Video laden</button>' +
+  '<small>Das Video liegt auf YouTube. Erst wenn du tippst, wird es geladen – dabei werden Daten an YouTube übertragen.</small></div></div>' +
+  '<p class="klein">Video: „Flüssiger Stickstoff auf Luftballon“ (Konrad Stöckel, 3sat Festival 2017)</p>' +
+  '<div class="auftrag"><b class="t">Schau genau hin</b>Flüssiger Stickstoff (−196 °C) kühlt die Luft im Ballon stark ab.' +
+  '<ul class="liste2"><li>Was passiert mit dem <b>Volumen</b> der Luft im Ballon?</li><li>Was passiert, wenn sich die Luft wieder <b>erwärmt</b>?</li></ul>' +
+  '<i>Der Druck im Ballon bleibt dabei ungefähr gleich.</i></div>');
+var VIDEO_HTML = '<iframe src="https://www.youtube-nocookie.com/embed/bpdWROlSqRU?rel=0&autoplay=1" title="Flüssiger Stickstoff auf Luftballon" ' +
+  'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+var videoLeer = document.getElementById('video').innerHTML;
+function videoStart() { document.getElementById('video').innerHTML = VIDEO_HTML; }
+document.getElementById('videoStart').onclick = videoStart;
+function videoStopp() { var v = document.getElementById('video'); if (v.querySelector('iframe')) { v.innerHTML = videoLeer; document.getElementById('videoStart').onclick = videoStart; } }
+
+/* Folie 7 */
+karte(null,
+  '<h2>Wie kalt kann es werden?</h2>' + bild('leiter.png', 'Thermometer mit Temperaturen von 100 °C bis −196 °C, darunter ein Fragezeichen') +
+  '<p>Der kälteste gemessene Ort der Erde liegt in der Antarktis (−89 °C). Flüssiger Stickstoff ist noch viel kälter: −196 °C.</p>' +
+  '<p>Je kälter die Luft im Ballon, desto kleiner wird er. Wie geht das weiter?</p>' +
+  '<div class="forschung"><b class="t">Forschungsfrage</b><b>Wie verändert sich das Volumen eines Gases beim Abkühlen, wenn der Druck gleich bleibt?</b></div>');
+
+/* Folie 8 */
+karte('Versuch',
+  '<h2>Der Versuch: Luft im Wasserbad</h2>' + bild('versuch.png', 'Kolbenprober mit Luft steht in einem Wasserbad auf einer Heizplatte, daneben ein Thermometer') +
+  '<p>In einer leichtgängigen Glasspritze (<b>Kolbenprober</b>) ist Luft eingeschlossen. Die Öffnung ist verschlossen.</p>' +
+  '<p>Der Kolben kann sich frei bewegen. Deshalb bleibt der <b>Druck</b> der Luft immer <b>gleich</b>.</p>' +
+  '<p>Die Spritze steht in Eiswasser (0 °C), das langsam erwärmt wird. Alle 20 °C wird das Volumen abgelesen.</p>' +
+  '<p class="klein"><i>Lies den Versuch auch auf deinem AB (Seite 1) durch.</i></p>');
+
+/* Folie 9 */
+karte('Diagramm',
+  '<h2>Die Messwerte</h2>' +
+  '<div class="tab"><table><tr><th>Temperatur <i>ϑ</i> in °C</th><td>0</td><td>20</td><td>40</td><td>60</td><td>80</td></tr>' +
+  '<tr><th>Volumen <i>V</i> in ml</th><td>60,0</td><td>64,5</td><td>69,0</td><td>73,0</td><td>77,5</td></tr></table></div>' +
+  '<p class="klein"><i>Die Werte stehen auch in der Messtabelle auf deinem AB.</i></p>' +
+  '<div class="auftrag"><b class="t">Arbeitsauftrag</b><ol>' +
+  '<li>Übernimm die Messwerte und zeichne sie als Punkte (×) in das Diagramm auf deinem AB (Auswertung a).</li>' +
+  '<li>Achte auf die Achsen: Nach rechts geht die Temperatur, nach oben das Volumen.</li>' +
+  '<li>Erst wenn alle fünf Punkte eingezeichnet sind: weiter zur nächsten Karte.</li></ol></div>');
+
+/* Folie 10 */
+karte(null,
+  '<h2>Selbstkontrolle: Deine Punkte</h2>' + bild('abpunkte.png', 'Diagramm wie auf dem AB mit den fünf Messpunkten zwischen 0 °C und 80 °C', 'gross') +
+  '<p>So sollten deine Punkte aussehen. Vergleiche genau: Liegen deine Kreuze an denselben Stellen?</p>' +
+  '<p class="klein"><i>Falls nicht: Prüfe, ob du die Achsen richtig abgelesen hast, und verbessere.</i></p>');
+
+/* Folie 11 */
+auswahl(karte(null, '<h2>Was fällt dir an deinen Punkten auf?</h2>'), 'mehr', 'Schau dir deine Punkte genau an. Kreuze alle richtigen Aussagen an.', [
+  { t: 'Die Punkte liegen (ungefähr) auf einer Geraden.', ok: true },
+  { t: 'Pro 20 °C nimmt das Volumen immer um etwa gleich viel zu.', ok: true },
+  { t: 'Die Gerade geht durch den Ursprung (0 °C | 0 ml).', fb: 'Schau bei 0 °C nach: Dort ist das Volumen 60 ml, nicht null.' },
+  { t: 'Bei 0 °C ist das Volumen der Luft null.', fb: 'Nein – bei 0 °C misst man 60,0 ml.' }
+]);
+
+/* Folie 12 */
+karte(null,
+  '<h2>Wie weit geht die Gerade?</h2>' +
+  '<div class="auftrag"><b class="t">Arbeitsauftrag</b><ol>' +
+  '<li>Lege dein Lineal so an, dass es möglichst gut durch alle Punkte geht. Zeichne die Gerade.</li>' +
+  '<li>Die Gerade geht nicht durch den Ursprung. Verlängere sie deshalb nach links – immer weiter, bis sie die <i>ϑ</i>-Achse trifft. Dort wäre das Volumen null.</li>' +
+  '<li>Lies ab, bei welcher Temperatur das ist, und trage den Wert bei b) auf dem AB ein.</li></ol></div>' +
+  '<p class="klein">Lass dir Zeit – die nächste Karte fragt nach deinem Ergebnis.</p>');
+
+/* Folie 13 */
+auswahl(karte(null, '<h2>Frage 3</h2>'), 'einzel', 'Wo trifft deine verlängerte Gerade die Temperaturachse (Volumen null)?', [
+  { t: 'zwischen −100 °C und 0 °C', fb: 'Zu früh – verlängere die Gerade weiter nach links.' },
+  { t: 'zwischen −200 °C und −100 °C', fb: 'Noch nicht ganz – leg das Lineal noch einmal genau an die Punkte an.' },
+  { t: 'zwischen −300 °C und −250 °C', ok: true, fb: 'Genau! Auf der nächsten Karte siehst du den genauen Wert.' },
+  { t: 'Die Gerade trifft die Achse nie.', fb: 'Doch – die Gerade fällt nach links immer weiter ab.' }
+]);
+
+/* Folie 14 */
+karte('Nullpunkt',
+  '<h2>Volumen null bei etwa −273 °C!</h2>' + bild('extra.png', 'Diagramm: die verlängerte Gerade erreicht das Volumen null bei etwa −273 °C', 'gross') +
+  '<p>Die verlängerte Gerade erreicht <b>V = 0</b> bei etwa <b>−273 °C</b>.</p>' +
+  '<p>Kommt dir diese Zahl bekannt vor? Vielleicht erinnerst du dich an die 8. Klasse …</p>' +
+  '<p>Kälter geht es nicht – sonst wäre das Volumen kleiner als null!</p>' +
+  '<p class="klein"><i>Echte Luft wird schon bei etwa −195 °C flüssig. Die Verlängerung ist ein Gedankenexperiment.</i></p>');
+
+/* Folie 15 – mit Vergleich */
+var k15 = karte(null,
+  '<h2>Formuliere das Ergebnis</h2>' +
+  '<div class="auftrag"><b class="t">Arbeitsauftrag</b><ol>' +
+  '<li>Schreibe das Ergebnis des Versuchs in zwei Sätzen in den Kasten „Ergebnis“ (AB Seite 1).</li>' +
+  '<li>Satz 1: Wie ändert sich das Volumen des Gases, wenn es (bei gleichem Druck) abgekühlt wird?</li>' +
+  '<li>Satz 2: Was passiert, wenn man die Gerade nach links verlängert?</li></ol></div>');
+teilAufdecken(k15, 'Vergleiche mit deinem Ergebnis', 'Erst selbst schreiben – dann Satz für Satz vergleichen.', [
+  { z: 'Bleibt der Druck gleich, nimmt das Volumen eines Gases beim Abkühlen gleichmäßig ab (beim Erwärmen gleichmäßig zu) – die Messpunkte liegen auf einer Geraden.',
+    tipp: 'Schau auf deine Messwerte: Was passiert mit dem Volumen, wenn die Temperatur sinkt? Und wie liegen die Punkte?' },
+  { z: 'Verlängert man die Gerade nach links, wäre das Volumen bei etwa −273 °C null.', tipp: 'Wo trifft die verlängerte Gerade die Temperaturachse?', ende: true }
+], 'Nächster Satz');
+
+/* Folie 16 */
+karte(null,
+  '<h2>Der absolute Nullpunkt</h2>' + bild('volumen.png', 'Gas im Zylinder mit Kolben bei 20 °C, −150 °C und −273 °C: Volumen und Teilchengeschwindigkeit nehmen ab', 'gross') +
+  '<p>Bleibt der <b>Druck gleich</b>, wird das Volumen beim Abkühlen <b>automatisch kleiner</b>: Die Teilchen werden <b>langsamer</b> und brauchen weniger Platz.</p>' +
+  '<p>Bei <b>−273,15 °C</b> wäre das Volumen null und die Teilchen würden <b>stillstehen</b>. Diese Temperatur heißt <b>absoluter Nullpunkt</b>.</p>');
+
+/* Folie 17 */
+karte('Kelvin',
+  '<h2>Die Kelvin-Skala</h2><div class="zweispaltig"><div>' + bild('skalen.png', 'Celsius- und Kelvin-Skala nebeneinander, Beispiel 37 °C = 310 K') + '</div><div>' +
+  '<p>Die <b>Kelvin-Skala</b> beginnt am absoluten Nullpunkt:</p><p class="zentral"><b>0 K = −273 °C</b></p>' +
+  '<p>Die Schritte sind gleich groß wie bei Celsius. Du musst also nur <b>273 dazuzählen</b>:</p><p class="zentral"><b>Kelvin = Celsius + 273</b></p>' +
+  '<div class="box"><b>Beispiel:</b> Körpertemperatur 37 °C<br>37 + 273 = <b>310 K</b></div>' +
+  '<p class="klein"><i>Die anderen Werte rechnest du selbst aus – auf dem AB neben dem Merkkasten.</i></p></div></div>');
+
+/* Folie 18 */
+karte('Merke',
+  '<h2>Hefteintrag: Schreibe den Merkkasten ab</h2>' +
+  '<div class="merk"><h3>Merke: Der absolute Nullpunkt</h3><ol>' +
+  '<li>Bei −273 °C (genau −273,15 °C) wäre das Volumen eines Gases null und die Teilchen würden stillstehen.</li>' +
+  '<li>Diese tiefste mögliche Temperatur heißt <b>absoluter Nullpunkt</b>. Sie ist nicht erreichbar.</li>' +
+  '<li>Die <b>Kelvin-Skala</b> beginnt am absoluten Nullpunkt: 0 K = −273 °C</li></ol>' +
+  '<p style="margin:8px 0 0"><b>Umrechnung:</b> $T \\text{ in K} = \\vartheta \\text{ in }{}^{\\circ}\\mathrm{C} + 273$</p></div>' +
+  '<div class="auftrag">Schreibe den Text in den Merkkasten auf Seite 2. Fülle danach die Kelvin-Skala daneben selbst aus.</div>');
+
+/* Folie 19 – Umrechnen */
+(function () {
+  var sec = karte('Üben', '<h2>Frage 4: Rechne um</h2><p><b>Gib nur die Zahl ein.</b></p>');
+  var F = [
+    { v: '25 °C =', e: 'K', ok: [298, 298.15] },
+    { v: '−18 °C (Gefrierfach) =', e: 'K', ok: [255, 255.15] },
+    { v: '400 K =', e: '°C', ok: [127, 126.85] },
+    { v: '50 K =', e: '°C', ok: [-223, -223.15] }
+  ];
+  var ul = document.createElement('ul'); ul.className = 'blanks';
+  ul.innerHTML = F.map(function (f, i) {
+    return '<li data-i="' + i + '">' + f.v + ' <input inputmode="text" autocomplete="off" aria-label="Antwort"> ' + f.e + '<span class="lsg"></span></li>';
+  }).join('');
+  sec.appendChild(ul);
+  var box = document.createElement('div');
+  box.innerHTML = '<div class="qknopf"><button class="pr" type="button">Überprüfen</button><button class="zeig" type="button" disabled>Lösung anzeigen</button>' +
+    '<button class="nochmal" type="button" disabled>Nochmal</button></div><div class="rueck"></div>';
+  sec.appendChild(box);
+  var lis = [].slice.call(ul.children), rk = box.querySelector('.rueck'),
+      bp = box.querySelector('.pr'), bz = box.querySelector('.zeig'), bn = box.querySelector('.nochmal');
+  bp.onclick = function () {
+    var leer = lis.some(function (li) { return li.querySelector('input').value.trim() === ''; });
+    if (leer) { rk.className = 'rueck fast'; rk.innerHTML = 'Fülle zuerst alle Lücken aus.'; return; }
+    var n = 0;
+    lis.forEach(function (li, i) {
+      var v = zahl(li.querySelector('input').value), ok = !isNaN(v) && F[i].ok.some(function (o) { return gleich(v, o); });
+      li.className = ok ? 'r' : 'f'; if (ok) n++; li.querySelector('input').disabled = true;
+    });
+    if (n === F.length) { rk.className = 'rueck gut'; rk.innerHTML = '<b>Super!</b> 4 von 4 richtig.'; }
+    else { rk.className = 'rueck falsch'; rk.innerHTML = n + ' von 4 richtig. Tipp: von °C nach K immer <b>+ 273</b>, von K nach °C <b>− 273</b>.'; }
+    bp.disabled = true; bz.disabled = n === F.length; bn.disabled = false;
+  };
+  bz.onclick = function () { lis.forEach(function (li, i) { if (li.className === 'f') li.querySelector('.lsg').textContent = '→ richtig: ' + String(F[i].ok[0]).replace('-', '−'); }); bz.disabled = true; };
+  bn.onclick = function () {
+    lis.forEach(function (li) { li.className = ''; var inp = li.querySelector('input'); inp.disabled = false; inp.value = ''; li.querySelector('.lsg').textContent = ''; });
+    rk.className = 'rueck'; bp.disabled = false; bz.disabled = true; bn.disabled = true;
+  };
+})();
+
+/* Folie 20 */
+auswahl(karte(null, '<h2>Frage 5: Welche Aussagen stimmen?</h2>'), 'mehr', 'Kreuze alle richtigen Aussagen an.', [
+  { t: 'Am absoluten Nullpunkt würden sich die Teilchen nicht mehr bewegen.', ok: true },
+  { t: 'Bei gleichem Druck wird das Volumen eines Gases beim Abkühlen kleiner.', ok: true },
+  { t: '0 K entspricht 0 °C.', fb: '0 K entspricht −273 °C.' },
+  { t: 'Mit einer sehr guten Kühlmaschine kann man ein Gas auf −300 °C abkühlen.', fb: 'Kälter als −273 °C geht nicht.' }
+]);
+
+/* Folie 21 */
+karte('Aufgaben',
+  '<h2>Jetzt bist du dran!</h2>' +
+  '<div class="auftrag"><b class="t">Bearbeite selbstständig</b><ol>' +
+  '<li>AB Seite 2, <b>Aufgabe 1</b>: Ergänze in der Messtabelle <i>T</i> in K und <i>V</i> : <i>T</i>.</li>' +
+  '<li><b>Aufgabe 2</b>: Begründe mit dem Teilchenmodell.</li>' +
+  '<li><b>Hausaufgabe</b>: Aufgabe 3 im Heft.</li></ol></div>' +
+  '<p>Auf den nächsten Karten kannst du deine Lösungen <b>Schritt für Schritt</b> vergleichen – erst selbst rechnen!</p>');
+
+/* Aufgabe 1 */
+(function () {
+  var sec = karte(null, '<h2>Aufgabe 1: Volumen und Temperatur</h2>' +
+    '<div class="aufgabentext">Ergänze in der Messtabelle (Seite 1) die Temperatur <i>T</i> in Kelvin und berechne jeweils den Quotienten <i>V</i> : <i>T</i>.<br>' +
+    '<b>a)</b> Beschreibe, was dir an den Quotienten auffällt, und formuliere den Zusammenhang zwischen <i>V</i> und <i>T</i>.<br>' +
+    '<b>b)</b> Zeige mit den Werten für 20 °C und 40 °C rechnerisch, dass <i>V</i> nicht proportional zu <i>ϑ</i> in °C ist.</div>');
+  teilAufdecken(sec, 'Messtabelle ergänzen', null, [
+    { z: '<div class="tab" style="margin:0"><table><tr><th><i>ϑ</i> in °C</th><td>0</td><td>20</td><td>40</td><td>60</td><td>80</td></tr>' +
+         '<tr><th><i>V</i> in ml</th><td>60,0</td><td>64,5</td><td>69,0</td><td>73,0</td><td>77,5</td></tr>' +
+         '<tr><th><i>T</i> in K</th><td class="neu">273</td><td class="neu">293</td><td class="neu">313</td><td class="neu">333</td><td class="neu">353</td></tr></table></div>',
+      tipp: 'Rechne jede Temperatur um: $T = \\vartheta + 273$.' },
+    { z: '<div class="tab" style="margin:0"><table><tr><th><i>V</i> : <i>T</i> in ml/K</th><td class="neu">0,22</td><td class="neu">0,22</td><td class="neu">0,22</td><td class="neu">0,22</td><td class="neu">0,22</td></tr></table></div>' +
+         '<span class="klein">z. B. $60{,}0 : 273 \\approx 0{,}22$ &nbsp;·&nbsp; $77{,}5 : 353 \\approx 0{,}22$</span>',
+      tipp: 'Teile jeweils das Volumen durch die Kelvin-Temperatur, z. B. $60{,}0 : 273$. Runde auf 2 Ziffern.' }
+  ], 'Nächste Zeile');
+  teilAufdecken(sec, 'a) Was fällt dir auf?', null, [
+    { z: 'Alle Quotienten sind etwa gleich (0,22 ml/K). → $V \\sim T$ bzw. $V : T = \\text{konstant}$ (bei gleichem Druck)',
+      tipp: 'Vergleiche die Zahlen in der letzten Zeile. Was bedeutet es, wenn der Quotient immer gleich ist?' },
+    { z: 'Verdoppelt sich die Kelvin-Temperatur, verdoppelt sich das Volumen (<b>Gesetz von Gay-Lussac</b>).', ende: true }
+  ]);
+  teilAufdecken(sec, 'b) Rechnen in °C?', null, [
+    { z: '$64{,}5\\,\\mathrm{ml} : 20' + C + ' \\approx 3{,}2\\,\\mathrm{ml/{}^{\\circ}C}$ &nbsp;&nbsp; $69{,}0\\,\\mathrm{ml} : 40' + C + ' \\approx 1{,}7\\,\\mathrm{ml/{}^{\\circ}C}$',
+      tipp: 'Teile das Volumen durch die Temperatur in <b>°C</b> – einmal für 20 °C, einmal für 40 °C.' },
+    { z: 'Die Quotienten sind verschieden → nicht proportional. Man muss in <b>Kelvin</b> rechnen.', ende: true }
+  ]);
+})();
+
+/* Aufgabe 2 */
+teilAufdecken(karte(null, '<h2>Aufgabe 2: Kälter geht’s nicht</h2>' +
+  '<div class="aufgabentext">Begründe mithilfe des Teilchenmodells, warum es keine Temperatur unter −273 °C geben kann.</div>'),
+  'Begründung Schritt für Schritt', 'Schreib zuerst selbst – dann Satz für Satz vergleichen.', [
+  { z: 'Je kälter ein Gas ist, desto langsamer bewegen sich seine Teilchen.', tipp: 'Wie hängen Temperatur und Teilchenbewegung zusammen?' },
+  { z: 'Am absoluten Nullpunkt (−273 °C) würden sich die Teilchen gar nicht mehr bewegen.' },
+  { z: 'Langsamer als Stillstand geht nicht – deshalb kann es nicht kälter werden.', ende: true }
+], 'Nächster Satz');
+
+/* Aufgabe 3 (Hausaufgabe) – Ergebnis-Check + Lösungsweg */
+(function () {
+  var sec = karte('HA', '<h2>Aufgabe 3: Luftballon in flüssigem Stickstoff <span class="klein">(Hausaufgabe)</span></h2>' +
+    '<div class="aufgabentext">Ein Luftballon wird bei 20 °C mit 3,0 l Luft gefüllt und dann in flüssigen Stickstoff (−196 °C) getaucht. Der Druck im Ballon bleibt dabei näherungsweise gleich.<br>' +
+    '<b>a)</b> Berechne das Volumen des Ballons im flüssigen Stickstoff.<br><b>b)</b> Beschreibe und begründe, was passiert, wenn man den Ballon wieder herausnimmt.</div>');
+  var c = { exakt: 0.78840, gerundet: 0.79, ziffern: 2 };
+  var ck = document.createElement('div'); ck.className = 'check';
+  ck.innerHTML = '<label>Prüfe dein Ergebnis zu a):</label><div class="eingabe"><input inputmode="decimal" autocomplete="off" aria-label="Dein Ergebnis">' +
+    '<span class="einh">l</span><button type="button">Prüfen</button></div><div class="rueck"></div>';
+  sec.appendChild(ck);
+  var inp = ck.querySelector('input'), rk = ck.querySelector('.rueck');
+  function pruefen() {
+    var v = zahl(inp.value);
+    if (isNaN(v)) { rk.className = 'rueck fast'; rk.innerHTML = 'Gib eine Zahl ein (Komma ist erlaubt).'; return; }
+    if (gleich(v, c.gerundet)) { rk.className = 'rueck gut'; rk.innerHTML = '<b>Richtig – und sinnvoll gerundet!</b> Vergleiche jetzt noch deinen Rechenweg.'; }
+    else if (Math.abs(v - c.exakt) / c.exakt < 0.012 || gleich(v, 0.8)) { rk.className = 'rueck fast'; rk.innerHTML = '<b>Richtig gerechnet!</b> Aber runde auf 2 sinnvolle Ziffern: 3,0 l hat 2 Ziffern.'; }
+    else if (Math.abs(v + 29.4) < 0.6) { rk.className = 'rueck falsch'; rk.innerHTML = '<b>Achtung:</b> Ein negatives Volumen gibt es nicht! Du hast mit °C gerechnet – setze die Temperaturen in <b>Kelvin</b> ein.'; }
+    else if (Math.abs(v - 11.4) < 0.3) { rk.className = 'rueck falsch'; rk.innerHTML = '<b>Achtung:</b> Der Ballon wird in der Kälte doch kleiner! Prüfe das Umstellen: $T_2$ gehört in den Zähler.'; }
+    else { rk.className = 'rueck falsch'; rk.innerHTML = 'Das stimmt noch nicht. Prüfe die Umrechnung in Kelvin und das Umstellen – oder hol dir unten einen Tipp.'; }
+    rk.innerHTML = fmt(rk.innerHTML);
+  }
+  ck.querySelector('button').onclick = pruefen;
+  inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') pruefen(); });
+
+  var t = document.createElement('div'); t.className = 'teil';
+  t.innerHTML = '<h3>a) Lösungsweg Schritt für Schritt</h3><p class="frage">Erst selbst probieren – dann Schritt für Schritt vergleichen.</p>' +
+    '<div class="loesung"><div class="spalte"><h4>links im Heft</h4><ul class="zeilen" data-s="l"></ul></div>' +
+    '<div class="spalte"><h4>rechts im Heft</h4><ul class="zeilen" data-s="r"></ul><p class="leer-hinweis">… kommt nach der linken Seite</p></div>' +
+    '<div class="antwort"><ul class="zeilen" data-s="a"></ul></div></div>' +
+    '<div class="tipp-ort"></div><div class="knoepfe"><button class="k-tipp" type="button">Tipp</button>' +
+    '<button class="k-zeile" type="button">Nächster Schritt</button><button class="k-alles" type="button">Ganze Lösung</button></div>' +
+    '<div class="fertig">✓ Fertig – vergleiche mit deinem Heft.</div>';
+  sec.appendChild(t);
+  schrittweise(t, [
+    { s: 'l', lab: 'geg.', z: '$V_1 = 3{,}0' + U('l') + '$<br>$\\vartheta_1 = 20' + C + PF + 'T_1 = 20 + 273 = 293' + U('K') + '$<br>$\\vartheta_2 = -196' + C + PF + 'T_2 = -196 + 273 = 77' + U('K') + '$<br>$p_1 = p_2$',
+      tipp: 'Schreibe alle Angaben mit Formelzeichen und Einheit heraus – Temperaturen gleich in Kelvin: $T = \\vartheta + 273$. Bei −196 °C: $-196 + 273 = 77$.' },
+    { s: 'l', lab: 'ges.', z: '$V_2$', tipp: 'Wonach wird gefragt? Das Gesuchte steht ganz unten links.' },
+    { s: 'r', lab: 'Formel', z: '$\\dfrac{V_1}{T_1} = \\dfrac{V_2}{T_2}$ &nbsp;(Druck bleibt gleich)',
+      tipp: 'Der Druck bleibt gleich – dann gilt: $V : T$ ist konstant (Aufgabe 1).' },
+    { s: 'r', lab: 'Umstellen', z: '$V_2 = \\dfrac{V_1 \\cdot T_2}{T_1}$', tipp: 'Beide Seiten mit $T_2$ malnehmen.' },
+    { s: 'r', lab: 'Einsetzen', z: '$V_2 = \\dfrac{3{,}0' + U('l') + ' \\cdot 77' + U('K') + '}{293' + U('K') + '}$',
+      tipp: 'Zahlen <b>mit Einheiten</b> einsetzen. K kürzt sich, übrig bleibt l.' },
+    { s: 'r', lab: 'Ergebnis', z: '$V_2 = 0{,}788\\ldots' + U('l') + '$', tipp: 'Taschenrechner: $3 \\cdot 77 : 293$.' },
+    { s: 'r', lab: 'Runden', cls: 'runden', z: 'Angaben: 3,0 l (2) · 20 °C (2) · −196 °C (3) → <b>2 Ziffern</b><br>$V_2 \\approx$ <span class="erg">$0{,}79' + U('l') + '$</span>',
+      tipp: 'Die Angabe mit den wenigsten Ziffern bestimmt die Genauigkeit (mindestens 2). Bei 0,788… zählen die Nullen vorne nicht mit.' },
+    { s: 'a', lab: 'Antwortsatz', z: 'Im flüssigen Stickstoff hat der Ballon nur noch ein Volumen von etwa 0,79 l.', ende: true }
+  ]);
+  teilAufdecken(sec, 'b) Was passiert beim Herausnehmen?', null, [
+    { z: 'Die Luft im Ballon erwärmt sich wieder, die Teilchen werden schneller → das Volumen nimmt zu, bis der Ballon wieder etwa 3,0 l hat.',
+      tipp: 'Was passiert mit der Temperatur der Luft im Ballon – und damit mit den Teilchen? Denk an das Video!', ende: true }
+  ], 'Lösung zeigen');
+})();
+
+/* Ende */
+karte('Ende', '<h2>Geschafft!</h2><div class="ok">Du hast den Selbstlernpfad zum absoluten Nullpunkt durchgearbeitet. Prüfe zum Schluss:</div>' +
+  '<ul><li>Sind alle fünf Messpunkte im Diagramm und ist die Gerade bis zur <i>ϑ</i>-Achse verlängert?</li>' +
+  '<li>Steht dein Ergebnis in zwei Sätzen im Kasten?</li><li>Ist der <b>Merkkasten</b> abgeschrieben und die Kelvin-Skala ausgefüllt?</li>' +
+  '<li>Hast du in Aufgabe 3 die Temperaturen in <b>Kelvin</b> eingesetzt und einen <b>Antwortsatz</b> geschrieben?</li></ul>' +
+  '<div class="pdfs"><a href="pdf/2-2-ab.pdf">Arbeitsblatt 2.2 (PDF)</a></div>' +
+  '<p><a class="link" href="material.html">‹ Zurück zum Material</a></p>');
+
+/* ---------- Navigation + Sprungleiste ---------- */
+(function () {
+  var karten = [].slice.call(document.querySelectorAll('.karte')), i = 0;
+  var chips = document.getElementById('chips'), chipKarte = [];
+  karten.forEach(function (k, j) {
+    if (k.dataset.chip) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = k.dataset.chip;
+      b.onclick = function () { zeigeK(j); }; chips.appendChild(b); chipKarte.push([b, j]);
+    }
+  });
+  function zeigeK(n) {
+    i = Math.max(0, Math.min(karten.length - 1, n));
+    karten.forEach(function (k, j) { k.classList.toggle('aktiv', j === i); });
+    if (karten[i] !== videoKarte) videoStopp();
+    var aktiv = null; chipKarte.forEach(function (c) { if (c[1] <= i) aktiv = c[0]; });
+    chipKarte.forEach(function (c) { c[0].classList.toggle('an', c[0] === aktiv); });
+    if (aktiv) aktiv.scrollIntoView({ inline: 'center', block: 'nearest' });
+    document.getElementById('zurueck').disabled = (i === 0);
+    document.getElementById('weiter').textContent = (i === karten.length - 1) ? 'Zum Start ↺' : 'Weiter ▶';
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('weiter').onclick = function () { zeigeK(i === karten.length - 1 ? 0 : i + 1); };
+  document.getElementById('zurueck').onclick = function () { zeigeK(i - 1); };
+  var start = parseInt((location.hash || '').slice(1), 10);
+  zeigeK(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
