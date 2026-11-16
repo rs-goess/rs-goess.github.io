@@ -64,18 +64,18 @@ a:focus-visible{outline:3px solid var(--akzent);outline-offset:3px}
 .f-petrol{background:linear-gradient(135deg,#15A0A2,#0F6E8C)}
 .neu{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;background:#fff;color:#1B1F2A;border-radius:6px;padding:2px 6px;margin-left:8px;vertical-align:3px}
 
-/* Klassenwahl: Mathe in Blautönen, Physik in Rottönen */
-.f-m1{background:linear-gradient(135deg,#2A8FD0,#1F6FC4)}
-.f-m2{background:linear-gradient(135deg,#3672D8,#2A4FB8)}
-.f-m3{background:linear-gradient(135deg,#4F5BD5,#3A2FA3)}
-.f-p1{background:linear-gradient(135deg,#E9693F,#D4473A)}
-.f-p2{background:linear-gradient(135deg,#E5534B,#C02E3E)}
-.f-p3{background:linear-gradient(135deg,#D9426A,#AE2A55)}
-.f-p4{background:linear-gradient(135deg,#BC3148,#8A1E3C)}
+/* Klassenwahl: Mathe von Petrol bis Lilablau, Physik von Gelb über Orange und Rot bis Lila */
+.f-m1{background:linear-gradient(135deg,#139AA5,#0B6F8A)}
+.f-m2{background:linear-gradient(135deg,#3480DC,#2552B6)}
+.f-m3{background:linear-gradient(135deg,#6B57DD,#4A2FAE)}
+.f-p1{background:linear-gradient(135deg,#FFC93C,#F2A20F);color:#3A2A00}
+.f-p2{background:linear-gradient(135deg,#EB6F2B,#D9531F)}
+.f-p3{background:linear-gradient(135deg,#E4464E,#BB283F)}
+.f-p4{background:linear-gradient(135deg,#B53D8C,#782C9C)}
 .abschnitt.fach h2{display:flex;align-items:center;gap:8px}
 .abschnitt.fach h2::before{content:"";width:22px;height:8px;border-radius:4px;background:var(--fach)}
-.abschnitt.mathe{--fach:linear-gradient(90deg,#2A8FD0,#3A2FA3)}
-.abschnitt.physik{--fach:linear-gradient(90deg,#E9693F,#8A1E3C)}
+.abschnitt.mathe{--fach:linear-gradient(90deg,#139AA5,#3480DC,#6B57DD)}
+.abschnitt.physik{--fach:linear-gradient(90deg,#FFC93C,#EB6F2B,#E4464E,#B53D8C)}
 
 /* Abschnitte */
 .abschnitt{margin:26px 2px 10px;display:flex;align-items:baseline;gap:10px}
