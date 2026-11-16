@@ -540,12 +540,13 @@ var BUILD={
 function specTotal(s){ return BUILD[s.f](s.a).length; }
 function picPool(L,uniformOnly){
   var e=[], add=function(minL,f,a){ if(minL<=L) e.push({minL:minL,s:{f:f,a:a}}); };
-  [2,3,4,5,6].forEach(function(d){ add(1,'strip',d); }); [7,8].forEach(function(d){ add(2,'strip',d); }); [9,10].forEach(function(d){ add(3,'strip',d); });
-  [2,3,4,6,8].forEach(function(d){ add(1,'circle',d); }); [5].forEach(function(d){ add(2,'circle',d); }); [10,12].forEach(function(d){ add(3,'circle',d); });
-  [[2,2],[2,3],[2,4],[3,3]].forEach(function(g){ add(2,'grid',g); }); [[3,4],[2,5],[2,6]].forEach(function(g){ add(3,'grid',g); });
-  [[4,4],[3,5]].forEach(function(g){ add(4,'grid',g); }); [[4,5],[3,6]].forEach(function(g){ add(5,'grid',g); });
+  /* Streifen höchstens 6 Teile (enge Streifen sind am Handy kaum zu zählen); größere Nenner als Kästchen-Raster oder Pizza */
+  [2,3,4,5,6].forEach(function(d){ add(1,'strip',d); });
+  [2,3,4,6,8].forEach(function(d){ add(1,'circle',d); }); [5].forEach(function(d){ add(2,'circle',d); }); [10].forEach(function(d){ add(4,'circle',d); });
+  [[2,2],[2,3],[2,4],[3,3]].forEach(function(g){ add(2,'grid',g); }); [[3,4],[2,5]].forEach(function(g){ add(3,'grid',g); });
+  [[2,6],[4,4]].forEach(function(g){ add(4,'grid',g); }); [[3,5]].forEach(function(g){ add(5,'grid',g); });
   add(3,'hex',1); add(4,'sq4',0); add(4,'sq8',0); add(4,'tri',2); add(4,'para',2); add(4,'para',3);
-  add(5,'tri',3); add(5,'para',4); add(5,'para',5); add(6,'tri',4); add(6,'para',6); add(7,'hex',2);
+  add(5,'tri',3); add(5,'para',4);
   return e;
 }
 function pickSpec(L){
@@ -614,7 +615,7 @@ function genP2F(L){
   var ans=mk(k,d), c=[mk(d-k,d,'Das ist der weiße Teil!'),mk(k,d-k,'Nenner = Anzahl aller Teile!'),mk(k+1,d),mk(k-1,d),mk(k,d+1),mk(k,d-1),mk(k+1,d+1),mk(k+2,d)];
   if(L<=3) c.push(mk(d,k,'Zähler und Nenner vertauscht!'));
   return {op:'bilder',mode:'p2f',label:'Welcher Bruchteil ist gefärbt?',pic:pic,ans:ans,cands:c,fb:fbFrac(ans,false),noNeg:true,max:red?0.999:undefined,
-          extra:d>12?1:0,chk:{exp:k/d,reduced:red}};
+          extra:(d>=8?1:0)+(d>12?1:0)+(red?1:0),chk:{exp:k/d,reduced:red}};
 }
 function genF2P(L){
   var s, d, t=0;
@@ -625,7 +626,7 @@ function genF2P(L){
   var k=pick(ks), target=F(k,d), tdisp=red?show(target):DF(k,d);
   var PC=function(sp,kk,h){ var tot=specTotal(sp); if(kk<1||kk>=tot) return null; var p=makePic(sp,kk,L); return {val:p.val,disp:{t:'p',pic:p},hint:h||'',partial:false}; };
   var ans=PC(s,k), c=[PC(s,d-k,'Das ist der weiße Teil!'),PC(s,k+1),PC(s,k-1),PC(s,k+2),PC(s,k-2)];
-  ['strip','circle'].forEach(function(f){ [d+1,d-1,d+2].forEach(function(dd){ if(dd>=2&&dd<=12) c.push(PC({f:f,a:dd},k,'Zähl alle Teile!')); }); });
+  ['strip','circle'].forEach(function(f){ [d+1,d-1,d+2].forEach(function(dd){ if(dd>=2&&dd<=(f==='strip'?6:10)) c.push(PC({f:f,a:dd},k,'Zähl alle Teile!')); }); });
   for(i=0;i<4;i++){ var s2=pickSpec(Math.min(L,6)), d2=specTotal(s2); if(d2!==d) c.push(PC(s2,Math.min(k,d2-1))); }
   c=c.filter(Boolean);
   return {op:'bilder',mode:'f2p',label:'Welches Bild zeigt diesen Bruch?',q:dispHTML(tdisp),tdisp:tdisp,ans:ans,cands:c,noNeg:true,
@@ -652,9 +653,10 @@ function addTask(a,da,b,db,sg,L,mixed){
   c.push(S(F(res.n+1,res.d))); c.push(S(F(res.n-1,res.d))); c.push(S(F(res.n,res.d+1))); c.push(S(F(res.n,res.d*2)));
   var noNeg=a.n>0&&b.n>0&&res.n>0&&L<6;
   if(noNeg) c=c.filter(function(x){ return x.val.n>0; });
+  var HN=lcm(a.d,b.d), roh=a.n*(HN/a.d)+sg*b.n*(HN/b.d), kz=gcd(roh,HN)>1;
   var q=dispHTML(da)+opH(sg>0?'+':'−')+dispHTML(db);
   return {op:'plus',label:'Ergebnis vollständig gekürzt',q:q,ans:S(res),cands:c,ask:1,rev:q+opH('=')+dispHTML(show(res,mixed)),
-          fb:fbFrac(S(res),mixed),noNeg:noNeg,extra:(mixed?1:0)+(lcm(a.d,b.d)>=18?1:0),chk:{exp:sg>0?fnum(a)+fnum(b):fnum(a)-fnum(b),reduced:true}};
+          fb:fbFrac(S(res),mixed),noNeg:noNeg,kuerzen:kz,extra:(mixed?1:0)+(lcm(a.d,b.d)>=18?1:0)+(kz?KUERZ_EXTRA.plus:0),chk:{exp:sg>0?fnum(a)+fnum(b):fnum(a)-fnum(b),reduced:true}};
 }
 function rf(d){ var n; do{ n=ri(1,d-1); }while(gcd(n,d)!==1); return F(n,d); }
 function pGleich(L){
@@ -716,9 +718,10 @@ function mulTask(a,da,b,db,L,mixed,word){
   c.push(S(F(res.n+1,res.d))); c.push(S(F(res.n-1,res.d))); c.push(S(F(res.n,res.d+1))); if(res.d>1) c.push(S(F(res.d,res.n)));
   var noNeg=a.n>0&&b.n>0;
   if(noNeg) c=c.filter(function(x){ return x.val.n>0; });
+  var kz=gcd(a.n*b.n,a.d*b.d)>1;
   var q=dispHTML(da,true)+opH(word||'·')+dispHTML(db,true);
   return {op:'mal',label:res.d===1?'Rechne im Kopf':'Ergebnis vollständig gekürzt',q:q,ans:S(res),cands:c,ask:1,rev:q+opH('=')+dispHTML(show(res,mixed)),
-          fb:res.d===1?fbInt(res.n):fbFrac(S(res),mixed),noNeg:noNeg,extra:mixed?1:0,chk:{exp:fnum(a)*fnum(b),reduced:true}};
+          fb:res.d===1?fbInt(res.n):fbFrac(S(res),mixed),noNeg:noNeg,kuerzen:kz,extra:(mixed?1:0)+(kz?KUERZ_EXTRA.mal:0),chk:{exp:fnum(a)*fnum(b),reduced:true}};
 }
 function sw(a,da,b,db){ return Math.random()<.5?[a,da,b,db]:[b,db,a,da]; }
 function m1(L){ var k=ri(2,5), d=ri(k+2,11), n=ri(1,Math.floor((d-1)/k)); if(gcd(n,d)!==1||gcd(k*n,d)!==1) return null; var x=sw(F(k,1),DI(k),F(n,d),DF(n,d)); return mulTask(x[0],x[1],x[2],x[3],L,false); }
@@ -776,9 +779,10 @@ function divTask(a,da,b,db,L,mixed){
   c.push(S(F(res.n+1,res.d))); c.push(S(F(res.n-1,res.d))); c.push(S(F(res.n,res.d+1))); c.push(S(F(res.n*2,res.d)));
   var noNeg=a.n>0&&b.n>0;
   if(noNeg) c=c.filter(function(x){ return x.val.n>0; });
+  var kz=gcd(a.n*b.d,a.d*b.n)>1;
   var q=dispHTML(da,true)+opH(':')+dispHTML(db,true);
   return {op:'geteilt',label:res.d===1?'Rechne im Kopf':'Ergebnis vollständig gekürzt',q:q,ans:S(res),cands:c,ask:1,rev:q+opH('=')+dispHTML(show(res,mixed)),
-          fb:res.d===1?fbInt(res.n):fbFrac(S(res),mixed),noNeg:noNeg,extra:mixed?1:0,chk:{exp:fnum(a)/fnum(b),reduced:true}};
+          fb:res.d===1?fbInt(res.n):fbFrac(S(res),mixed),noNeg:noNeg,kuerzen:kz,extra:(mixed?1:0)+(kz?KUERZ_EXTRA.geteilt:0),chk:{exp:fnum(a)/fnum(b),reduced:true}};
 }
 function g1(L){ var k=ri(2,4), m=ri(1,3), a=k*m, b=ri(a+1,11); if(gcd(a,b)!==1) return null; return divTask(F(a,b),DF(a,b),F(k,1),DI(k),L,false); }
 function g1b(L){ var k=ri(2,4), b=ri(2,6), f=rf(b); if(f.n%k===0) return null; return divTask(f,DF(f.n,f.d),F(k,1),DI(k),L,false); }
@@ -875,7 +879,7 @@ function gzKuerz(L){
   var q=dispHTML(DF(NN,DD)), ans=C(F(N,d),DM(w,n,d));
   return {op:'gemischt',label:'Gemischte Zahl, vollständig gekürzt',q:q,ans:ans,cands:c.filter(Boolean),ask:1,
           rev:q+opH('=')+dispHTML(DF(N,d))+opH('=')+dispHTML(ans.disp),
-          fb:fbFrac(ans,true),noNeg:true,extra:1+gzExtra(NN,L),chk:{exp:N/d,reduced:true,form:'m'}};
+          fb:fbFrac(ans,true),noNeg:true,kuerzen:true,extra:KUERZ_EXTRA.gemischt+gzExtra(NN,L),chk:{exp:N/d,reduced:true,form:'m'}};
 }
 /* Lücken: Zähler, Ganze oder Rest ergänzen */
 function gzLuecke(L){
@@ -941,6 +945,8 @@ var HS_KEY='bruchjagd.bestenliste.v1', SET_KEY='bruchjagd.einstellungen.v1';
 var OPS = { kuerzen:{sym:'Kürzen',name:'Kürzen & Erweitern'}, bilder:{sym:'Bilder',name:'Bruchteile in Bildern'}, plus:{sym:'±',name:'Plus & Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'}, gemischt:{sym:'Gemischt',name:'Gemischte Zahlen umwandeln'} };
 var OP_ORDER = ['kuerzen','bilder','plus','mal','geteilt','gemischt'];
 var LIVES = 5, PER_LEVEL = 5;
+/* Zusatzzeit (s), wenn man erst rechnen und dann noch kürzen muss */
+var KUERZ_EXTRA = { plus:5, mal:6, geteilt:6, gemischt:4 };
 /* Fallzeit in Sekunden: [Start, Minimum] – Bruchaufgaben brauchen mehr Zeit als Einmaleins */
 var FALL = { kuerzen:[13,6.5], bilder:[12.5,6.5], plus:[16,8.5], mal:[15,8], geteilt:[16,8.5], gemischt:[17,9] };
 function fallTime(t,L){ var f=FALL[t.op]; return Math.max(f[1], f[0]*Math.pow(.95,L-1)) + (t.extra||0); }
