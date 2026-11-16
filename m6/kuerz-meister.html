@@ -411,7 +411,7 @@ if (typeof module !== 'undefined') module.exports = KM;
       P.frei = Math.min(alt.frei || 1, 3);
     }
   }
-  var ALLE = /[?&]alle/.test(location.search);
+  var ALLE = true; /* Alle Level frei – die Kinder wählen ihr Niveau selbst (Wunsch Herr Gößmann, 16.11.2026) */
   var MAXST = KM.LEVEL.length * KM.PRO_RUNDE * 3;
 
   function sterneHTML(n, max) {
@@ -790,7 +790,7 @@ if (typeof module !== 'undefined') module.exports = KM;
     $('spiel').hidden = true; $('ende').hidden = false;
     $('endeTitel').textContent = summe >= max - 2 ? 'Meisterhaft!' : (summe >= max * .6 ? 'Stark gemacht!' : 'Runde geschafft!');
     $('endeSterne').innerHTML = summe + ' / ' + max + ' <span class="stern">★</span>';
-    $('endeText').textContent = neuFrei ? 'Level ' + (R.lv + 1) + ' ist jetzt freigeschaltet.' : (R.lv === KM.LEVEL.length ? 'Du hast das schwerste Level geschafft.' : '');
+    $('endeText').textContent = (neuFrei && !ALLE) ? 'Level ' + (R.lv + 1) + ' ist jetzt freigeschaltet.' : (R.lv === KM.LEVEL.length ? 'Du hast das schwerste Level geschafft.' : '');
     var h = '';
     R.sterne.forEach(function (s, i) { h += '<div><span>Aufgabe ' + (i + 1) + '</span><span>' + sterneHTML(s) + '</span></div>'; });
     $('endeListe').innerHTML = h;
