@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../assets/app.webmanifest">
+<link rel="apple-touch-icon" href="../assets/bilder/app-180.png">
+<title>Lerntheke Brüche – Lösungen · Mathe 6c</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232E8B57'/%3E%3Cpath d='M18 33l9 9 19-20' stroke='%23fff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../assets/portal.css">
+<style>
+:root{--rot:#C00000;--papier:#fff;--abgrau:#F2F2F2;--feld:#E6E6E6;--ablila:#7A2E8E;--aborange:#E97132}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+
+/* ---------- Übersicht ---------- */
+.hinweis{display:flex;gap:12px;align-items:flex-start;background:var(--karte);border:1px solid var(--linie);border-radius:18px;padding:13px 15px;margin:0 0 16px;font-size:15px;color:var(--text2);line-height:1.4}
+.hinweis .sym{flex:none;width:34px;height:34px;border-radius:11px;background:var(--gruen-hell);color:var(--gruen-text);display:grid;place-items:center}
+.hinweis .sym svg{width:20px;height:20px}
+.hinweis b{color:var(--text)}
+.zettelliste{display:grid;gap:10px}
+.zk{background:var(--karte);border:1px solid var(--linie);border-radius:20px;padding:13px 14px;display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px 12px;align-items:center}
+.zk .nr{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.zk .tt{font-weight:800;font-size:16.5px;line-height:1.2}
+.zk .tt small{display:block;font-weight:600;font-size:13px;color:var(--text2);margin-top:3px;letter-spacing:0}
+.zk .kn2{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.zk .kn2 a{display:flex;flex-direction:column;justify-content:center;min-height:52px;border-radius:13px;padding:8px 12px;background:var(--bg);border:1px solid var(--linie);font-size:14.5px;font-weight:700;line-height:1.2}
+.zk .kn2 a small{font-weight:600;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.zk .kn2 a:active{transform:translateY(1px)}
+@media (hover:hover){.zk .kn2 a:hover{border-color:var(--akzent)}}
+.g1{background:linear-gradient(135deg,#139AA5,#0B6F8A)}.g2{background:linear-gradient(135deg,#3480DC,#2552B6)}.g3{background:linear-gradient(135deg,#6B57DD,#4A2FAE)}
+.g4{background:linear-gradient(135deg,#B53D8C,#782C9C)}.g5{background:linear-gradient(135deg,#E4464E,#BB283F)}.g6{background:linear-gradient(135deg,#EB6F2B,#D9531F)}
+.g7{background:linear-gradient(135deg,#F2A20F,#D98400)}.g8{background:linear-gradient(135deg,#2FA866,#178A78)}.g9{background:linear-gradient(135deg,#15A0A2,#0F6E8C)}.g10{background:linear-gradient(135deg,#5B6B86,#3A4660)}
+
+/* ---------- Blattansicht ---------- */
+.blattseite{max-width:880px;margin:0 auto;padding:12px 12px 0}
+.leiste{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 4px;margin:0 -4px 6px;background:var(--bg)}
+.leiste .zurueck{min-height:40px}
+.seg{display:inline-flex;background:var(--karte);border:1px solid var(--linie);border-radius:999px;padding:3px}
+.seg a{padding:7px 13px;border-radius:999px;font-size:14px;font-weight:700;color:var(--text2);white-space:nowrap}
+.seg a.an{background:var(--text);color:var(--bg)}
+.alle{margin-left:auto;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:9px 16px;min-height:40px;font-size:14.5px;font-weight:800;cursor:pointer;
+  background:linear-gradient(135deg,#2FA866,#178A78);color:#fff;box-shadow:var(--schatten)}
+.alle svg{width:17px;height:17px}
+.alle.an{background:var(--karte);color:var(--text);border:1px solid var(--linie);box-shadow:none}
+.tipzeile{font-size:13.5px;color:var(--text2);margin:0 4px 10px;line-height:1.4}
+
+/* Das Arbeitsblatt (wie die Druckvorlage) */
+.blatt{background:var(--papier);color:#111;border-radius:6px;box-shadow:0 10px 30px -14px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.05);
+  padding:22px 26px 28px;font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.35;color-scheme:light}
+.blatt .bkopf{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.blatt h2{margin:0;font-size:21px;font-weight:700;padding-bottom:4px;border-bottom:1.5px solid #111;flex:0 1 66%;line-height:1.2}
+.blatt .zlab{font-size:12px;color:#8a8a8a;white-space:nowrap;padding-top:4px}
+.blatt .afg{margin-top:16px}
+.blatt .afg h3{margin:0 0 6px;font-size:16px;font-weight:400;color:var(--ablila);text-decoration:underline;text-underline-offset:3px}
+.blatt .auftrag{background:var(--abgrau);border-radius:10px;padding:9px 14px;margin:0 0 12px 18px;font-size:15.5px}
+.blatt .tipp{border:1.6px dashed var(--aborange);background:#FFF8F2;border-radius:10px;padding:8px 14px;margin:14px 0 4px 18px;font-style:italic;font-size:14.5px;text-align:center}
+.blatt .tipp u{font-style:italic}
+.katex{font-size:1.06em}
+.blatt .katex{font-size:1.12em}
+
+/* Antwortfelder */
+.feld{appearance:none;border:0;background:var(--feld);border-radius:5px;min-width:72px;min-height:48px;padding:4px 8px;cursor:pointer;position:relative;
+  display:inline-flex;align-items:center;justify-content:center;color:var(--rot);transition:background .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.feld:focus-visible{outline:3px solid var(--aborange);outline-offset:2px}
+@media (hover:hover){.feld:not(.auf):hover{background:#DADADA;box-shadow:inset 0 0 0 2px #cfcfcf}}
+.feld .inh{opacity:0;transform:scale(.85);transition:opacity .25s,transform .25s;font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif}
+.feld.auf .inh{opacity:1;transform:none}
+.feld .inh .katex{color:var(--rot)}
+.feld .wegi{position:absolute;right:-7px;top:-7px;width:22px;height:22px;border-radius:50%;background:var(--aborange);color:#fff;display:none;place-items:center;box-shadow:0 2px 5px rgba(0,0,0,.25)}
+.feld .wegi svg{width:13px;height:13px}
+.feld.auf .wegi{display:grid}
+.feld.blitz{animation:blitz .5s}
+@keyframes blitz{0%{box-shadow:0 0 0 0 rgba(192,0,0,.45)}100%{box-shadow:0 0 0 12px rgba(192,0,0,0)}}
+
+.raster{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--min,170px),1fr));gap:12px 18px;margin-left:6px}
+.zelle{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:6px;min-height:52px}
+.zelle .lb{font-size:13px;color:#333}
+.zelle .aufg{text-align:right;white-space:nowrap;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.zelle.vg{grid-template-columns:22px minmax(0,1fr) auto minmax(0,1fr)}
+.zelle.vg{gap:10px}
+.zelle.vg .feld{min-width:46px;width:46px}
+.zelle.vg .feld .wegi{width:18px;height:18px;right:-5px;top:-8px}
+.zelle.vg .feld .wegi svg{width:11px;height:11px}
+.zelle.vg .re{text-align:left}
+
+.figuren{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px 10px;margin-left:6px}
+.figuren .fz{display:flex;flex-direction:column;align-items:center;gap:8px}
+.figuren .fz .lb{align-self:flex-start;font-size:15px}
+.figuren .fbild{height:104px;display:flex;align-items:center;justify-content:center}
+.figuren .fbild svg{height:auto;max-height:100px;width:auto;max-width:100%}
+.figuren .feld{min-width:84px}
+
+.felder{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--min,190px),1fr));gap:14px;margin-left:6px}
+.felder .fz{display:flex;flex-direction:column;gap:4px}
+.felder .fz .lb{font-size:16px}
+.felder .feld.bild{background:#fff;padding:0;min-height:0;display:block;border-radius:0;width:100%;text-align:left;cursor:pointer}
+.felder .feld.bild svg{width:100%;height:auto;display:block}
+.felder .feld.bild{max-width:440px}
+.felder .notiz{color:var(--rot);font-size:13.5px;min-height:2.6em;line-height:1.3;opacity:0;transition:opacity .3s}
+.felder .fz.auf .notiz{opacity:1}
+.felder .feld.bild .wegi{right:4px;top:4px}
+
+.strahl{overflow-x:auto;margin:4px 0 6px}
+.strahl svg{width:100%;height:auto;display:block}
+.ablesezeile{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px 18px;margin:0 0 14px 6px}
+.ablesezeile .zelle{grid-template-columns:auto auto;justify-content:start;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 8px 18px}
+.chips .feld{min-width:64px;background:#fff;box-shadow:inset 0 0 0 1.5px #bbb;color:#111}
+.chips .feld .inh{opacity:1;transform:none}
+.chips .feld.auf{box-shadow:inset 0 0 0 2px var(--rot);color:var(--rot)}
+
+.speicher{display:grid;grid-template-columns:repeat(9,1fr);gap:6px 4px;text-align:center;margin:0 0 12px 18px}
+.speicher > span{padding:4px 0;border-radius:8px;border:1.5px solid transparent;position:relative}
+.speicher > span.durch::after{content:"";position:absolute;left:12%;right:12%;top:50%;border-top:2px solid var(--rot);transform:rotate(-24deg)}
+.dlg .speicher{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));margin:8px 0 0}
+.dlg .speicher > span{background:#f6f6f6}
+.dlg .speicher > span.nix{opacity:.55}
+.zeilen{display:grid;gap:10px;margin-left:18px}
+.zeilen .zz{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:10px;align-items:center}
+.zeilen .zz .feld{width:100%;justify-content:flex-start;padding:4px 12px}
+.zeilen .zz .frage{font-size:15px}
+.zeilen.sach .zz{grid-template-columns:20px minmax(0,1fr) minmax(110px,30%)}
+.zeilen.sach .zz .feld{justify-content:center}
+.zeilen.ordnen .zz{grid-template-columns:minmax(0,42%) minmax(0,1fr)}
+.zeilen.ordnen .zz .feld{justify-content:center;min-height:54px}
+.zeilen.text .zz{grid-template-columns:20px minmax(0,1fr) minmax(96px,24%)}
+.zeilen.text .zz .frage{font-size:14px}
+.zeilen.text .zz .feld{justify-content:center}
+.kaestchen{margin:12px 0 0 18px;min-height:46px;border-radius:2px;padding:8px 10px;color:var(--rot);
+  background-image:linear-gradient(#d6d6d6 1px,transparent 1px),linear-gradient(90deg,#d6d6d6 1px,transparent 1px);background-size:18px 18px;background-position:-1px -1px;overflow-x:auto}
+.kaestchen .inh{opacity:0;transition:opacity .3s;display:flex;flex-wrap:wrap;gap:6px 26px;align-items:center}
+.kaestchen.auf .inh{opacity:1}
+.kaestchen .inh .katex{color:var(--rot)}
+.lena .feld{width:calc(100% - 18px);margin-left:18px;min-height:86px;justify-content:flex-start;text-align:left;padding:10px 14px;font-size:15.5px}
+
+/* Untere Navigation */
+.blattnav{display:flex;justify-content:space-between;gap:10px;margin:16px 0 6px}
+.blattnav a{display:inline-flex;align-items:center;gap:6px;background:var(--karte);border:1px solid var(--linie);border-radius:999px;padding:9px 15px;font-weight:700;font-size:14.5px;min-height:42px}
+.blattnav a svg{width:16px;height:16px}
+.blattnav a.leer2{visibility:hidden}
+
+/* ---------- Rechenweg-Fenster ---------- */
+dialog.dlg{border:0;padding:0;border-radius:22px;width:min(720px,calc(100vw - 20px));max-height:calc(100dvh - 24px);background:#FFFDF8;color:#1b1b1b;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);color-scheme:light}
+dialog.dlg::backdrop{background:rgba(15,18,26,.55);backdrop-filter:blur(2px)}
+.dlg .inner{display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}
+.dlg header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;border-bottom:1px solid #eee5d4}
+.dlg header .wo{font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#D9601F;flex:1}
+.dlg header button{border:0;background:#f1ebde;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;cursor:pointer}
+.dlg header button svg{width:18px;height:18px}
+.dlg .body{overflow-y:auto;padding:14px 16px 6px;font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-overflow-scrolling:touch}
+.dlg .aufgabe{background:#F2F2F2;border-radius:14px;padding:12px 14px;text-align:center;font-size:18px;overflow-x:auto}
+.dlg .aufgabe .klein{display:block;font-size:14.5px;text-align:left;color:#444;margin-bottom:6px}
+.dlg .aufgabe svg{max-width:100%;height:auto}
+.schritte{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.schritt{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;animation:rein .35s cubic-bezier(.2,.7,.3,1)}
+@keyframes rein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.schritt .n{width:30px;height:30px;border-radius:50%;background:#7A2E8E;color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center}
+.schritt .k{font-weight:800;font-size:15.5px;margin:3px 0 2px}
+.schritt .t{color:#333;font-size:15.5px}
+.schritt .t .katex,.dlg .aufgabe .klein .katex{font-size:1.2em}
+.blatt .auftrag .katex,.blatt .tipp .katex,.zeilen .frage .katex{font-size:1em}
+.blatt .auftrag,.zeilen .frage{line-height:1.75}
+.schritt .f .katex-display{margin:0}
+.kaestchen .katex{font-size:.98em}
+.schritt .f{margin:8px 0 2px;padding:8px 10px;background:#fff;border:1px solid #eee5d4;border-radius:12px;overflow-x:auto;overflow-y:hidden;text-align:center;font-size:17px}
+.schritt .f + .f{margin-top:6px}
+.schritt .g{margin:8px 0 2px;overflow-x:auto;text-align:center}
+.schritt .g svg{max-width:100%;height:auto}
+.ergebnis{margin:14px 0 4px;border:2px solid var(--rot);border-radius:14px;padding:10px 14px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;background:#fff;animation:rein .35s}
+.ergebnis b{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--rot)}
+.ergebnis .w{font-size:19px;color:var(--rot)}
+.ergebnis .w .katex{color:var(--rot)}
+.legende2{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;font-size:14px}
+.legende2 i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dlg footer{display:flex;gap:8px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #eee5d4;background:#FFFDF8;border-radius:0 0 22px 22px}
+.dlg footer button{border:0;border-radius:999px;min-height:46px;padding:0 16px;font-weight:800;font-size:15px;cursor:pointer;font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+.dlg footer .pf{width:46px;padding:0;background:#f1ebde;display:grid;place-items:center}
+.dlg footer .pf svg{width:18px;height:18px}
+.dlg footer .pf:disabled{opacity:.35;cursor:default}
+.dlg footer .weiter{flex:1;background:linear-gradient(135deg,#8E3BA6,#5B3FC4);color:#fff}
+.dlg footer .weiter:disabled{background:#ddd;color:#888}
+.dlg footer .allesz{background:#f1ebde;color:#333}
+@media (max-width:560px){
+  dialog.dlg{width:100vw;max-width:100vw;margin:auto 0 0;border-radius:22px 22px 0 0;max-height:92dvh}
+  .dlg .inner{max-height:92dvh}
+  .dlg footer{border-radius:0}
+  .dlg footer .allesz{padding:0 12px;font-size:14px}
+}
+
+@media (max-width:640px){
+  .blattseite{padding:8px 8px 0}
+  .blatt{padding:16px 12px 22px;border-radius:4px}
+  .blatt h2{font-size:18.5px;flex-basis:62%}
+  .blatt .auftrag,.blatt .tipp{margin-left:0}
+  .raster,.figuren,.felder{margin-left:0}
+  .zeilen,.chips,.kaestchen,.speicher{margin-left:0}
+  .speicher{grid-template-columns:repeat(6,1fr)}
+  .lena .feld{margin-left:0;width:100%}
+  .zeilen.sach .zz,.zeilen.ordnen .zz{grid-template-columns:minmax(0,42%) minmax(0,1fr)}
+.zeilen.ordnen .zz .feld{justify-content:center;min-height:54px}
+.zeilen.text .zz{grid-template-columns:20px minmax(0,1fr)}
+  .zeilen.sach .zz .feld,.zeilen.text .zz .feld{grid-column:2;justify-self:start;min-width:120px}
+  .alle span.lang{display:none}
+}
+@media (prefers-reduced-motion:reduce){.feld .inh,.schritt,.ergebnis{transition:none;animation:none}}
+</style>
+</head>
+<body>
+<div id="uebersicht" class="seite">
+<a class="zurueck" href="./"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Mathe 6c</a>
+<header class="kopf">
+  <div class="ober">Lerntheke Brüche</div>
+  <h1>Lösungen zur Lerntheke</h1>
+  <p>Wähle deinen Zettel und vergleiche – Feld für Feld oder alles auf einmal.</p>
+</header>
+<div class="hinweis"><span class="sym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></svg></span>
+<div><b>So geht's:</b> Tippe auf ein graues Feld – dann erscheint die Lösung in Rot. Tippst du noch einmal darauf, bekommst du den Rechenweg Schritt für Schritt, oft mit Bild.</div></div>
+<div class="abschnitt"><h2>Die 10 Zettel</h2><span>Vorder- und Rückseite</span></div>
+<nav class="zettelliste" id="liste"></nav>
+<p class="fuss">Erst selbst rechnen, dann vergleichen. 😉</p>
+</div>
+
+<div id="blattansicht" class="blattseite" hidden>
+  <div class="leiste">
+    <a class="zurueck" href="#"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Zettel</a>
+    <div class="seg" id="seg"></div>
+    <button class="alle" id="alle" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span>Alle <span class="lang">Lösungen </span>zeigen</span></button>
+  </div>
+  <p class="tipzeile">Graues Feld antippen = Lösung · nochmal antippen = Rechenweg</p>
+  <article class="blatt" id="blatt"></article>
+  <nav class="blattnav" id="blattnav"></nav>
+</div>
+
+<dialog class="dlg" id="dlg" aria-labelledby="dlgwo">
+  <div class="inner">
+    <header><div class="wo" id="dlgwo"></div><button type="button" id="dlgzu" aria-label="Schließen"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg></button></header>
+    <div class="body" id="dlgbody"></div>
+    <footer>
+      <button type="button" class="pf" id="dlgvor" aria-label="Vorherige Teilaufgabe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4l-6 6 6 6"/></svg></button>
+      <button type="button" class="weiter" id="dlgweiter">Nächster Schritt</button>
+      <button type="button" class="allesz" id="dlgalle">Alle Schritte</button>
+      <button type="button" class="pf" id="dlgnach" aria-label="Nächste Teilaufgabe"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4l6 6-6 6"/></svg></button>
+    </footer>
+  </div>
+</dialog>
+
+<script>/* =====================================================================
+   Lerntheke Brüche – Rechen-Engine
+   Bruchrechnung, LaTeX-Ausgabe, Lösungswege je Aufgabentyp, SVG-Grafiken.
+   Rein rechnerisch (kein DOM) – läuft im Browser und in Node (Tests).
+   ===================================================================== */
+(function (root) {
+'use strict';
+
+/* ---------- Bruchrechnung ---------- */
+function ggT(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+function kgV(a, b) { return Math.abs(a * b) / ggT(a, b); }
+function kgVL(arr) { return arr.reduce(function (a, b) { return kgV(a, b); }, 1); }
+function Q(z, n) { if (n === undefined) n = 1; if (n < 0) { z = -z; n = -n; } return { z: z, n: n }; }
+function red(q) { var g = ggT(q.z, q.n) || 1; return Q(q.z / g, q.n / g); }
+function add(a, b) { return red(Q(a.z * b.n + b.z * a.n, a.n * b.n)); }
+function sub(a, b) { return add(a, Q(-b.z, b.n)); }
+function mul(a, b) { return red(Q(a.z * b.z, a.n * b.n)); }
+function cmp(a, b) { return Math.sign(a.z * b.n - b.z * a.n); }
+function teiler(x) { var t = []; for (var i = 1; i <= x; i++) if (x % i === 0) t.push(i); return t; }
+
+/* ---------- LaTeX ---------- */
+function fr(z, n) {
+  if (n === 1) return (z < 0 ? '-' : '') + Math.abs(z);
+  return (z < 0 ? '-' : '') + '\\frac{' + Math.abs(z) + '}{' + n + '}';
+}
+function frq(q) { return fr(q.z, q.n); }
+function gem(q) {
+  q = red(q); var s = q.z < 0 ? '-' : '', a = Math.abs(q.z);
+  if (q.n === 1) return s + a;
+  if (a < q.n) return s + '\\frac{' + a + '}{' + q.n + '}';
+  return s + Math.floor(a / q.n) + '\\frac{' + (a % q.n) + '}{' + q.n + '}';
+}
+/* gemischte Zahl als Objekt */
+function zerlege(q) { q = red(q); var a = Math.abs(q.z); return { neg: q.z < 0, w: Math.floor(a / q.n), r: a % q.n, n: q.n }; }
+
+/* ---------- Zahlen in Aufgaben (Kurzschrift) ----------
+   "3/4"  Bruch · "2_1/2" gemischte Zahl · "7" ganze Zahl · Minus davor erlaubt */
+function zahl(s) {
+  s = s.trim(); var neg = false;
+  if (s[0] === '-') { neg = true; s = s.slice(1); }
+  var w = 0, z = 0, n = 1, art = 'int', m;
+  if ((m = s.match(/^(\d+)_(\d+)\/(\d+)$/))) { w = +m[1]; z = +m[2]; n = +m[3]; art = 'gem'; }
+  else if ((m = s.match(/^(\d+)\/(\d+)$/))) { z = +m[1]; n = +m[2]; art = 'bruch'; }
+  else if ((m = s.match(/^(\d+)$/))) { w = +m[1]; art = 'int'; }
+  else throw new Error('Zahl? ' + s);
+  return { t: 'zahl', neg: neg, w: w, z: z, n: n, art: art };
+}
+function wert(x) { var q = Q(x.w * x.n + x.z, x.n); return x.neg ? Q(-q.z, q.n) : q; }
+function zahlTex(x, ohneVz) {
+  var s = (x.neg && !ohneVz) ? '-' : '';
+  if (x.art === 'int') return s + x.w;
+  if (x.art === 'gem') return s + x.w + '\\frac{' + x.z + '}{' + x.n + '}';
+  return s + '\\frac{' + x.z + '}{' + x.n + '}';
+}
+function ausWert(q) { /* Wert -> Zahl-Objekt (gemischt, gekürzt) */
+  var d = zerlege(q);
+  if (d.n === 1) return { t: 'zahl', neg: d.neg, w: d.w, z: 0, n: 1, art: 'int' };
+  if (d.w === 0) return { t: 'zahl', neg: d.neg, w: 0, z: d.r, n: d.n, art: 'bruch' };
+  return { t: 'zahl', neg: d.neg, w: d.w, z: d.r, n: d.n, art: 'gem' };
+}
+function bruchObj(q) { /* Wert -> Zahl-Objekt als (unechter) Bruch bzw. ganze Zahl */
+  q = red(q); var a = Math.abs(q.z);
+  if (q.n === 1) return { t: 'zahl', neg: q.z < 0, w: a, z: 0, n: 1, art: 'int' };
+  return { t: 'zahl', neg: q.z < 0, w: 0, z: a, n: q.n, art: 'bruch' };
+}
+
+/* Ausdruck "2/3*(5/6-1/2)" -> Tokens */
+function tokens(s) {
+  var out = [], i = 0;
+  s = s.replace(/\s+/g, '');
+  while (i < s.length) {
+    var c = s[i];
+    if ('+*()'.indexOf(c) >= 0 || (c === '-' && out.length && (out[out.length - 1].t === 'zahl' || out[out.length - 1].t === ')'))) {
+      out.push(c === '(' ? { t: '(' } : c === ')' ? { t: ')' } : { t: 'op', v: c }); i++; continue;
+    }
+    var m = s.slice(i).match(/^-?\d+(_\d+\/\d+|\/\d+)?/);
+    if (!m) throw new Error('Ausdruck? ' + s.slice(i));
+    out.push(zahl(m[0])); i += m[0].length;
+  }
+  return out;
+}
+function exprTex(tk) {
+  var s = '';
+  for (var i = 0; i < tk.length; i++) {
+    var t = tk[i];
+    if (t.t === 'zahl') {
+      var p = tk[i - 1];
+      var klammer = t.neg && p && (p.t === 'op');
+      s += klammer ? '\\left(' + zahlTex(t) + '\\right)' : zahlTex(t);
+    } else if (t.t === 'op') s += t.v === '*' ? '\\cdot ' : t.v === '+' ? '+' : '-';
+    else if (t.t === '(') s += '\\left(';
+    else s += '\\right)';
+  }
+  return s;
+}
+
+/* ---------- Hilfen für Text ---------- */
+function M(t) { return '$' + t + '$'; }
+function bruchwort(n) {
+  var w = { 2: 'Halbe', 3: 'Drittel', 4: 'Viertel', 5: 'Fünftel', 6: 'Sechstel', 7: 'Siebtel', 8: 'Achtel', 9: 'Neuntel', 10: 'Zehntel',
+    11: 'Elftel', 12: 'Zwölftel', 15: 'Fünfzehntel', 16: 'Sechzehntel', 20: 'Zwanzigstel', 24: 'Vierundzwanzigstel', 25: 'Fünfundzwanzigstel' };
+  return w[n] || n + 'tel';
+}
+function hnText(dens) {
+  var ds = dens.filter(function (d, i) { return dens.indexOf(d) === i; });
+  var H = kgVL(ds), g = Math.max.apply(null, ds), v = [];
+  for (var k = g; k <= H; k += g) v.push(k);
+  var liste = ds.length === 2 ? ds[0] + ' und ' + ds[1] : ds.slice(0, -1).join(', ') + ' und ' + ds[ds.length - 1];
+  var t = 'Die Nenner sind ' + liste + '. Der Hauptnenner ist die kleinste Zahl, durch die alle Nenner teilbar sind. ';
+  if (H === g) t += 'Hier ist das einfach der größte Nenner: ' + M(H) + ' ist durch ' + (ds.length === 2 ? 'beide' : 'alle') + ' teilbar.';
+  else t += 'Gehe die Vielfachen von ' + g + ' durch: ' + v.join(', ') + ' – erst ' + M(H) + ' ist durch ' + (ds.length === 2 ? 'beide' : 'alle') + ' Nenner teilbar.';
+  return { H: H, t: t };
+}
+function kuerzSchritt(q, wennGemischt) { /* q evtl. ungekürzt; liefert Schritte für Kürzen + gemischte Zahl */
+  var st = [], r = red(q), g = ggT(q.z, q.n);
+  if (g > 1 && q.n !== 1) {
+    st.push({ k: 'Kürzen', t: 'Zähler und Nenner sind beide durch ' + M(g) + ' teilbar – also kürzen.',
+      f: frq(q) + '=\\frac{' + Math.abs(q.z) + ':' + g + '}{' + q.n + ':' + g + '}=' + frq(r) });
+  }
+  if (wennGemischt !== false && Math.abs(r.z) > r.n && r.n !== 1) {
+    var d = zerlege(r);
+    st.push({ k: 'Gemischte Zahl', t: 'Der Bruch ist größer als 1. Wie oft passt ' + d.n + ' in ' + Math.abs(r.z) + '? ' +
+      M(Math.abs(r.z) + ':' + d.n + '=' + d.w + '\\text{ Rest }' + d.r) + '. Also ' + d.w + ' Ganze und ' + d.r + ' ' + bruchwort(d.n) + '.',
+      f: frq(r) + '=' + gem(r) });
+  }
+  return st;
+}
+
+/* =====================================================================
+   SVG-Grafiken
+   ===================================================================== */
+var FARBE = {
+  rot: '#C00000', grau: '#BFBFBF', linie: '#3A3A3A',
+  o: ['#F2A673', '#86B4DB', '#8FD1A9', '#C99BD8', '#F6D06B'],      /* Füllungen */
+  od: ['#D9601F', '#2F6A9E', '#2E8B57', '#7A2E8E', '#B88A00']       /* Ränder/Text */
+};
+function svgWrap(w, h, inner, label) {
+  return '<svg class="gr" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" style="max-width:100%;height:auto" role="img"' +
+    (label ? ' aria-label="' + label + '"' : '') + ' xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+}
+function txt(x, y, s, o) {
+  o = o || {};
+  return '<text x="' + x + '" y="' + y + '" font-size="' + (o.fs || 13) + '" text-anchor="' + (o.a || 'middle') + '" fill="' + (o.c || '#333') +
+    '"' + (o.b ? ' font-weight="700"' : '') + ' font-family="Calibri,Carlito,Segoe UI,Arial,sans-serif">' + s + '</text>';
+}
+/* kleiner Bruch als SVG-Text (Zähler, Strich, Nenner) */
+function svgBruch(x, y, z, n, o) {
+  o = o || {}; var fs = o.fs || 12, c = o.c || '#333', w = Math.max(String(z).length, String(n).length) * fs * 0.6 + 4;
+  var s = '';
+  if (o.w) { s += txt(x - w / 2 - 2, y + fs * 0.38, o.w, { fs: fs * 1.15, c: c, a: 'end' }); }
+  s += txt(x, y - 2, z, { fs: fs, c: c }) + '<line x1="' + (x - w / 2) + '" y1="' + (y + 1) + '" x2="' + (x + w / 2) + '" y2="' + (y + 1) + '" stroke="' + c + '" stroke-width="1.2"/>' +
+    txt(x, y + fs + 1, n, { fs: fs, c: c });
+  return s;
+}
+
+/* Pizza: n Stücke, segs = [{k:Anzahl, f:Füllfarbe, x:durchgestrichen}] */
+function pizza(cx, cy, r, n, segs, o) {
+  o = o || {};
+  var s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 3) + '" fill="#F3D9A4" stroke="#C99A4B" stroke-width="1.5"/>';
+  var i = 0, list = [];
+  (segs || []).forEach(function (sg) { for (var k = 0; k < sg.k; k++) list.push(sg); });
+  for (i = 0; i < n; i++) {
+    var a0 = -Math.PI / 2 + 2 * Math.PI * i / n, a1 = a0 + 2 * Math.PI / n, sg = list[i];
+    var f = sg ? sg.f : '#FFF8EC';
+    if (n === 1) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + f + '" stroke="#8a6a3a" stroke-width="1"/>';
+    else {
+      var x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+      s += '<path d="M' + cx + ' ' + cy + 'L' + x0.toFixed(2) + ' ' + y0.toFixed(2) + 'A' + r + ' ' + r + ' 0 0 1 ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + 'Z" fill="' + f + '" stroke="#8a6a3a" stroke-width="1"/>';
+    }
+    if (sg && sg.x) {
+      var am = (a0 + a1) / 2, mx = cx + r * 0.62 * Math.cos(am), my = cy + r * 0.62 * Math.sin(am), d = Math.min(9, r * 0.28);
+      s += '<path d="M' + (mx - d) + ' ' + (my - d) + 'L' + (mx + d) + ' ' + (my + d) + 'M' + (mx + d) + ' ' + (my - d) + 'L' + (mx - d) + ' ' + (my + d) + '" stroke="' + FARBE.rot + '" stroke-width="2.4" stroke-linecap="round"/>';
+    }
+  }
+  if (o.label) s += txt(cx, cy + r + 20, o.label, { fs: 13, c: '#444' });
+  return s;
+}
+/* mehrere Pizzen nebeneinander; jede: {n, segs, label} */
+function pizzen(liste, o) {
+  o = o || {}; var r = o.r || 34, gap = o.zwischen ? 30 : 16, w = liste.length * (2 * r + gap) + 10, h = 2 * r + (liste.some(function (p) { return p.label; }) ? 34 : 14);
+  var s = '', x = 5 + r + 3;
+  liste.forEach(function (p) { s += pizza(x, r + 6, r, p.n, p.segs, { label: p.label }); x += 2 * r + gap; });
+  if (o.zwischen) { /* Zeichen zwischen den Pizzen, z. B. "+" */
+    x = 5 + r + 3;
+    for (var i = 0; i < liste.length - 1; i++) { s += txt(x + r + gap / 2 + 1, r + 12, o.zwischen, { fs: 18, b: true, c: '#555' }); x += 2 * r + gap; }
+  }
+  return svgWrap(w, h, s);
+}
+/* Pizzen für einen Wert q (gemischt) mit n Stücken */
+function pizzenWert(q, n, f) {
+  var d = zerlege(q), liste = [];
+  for (var i = 0; i < d.w; i++) liste.push({ n: n, segs: [{ k: n, f: f || FARBE.o[0] }] });
+  var rest = Math.abs(q.z) - d.w * q.n; /* in Stücken bezogen auf q.n */
+  var k = rest * n / q.n;
+  if (k > 0) liste.push({ n: n, segs: [{ k: k, f: f || FARBE.o[0] }] });
+  return liste;
+}
+
+/* Balken: Breite W, "einheiten" Ganze je n Teile; teile = [{k, f, x, lab}] fortlaufend */
+function balken(n, einheiten, teile, o) {
+  o = o || {}; var W = o.W || 300, h = o.h || 30, pw = W / n, s = '', i = 0, y = o.y || 4, x0 = o.x || 6;
+  var list = [];
+  (teile || []).forEach(function (t) { for (var k = 0; k < t.k; k++) list.push(t); });
+  for (var e = 0; e < einheiten; e++) {
+    for (var j = 0; j < n; j++, i++) {
+      var t = list[i], x = x0 + e * (W + 10) + j * pw;
+      s += '<rect x="' + x.toFixed(2) + '" y="' + y + '" width="' + pw.toFixed(2) + '" height="' + h + '" fill="' + (t ? t.f : '#fff') + '" stroke="#555" stroke-width="' + (n > 30 ? 0.6 : 1) + '"/>';
+      if (t && t.x) s += '<line x1="' + (x + 2) + '" y1="' + (y + 3) + '" x2="' + (x + pw - 2) + '" y2="' + (y + h - 3) + '" stroke="' + FARBE.rot + '" stroke-width="2"/>';
+      if (t && t.lab && pw > 26) s += txt(x + pw / 2, y + h / 2 + 4.5, t.lab, { fs: Math.min(12, pw / 2.2), c: '#222' });
+    }
+    s += '<rect x="' + (x0 + e * (W + 10)) + '" y="' + y + '" width="' + W + '" height="' + h + '" fill="none" stroke="#222" stroke-width="1.8"/>';
+  }
+  return s;
+}
+/* Mehrere Balken untereinander, gleicher Maßstab. reihen: [{q, n, f, label}] */
+function balkenVergleich(reihen, o) {
+  o = o || {};
+  var maxE = Math.max.apply(null, reihen.map(function (r) { return Math.max(1, Math.ceil(r.q.z / r.q.n)); }));
+  var W = Math.min(300, Math.floor(520 / maxE) - 10), lab = 96, s = '', y = 6;
+  reihen.forEach(function (r) {
+    var anz = Math.round(r.q.z * r.n / r.q.n), e = Math.max(1, Math.ceil(r.q.z / r.q.n));
+    s += '<g transform="translate(' + lab + ',0)">' + balken(r.n, e, [{ k: anz, f: r.f || FARBE.o[0] }], { W: W, y: y + 2, h: 32, x: 0 }) + '</g>';
+    if (r.tex) s += r.tex[1] === '' ? txt(lab / 2, y + 20, r.tex[0], { fs: 20, b: true }) : svgBruch(lab / 2 + 8, y + 9, r.tex[1], r.tex[2], { w: r.tex[0] || '', fs: 19, c: r.fc || '#222' });
+    y += 52;
+  });
+  var w = lab + maxE * (W + 10) + 6;
+  return svgWrap(w, y, s);
+}
+
+/* Flächenmodell a/b von c/d: Rechteck mit d Spalten und b Zeilen */
+function flaeche(a, b, c, d, o) {
+  o = o || {}; var W = 240, H = 160, cw = W / d, ch = H / b, s = '', x0 = 30, y0 = 10;
+  for (var i = 0; i < b; i++) for (var j = 0; j < d; j++) {
+    var inC = j < c, inA = i < a, f = '#fff';
+    if (inC) f = '#CFE0EF';
+    if (inC && inA) f = '#E9A3A3';
+    s += '<rect x="' + (x0 + j * cw).toFixed(2) + '" y="' + (y0 + i * ch).toFixed(2) + '" width="' + cw.toFixed(2) + '" height="' + ch.toFixed(2) + '" fill="' + f + '" stroke="#777" stroke-width="0.8"/>';
+  }
+  /* Schraffur für a/b (Zeilen) */
+  s += '<rect x="' + x0 + '" y="' + y0 + '" width="' + W + '" height="' + H + '" fill="none" stroke="#222" stroke-width="2"/>';
+  s += '<rect x="' + x0 + '" y="' + y0 + '" width="' + (c * cw).toFixed(2) + '" height="' + H + '" fill="none" stroke="' + FARBE.od[1] + '" stroke-width="3"/>';
+  s += '<rect x="' + x0 + '" y="' + y0 + '" width="' + (c * cw).toFixed(2) + '" height="' + (a * ch).toFixed(2) + '" fill="none" stroke="' + FARBE.rot + '" stroke-width="3"/>';
+  /* Beschriftungen */
+  s += svgBruch(x0 + c * cw / 2, y0 + H + 16, c, d, { c: FARBE.od[1], fs: 12 });
+  s += svgBruch(x0 - 15, y0 + a * ch / 2 - 4, a, b, { c: FARBE.rot, fs: 12 });
+  return svgWrap(W + 50, H + 48, s);
+}
+
+/* Zahlenstrahl. abschn: [{von, bis, teile}] ; pfeile: [{x(Q), lab, c}] ; o.bereich [a,b] */
+function zahlenstrahl(abschn, pfeile, o) {
+  o = o || {};
+  var a = o.von !== undefined ? o.von : abschn[0].von, b = o.bis !== undefined ? o.bis : abschn[abschn.length - 1].bis;
+  var W = o.W || 560, L = 24, R = 24, unit = (W - L - R) / (b - a), y = o.y || 62, s = '';
+  function X(v) { return L + (v - a) * unit; }
+  s += '<line x1="' + (L - 14) + '" y1="' + y + '" x2="' + (W - 6) + '" y2="' + y + '" stroke="#222" stroke-width="1.6"/>';
+  s += '<path d="M' + (W - 6) + ' ' + y + 'l-9 -5v10z" fill="#222"/>';
+  abschn.forEach(function (ab) {
+    if (ab.bis <= a || ab.von >= b) return;
+    for (var g = ab.von; g < ab.bis; g++) {
+      for (var k = 0; k <= ab.teile; k++) {
+        var v = g + k / ab.teile; if (v < a - 1e-9 || v > b + 1e-9) continue;
+        var ganz = (k === 0 || k === ab.teile);
+        s += '<line x1="' + X(v).toFixed(2) + '" y1="' + (y - (ganz ? 9 : 5)) + '" x2="' + X(v).toFixed(2) + '" y2="' + (y + (ganz ? 9 : 5)) + '" stroke="#222" stroke-width="' + (ganz ? 1.6 : 1) + '"/>';
+        if (o.teilBeschr && !ganz && ab.zeigen !== false) {
+          s += svgBruch(X(v), y + 22, k, ab.teile, { fs: 13, c: '#555' });
+        }
+      }
+    }
+  });
+  for (var g2 = Math.ceil(a); g2 <= b; g2++) s += txt(X(g2), y + (o.teilBeschr ? 56 : 28), g2 < 0 ? '−' + (-g2) : g2, { fs: 18, b: true });
+  (pfeile || []).forEach(function (p) {
+    var x = X(p.x.z / p.x.n), c = p.c || FARBE.rot;
+    s += '<line x1="' + x.toFixed(2) + '" y1="' + (y - 40) + '" x2="' + x.toFixed(2) + '" y2="' + (y - 7) + '" stroke="' + c + '" stroke-width="2.2"/>' +
+      '<path d="M' + x.toFixed(2) + ' ' + (y - 3) + 'l-5 -9h10z" fill="' + c + '"/>';
+    if (p.lab) s += p.lab.length === 3 ? svgBruch(x + (p.lab[0] ? 5 : 0), y - 60, p.lab[1], p.lab[2], { w: p.lab[0], fs: 15, c: c }) : txt(x, y - 46, p.lab, { fs: 18, b: true, c: c });
+  });
+  (o.spruenge || []).forEach(function (sp, i) { /* Sprünge: {von(Q), bis(Q), lab} */
+    var x1 = X(sp.von.z / sp.von.n), x2 = X(sp.bis.z / sp.bis.n), c = FARBE.od[i % 4], hy = y - 14 - (i % 2) * 18;
+    var mx = (x1 + x2) / 2, top = hy - 22;
+    s += '<path d="M' + x1.toFixed(1) + ' ' + (y - 6) + ' Q' + mx.toFixed(1) + ' ' + top + ' ' + x2.toFixed(1) + ' ' + (y - 6) + '" fill="none" stroke="' + c + '" stroke-width="2"/>';
+    var dir = x2 > x1 ? -1 : 1;
+    s += '<path d="M' + x2.toFixed(1) + ' ' + (y - 6) + 'l' + (dir * 8) + ' -6l' + (dir * 1) + ' 8z" fill="' + c + '"/>';
+    if (sp.lab) s += txt(mx, top + 4, sp.lab, { fs: 15, b: true, c: c });
+  });
+  (o.punkte || []).forEach(function (p) {
+    var x = X(p.x.z / p.x.n);
+    s += '<circle cx="' + x.toFixed(2) + '" cy="' + y + '" r="5" fill="' + (p.c || FARBE.rot) + '"/>';
+  });
+  return svgWrap(W, y + (o.teilBeschr ? 64 : 38), s);
+}
+
+/* Kästchenfigur (Zettel 1, Aufgabe 1). fig = {c, g, h, d}; modus: 'normal' | 'farbig' */
+var ECKE = [[0, 0], [1, 0], [1, 1], [0, 1]];
+function kaestchenFigur(fig, o) {
+  o = o || {}; var u = o.u || 30, s = '', mx = 0, my = 0;
+  fig.c.forEach(function (c) { mx = Math.max(mx, c[0]); my = Math.max(my, c[1]); });
+  var fullF = o.farbig ? FARBE.o[1] : FARBE.grau, halfF = o.farbig ? FARBE.o[0] : FARBE.grau;
+  fig.g.forEach(function (c) { s += '<rect x="' + (2 + c[0] * u) + '" y="' + (2 + c[1] * u) + '" width="' + u + '" height="' + u + '" fill="' + fullF + '"/>'; });
+  fig.h.forEach(function (h) {
+    var p = h[2].split('').map(function (k) { var e = ECKE[+k]; return (2 + (h[0] + e[0]) * u) + ',' + (2 + (h[1] + e[1]) * u); }).join(' ');
+    s += '<polygon points="' + p + '" fill="' + halfF + '"/>';
+  });
+  fig.c.forEach(function (c) { s += '<rect x="' + (2 + c[0] * u) + '" y="' + (2 + c[1] * u) + '" width="' + u + '" height="' + u + '" fill="none" stroke="#1d2b3a" stroke-width="1.2"/>'; });
+  fig.d.forEach(function (d) {
+    var x = 2 + d[0] * u, y = 2 + d[1] * u;
+    s += d[2] ? '<line x1="' + (x + u) + '" y1="' + y + '" x2="' + x + '" y2="' + (y + u) + '" stroke="#1d2b3a" stroke-width="1"/>'
+      : '<line x1="' + x + '" y1="' + y + '" x2="' + (x + u) + '" y2="' + (y + u) + '" stroke="#1d2b3a" stroke-width="1"/>';
+  });
+  return svgWrap((mx + 1) * u + 4, (my + 1) * u + 4, s, 'Figur');
+}
+
+/* Kästchenfeld mit Teilfigur und Ergänzung (Aufgabe "zum Ganzen ergänzen")
+   fig: {zellen:[[x,y]], teile:[[[x,y],..],..], erg:[[[x,y],..],..]}; o.loesung, o.teile (Teile nummerieren) */
+function ganzesFeld(fig, o) {
+  o = o || {}; var u = o.u || 22, cols = o.cols || 12, rows = o.rows || 6, ox = o.ox || 1, oy = o.oy || 1, s = '';
+  for (var i = 0; i <= cols; i++) s += '<line x1="' + i * u + '" y1="0" x2="' + i * u + '" y2="' + rows * u + '" stroke="#C9C9C9" stroke-width="0.8" stroke-dasharray="3 2"/>';
+  for (var j = 0; j <= rows; j++) s += '<line x1="0" y1="' + j * u + '" x2="' + cols * u + '" y2="' + j * u + '" stroke="#C9C9C9" stroke-width="0.8" stroke-dasharray="3 2"/>';
+  function zelle(c, f, rand, sw) { return '<rect x="' + (c[0] + ox) * u + '" y="' + (c[1] + oy) * u + '" width="' + u + '" height="' + u + '" fill="' + f + '" stroke="' + rand + '" stroke-width="' + (sw || 1.4) + '"/>'; }
+  (fig.teile || []).forEach(function (t, k) {
+    t.forEach(function (c) { s += zelle(c, o.teile ? (k % 2 ? '#A9A9A9' : '#CFCFCF') : FARBE.grau, '#222'); });
+  });
+  if (o.loesung) (fig.erg || []).forEach(function (t, k) {
+    t.forEach(function (c) { s += zelle(c, k % 2 ? '#F7C9C9' : '#FBE3E3', FARBE.rot, 1.8); });
+  });
+  if (o.teile) {
+    var alle = (fig.teile || []).concat(o.loesung ? fig.erg || [] : []);
+    alle.forEach(function (t, k) {
+      var cx = 0, cy = 0; t.forEach(function (c) { cx += c[0]; cy += c[1]; }); cx /= t.length; cy /= t.length;
+      var c0 = t.reduce(function (b, c) { return (Math.abs(c[0] - cx) + Math.abs(c[1] - cy) < Math.abs(b[0] - cx) + Math.abs(b[1] - cy)) ? c : b; }, t[0]);
+      s += txt((c0[0] + ox + 0.5) * u, (c0[1] + oy + 0.5) * u + 4.5, k + 1, { fs: 12, b: true, c: k >= (fig.teile || []).length ? FARBE.rot : '#111' });
+    });
+  }
+  return svgWrap(cols * u + 1, rows * u + 1, s, 'Kästchenfeld');
+}
+
+/* =====================================================================
+   Lösungswege
+   Jeder Weg: {erg: LaTeX-Ergebnis, schritte:[{k:Überschrift, t:Text mit $..$, f:Formel, g:SVG}]}
+   ===================================================================== */
+var W = {};
+
+/* --- Anteil einer Figur --- */
+W.anteil = function (fig) {
+  var n = fig.c.length, g = fig.g.length, h = fig.h.length, st = [], q;
+  st.push({ k: 'Das Ganze', t: 'Zähle alle Kästchen der Figur: Es sind ' + M(n) + ' Kästchen. Das ist das Ganze.', g: kaestchenFigur(fig, { u: 30 }) });
+  if (h % 2 === 0) {
+    var grau = g + h / 2;
+    st.push({ k: 'Graue Fläche zählen', t: (g ? M(g) + ' Kästchen sind ganz grau (blau markiert). ' : 'Kein Kästchen ist ganz grau. ') +
+      M(h) + ' Kästchen sind halb grau (orange markiert). Zwei halbe ergeben ein ganzes: ' + M(h + '\\text{ halbe}=' + (h / 2) + '\\text{ ganze}') + '.',
+      f: g + '+' + (h / 2) + '=' + grau + '\\text{ Kästchen sind grau}', g: kaestchenFigur(fig, { u: 30, farbig: true }) });
+    q = Q(grau, n);
+    st.push({ k: 'Anteil aufschreiben', t: M(grau) + ' von ' + M(n) + ' Kästchen sind grau.', f: '\\frac{' + grau + '}{' + n + '}' });
+  } else {
+    var hz = 2 * g + h;
+    st.push({ k: 'In halben Kästchen zählen', t: 'Hier gibt es ' + M(h) + ' halbe graue Kästchen – eine ungerade Zahl. Rechne deshalb alles in halben Kästchen: ' +
+      'Die ganze Figur hat ' + M(n + '\\cdot 2=' + 2 * n) + ' halbe Kästchen' + (g ? ', grau sind ' + M(g + '\\cdot 2+' + h + '=' + hz) : ', grau sind ' + M(hz)) + ' halbe Kästchen.',
+      g: kaestchenFigur(fig, { u: 30, farbig: true }) });
+    q = Q(hz, 2 * n);
+    st.push({ k: 'Anteil aufschreiben', t: M(hz) + ' von ' + M(2 * n) + ' halben Kästchen sind grau.', f: '\\frac{' + hz + '}{' + 2 * n + '}' });
+  }
+  st = st.concat(kuerzSchritt(q, false));
+  return { erg: frq(red(q)), schritte: st };
+};
+
+/* --- Figur zum Ganzen ergänzen --- */
+W.ganzes = function (a) { /* a: {z,n,fig,feld} */
+  var k = 0; a.fig.teile.forEach(function (t) { k += t.length; });
+  var p = k / a.z, ganz = p * a.n, st = [];
+  var feld = a.feld;
+  st.push({ k: 'Graue Kästchen zählen', t: 'Die graue Fläche besteht aus ' + M(k) + ' Kästchen. Sie ist ' + M('\\frac{' + a.z + '}{' + a.n + '}') + ' der Figur – also ' + M(a.z) + ' Teile.',
+    g: ganzesFeld(a.fig, { cols: feld[0], rows: feld[1], ox: feld[2], oy: feld[3] }) });
+  st.push({ k: 'Wie groß ist ein Teil?', t: M(k) + ' Kästchen verteilt auf ' + M(a.z) + ' Teile:', f: k + ':' + a.z + '=' + p + '\\quad\\Rightarrow\\quad 1\\text{ Teil}=' + p + '\\text{ Kästchen}',
+    g: ganzesFeld(a.fig, { cols: feld[0], rows: feld[1], ox: feld[2], oy: feld[3], teile: true }) });
+  st.push({ k: 'Wie groß ist das Ganze?', t: 'Das Ganze hat ' + M(a.n) + ' Teile (der Nenner).', f: a.n + '\\cdot ' + p + '=' + ganz + '\\text{ Kästchen}' });
+  st.push({ k: 'Ergänzen', t: 'Es fehlen noch ' + M(ganz + '-' + k + '=' + (ganz - k)) + ' Kästchen, also ' + M(a.n - a.z) + (a.n - a.z === 1 ? ' Teil' : ' Teile') +
+    '. Zeichne sie an die Figur – wie, ist egal. Hier ist eine mögliche Lösung (rot):',
+    g: ganzesFeld(a.fig, { cols: feld[0], rows: feld[1], ox: feld[2], oy: feld[3], teile: true, loesung: true }) });
+  return { erg: '1\\text{ Teil}=' + p + '\\text{ K.},\\ \\text{Ganzes}=' + ganz + '\\text{ K.}', notiz: '1 Teil = ' + p + ' Kästchen · Ganzes = ' + ganz + ' Kästchen → ' + (ganz - k) + ' ergänzen', schritte: st };
+};
+
+/* --- Zahlenstrahl ablesen --- */
+W.ablesen = function (a) { /* a: {abschn, x(Q), name} */
+  var v = a.x.z / a.x.n, g = Math.floor(v + 1e-9), ab = a.abschn.filter(function (s) { return s.von <= g && g < s.bis; })[0];
+  var t = ab.teile, k = Math.round((v - g) * t), st = [];
+  st.push({ k: 'Zwischen welchen Zahlen?', t: 'Der Pfeil ' + M(a.name) + ' steht zwischen ' + M(g) + ' und ' + M(g + 1) + '.',
+    g: zahlenstrahl(a.abschn, [{ x: a.x, lab: a.name, c: FARBE.rot }], { W: 470, y: 76 }) });
+  st.push({ k: 'Einteilung ansehen', t: 'Zähle die Abschnitte von ' + M(g) + ' bis ' + M(g + 1) + ': Es sind ' + M(t) + ' gleich große Abschnitte. Ein Abschnitt ist also ' + M('\\frac{1}{' + t + '}') + ' (ein ' + bruchwort(t).replace(/l$/, 'l') + ').',
+    g: zahlenstrahl([ab], [{ x: a.x, lab: a.name, c: FARBE.rot }], { von: g, bis: g + 1, W: 440, y: 76, teilBeschr: true }) });
+  var bruch = '\\frac{' + k + '}{' + t + '}';
+  st.push({ k: 'Abschnitte zählen', t: 'Von ' + M(g) + ' aus zählst du ' + M(k) + ' Abschnitte bis zum Pfeil.' + (g ? ' Dazu kommen die ' + M(g) + (g === 1 ? ' Ganze.' : ' Ganzen.') : ''),
+    f: a.name + '=' + (g ? g : '') + bruch });
+  var r = red(Q(k, t));
+  if (r.n !== t) st.push({ k: 'Kürzen', t: 'Der Bruch lässt sich noch kürzen (durch ' + M(t / r.n) + ').', f: a.name + '=' + (g ? g : '') + bruch + '=' + gem(Q(g * r.n + r.z, r.n)) });
+  return { erg: gem(a.x), schritte: st };
+};
+
+/* --- Zahl am Zahlenstrahl markieren --- */
+W.markieren = function (a) { /* a: {abschn, x: Zahl-Objekt} */
+  var q = wert(a.x), v = q.z / q.n, g = Math.floor(v + 1e-9), ab = a.abschn.filter(function (s) { return s.von <= g && g < s.bis; })[0], t = ab.teile;
+  var rest = sub(q, Q(g, 1)), k = rest.z * t / rest.n, st = [];
+  var tex = zahlTex(a.x);
+  if (a.x.art === 'bruch' && q.z > q.n) {
+    var d = zerlege(q);
+    st.push({ k: 'In gemischte Zahl umwandeln', t: M(tex) + ' ist ein unechter Bruch. ' + M(q.z + ':' + q.n + '=' + d.w + '\\text{ Rest }' + d.r) + '.', f: tex + '=' + gem(q) });
+  }
+  st.push({ k: 'Richtigen Abschnitt finden', t: M(gem(q)) + ' liegt zwischen ' + M(g) + ' und ' + M(g + 1) + '. Dort ist die Strecke in ' + M(t) + ' Teile geteilt (' + bruchwort(t) + ').' });
+  if (rest.n !== t) {
+    st.push({ k: 'Erweitern', t: 'Der Bruch passt noch nicht zur Einteilung. Erweitere auf ' + bruchwort(t) + ':', f: frq(rest) + '=\\frac{' + rest.z + '\\cdot ' + (t / rest.n) + '}{' + rest.n + '\\cdot ' + (t / rest.n) + '}=\\frac{' + k + '}{' + t + '}' });
+  }
+  st.push({ k: 'Pfeil setzen', t: (g ? 'Gehe von ' + M(g) + ' aus ' : 'Gehe von ' + M(0) + ' aus ') + M(k) + ' Teilstriche weiter.',
+    g: zahlenstrahl([ab], [{ x: q, lab: a.lab, c: FARBE.rot }], { von: g, bis: g + 1, W: 440, y: 76, teilBeschr: true }) });
+  st.push({ k: 'Am ganzen Zahlenstrahl', t: 'So sieht das am ganzen Zahlenstrahl aus:', g: zahlenstrahl(a.abschn, [{ x: q, lab: a.lab, c: FARBE.rot }], { W: 470, y: 76 }) });
+  return { erg: tex, schritte: st };
+};
+
+/* --- Erweitern auf Nenner --- */
+W.erweitern = function (z, n, ziel) {
+  var k = ziel / n, st = [];
+  st.push({ k: 'Erweiterungszahl finden', t: 'Mit welcher Zahl musst du den Nenner ' + M(n) + ' malnehmen, damit ' + M(ziel) + ' herauskommt?', f: ziel + ':' + n + '=' + k });
+  st.push({ k: 'Zähler und Nenner malnehmen', t: 'Erweitern heißt: Zähler <b>und</b> Nenner mit derselben Zahl malnehmen – hier mit ' + M(k) + '.',
+    f: '\\frac{' + z + '}{' + n + '}=\\frac{' + z + '\\cdot ' + k + '}{' + n + '\\cdot ' + k + '}=\\frac{' + z * k + '}{' + ziel + '}' });
+  st.push({ k: 'Warum ist das gleich groß?', t: 'Die Stücke werden ' + k + '-mal so klein, dafür hast du ' + k + '-mal so viele davon. Der Anteil bleibt gleich:',
+    g: balkenVergleich([{ q: Q(z, n), n: n, f: FARBE.o[1], tex: ['', z, n] }, { q: Q(z * k, ziel), n: ziel, f: FARBE.o[0], tex: ['', z * k, ziel] }]) });
+  return { erg: '\\frac{' + z * k + '}{' + ziel + '}', schritte: st };
+};
+
+/* --- Kürzen --- */
+W.kuerzen = function (z, n) {
+  var g = ggT(z, n), st = [], tz = teiler(z), tn = teiler(n);
+  var gem_ = tz.filter(function (x) { return tn.indexOf(x) >= 0; });
+  st.push({ k: 'Gemeinsame Teiler suchen', t: 'Teiler von ' + M(z) + ': ' + tz.join(', ') + '<br>Teiler von ' + M(n) + ': ' + tn.join(', ') +
+    '<br>Gemeinsame Teiler: ' + gem_.join(', ') + '. Der größte ist ' + M(g) + '.' });
+  st.push({ k: 'Mit dem größten Teiler kürzen', t: 'Teile Zähler und Nenner durch ' + M(g) + '. Dann ist der Bruch sofort vollständig gekürzt.',
+    f: '\\frac{' + z + '}{' + n + '}=\\frac{' + z + ':' + g + '}{' + n + ':' + g + '}=\\frac{' + z / g + '}{' + n / g + '}' });
+  /* in kleinen Schritten */
+  var a = z, b = n, kette = '\\frac{' + a + '}{' + b + '}', schritte = 0;
+  [2, 3, 5, 7, 11, 13].forEach(function (p) { while (a % p === 0 && b % p === 0) { a /= p; b /= p; kette += '\\overset{:' + p + '}{=}\\frac{' + a + '}{' + b + '}'; schritte++; } });
+  if (schritte > 1) st.push({ k: 'Oder in kleinen Schritten', t: 'Du kannst auch nach und nach kürzen, bis es nicht mehr geht. Das Ergebnis ist dasselbe:', f: kette });
+  if (n <= 40) st.push({ k: 'Bild', t: 'Beide Brüche beschreiben denselben Anteil – nur mit größeren Stücken:',
+    g: balkenVergleich([{ q: Q(z, n), n: n, f: FARBE.o[1], tex: ['', z, n] }, { q: Q(z / g, n / g), n: n / g, f: FARBE.o[0], tex: ['', z / g, n / g] }]) });
+  return { erg: '\\frac{' + z / g + '}{' + n / g + '}', schritte: st };
+};
+
+/* --- fehlende Zahl --- */
+W.fehlend = function (a) { /* a: {z1,n1,z2,n2} mit genau einem null */
+  var st = [], oben = a.z2 !== null, lu, lo, erg, op, f;
+  if (oben) { /* Zähler bekannt -> Nenner gesucht */
+    if (a.z2 < a.z1) { f = a.z1 / a.z2; erg = a.n1 / f; op = ':'; } else { f = a.z2 / a.z1; erg = a.n1 * f; op = '\\cdot '; }
+    st.push({ k: 'Bekannte Zahlen vergleichen', t: 'Die Zähler kennst du: ' + M(a.z1) + ' wird zu ' + M(a.z2) + '. Das ist ' + (op === ':' ? 'geteilt durch ' : 'mal ') + M(f) + ' – also ' + (op === ':' ? 'gekürzt' : 'erweitert') + '.' });
+    st.push({ k: 'Nenner genauso verändern', t: 'Beim Nenner musst du genau dasselbe machen:', f: a.n1 + op + f + '=' + erg });
+    st.push({ k: 'Ergebnis', t: '', f: '\\frac{' + a.z1 + '}{' + a.n1 + '}\\overset{' + op + f + '}{=}\\frac{' + a.z2 + '}{\\textcolor{#C00000}{' + erg + '}}' });
+  } else {
+    if (a.n2 < a.n1) { f = a.n1 / a.n2; erg = a.z1 / f; op = ':'; } else { f = a.n2 / a.n1; erg = a.z1 * f; op = '\\cdot '; }
+    st.push({ k: 'Bekannte Zahlen vergleichen', t: 'Die Nenner kennst du: ' + M(a.n1) + ' wird zu ' + M(a.n2) + '. Das ist ' + (op === ':' ? 'geteilt durch ' : 'mal ') + M(f) + ' – also ' + (op === ':' ? 'gekürzt' : 'erweitert') + '.' });
+    st.push({ k: 'Zähler genauso verändern', t: 'Beim Zähler musst du genau dasselbe machen:', f: a.z1 + op + f + '=' + erg });
+    st.push({ k: 'Ergebnis', t: '', f: '\\frac{' + a.z1 + '}{' + a.n1 + '}\\overset{' + op + f + '}{=}\\frac{\\textcolor{#C00000}{' + erg + '}}{' + a.n2 + '}' });
+  }
+  return { erg: String(erg), schritte: st };
+};
+
+/* --- Bruchspeicher --- */
+W.speicher = function (alle, ziele, zi) {
+  var st = [], farben = [FARBE.o[0], FARBE.o[1], FARBE.o[2]];
+  var zeilen = alle.map(function (b) {
+    var r = red(Q(b[0], b[1])), j = -1;
+    ziele.forEach(function (zz, k) { if (r.z === zz[0] && r.n === zz[1]) j = k; });
+    return { b: b, r: r, j: j };
+  });
+  var tab = '<div class="speicher">' + zeilen.map(function (x) {
+    var mark = x.j === zi ? ' style="background:' + farben[zi] + '33;border-color:' + farben[zi] + '"' : (x.j < 0 ? ' class="nix"' : '');
+    return '<span' + mark + '>' + M('\\frac{' + x.b[0] + '}{' + x.b[1] + '}' + (x.r.n !== x.b[1] ? '=' + frq(x.r) : '')) + '</span>';
+  }).join('') + '</div>';
+  var ziel = ziele[zi];
+  st.push({ k: 'Alle Brüche vollständig kürzen', t: 'Gleich große Brüche ergeben gekürzt denselben Bruch. Kürze also jeden Bruch aus dem Speicher:' + tab });
+  var passend = zeilen.filter(function (x) { return x.j === zi; });
+  st.push({ k: 'Passende heraussuchen', t: 'Gekürzt ' + M('\\frac{' + ziel[0] + '}{' + ziel[1] + '}') + ' ergeben (farbig markiert):',
+    f: passend.map(function (x) { return '\\frac{' + x.b[0] + '}{' + x.b[1] + '}'; }).join('\\quad ') });
+  var nix = zeilen.filter(function (x) { return x.j < 0; });
+  st.push({ k: 'Probe durch Erweitern', t: 'Du kannst auch andersherum prüfen: Erweitere ' + M('\\frac{' + ziel[0] + '}{' + ziel[1] + '}') + ' – z. B. ' +
+    passend.slice(0, 2).map(function (x) { var k = x.b[1] / ziel[1]; return M('\\frac{' + ziel[0] + '\\cdot ' + k + '}{' + ziel[1] + '\\cdot ' + k + '}=\\frac{' + x.b[0] + '}{' + x.b[1] + '}'); }).join(' und ') + '.' });
+  if (zi === 2) st.push({ k: 'Diese drei passen nirgends', t: nix.map(function (x) { return M('\\frac{' + x.b[0] + '}{' + x.b[1] + '}' + (x.r.n !== x.b[1] ? '=' + frq(x.r) : '')); }).join(', ') + ' – keiner davon ist ' + M('\\frac23') + ', ' + M('\\frac34') + ' oder ' + M('\\frac35') + '.' });
+  return { erg: passend.map(function (x) { return '\\frac{' + x.b[0] + '}{' + x.b[1] + '}'; }).join('\\ \\ '), schritte: st };
+};
+
+/* --- Vergleichen --- */
+W.vergleich = function (sa, sb) {
+  var A = zahl(sa), B = zahl(sb), qa = wert(A), qb = wert(B), st = [], c = cmp(qa, qb), zeichen = c < 0 ? '<' : c > 0 ? '>' : '=';
+  var ta = zahlTex(A), tb = zahlTex(B), ua = qa, ub = qb;
+  if (A.art === 'gem' || B.art === 'gem') {
+    st.push({ k: 'Gemischte Zahl umwandeln', t: 'Wandle die gemischte Zahl zuerst in einen unechten Bruch um.',
+      f: (A.art === 'gem' ? ta + '=\\frac{' + A.w + '\\cdot ' + A.n + '+' + A.z + '}{' + A.n + '}=' + frq(qa) : tb + '=\\frac{' + B.w + '\\cdot ' + B.n + '+' + B.z + '}{' + B.n + '}=' + frq(qb)) });
+  }
+  var za = Math.abs(ua.z), na = ua.n, zb = Math.abs(ub.z), nb = ub.n;
+  var A0 = A.art === 'gem' ? frq(qa) : ta, B0 = B.art === 'gem' ? frq(qb) : tb;
+  if (na === nb) {
+    st.push({ k: 'Gleicher Nenner', t: 'Beide Brüche haben den Nenner ' + M(na) + ' – die Stücke sind gleich groß. Dann gewinnt der größere Zähler: ' + M(za + zeichen + zb) + '.',
+      f: A0 + zeichen + B0 });
+  } else if (za === zb && A.art !== 'gem' && B.art !== 'gem') {
+    st.push({ k: 'Gleicher Zähler', t: 'Beide Brüche haben ' + M(za) + ' Stücke. Beim kleineren Nenner sind die Stücke größer: ' + bruchwort(Math.min(na, nb)) + ' sind größer als ' + bruchwort(Math.max(na, nb)) + '.',
+      f: A0 + zeichen + B0 });
+  } else {
+    var H = hnText([na, nb]);
+    st.push({ k: 'Hauptnenner suchen', t: H.t });
+    var ka = H.H / na, kb = H.H / nb;
+    st.push({ k: 'Gleichnamig machen', t: 'Erweitere beide Brüche auf den Nenner ' + M(H.H) + ':',
+      f: A0 + '=\\frac{' + za + '\\cdot ' + ka + '}{' + na + '\\cdot ' + ka + '}=\\frac{' + za * ka + '}{' + H.H + '}\\qquad ' + B0 + '=\\frac{' + zb + '\\cdot ' + kb + '}{' + nb + '\\cdot ' + kb + '}=\\frac{' + zb * kb + '}{' + H.H + '}' });
+    st.push({ k: 'Zähler vergleichen', t: 'Jetzt sind die Stücke gleich groß: ' + M(za * ka + zeichen + zb * kb) + '.', f: '\\frac{' + za * ka + '}{' + H.H + '}' + zeichen + '\\frac{' + zb * kb + '}{' + H.H + '}' });
+  }
+  var bild = balkenVergleich([{ q: qa, n: na, f: FARBE.o[0], tex: A.art === 'gem' ? [String(A.w), A.z, A.n] : ['', A.z, A.n] }, { q: qb, n: nb, f: FARBE.o[1], tex: B.art === 'gem' ? [String(B.w), B.z, B.n] : ['', B.z, B.n] }]);
+  st.push({ k: 'Ergebnis', t: 'Im Bild siehst du es auch (gleich lange Balken = 1 Ganzes):', f: ta + '\\ \\textcolor{#C00000}{' + zeichen + '}\\ ' + tb, g: bild });
+  return { erg: zeichen, schritte: st };
+};
+
+/* --- Ordnen --- */
+W.ordnen = function (liste) {
+  var Z = liste.map(zahl), qs = Z.map(wert), st = [];
+  var idx = Z.map(function (_, i) { return i; }).sort(function (i, j) { return cmp(qs[i], qs[j]); });
+  var ganze = qs.map(function (q) { return Math.floor(q.z / q.n); });
+  var gleicheGanze = ganze.every(function (g) { return g === ganze[0]; }) && ganze[0] >= 1;
+  var hatGem = Z.some(function (x) { return x.art === 'gem'; });
+  var rest;
+  if (gleicheGanze) {
+    st.push({ k: 'Ganze ansehen', t: 'Alle Zahlen liegen zwischen ' + M(ganze[0]) + ' und ' + M(ganze[0] + 1) + '. Schreibe sie als gemischte Zahlen – dann musst du nur noch die Bruchteile vergleichen.',
+      f: Z.map(function (x, i) { return x.art === 'bruch' ? zahlTex(x) + '=' + gem(qs[i]) : zahlTex(x); }).join('\\qquad ') });
+    rest = qs.map(function (q) { return sub(q, Q(ganze[0], 1)); });
+  } else {
+    if (hatGem) st.push({ k: 'Gemischte Zahlen umwandeln', t: 'Wandle die gemischten Zahlen in unechte Brüche um.',
+      f: Z.filter(function (x) { return x.art === 'gem'; }).map(function (x) { return zahlTex(x) + '=' + frq(wert(x)); }).join('\\qquad ') });
+    rest = qs;
+  }
+  var H = hnText(rest.map(function (q) { return q.n; }));
+  st.push({ k: 'Hauptnenner', t: H.t });
+  st.push({ k: 'Alle erweitern', t: 'Bringe alle ' + (gleicheGanze ? 'Bruchteile' : 'Brüche') + ' auf den Nenner ' + M(H.H) + ':',
+    f: rest.map(function (q) { return frq(q) + '=\\frac{' + q.z * H.H / q.n + '}{' + H.H + '}'; }).join('\\qquad ') });
+  var sortiert = idx.map(function (i) { return '\\frac{' + rest[i].z * H.H / rest[i].n + '}{' + H.H + '}'; }).join('<');
+  st.push({ k: 'Nach den Zählern ordnen', t: 'Jetzt kannst du einfach die Zähler vergleichen:', f: sortiert });
+  var ergT = idx.map(function (i) { return zahlTex(Z[i]); }).join('<');
+  st.push({ k: 'Ergebnis', t: 'Schreibe die Zahlen wieder so hin, wie sie in der Aufgabe stehen:', f: ergT,
+    g: balkenVergleich(idx.map(function (i, k) { var x = Z[i]; return { q: qs[i], n: x.n, f: FARBE.o[k % 4], tex: x.art === 'gem' ? [String(x.w), x.z, x.n] : ['', x.z, x.n] }; })) });
+  return { erg: ergT, schritte: st };
+};
+
+/* --- unechter Bruch -> gemischte Zahl --- */
+W.zuGemischt = function (z, n) {
+  var w = Math.floor(z / n), r = z % n, st = [];
+  st.push({ k: 'Wie viele Ganze?', t: 'Ein Ganzes sind ' + M('\\frac{' + n + '}{' + n + '}') + '. Wie oft passt ' + M(n) + ' in ' + M(z) + '?', f: z + ':' + n + '=' + w + '\\text{ Rest }' + r + '\\qquad(' + w + '\\cdot ' + n + '=' + w * n + ')' });
+  st.push({ k: 'Rest als Bruch', t: 'Das ergibt ' + M(w) + ' Ganze, übrig bleiben ' + M(r) + ' ' + bruchwort(n) + '.', f: '\\frac{' + z + '}{' + n + '}=' + w + '\\frac{' + r + '}{' + n + '}' });
+  if (w <= 5 && n <= 12) st.push({ k: 'Bild', t: M(z) + ' ' + bruchwort(n) + ' als Pizzen: ' + w + ' ganze Pizzen und ' + r + ' Stück' + (r === 1 ? '' : 'e') + ' von einer weiteren.',
+    g: pizzen(pizzenWert(Q(z, n), n)) });
+  return { erg: w + '\\frac{' + r + '}{' + n + '}', schritte: st };
+};
+/* --- gemischte Zahl -> unechter Bruch --- */
+W.zuUnecht = function (w, z, n) {
+  var Z = w * n + z, st = [];
+  st.push({ k: 'Ganze in ' + bruchwort(n), t: 'Ein Ganzes sind ' + M('\\frac{' + n + '}{' + n + '}') + '. ' + M(w) + ' Ganze sind also:', f: w + '\\cdot ' + n + '=' + w * n + '\\ \\text{' + bruchwort(n) + '}' });
+  st.push({ k: 'Bruchteil dazu', t: 'Dazu kommen noch ' + M(z) + ' ' + bruchwort(n) + ':', f: w * n + '+' + z + '=' + Z });
+  st.push({ k: 'Ergebnis', t: 'Kurz: Ganze mal Nenner plus Zähler.', f: w + '\\frac{' + z + '}{' + n + '}=\\frac{' + w + '\\cdot ' + n + '+' + z + '}{' + n + '}=\\frac{' + Z + '}{' + n + '}' });
+  if (w <= 5 && n <= 12) st.push({ k: 'Bild', t: 'Zähle alle Pizzastücke: ' + M(Z) + ' ' + bruchwort(n) + '.', g: pizzen(pizzenWert(Q(Z, n), n)) });
+  return { erg: '\\frac{' + Z + '}{' + n + '}', schritte: st };
+};
+
+/* --- Summen: Brüche (gleichnamig/ungleichnamig) --- */
+function summenBild(terme, H) { /* terme: [{s:+1/-1, q}] gekürzt; Bild: Balken (nur Plus) oder Zahlenstrahl mit Sprüngen */
+  var allePlus = terme.every(function (t) { return t.s > 0 && t.q.z > 0; });
+  var ges = terme.reduce(function (a, t) { return add(a, Q(t.s * t.q.z, t.q.n)); }, Q(0, 1));
+  if (allePlus && H <= 24) {
+    var teile = terme.map(function (t, i) { return { k: t.q.z * H / t.q.n, f: FARBE.o[i % 4] }; });
+    var e = Math.max(1, Math.ceil(ges.z / ges.n));
+    if (H <= 12 && e <= 3) {
+      var liste = [], rest = teile.slice().map(function (t) { return { k: t.k, f: t.f }; });
+      for (var p = 0; p < e; p++) {
+        var segs = [], frei = H;
+        while (frei > 0 && rest.length) { var nimm = Math.min(frei, rest[0].k); segs.push({ k: nimm, f: rest[0].f }); rest[0].k -= nimm; frei -= nimm; if (!rest[0].k) rest.shift(); }
+        liste.push({ n: H, segs: segs });
+      }
+      return pizzen(liste);
+    }
+    return svgWrap(Math.min(600, e * 310) + 12, 40, balken(H, e, teile, { W: Math.min(300, Math.floor(580 / e) - 10) }));
+  }
+  if (H <= 24) {
+    var pos = Q(0, 1), sp = [], start = Q(terme[0].s * terme[0].q.z, terme[0].q.n), werte = [start];
+    pos = start;
+    for (var i = 1; i < terme.length; i++) {
+      var neu = add(pos, Q(terme[i].s * terme[i].q.z, terme[i].q.n));
+      sp.push({ von: pos, bis: neu, lab: (terme[i].s > 0 ? '+' : '−') + (terme[i].q.z * H / terme[i].q.n) });
+      pos = neu; werte.push(neu);
+    }
+    var lo = Math.floor(Math.min.apply(null, werte.map(function (q) { return q.z / q.n; }).concat([0]))), hi = Math.ceil(Math.max.apply(null, werte.map(function (q) { return q.z / q.n; }).concat([0])));
+    if (hi === lo) hi = lo + 1;
+    var ab = []; for (var g = lo; g < hi; g++) ab.push({ von: g, bis: g + 1, teile: H });
+    return zahlenstrahl(ab, [], { von: lo, bis: hi, W: Math.min(560, 190 * (hi - lo) + 50), y: 80, spruenge: sp, punkte: [{ x: start, c: FARBE.od[1] }, { x: pos, c: FARBE.rot }] });
+  }
+  return null;
+}
+W.summe = function (ausdruck) {
+  var tk = tokens(ausdruck), terme = [], st = [], s = +1;
+  tk.forEach(function (t) { if (t.t === 'op') s = t.v === '-' ? -1 : +1; else if (t.t === 'zahl') { var q = wert(t); terme.push({ s: s * (q.z < 0 ? -1 : 1), q: Q(Math.abs(q.z), q.n), z: t }); s = +1; } });
+  var dens = terme.map(function (t) { return t.q.n; }), H = kgVL(dens), erg = terme.reduce(function (a, t) { return add(a, Q(t.s * t.q.z, t.q.n)); }, Q(0, 1));
+  var zeilenText = function (zs) { return zs.map(function (t, i) { var z = t.q.z * H / t.q.n; return (i === 0 ? (t.s < 0 ? '-' : '') : (t.s < 0 ? '-' : '+')) + z; }).join(''); };
+  var zsum = terme.reduce(function (a, t) { return a + t.s * t.q.z * H / t.q.n; }, 0);
+  if (dens.every(function (d) { return d === H; })) {
+    st.push({ k: 'Gleicher Nenner', t: 'Alle Brüche haben den Nenner ' + M(H) + '. Der Nenner bleibt – nur die Zähler werden verrechnet.',
+      f: exprTex(tk) + '=\\frac{' + zeilenText(terme) + '}{' + H + '}=' + fr(zsum, H) });
+  } else {
+    var h = hnText(dens);
+    st.push({ k: 'Hauptnenner suchen', t: h.t });
+    st.push({ k: 'Gleichnamig machen', t: 'Erweitere jeden Bruch auf den Nenner ' + M(H) + ':',
+      f: terme.filter(function (t) { return t.q.n !== H; }).map(function (t) { var k = H / t.q.n; return '\\frac{' + t.q.z + '}{' + t.q.n + '}=\\frac{' + t.q.z + '\\cdot ' + k + '}{' + t.q.n + '\\cdot ' + k + '}=\\frac{' + t.q.z * k + '}{' + H + '}'; }).join('\\qquad ') });
+    var neu = terme.map(function (t, i) { var z = t.q.z * H / t.q.n; return (i === 0 ? (t.s < 0 ? '-' : '') : (t.s < 0 ? '-' : '+')) + '\\frac{' + z + '}{' + H + '}'; }).join('');
+    st.push({ k: 'Zähler verrechnen', t: 'Jetzt haben alle Brüche denselben Nenner. Verrechne die Zähler, der Nenner bleibt ' + M(H) + '.',
+      f: neu + '=\\frac{' + zeilenText(terme) + '}{' + H + '}=' + fr(zsum, H) });
+  }
+  st = st.concat(kuerzSchritt(Q(zsum, H)));
+  var bild = summenBild(terme, H);
+  if (bild) st.push({ k: 'Bild', t: terme.every(function (t) { return t.s > 0; }) ? 'Jede Farbe ist ein Summand – zusammen ergibt das ' + M(gem(erg)) + '.' :
+    'Am Zahlenstrahl (Einteilung in ' + bruchwort(H) + '): Start beim blauen Punkt, dann springen. Du landest beim roten Punkt: ' + M(gem(erg)) + '.', g: bild });
+  return { erg: gem(erg), schritte: st };
+};
+
+/* --- Rechnen mit gemischten Zahlen (Ganze und Brüche getrennt) --- */
+W.gemischt = function (ausdruck) {
+  var tk = tokens(ausdruck), zahlen = [], ops = [], st = [];
+  tk.forEach(function (t) { if (t.t === 'zahl') zahlen.push(t); else ops.push(t.v); });
+  function mz(x) { return { w: x.w, z: x.z, n: x.n }; } /* positiv */
+  function mtex(m) { return m.z === 0 ? String(m.w) : (m.w ? m.w : '') + '\\frac{' + m.z + '}{' + m.n + '}'; }
+  var acc = mz(zahlen[0]), mehrere = zahlen.length > 2;
+  for (var i = 1; i < zahlen.length; i++) {
+    var b = mz(zahlen[i]), op = ops[i - 1], pre = mehrere ? (i === 1 ? 'Rechne von links nach rechts. Zuerst: ' : 'Jetzt mit dem Zwischenergebnis weiter: ') : '';
+    var aufg = mtex(acc) + (op === '+' ? '+' : '-') + mtex(b);
+    var H = kgV(acc.z ? acc.n : 1, b.z ? b.n : 1);
+    if (mehrere) st.push({ k: (i === 1 ? 'Erster Schritt' : 'Nächster Schritt'), t: pre + M(aufg) });
+    var A = { w: acc.w, z: acc.z ? acc.z * H / acc.n : 0, n: H }, B = { w: b.w, z: b.z ? b.z * H / b.n : 0, n: H };
+    if (acc.z && b.z && acc.n !== b.n) {
+      var hh = hnText([acc.n, b.n]);
+      st.push({ k: 'Bruchteile gleichnamig machen', t: hh.t, f: mtex(acc) + '=' + mtex(A) + '\\qquad ' + mtex(b) + '=' + mtex(B) });
+    }
+    var R;
+    if (op === '+') {
+      var W2 = A.w + B.w, Z2 = A.z + B.z;
+      st.push({ k: 'Ganze und Brüche getrennt', t: 'Ganze: ' + M(A.w + '+' + B.w + '=' + W2) + '. Brüche: ' + M('\\frac{' + A.z + '}{' + H + '}+\\frac{' + B.z + '}{' + H + '}=\\frac{' + Z2 + '}{' + H + '}') + '.' });
+      if (Z2 >= H) {
+        var ue = Math.floor(Z2 / H), r = Z2 % H;
+        st.push({ k: 'Bruch größer als 1', t: M('\\frac{' + Z2 + '}{' + H + '}') + ' ist mehr als ein Ganzes: ' + M('\\frac{' + Z2 + '}{' + H + '}=' + ue + (r ? '\\frac{' + r + '}{' + H + '}' : '')) + '. Das Ganze kommt zu den anderen Ganzen.',
+          f: W2 + '+' + ue + (r ? '\\frac{' + r + '}{' + H + '}' : '') + '=' + (W2 + ue) + (r ? '\\frac{' + r + '}{' + H + '}' : '') });
+        R = { w: W2 + ue, z: r, n: H };
+      } else R = { w: W2, z: Z2, n: H };
+    } else {
+      if (A.z < B.z) {
+        var vor = mtex(A.z ? A : { w: A.w, z: 0, n: H });
+        var A2 = { w: A.w - 1, z: A.z + H, n: H };
+        st.push({ k: 'Ein Ganzes umwandeln', t: (A.z ? 'Von ' + M('\\frac{' + A.z + '}{' + H + '}') + ' kannst du ' + M('\\frac{' + B.z + '}{' + H + '}') + ' nicht abziehen.' : 'Bei ' + M(A.w) + ' gibt es keinen Bruchteil.') +
+          ' Mach aus einem Ganzen ' + M('\\frac{' + H + '}{' + H + '}') + ':', f: vor + '=' + (A2.w) + '\\frac{' + A2.z + '}{' + H + '}',
+          g: H <= 12 ? pizzen([{ n: H, segs: [{ k: H, f: FARBE.o[0] }], label: '1 Ganzes' }, { n: H, segs: [{ k: H, f: FARBE.o[1] }], label: H + '/' + H }], { zwischen: '=' }) : null });
+        A = A2;
+      }
+      var W3 = A.w - B.w, Z3 = A.z - B.z;
+      st.push({ k: 'Ganze und Brüche getrennt', t: 'Ganze: ' + M(A.w + '-' + B.w + '=' + W3) + '. Brüche: ' + M('\\frac{' + A.z + '}{' + H + '}-\\frac{' + B.z + '}{' + H + '}=\\frac{' + Z3 + '}{' + H + '}') + '.',
+        f: mtex(A) + '-' + mtex(B) + '=' + mtex({ w: W3, z: Z3, n: H }) });
+      R = { w: W3, z: Z3, n: H };
+    }
+    if (R.z) { var g = ggT(R.z, R.n); if (g > 1) { st.push({ k: 'Kürzen', t: 'Der Bruchteil lässt sich mit ' + M(g) + ' kürzen.', f: mtex(R) + '=' + mtex({ w: R.w, z: R.z / g, n: R.n / g }) }); R = { w: R.w, z: R.z / g, n: R.n / g }; } }
+    acc = R;
+  }
+  var erg = Q(acc.w * acc.n + acc.z, acc.n);
+  /* Kontrolle mit unechten Brüchen */
+  var qs = zahlen.map(wert), HH = kgVL(qs.map(function (q) { return q.n; }));
+  var z1 = qs.map(function (q, i) { return (i ? (ops[i - 1] === '+' ? '+' : '-') : '') + '\\frac{' + q.z * HH / q.n + '}{' + HH + '}'; }).join('');
+  var zsum = qs.reduce(function (a, q, i) { return a + (i && ops[i - 1] === '-' ? -1 : 1) * q.z * HH / q.n; }, 0);
+  st.push({ k: 'Andere Möglichkeit (Kontrolle)', t: 'Du kannst auch alles in unechte Brüche umwandeln und dann rechnen:',
+    f: qs.map(function (q, i) { return (i ? (ops[i - 1] === '+' ? '+' : '-') : '') + frq(q); }).join('') + '=' + z1 + '=\\frac{' + zsum + '}{' + HH + '}=' + gem(Q(zsum, HH)) });
+  return { erg: gem(erg), schritte: st };
+};
+
+/* --- Multiplizieren (auch über Kreuz kürzen, Vorzeichen, gemischte Zahlen) --- */
+function mulKern(faktoren, opt) {
+  opt = opt || {};
+  var st = [], neg = 0, gemischt = faktoren.some(function (x) { return x.art !== 'bruch'; });
+  var qs = faktoren.map(function (x) { var q = wert(x); if (q.z < 0) neg++; return Q(Math.abs(q.z), q.n); });
+  if (gemischt) {
+    var um = faktoren.filter(function (x) { return x.art !== 'bruch'; }).map(function (x) {
+      return x.art === 'int' ? x.w + '=\\frac{' + x.w + '}{1}' : zahlTex(x, true) + '=\\frac{' + x.w + '\\cdot ' + x.n + '+' + x.z + '}{' + x.n + '}=\\frac{' + (x.w * x.n + x.z) + '}{' + x.n + '}';
+    });
+    st.push({ k: 'Erst umwandeln', t: 'Gemischte und ganze Zahlen musst du vor dem Malnehmen in Brüche umwandeln:', f: um.join('\\qquad ') });
+  }
+  if (neg) {
+    st.push({ k: 'Vorzeichen bestimmen', t: 'Zähle die Minuszeichen: ' + M(neg) + '. ' + (neg % 2 ? 'Eine ungerade Anzahl → das Ergebnis ist <b>negativ</b>.' : 'Eine gerade Anzahl → das Ergebnis ist <b>positiv</b> (minus mal minus gibt plus).') +
+      ' Ab jetzt rechnest du ohne Minuszeichen weiter und setzt das Vorzeichen am Ende davor.' });
+  }
+  var vz = neg % 2 ? '-' : '';
+  var N = qs.map(function (q) { return q.z; }), D = qs.map(function (q) { return q.n; }), N0 = N.slice(), D0 = D.slice(), kz = [];
+  st.push({ k: 'Auf einen Bruchstrich', t: 'Zähler mal Zähler, Nenner mal Nenner – aber noch <b>nicht</b> ausrechnen, erst kürzen!',
+    f: vz + '\\frac{' + N.join('\\cdot ') + '}{' + D.join('\\cdot ') + '}' });
+  while (true) {
+    var best = null;
+    for (var i = 0; i < N.length; i++) for (var j = 0; j < D.length; j++) { var g = ggT(N[i], D[j]); if (g > 1 && (!best || g > best.g)) best = { i: i, j: j, g: g }; }
+    if (!best) break;
+    kz.push({ a: N[best.i], b: D[best.j], g: best.g, a2: N[best.i] / best.g, b2: D[best.j] / best.g });
+    N[best.i] /= best.g; D[best.j] /= best.g;
+  }
+  if (kz.length) {
+    var tx = kz.map(function (k) { return M(k.a) + ' und ' + M(k.b) + ' durch ' + M(k.g) + ' → ' + M(k.a2) + ' und ' + M(k.b2); }).join('<br>');
+    var cz = N0.map(function (z, i) { return z === N[i] ? String(z) : '\\overset{\\textcolor{#C00000}{' + N[i] + '}}{\\cancel{' + z + '}}'; }).join('\\cdot ');
+    var cn = D0.map(function (z, i) { return z === D[i] ? String(z) : '\\underset{\\textcolor{#C00000}{' + D[i] + '}}{\\cancel{' + z + '}}'; }).join('\\cdot ');
+    st.push({ k: 'Kürzen' + (faktoren.length > 1 ? ' (auch über Kreuz)' : ''), t: 'Suche Zahlen oben und unten mit gemeinsamem Teiler – immer gleich mit dem größten:<br>' + tx,
+      f: vz + '\\frac{' + cz + '}{' + cn + '}' });
+  } else if (!opt.stillKuerzen) {
+    st.push({ k: 'Kürzen?', t: 'Hier gibt es keine Zahl oben und unten mit einem gemeinsamen Teiler – man kann nichts kürzen.' });
+  }
+  var zn = N.reduce(function (a, b) { return a * b; }, 1), dn = D.reduce(function (a, b) { return a * b; }, 1);
+  st.push({ k: 'Malnehmen', t: 'Jetzt sind die Zahlen klein:', f: vz + '\\frac{' + N.join('\\cdot ') + '}{' + D.join('\\cdot ') + '}=' + vz + '\\frac{' + zn + '}{' + dn + '}' + (dn === 1 ? '=' + vz + zn : '') });
+  var erg = Q((neg % 2 ? -1 : 1) * zn, dn);
+  if (ggT(zn, dn) === 1 && zn > dn && dn !== 1) st = st.concat(kuerzSchritt(erg));
+  else if (ggT(zn, dn) > 1) st = st.concat(kuerzSchritt(erg));
+  return { erg: red(erg), schritte: st };
+}
+W.mal = function (ausdruck, opt) {
+  opt = opt || {};
+  var tk, faktoren;
+  if (/von/.test(ausdruck)) { faktoren = ausdruck.split('von').map(zahl); }
+  else { tk = tokens(ausdruck); faktoren = tk.filter(function (t) { return t.t === 'zahl'; }); }
+  var r = mulKern(faktoren), st = r.schritte;
+  if (/von/.test(ausdruck)) st.unshift({ k: '„von“ heißt „mal“', t: '', f: zahlTex(faktoren[0]) + '\\text{ von }' + zahlTex(faktoren[1]) + '=' + zahlTex(faktoren[0]) + '\\cdot ' + zahlTex(faktoren[1]) });
+  /* Bilder */
+  var q = faktoren.map(wert);
+  if (faktoren.length === 2 && faktoren.every(function (x) { return x.art === 'bruch' && !x.neg && x.z < x.n; }) && q[0].n * q[1].n <= 60) {
+    st.push({ k: 'Bild: Flächenmodell', t: 'Blau umrandet ist ' + M(zahlTex(faktoren[1])) + ' des Rechtecks. Davon ist rot ' + M(zahlTex(faktoren[0])) + ' umrandet. Die rot gefärbten Kästchen sind ' +
+      M(q[0].z * q[1].z) + ' von ' + M(q[0].n * q[1].n) + ' – also ' + M('\\frac{' + q[0].z * q[1].z + '}{' + q[0].n * q[1].n + '}' + (q[0].z * q[1].z === r.erg.z && q[0].n * q[1].n === r.erg.n ? '' : '=' + gem(r.erg))) + '.',
+      g: flaeche(q[0].z, q[0].n, q[1].z, q[1].n) });
+  }
+  var ganz = faktoren.filter(function (x) { return x.art === 'int'; })[0], br = faktoren.filter(function (x) { return x.art === 'bruch'; })[0];
+  if (faktoren.length === 2 && ganz && br && !br.neg && ganz.w <= 6 && br.n <= 12 && br.z < br.n) {
+    var liste = []; for (var i = 0; i < ganz.w; i++) liste.push({ n: br.n, segs: [{ k: br.z, f: FARBE.o[i % 4] }] });
+    var gesStk = ganz.w * br.z;
+    st.push({ k: 'Bild: Mal heißt mehrmals plus', t: M(ganz.w + '\\cdot \\frac{' + br.z + '}{' + br.n + '}') + ' heißt ' + ganz.w + '-mal ' + M('\\frac{' + br.z + '}{' + br.n + '}') + '. Zusammen sind das ' + M(gesStk) + ' ' + bruchwort(br.n) + ' = ' + M(gem(Q(gesStk, br.n))) + '.',
+      g: pizzen(liste, { zwischen: '+', r: 26 }) });
+  }
+  return { erg: gem(r.erg), schritte: st };
+};
+
+/* --- Klammer vor Punkt vor Strich --- */
+function teilErgebnis(tk) { /* Tokens ohne Klammern -> {erg (Q), tex, schritte} */
+  /* Punkt vor Strich in einem Schritt */
+  var neu = [], i, unter = [];
+  for (i = 0; i < tk.length; i++) {
+    var t = tk[i];
+    if (t.t === 'zahl' && tk[i + 1] && tk[i + 1].t === 'op' && tk[i + 1].v === '*') {
+      var fak = [t], j = i;
+      while (tk[j + 1] && tk[j + 1].t === 'op' && tk[j + 1].v === '*') { fak.push(tk[j + 2]); j += 2; }
+      var r = mulKern(fak, { stillKuerzen: true });
+      unter.push({ art: 'mal', tex: exprTex(tk.slice(i, j + 1)), fak: fak, erg: r.erg, schritte: r.schritte });
+      neu.push(bruchObj(r.erg)); i = j;
+    } else neu.push(t);
+  }
+  return { tk: neu, unter: unter };
+}
+W.klammer = function (ausdruck) {
+  var tk = tokens(ausdruck), st = [], runde = 0;
+  function zeigeUnter(u) {
+    return u.schritte.filter(function (s) { return s.f; }).map(function (s) { return s.f; });
+  }
+  while (true) {
+    runde++;
+    var auf = -1, zu = -1;
+    for (var i = 0; i < tk.length; i++) { if (tk[i].t === '(') auf = i; if (tk[i].t === ')' && auf >= 0) { zu = i; break; } }
+    if (auf >= 0) {
+      var innen = tk.slice(auf + 1, zu);
+      var q = wertVon(innen);
+      st.push({ k: 'Zuerst die Klammer', t: 'In der Klammer steht ' + M(exprTex(innen)) + '. Das rechnest du zuerst aus' + (innen.some(function (t) { return t.art === 'gem'; }) ? ' (gemischte Zahl vorher umwandeln)' : '') + ':',
+        f: klammerRechnung(innen) });
+      tk = tk.slice(0, auf).concat([bruchObj(q)]).concat(tk.slice(zu + 1));
+      st.push({ k: 'Einsetzen', t: 'Setze das Ergebnis für die Klammer ein:', f: exprTex(tk) });
+      continue;
+    }
+    if (tk.some(function (t) { return t.t === 'op' && t.v === '*'; })) {
+      var p = teilErgebnis(tk);
+      var mehr = p.unter.length > 1;
+      st.push({ k: 'Punkt vor Strich', t: mehr ? 'Jetzt kommen die Malaufgaben dran – erst danach wird plus/minus gerechnet. Rechne beide Produkte aus:' : 'Jetzt kommt die Malaufgabe dran (Punkt vor Strich):',
+        f: p.unter.map(function (u) { return mulZeile(u); }) });
+      tk = p.tk;
+      if (tk.length > 1) st.push({ k: 'Einsetzen', t: 'Setze die Ergebnisse ein:', f: exprTex(tk) });
+      continue;
+    }
+    if (tk.length > 1) {
+      st.push({ k: 'Zum Schluss Strichrechnung', t: 'Jetzt bleibt nur noch plus/minus:', f: summenZeile(tk) });
+      tk = [ausWert(wertVon(tk))];
+    }
+    break;
+  }
+  var e = wert(tk[0]);
+  return { erg: gem(e), schritte: st };
+};
+/* Hilfen für W.klammer */
+function exprTexInv(tk) { /* Tokens zurück in Kurzschrift */
+  return tk.map(function (t) {
+    if (t.t === 'op') return t.v; if (t.t === '(') return '('; if (t.t === ')') return ')';
+    var s = t.neg ? '-' : '';
+    return s + (t.art === 'int' ? t.w : t.art === 'gem' ? t.w + '_' + t.z + '/' + t.n : t.z + '/' + t.n);
+  }).join('');
+}
+function wertVon(tk) { /* nur + - * ohne Klammern, Punkt vor Strich */
+  var p = teilErgebnis(tk).tk, acc = wert(p[0]);
+  for (var i = 1; i < p.length; i += 2) { var b = wert(p[i + 1]); acc = p[i].v === '+' ? add(acc, b) : sub(acc, b); }
+  return acc;
+}
+function summenZeile(tk) { /* Strichrechnung einzeilig: gleichnamig machen, Zähler verrechnen */
+  var qs = [], ops = [];
+  tk.forEach(function (t) { if (t.t === 'zahl') qs.push(wert(t)); else ops.push(t.v); });
+  var conv = qs.map(function (q, i) { return (i ? (ops[i - 1] === '+' ? '+' : '-') : '') + (q.z < 0 && i ? '\\left(' + frq(q) + '\\right)' : frq(q)); }).join('');
+  var H = kgVL(qs.map(function (q) { return q.n; }));
+  var gl = qs.map(function (q, i) { return (i ? (ops[i - 1] === '+' ? '+' : '-') : '') + fr(q.z * H / q.n, H); }).join('');
+  var z = qs.reduce(function (a, q, i) { return a + (i && ops[i - 1] === '-' ? -1 : 1) * q.z * H / q.n; }, 0);
+  var r = Q(z, H), out = exprTex(tk);
+  if (tk.some(function (t) { return t.art === 'gem'; })) out += '=' + conv;
+  if (qs.some(function (q) { return q.n !== H; })) out += '=' + gl;
+  out += '=' + fr(z, H);
+  if (ggT(z, H) > 1 && H !== 1) out += '=' + frq(red(r));
+  if (Math.abs(red(r).z) > red(r).n && red(r).n !== 1) out += '=' + gem(r);
+  return out;
+}
+function klammerRechnung(innen) {
+  return summenZeile(innen);
+}
+function mulZeile(u) {
+  var tex = u.tex, schritte = u.schritte, erg = u.erg;
+  var mitKuerzen = schritte.filter(function (s) { return /Kürzen/.test(s.k) && s.f; })[0];
+  var out = tex;
+  if (u.fak.some(function (x) { return x.art !== 'bruch'; })) out += '=' + u.fak.map(function (x) { var q = wert(x); return q.z < 0 ? '\\left(' + frq(q) + '\\right)' : frq(q); }).join('\\cdot ');
+  if (mitKuerzen) out += '=' + mitKuerzen.f; else { var b = schritte.filter(function (s) { return s.k === 'Auf einen Bruchstrich'; })[0]; out += '=' + b.f; }
+  out += '=' + frq(erg);
+  return out;
+}
+
+/* --- Sachaufgabe: Was bleibt übrig? --- */
+W.rest = function (a, teil) { /* a: {ganzes, einheit, gruppen:[{name, z, n}], restName} */
+  var dens = a.gruppen.map(function (g) { return g.n; }), H = kgVL(dens), st = [];
+  var zs = a.gruppen.map(function (g) { return g.z * H / g.n; }), sum = zs.reduce(function (x, y) { return x + y; }, 0), R = H - sum, rq = red(Q(R, H));
+  var teile = a.gruppen.map(function (g, i) { return { k: zs[i], f: FARBE.o[i], lab: '' }; }).concat([{ k: R, f: '#FBE3E3' }]);
+  var leg = '<div class="legende2">' + a.gruppen.map(function (g, i) { return '<span><i style="background:' + FARBE.o[i] + '"></i>' + g.name + ': ' + M('\\frac{' + g.z + '}{' + g.n + '}=\\frac{' + zs[i] + '}{' + H + '}') + '</span>'; }).join('') +
+    '<span><i style="background:#FBE3E3;border:1.5px solid ' + FARBE.rot + '"></i>' + a.restName + ': ' + M('\\frac{' + R + '}{' + H + '}') + '</span></div>';
+  var bildA = svgWrap(600, 40, balken(H, 1, teile, { W: 580, h: 30 }));
+  var proTeil = a.ganzes / H;
+  var teileB = a.gruppen.map(function (g, i) { return { k: zs[i], f: FARBE.o[i] }; }).concat([{ k: R, f: '#FBE3E3', lab: H <= 30 ? fmt(proTeil) : '' }]);
+  if (teil === 'a') {
+    st.push({ k: 'Das Ganze ist 1', t: 'Alle ' + a.wer + ' zusammen sind das Ganze, also ' + M('1') + '. Davon ziehst du die Anteile ab:', f: '1-' + a.gruppen.map(function (g) { return '\\frac{' + g.z + '}{' + g.n + '}'; }).join('-') });
+    var h = hnText(dens);
+    st.push({ k: 'Hauptnenner', t: h.t + ' Und ' + M('1=\\frac{' + H + '}{' + H + '}') + '.' });
+    st.push({ k: 'Rechnen', t: 'Erweitere alle Brüche und ziehe die Zähler ab:',
+      f: '\\frac{' + H + '}{' + H + '}-' + zs.map(function (z) { return '\\frac{' + z + '}{' + H + '}'; }).join('-') + '=\\frac{' + H + '-' + zs.join('-') + '}{' + H + '}=\\frac{' + R + '}{' + H + '}' + (rq.n !== H ? '=' + frq(rq) : '') });
+    st.push({ k: 'Bild', t: 'Der ganze Streifen ist das Ganze, aufgeteilt in ' + H + ' gleiche Teile. Rot umrandet ist der Rest:' + leg, g: bildA });
+    return { erg: frq(rq), schritte: st };
+  }
+  var erg = a.ganzes * rq.z / rq.n;
+  st.push({ k: 'Anteil von der Gesamtzahl', t: 'Aus a) weißt du: ' + M(frq(rq)) + ' ' + a.restText + '. Gesucht ist ' + M(frq(rq)) + ' von ' + M(fmt(a.ganzes) + (a.einheitTex ? a.einheitTex : '')) + ' – „von“ heißt „mal“:',
+    f: frq(rq) + '\\cdot ' + fmt(a.ganzes) + '=' + fmt(a.ganzes) + ':' + rq.n + '\\cdot ' + rq.z + '=' + fmt(a.ganzes / rq.n) + '\\cdot ' + rq.z + '=' + fmt(erg) });
+  if (H <= 40) st.push({ k: 'Bild', t: 'Jedes der ' + H + ' Teile steht für ' + M(a.ganzes + ':' + H + '=' + fmt(proTeil)) + (a.einheitWort ? ' ' + a.einheitWort : '') + '. Der Rest hat ' + R + ' Teile: ' + M(R + '\\cdot ' + fmt(proTeil) + '=' + fmt(erg)) + '.',
+    g: svgWrap(600, 40, balken(H, 1, teileB, { W: 580, h: 30 })) });
+  st.push({ k: 'Antwortsatz', t: a.antwort.replace('#', fmt(erg)) });
+  return { erg: fmt(erg) + (a.ergEinheit || ''), schritte: st };
+};
+function fmt(x) { return String(Math.round(x * 1000) / 1000).replace('.', '{,}'); }
+
+/* --- Bruchteile von Größen --- */
+W.von = function (a) { /* a: {z,n, menge, einheit, um:{wert, einheit, text}} */
+  var st = [], wertK = a.um ? a.um.wert : a.menge, eh = a.um ? a.um.einheit : a.einheit;
+  if (a.um) st.push({ k: 'In kleinere Einheit umrechnen', t: 'Rechne zuerst um, damit du gut teilen kannst:', f: a.um.text });
+  var teil = wertK / a.n, erg = teil * a.z;
+  st.push({ k: 'Durch den Nenner teilen', t: 'Teile das Ganze in ' + M(a.n) + ' gleiche Teile. Ein Teil ist:', f: '\\frac{1}{' + a.n + '}\\text{ von }' + wertK + '\\,\\text{' + eh + '}=' + wertK + ':' + a.n + '=' + teil + '\\,\\text{' + eh + '}' });
+  st.push({ k: 'Mal den Zähler', t: 'Du brauchst ' + M(a.z) + ' solche Teile:', f: '\\frac{' + a.z + '}{' + a.n + '}\\text{ von }' + wertK + '\\,\\text{' + eh + '}=' + teil + '\\,\\text{' + eh + '}\\cdot ' + a.z + '=' + erg + '\\,\\text{' + eh + '}' });
+  var teile = [{ k: a.z, f: FARBE.o[0], lab: a.n <= 12 ? String(teil) : '' }, { k: a.n - a.z, f: '#fff', lab: a.n <= 12 ? String(teil) : '' }];
+  st.push({ k: 'Bild', t: 'Der Streifen ist ' + M(wertK + '\\,\\text{' + eh + '}') + ', geteilt in ' + a.n + ' Teile zu je ' + M(teil + '\\,\\text{' + eh + '}') + '. Gefärbt sind ' + a.z + ' Teile.',
+    g: svgWrap(600, 40, balken(a.n, 1, teile, { W: 580, h: 30 })) });
+  return { erg: erg + '\\,\\text{' + (a.ergEinheit || eh) + '}', schritte: st };
+};
+
+/* --- Das Ganze bestimmen --- */
+W.ganzesAus = function (a) { /* {z,n,wert,einheit, extra} */
+  var teil = a.wert / a.z, ganz = teil * a.n, st = [];
+  st.push({ k: 'Was weißt du?', t: M('\\frac{' + a.z + '}{' + a.n + '}') + ' sind ' + M(a.wert + '\\,\\text{' + a.einheit + '}') + '. Das sind ' + M(a.z) + ' von ' + M(a.n) + ' Teilen.' });
+  st.push({ k: 'Ein Teil', t: 'Teile durch den Zähler – dann weißt du, wie viel ein Teil ist:', f: '\\frac{1}{' + a.n + '}\\ \\hat{=}\\ ' + a.wert + ':' + a.z + '=' + teil + '\\,\\text{' + a.einheit + '}' });
+  st.push({ k: 'Das Ganze', t: 'Das Ganze hat ' + M(a.n) + ' Teile – also mal den Nenner:', f: '\\frac{' + a.n + '}{' + a.n + '}\\ \\hat{=}\\ ' + teil + '\\cdot ' + a.n + '=' + ganz + '\\,\\text{' + a.einheit + '}' + (a.extra ? '\\ (' + a.extra + ')' : '') });
+  var teile = [{ k: a.z, f: FARBE.o[0], lab: a.n <= 12 ? String(teil) : '' }, { k: a.n - a.z, f: '#FBE3E3', lab: a.n <= 12 ? String(teil) : '' }];
+  st.push({ k: 'Bild', t: 'Orange sind die bekannten ' + a.z + ' Teile (zusammen ' + a.wert + ' ' + a.einheit + '). Jeder Teil ist ' + teil + ' ' + a.einheit + ' – alle ' + a.n + ' Teile zusammen ergeben das Ganze.',
+    g: svgWrap(600, 40, balken(a.n, 1, teile, { W: 580, h: 30 })) });
+  return { erg: ganz + '\\,\\text{' + a.einheit + '}', schritte: st };
+};
+
+root.LT = { ggT: ggT, kgV: kgV, kgVL: kgVL, Q: Q, red: red, add: add, sub: sub, mul: mul, cmp: cmp, fr: fr, frq: frq, gem: gem, zahl: zahl, wert: wert,
+  zahlTex: zahlTex, tokens: tokens, exprTex: exprTex, W: W, M: M, FARBE: FARBE, svg: { pizza: pizza, pizzen: pizzen, balken: balken, balkenVergleich: balkenVergleich,
+  flaeche: flaeche, zahlenstrahl: zahlenstrahl, kaestchenFigur: kaestchenFigur, ganzesFeld: ganzesFeld, svgWrap: svgWrap }, mulKern: mulKern, kuerzSchritt: kuerzSchritt, fmt: fmt };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* =====================================================================
+   Lerntheke Brüche – Aufgaben aller 10 Zettel (wie auf der Druckvorlage)
+   ===================================================================== */
+(function (root) {
+'use strict';
+var LT = root.LT, W = LT.W, Q = LT.Q;
+var ABC = 'abcdefghijklmnopqrstuvwxyz';
+function lab(i) { return ABC[i] + ')'; }
+/* Ausdruck in Kurzschrift -> LaTeX für die Aufgabenseite */
+function tx(s) { return LT.exprTex(LT.tokens(s)); }
+
+/* ---------- Figuren Zettel 1, Aufgabe 1 (aus der Druckvorlage gelesen) ---------- */
+var FIG = [{"c":[[0,0],[0,1],[1,0],[1,1],[2,0],[2,1],[3,0],[3,1]],"g":[[0,0],[1,0]],"h":[[2,0,"032"],[3,0,"032"],[0,1,"012"],[1,1,"012"]],"d":[[2,0,0],[3,0,0],[0,1,0],[1,1,0]]},{"c":[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]],"g":[[0,0],[1,1],[2,2]],"h":[[1,0,"032"],[2,1,"032"],[0,1,"012"],[1,2,"012"]],"d":[[1,0,0],[2,1,0],[0,1,0],[1,2,0],[0,2,1]]},{"c":[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2],[3,0],[3,1],[3,2]],"g":[[0,0],[0,1],[0,2],[1,0],[1,2]],"h":[[2,0,"032"],[1,1,"013"],[2,1,"032"],[2,2,"013"],[3,1,"032"],[3,2,"013"]],"d":[[2,0,0],[1,1,1],[2,1,0],[2,2,1],[3,1,0],[3,2,1]]},{"c":[[0,0],[0,1],[0,2],[0,3],[1,0],[1,1],[1,2],[1,3],[2,0],[2,1],[2,2],[2,3],[3,0],[3,1],[3,2],[3,3]],"g":[[1,1],[2,2]],"h":[[0,0,"123"],[1,0,"032"],[2,0,"123"],[3,0,"032"],[0,3,"012"],[1,3,"013"],[2,3,"012"],[3,3,"013"]],"d":[[0,0,1],[1,0,0],[2,0,1],[3,0,0],[0,3,0],[1,3,1],[2,3,0],[3,3,1],[1,2,0],[2,1,0]]},{"c":[[0,0],[0,1],[1,0],[1,1],[2,0],[2,1],[3,0],[3,1],[4,0],[4,1]],"g":[[0,0],[2,0],[4,1]],"h":[[1,0,"032"],[3,0,"123"],[1,1,"012"],[2,1,"013"],[3,1,"012"],[0,1,"013"]],"d":[[1,0,0],[3,0,1],[1,1,0],[2,1,1],[3,1,0],[0,1,1]]},{"c":[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2],[3,0],[3,1],[3,2]],"g":[],"h":[[0,0,"032"],[1,0,"123"],[2,0,"032"],[3,0,"123"],[0,1,"012"],[3,1,"013"],[0,2,"032"],[1,2,"013"],[2,2,"012"]],"d":[[0,0,0],[1,0,1],[2,0,0],[3,0,1],[0,1,0],[3,1,1],[0,2,0],[1,2,1],[2,2,0],[1,1,1],[2,1,0]]}];
+
+/* ---------- Teilfiguren "zum Ganzen ergänzen" (Teile + eine mögliche Ergänzung) ---------- */
+function rechteckTeile(x0, breite, hoehe, anz) { /* anz Teile nebeneinander, jeder breite×hoehe */
+  var t = [];
+  for (var k = 0; k < anz; k++) { var z = []; for (var x = 0; x < breite; x++) for (var y = 0; y < hoehe; y++) z.push([x0 + k * breite + x, y]); t.push(z); }
+  return t;
+}
+var GANZES = {
+  z1a: { z: 2, n: 5, feld: [8, 4, 1, 1], fig: { teile: rechteckTeile(0, 1, 2, 2), erg: rechteckTeile(2, 1, 2, 3) } },
+  z1b: { z: 3, n: 4, feld: [7, 4, 1, 1], fig: { teile: rechteckTeile(0, 1, 2, 3), erg: rechteckTeile(3, 1, 2, 1) } },
+  z1c: { z: 4, n: 7, feld: [8, 6, 1, 1], fig: { teile: [[[0, 0], [0, 1]], [[0, 2], [0, 3]], [[1, 2], [1, 3]], [[2, 2], [3, 2]]], erg: [[[2, 3], [3, 3]], [[4, 2], [4, 3]], [[5, 2], [5, 3]]] } },
+  z1d: { z: 2, n: 3, feld: [9, 5, 1, 1], fig: { teile: [[[0, 0], [1, 0], [1, 1]], [[1, 2], [2, 2], [3, 2]]], erg: [[[4, 2], [5, 2], [6, 2]]] } },
+  z7a: { z: 2, n: 5, feld: [12, 4, 1, 1], fig: { teile: rechteckTeile(0, 2, 2, 2), erg: rechteckTeile(4, 2, 2, 3) } },
+  z7b: { z: 3, n: 4, feld: [8, 5, 1, 1], fig: { teile: [[[0, 0], [0, 1]], [[1, 1], [2, 1]], [[2, 2], [3, 2]]], erg: [[[4, 2], [5, 2]]] } }
+};
+
+/* ---------- Zahlenstrahlen ---------- */
+var STRAHL1 = [{ von: 0, bis: 1, teile: 8 }, { von: 1, bis: 2, teile: 4 }, { von: 2, bis: 3, teile: 5 }];
+var STRAHL2 = [{ von: 0, bis: 1, teile: 6 }, { von: 1, bis: 2, teile: 3 }, { von: 2, bis: 3, teile: 10 }];
+var STRAHL3 = [{ von: 0, bis: 1, teile: 8 }, { von: 1, bis: 2, teile: 8 }, { von: 2, bis: 3, teile: 5 }];
+var PF1 = [['A', Q(5, 8)], ['B', Q(1, 4)], ['C', Q(7, 4)], ['D', Q(13, 5)]];
+var PF2 = [['E', Q(5, 6)], ['F', Q(1, 2)], ['G', Q(5, 3)], ['H', Q(27, 10)]];
+var MARK = ['3/4', '1_3/8', '15/8', '2_1/5', '2_4/5', '1/2'];
+
+/* ---------- Bruchspeicher ---------- */
+var SPEICHER = [[6, 8], [10, 15], [6, 10], [9, 12], [5, 8], [8, 12], [9, 15], [15, 20], [14, 21], [30, 50], [8, 10], [75, 100], [20, 30], [24, 40], [10, 12], [21, 28], [12, 20], [4, 6]];
+var ZIELE = [[2, 3], [3, 4], [3, 5]];
+
+/* ---------- Helfer zum Anlegen von Aufgaben ---------- */
+function liste(arr, fn) { return arr.map(function (x, i) { var it = fn(x, i); it.l = it.l || lab(i); return it; }); }
+function rechnen(arr, gen, nachGleich) { /* Kurzschrift-Ausdrücke */
+  return liste(arr, function (s) { return { a: tx(s) + '=', w: function () { return gen(s); } }; });
+}
+
+/* Sachaufgaben Zettel 6 */
+var SACH = [
+  { text: 'In der 6c sind $28$ Kinder. $\\frac{1}{4}$ kommt mit dem Bus, $\\frac{3}{7}$ mit dem Fahrrad, der Rest kommt zu Fuß.',
+    fa: 'Welcher Anteil der Klasse kommt zu Fuß?', fb: 'Wie viele Kinder sind das?',
+    d: { ganzes: 28, wer: 'Kinder der Klasse', gruppen: [{ name: 'Bus', z: 1, n: 4 }, { name: 'Fahrrad', z: 3, n: 7 }], restName: 'zu Fuß', restText: 'der Klasse kommen zu Fuß',
+      einheitTex: '\\text{ Kindern}', einheitWort: 'Kind', ergEinheit: '\\text{ Kinder}', antwort: '<b>Antwort:</b> # Kinder kommen zu Fuß.' } },
+  { text: 'Lena hat $360$ Sticker. Sie schenkt ihrem Bruder $\\frac{1}{4}$, ihrer Freundin $\\frac{2}{9}$ und ihrer Cousine $\\frac{1}{6}$ der Sticker.',
+    fa: 'Welcher Bruchteil der Sticker bleibt Lena?', fb: 'Wie viele Sticker sind das?',
+    d: { ganzes: 360, wer: 'Sticker', gruppen: [{ name: 'Bruder', z: 1, n: 4 }, { name: 'Freundin', z: 2, n: 9 }, { name: 'Cousine', z: 1, n: 6 }], restName: 'Lena', restText: 'der Sticker bleiben Lena',
+      einheitTex: '\\text{ Stickern}', einheitWort: 'Sticker', ergEinheit: '\\text{ Sticker}', antwort: '<b>Antwort:</b> Lena bleiben # Sticker.' } },
+  { text: 'Für das Schulfest wurden $180$ Waffeln gebacken. Die 6a verkauft $\\frac{1}{3}$ der Waffeln, die 6b $\\frac{1}{4}$ und die 6c $\\frac{1}{6}$.',
+    fa: 'Welcher Bruchteil der Waffeln ist noch übrig?', fb: 'Wie viele Waffeln sind das?',
+    d: { ganzes: 180, wer: 'Waffeln', gruppen: [{ name: '6a', z: 1, n: 3 }, { name: '6b', z: 1, n: 4 }, { name: '6c', z: 1, n: 6 }], restName: 'übrig', restText: 'der Waffeln sind übrig',
+      einheitTex: '\\text{ Waffeln}', einheitWort: 'Waffeln', ergEinheit: '\\text{ Waffeln}', antwort: '<b>Antwort:</b> Es sind noch # Waffeln übrig.' } },
+  { text: 'Ein Garten ist $480\\,\\text{m}^2$ groß. $\\frac{3}{8}$ sind Rasen, $\\frac{1}{5}$ ist Gemüsebeet und $\\frac{1}{4}$ sind Blumenbeete. Auf dem Rest steht die Terrasse.',
+    fa: 'Welcher Bruchteil des Gartens ist Terrasse?', fb: 'Wie groß ist die Terrasse?',
+    d: { ganzes: 480, wer: 'Teile des Gartens', gruppen: [{ name: 'Rasen', z: 3, n: 8 }, { name: 'Gemüse', z: 1, n: 5 }, { name: 'Blumen', z: 1, n: 4 }], restName: 'Terrasse', restText: 'des Gartens sind Terrasse',
+      einheitTex: '\\,\\text{m}^2', einheitWort: 'm²', ergEinheit: '\\,\\text{m}^2', antwort: '<b>Antwort:</b> Die Terrasse ist # m² groß.' } }
+];
+function sachItems(i) {
+  var s = SACH[i];
+  return [
+    { l: 'a)', frage: s.fa, w: function () { return W.rest(s.d, 'a'); } },
+    { l: 'b)', frage: s.fb, w: function () { return W.rest(s.d, 'b'); } }
+  ];
+}
+function sachRechnung(i) { /* rote Rechnung im Kästchenfeld (wie Lösungsdatei) */
+  var d = SACH[i].d, H = LT.kgVL(d.gruppen.map(function (g) { return g.n; }));
+  var zs = d.gruppen.map(function (g) { return g.z * H / g.n; }), R = H - zs.reduce(function (a, b) { return a + b; }, 0), r = LT.red(Q(R, H));
+  return '1-' + d.gruppen.map(function (g) { return '\\frac{' + g.z + '}{' + g.n + '}'; }).join('-') + '=\\frac{' + H + '}{' + H + '}-' + zs.map(function (z) { return '\\frac{' + z + '}{' + H + '}'; }).join('-') +
+    '=\\frac{' + R + '}{' + H + '}' + (r.n !== H ? '=' + LT.frq(r) : '') + ';\\qquad ' + LT.frq(r) + '\\cdot ' + d.ganzes + '=' + (d.ganzes * r.z / r.n);
+}
+
+/* Größen */
+var VON = [
+  { z: 3, n: 4, menge: 24, einheit: '€' },
+  { z: 2, n: 5, menge: 1, einheit: 'h', um: { wert: 60, einheit: 'min', text: '1\\,\\text{h}=60\\,\\text{min}' } },
+  { z: 3, n: 8, menge: 2, einheit: 'kg', um: { wert: 2000, einheit: 'g', text: '2\\,\\text{kg}=2000\\,\\text{g}' } },
+  { z: 7, n: 10, menge: 3, einheit: 'm', um: { wert: 300, einheit: 'cm', text: '3\\,\\text{m}=300\\,\\text{cm}' } },
+  { z: 5, n: 6, menge: 1, einheit: 'Tag', um: { wert: 24, einheit: 'h', text: '1\\text{ Tag}=24\\,\\text{h}' } },
+  { z: 7, n: 9, menge: 63, einheit: 'kg' },
+  { z: 3, n: 20, menge: 1, einheit: 'km', um: { wert: 1000, einheit: 'm', text: '1\\,\\text{km}=1000\\,\\text{m}' } },
+  { z: 4, n: 7, menge: 56, einheit: 'l' },
+  { z: 5, n: 12, menge: 1, einheit: 'Jahr', um: { wert: 12, einheit: 'Monate', text: '1\\text{ Jahr}=12\\text{ Monate}' } },
+  { z: 3, n: 5, menge: 2, einheit: 't', um: { wert: 2000, einheit: 'kg', text: '1\\,\\text{t}=1000\\,\\text{kg},\\ \\text{also } 2\\,\\text{t}=2000\\,\\text{kg}' } },
+  { z: 9, n: 25, menge: 1, einheit: 'm', um: { wert: 100, einheit: 'cm', text: '1\\,\\text{m}=100\\,\\text{cm}' } },
+  { z: 3, n: 4, menge: 1, einheit: 'min', um: { wert: 60, einheit: 's', text: '1\\,\\text{min}=60\\,\\text{s}' } }
+];
+var GANZAUS = [
+  { z: 3, n: 5, wert: 18, einheit: '€' }, { z: 2, n: 9, wert: 8, einheit: 'kg' }, { z: 2, n: 5, wert: 360, einheit: 'cm', extra: '=9\\,\\text{m}' },
+  { z: 5, n: 6, wert: 75, einheit: 'kg' }, { z: 3, n: 4, wert: 27, einheit: '€' }, { z: 3, n: 8, wert: 480, einheit: 'cm', extra: '=12{,}80\\,\\text{m}' },
+  { z: 4, n: 7, wert: 28, einheit: 'l' }, { z: 7, n: 12, wert: 63, einheit: 'min', extra: '=1\\,\\text{h}\\,48\\,\\text{min}' }, { z: 5, n: 8, wert: 40, einheit: 'm' }
+];
+function groesse(x, e) { return x + '\\,\\text{' + e + '}'; }
+
+/* Alltag (Zettel 8 Rückseite) */
+function alltag(nr) {
+  var r, st, erg;
+  if (nr === 0) {
+    r = W.mal('3*3/4'); st = [{ k: 'Rechnung aufstellen', t: 'Dreifache Menge heißt: mal 3.', f: '3\\cdot\\frac{3}{4}\\,\\text{l}' }].concat(r.schritte);
+    st.push({ k: 'Antwortsatz', t: '<b>Antwort:</b> Norbert braucht ' + LT.M('2\\frac{1}{4}') + ' Liter Milch.' });
+    return { erg: '2\\frac{1}{4}\\,\\text{l}', schritte: st };
+  }
+  if (nr === 1) {
+    r = W.mal('3/4*2/3');
+    st = [{ k: 'Rechnung aufstellen', t: 'Fläche eines Rechtecks: Breite mal Länge.', f: 'A=\\frac{3}{4}\\,\\text{m}\\cdot\\frac{2}{3}\\,\\text{m}' }].concat(r.schritte.filter(function (s) { return !/Flächenmodell/.test(s.k); }));
+    st.push({ k: 'Bild: das Beet im Quadratmeter', t: 'Das große Quadrat ist ' + LT.M('1\\,\\text{m}^2') + '. Das Beet (rot) ist ' + LT.M('\\frac34\\,\\text{m}') + ' breit und ' + LT.M('\\frac23\\,\\text{m}') + ' lang. Es bedeckt ' + LT.M('6') + ' von ' + LT.M('12') + ' Kästchen – die Hälfte.',
+      g: LT.svg.flaeche(2, 3, 3, 4) });
+    st.push({ k: 'Antwortsatz', t: '<b>Antwort:</b> Das Beet ist ' + LT.M('\\frac{1}{2}\\,\\text{m}^2') + ' groß.' });
+    return { erg: '\\frac{1}{2}\\,\\text{m}^2', schritte: st };
+  }
+  if (nr === 2) {
+    r = W.mal('120*3/4'); st = [{ k: 'Rechnung aufstellen', t: '120 Schritte zu je ' + LT.M('\\frac34\\,\\text{m}') + ':', f: '120\\cdot\\frac{3}{4}\\,\\text{m}' }].concat(r.schritte);
+    st.push({ k: 'Kopfrechnen geht auch', t: LT.M('\\frac34') + ' von 120: ' + LT.M('120:4=30') + ', ' + LT.M('30\\cdot 3=90') + '.' });
+    st.push({ k: 'Antwortsatz', t: '<b>Antwort:</b> Tom kommt ' + LT.M('90') + ' m weit.' });
+    return { erg: '90\\,\\text{m}', schritte: st };
+  }
+  r = W.mal('2/5 von 3/4');
+  st = [{ k: 'Rechnung aufstellen', t: 'Mia trinkt ' + LT.M('\\frac25') + ' <b>von</b> ' + LT.M('\\frac34') + ' Liter.', f: '\\frac{2}{5}\\text{ von }\\frac{3}{4}\\,\\text{l}=\\frac{2}{5}\\cdot\\frac{3}{4}\\,\\text{l}' }].concat(r.schritte.slice(1));
+  st.push({ k: 'Antwortsatz', t: '<b>Antwort:</b> Mia trinkt ' + LT.M('\\frac{3}{10}') + ' Liter.' });
+  return { erg: '\\frac{3}{10}\\,\\text{l}', schritte: st };
+}
+function lena() {
+  var S = LT.svg;
+  return {
+    erg: '\\text{Nein!}', text: 'Nein. Bei unechten Brüchen wird das Ergebnis größer, z. B. $4\\cdot\\frac{3}{2}=6$ und $6>4$.',
+    schritte: [
+      { k: 'Ausprobieren', t: 'Probiere mit der Zahl ' + LT.M('4') + ' verschiedene Brüche aus:', f: '4\\cdot\\frac{1}{2}=2\\qquad 4\\cdot\\frac{3}{3}=4\\qquad 4\\cdot\\frac{3}{2}=6' },
+      { k: 'Vergleichen', t: 'Mit ' + LT.M('\\frac12') + ' wird es kleiner (2 < 4). Mit ' + LT.M('\\frac33=1') + ' bleibt es gleich. Mit ' + LT.M('\\frac32') + ' wird es <b>größer</b> (6 > 4). Lenas Behauptung stimmt also nicht immer.',
+        g: S.balkenVergleich([{ q: Q(4, 1), n: 1, f: '#ddd', tex: ['4', '', ''] }, { q: Q(2, 1), n: 1, f: LT.FARBE.o[1], tex: ['·½', '', ''] }, { q: Q(6, 1), n: 1, f: LT.FARBE.o[0], tex: ['·³⁄₂', '', ''] }]) },
+      { k: 'Die Regel', t: 'Malnehmen mit einem Bruch <b>kleiner als 1</b> macht kleiner. Mit einem Bruch <b>größer als 1</b> (unechter Bruch) wird das Ergebnis größer.' },
+      { k: 'So könntest du antworten', t: '<i>„Das stimmt nicht. Bei unechten Brüchen wird das Ergebnis größer, z. B. ' + LT.M('4\\cdot\\frac{3}{2}=6') + ' und ' + LT.M('6>4') + '.“</i>' }
+    ]
+  };
+}
+
+/* =====================================================================
+   Die Zettel
+   ===================================================================== */
+var ZETTEL = [
+  { id: '1v', nr: 1, seite: 'Vorderseite', titel: 'Anteile und das Ganze', aufgaben: [
+    { nr: 1, auftrag: 'Welcher Anteil der Figur ist grau? Gib den Bruch vollständig gekürzt an.', layout: 'figuren',
+      items: liste(FIG, function (f) { return { fig: f, w: function () { return W.anteil(f); } }; }) },
+    { nr: 2, auftrag: 'Die graue Fläche ist der angegebene Anteil einer Figur. Ergänze im Kästchenfeld zum Ganzen.', layout: 'feld',
+      items: ['z1a', 'z1b', 'z1c', 'z1d'].map(function (k, i) { var g = GANZES[k]; return { l: lab(i), a: '\\frac{' + g.z + '}{' + g.n + '}', ganz: g, w: function () { return W.ganzes(g); } }; }) }
+  ] },
+  { id: '1r', nr: 1, seite: 'Rückseite', titel: 'Zahlenstrahl', aufgaben: [
+    { nr: 3, auftrag: 'Lies die Zahlen an den Pfeilen ab. Schreibe sie als Bruch oder gemischte Zahl. <b>Achtung:</b> Die Einteilung wechselt!', layout: 'ablesen',
+      strahlen: [{ abschn: STRAHL1, pf: PF1 }, { abschn: STRAHL2, pf: PF2 }],
+      items: PF1.concat(PF2).map(function (p, i) { var ab = i < 4 ? STRAHL1 : STRAHL2; return { l: p[0], a: p[0] + '=', w: function () { return W.ablesen({ abschn: ab, x: p[1], name: p[0] }); } }; }) },
+    { nr: 4, auftrag: 'Markiere mit einem Pfeil:', layout: 'markieren', strahl: STRAHL3,
+      items: MARK.map(function (s) { var z = LT.zahl(s), q = LT.wert(z); return { l: '', a: LT.zahlTex(z), x: q, w: function () { return W.markieren({ abschn: STRAHL3, x: z, lab: z.art === 'gem' ? [String(z.w), z.z, z.n] : ['', z.z, z.n] }); } }; }) }
+  ] },
+  { id: '2v', nr: 2, seite: 'Vorderseite', titel: 'Erweitern und Kürzen', aufgaben: [
+    { nr: 1, auftrag: 'Erweitere auf den Nenner $24$.', layout: 'raster', spalten: 4,
+      items: liste([[2, 3], [5, 6], [3, 4], [7, 8], [1, 2], [5, 12], [3, 8], [1, 6]], function (b) { return { a: '\\frac{' + b[0] + '}{' + b[1] + '}=', w: function () { return W.erweitern(b[0], b[1], 24); } }; }) },
+    { nr: 2, auftrag: 'Kürze vollständig.', layout: 'raster', spalten: 4,
+      tipp: { art: 'Tipp', text: 'Kürzen heißt: Zähler und Nenner durch die <b>gleiche</b> Zahl teilen. Vollständig gekürzt ist erst, wenn es keinen gemeinsamen Teiler mehr gibt.' },
+      items: liste([[12, 18], [21, 28], [40, 64], [54, 72], [36, 48], [45, 75], [26, 39], [56, 72], [84, 96], [108, 144], [72, 120], [125, 150]], function (b) { return { a: '\\frac{' + b[0] + '}{' + b[1] + '}=', w: function () { return W.kuerzen(b[0], b[1]); } }; }) }
+  ] },
+  { id: '2r', nr: 2, seite: 'Rückseite', titel: 'Gleich große Brüche', aufgaben: [
+    { nr: 3, auftrag: 'Ergänze die fehlende Zahl.', layout: 'fehlend', spalten: 4,
+      items: liste([[56, 72, 7, null], [13, 25, null, 125], [3, 4, null, 100], [45, 60, 3, null], [7, 8, 35, null], [48, 64, null, 4], [11, 20, null, 100], [42, 98, null, 7]], function (b) {
+        var d = { z1: b[0], n1: b[1], z2: b[2], n2: b[3] };
+        return { d: d, w: function () { return W.fehlend(d); } };
+      }) },
+    { nr: 4, auftrag: 'Welche Brüche sind gleich groß wie $\\frac{2}{3}$, $\\frac{3}{4}$ oder $\\frac{3}{5}$? Schreibe sie in die richtige Zeile. Drei Brüche passen nirgends.', layout: 'speicher',
+      speicher: SPEICHER, ziele: ZIELE,
+      items: ZIELE.map(function (z, i) { return { l: 'gleich groß wie $\\frac{' + z[0] + '}{' + z[1] + '}$:', w: function () { return W.speicher(SPEICHER, ZIELE, i); } }; }) }
+  ] },
+  { id: '3v', nr: 3, seite: 'Vorderseite', titel: 'Vergleichen', aufgaben: [
+    { nr: 1, auftrag: 'Setze $<$, $>$ oder $=$ ein.', layout: 'vergleich', spalten: 4,
+      tipp: { art: 'Tipp', text: 'Gleicher Nenner → Zähler vergleichen. Gleicher Zähler → kleinerer Nenner = größere Teile. Sonst: gleichnamig machen. Gemischte Zahlen zuerst umwandeln.' },
+      items: liste([['3/7', '5/7'], ['4/9', '4/11'], ['2/3', '3/4'], ['5/8', '10/16'], ['7/10', '2/3'], ['1_1/3', '5/4'], ['5/6', '7/9'], ['3/5', '9/15'], ['11/12', '7/8'], ['4/7', '3/5'],
+        ['9/4', '2_1/3'], ['13/20', '5/8'], ['7/12', '11/18'], ['2_3/8', '19/8'], ['5/9', '4/7'], ['17/15', '1_1/6'], ['3/10', '7/25'], ['8/9', '9/10'], ['3_1/4', '13/4'], ['23/24', '15/16']], function (p) {
+        return { links: tx(p[0]), rechts: tx(p[1]), w: function () { return W.vergleich(p[0], p[1]); } };
+      }) }
+  ] },
+  { id: '3r', nr: 3, seite: 'Rückseite', titel: 'Ordnen', aufgaben: [
+    { nr: 2, auftrag: 'Ordne der Größe nach. Beginne mit dem kleinsten Bruch.', layout: 'ordnen',
+      tipp: { art: 'Tipp', text: 'Bringe alle Brüche auf einen gemeinsamen Nenner.' },
+      items: liste([['3/4', '5/8', '2/3', '7/12'], ['5/6', '3/4', '7/9'], ['2/5', '3/10', '1/4', '7/20'], ['1_1/2', '4/3', '1_3/8', '5/4'], ['7/12', '5/9', '2/3', '11/18'], ['2_1/4', '13/6', '2_1/3', '2_2/9']], function (l) {
+        return { a: l.map(tx).join('\\quad '), w: function () { return W.ordnen(l); } };
+      }) }
+  ] },
+  { id: '4v', nr: 4, seite: 'Vorderseite', titel: 'Gemischte Zahlen', aufgaben: [
+    { nr: 1, auftrag: 'Schreibe als gemischte Zahl.', layout: 'raster', spalten: 4,
+      items: liste([[7, 3], [11, 4], [23, 6], [17, 5], [19, 8], [29, 9], [31, 6], [47, 12], [53, 10], [73, 8], [100, 9], [87, 11]], function (b) { return { a: '\\frac{' + b[0] + '}{' + b[1] + '}=', w: function () { return W.zuGemischt(b[0], b[1]); } }; }) },
+    { nr: 2, auftrag: 'Schreibe als unechten Bruch.', layout: 'raster', spalten: 4,
+      items: liste([[1, 4, 5], [3, 2, 7], [2, 5, 8], [4, 1, 3], [5, 3, 4], [6, 2, 9], [3, 7, 10], [7, 5, 6], [5, 4, 9], [6, 11, 12], [8, 3, 7], [12, 5, 8]], function (b) { return { a: b[0] + '\\frac{' + b[1] + '}{' + b[2] + '}=', w: function () { return W.zuUnecht(b[0], b[1], b[2]); } }; }) }
+  ] },
+  { id: '4r', nr: 4, seite: 'Rückseite', titel: 'Rechnen mit gemischten Zahlen', aufgaben: [
+    { nr: 3, auftrag: 'Berechne. Gib das Ergebnis als gemischte Zahl an.', layout: 'raster', spalten: 2,
+      tipp: { art: 'Tipp', text: 'Ganze und Brüche getrennt rechnen – oder zuerst in unechte Brüche umwandeln. Reicht der Bruch beim Minus nicht, ein Ganzes umwandeln.' },
+      items: rechnen(['2_1/2+1_2/3', '3_1/4-1_2/3', '3_5/6+2_3/4', '4-1_3/8', '5_2/5-2_3/4', '1_7/8+2_5/6', '6_1/3-4_5/6', '2_3/10+1_4/15', '3_1/2+1_3/4-2_5/8', '7-2_2/3-1_5/6'], W.gemischt) }
+  ] },
+  { id: '5v', nr: 5, seite: 'Vorderseite', titel: 'Gleichnamige Brüche', aufgaben: [
+    { nr: 1, auftrag: 'Berechne. Kürze, wenn möglich. Gib Ergebnisse größer als 1 als gemischte Zahl an.', layout: 'raster', spalten: 3,
+      tipp: { art: 'Merke', text: 'Nur die Zähler werden addiert bzw. subtrahiert – der Nenner bleibt gleich!' },
+      items: rechnen(['3/11+5/11', '7/9-2/9', '5/12+11/12', '9/10-3/10', '1_3/8+2_7/8', '4_5/6-1_1/6', '-3/7+5/7', '2/9-7/9', '3_1/4-1_3/4', '5/8+7/8+3/8', '11/15-2/15-4/15', '5-2_3/5'],
+        function (s) { return /_/.test(s) || /^\d+-/.test(s) ? W.gemischt(s) : W.summe(s); }) }
+  ] },
+  { id: '5r', nr: 5, seite: 'Rückseite', titel: 'Ungleichnamige Brüche', aufgaben: [
+    { nr: 2, auftrag: 'Berechne. Kürze, wenn möglich. Gib Ergebnisse größer als 1 als gemischte Zahl an.', layout: 'raster', spalten: 3,
+      tipp: { art: 'Merke', text: 'Zuerst gleichnamig machen (Hauptnenner), dann die Zähler verrechnen.' },
+      items: rechnen(['1/2+1/5', '2/3+1/6', '3/4-1/3', '5/6+3/8', '7/10-4/15', '-3/4+1/2', '5/12+7/18', '2/3-5/6', '1/2+1/3+1/4', '-3/4+5/6-7/12', '5/6-1/4-1/3', '7/8-5/12+1/6'], W.summe) }
+  ] },
+  { id: '6v', nr: 6, seite: 'Vorderseite', titel: 'Sachaufgaben – Was bleibt übrig?', aufgaben: [
+    { nr: 1, auftrag: SACH[0].text, layout: 'sach', rechnung: sachRechnung(0), items: sachItems(0) },
+    { nr: 2, auftrag: SACH[1].text, layout: 'sach', rechnung: sachRechnung(1), items: sachItems(1) }
+  ] },
+  { id: '6r', nr: 6, seite: 'Rückseite', titel: 'Sachaufgaben – Was bleibt übrig?', aufgaben: [
+    { nr: 3, auftrag: SACH[2].text, layout: 'sach', rechnung: sachRechnung(2), items: sachItems(2) },
+    { nr: 4, auftrag: SACH[3].text, layout: 'sach', rechnung: sachRechnung(3), items: sachItems(3) }
+  ] },
+  { id: '7v', nr: 7, seite: 'Vorderseite', titel: 'Bruchteile von Größen', aufgaben: [
+    { nr: 1, auftrag: 'Berechne.', layout: 'raster', spalten: 3,
+      tipp: { art: 'Merke', text: '„von“ heißt „mal“: durch den Nenner teilen, mal den Zähler nehmen. Bei Größen erst in eine kleinere Einheit umrechnen (1 h = 60 min, 1 kg = 1000 g).' },
+      items: liste(VON, function (v) { return { a: '\\frac{' + v.z + '}{' + v.n + '}\\text{ von }' + (v.einheit === 'Tag' || v.einheit === 'Jahr' ? v.menge + '\\text{ ' + v.einheit + '}' : groesse(v.menge, v.einheit)) + '=', w: function () { return W.von(v); } }; }) }
+  ] },
+  { id: '7r', nr: 7, seite: 'Rückseite', titel: 'Das Ganze bestimmen', aufgaben: [
+    { nr: 2, auftrag: 'Die graue Fläche ist der angegebene Anteil einer Figur. Ergänze im Kästchenfeld zum Ganzen.', layout: 'feld', breit: true,
+      items: ['z7a', 'z7b'].map(function (k, i) { var g = GANZES[k]; return { l: lab(i), a: '\\frac{' + g.z + '}{' + g.n + '}', ganz: g, w: function () { return W.ganzes(g); } }; }) },
+    { nr: 3, auftrag: 'Bestimme das Ganze.', layout: 'raster', spalten: 3,
+      items: liste(GANZAUS, function (v) { return { a: '\\frac{' + v.z + '}{' + v.n + '}\\text{ sind }' + groesse(v.wert, v.einheit), w: function () { return W.ganzesAus(v); } }; }) }
+  ] },
+  { id: '8v', nr: 8, seite: 'Vorderseite', titel: 'Brüche multiplizieren', aufgaben: [
+    { nr: 1, auftrag: 'Berechne. Kürze am besten schon vor dem Ausrechnen.', layout: 'raster', spalten: 3,
+      tipp: { art: 'Merke', text: 'Zähler mal Zähler, Nenner mal Nenner. „von“ heißt „mal“. Vorzeichen wie bei ganzen Zahlen.' },
+      items: rechnen(['3*2/7', '5*3/10', '2/3*4/5', '3/4*2/9', '5/8*4/15', '4*5/8', '7/12*6', '3/5*10/21', '-4/9*3/8', '9/14*7/12', '6/25*15/8', '5/6*(-3/10)'], W.mal)
+        .concat(liste(['2/3 von 3/4', '1/2 von 4/5', '3/8 von 2/3'], function (s, i) {
+          var p = s.split(' von '); return { l: lab(12 + i), a: tx(p[0]) + '\\text{ von }' + tx(p[1]) + '=', w: function () { return W.mal(s); } };
+        })) }
+  ] },
+  { id: '8r', nr: 8, seite: 'Rückseite', titel: 'Multiplizieren im Alltag', aufgaben: [
+    { nr: 2, auftrag: 'Löse im Kästchenfeld und trage das Ergebnis ein.', layout: 'text',
+      items: liste(['Für einen Pfannkuchenteig braucht man $\\frac{3}{4}$ l Milch. Norbert macht die dreifache Menge. Wie viel Milch braucht er?',
+        'Ein Beet ist $\\frac{3}{4}$ m breit und $\\frac{2}{3}$ m lang. Wie groß ist seine Fläche?',
+        'Ein Schritt von Tom ist $\\frac{3}{4}$ m lang. Wie weit kommt er mit $120$ Schritten?',
+        'Eine Flasche enthält $\\frac{3}{4}$ l Saft. Mia trinkt $\\frac{2}{5}$ davon. Wie viel Liter trinkt sie?'], function (t, i) { return { frage: t, w: function () { return alltag(i); } }; }) },
+    { nr: 3, auftrag: 'Lena behauptet: „Wenn ich eine Zahl mit einem Bruch malnehme, wird das Ergebnis immer kleiner.“ Stimmt das? Begründe mit einem Beispiel.', layout: 'lena',
+      items: [{ l: '', w: lena }] }
+  ] },
+  { id: '9v', nr: 9, seite: 'Vorderseite', titel: 'Multiplizieren auf Testniveau', aufgaben: [
+    { nr: 1, auftrag: 'Berechne. Kürze vor dem Malnehmen – mit dem größten Teiler. Prüfe danach, ob noch etwas zu kürzen ist.', layout: 'raster', spalten: 2,
+      tipp: { art: 'Tipp', text: 'Große Zahlen? Denke an $11, 12, 13, 15, 16, 17, 19, 25$ …' },
+      items: rechnen(['15/22*33/40', '26/45*9/13', '-16/35*21/64', '11/36*48/121', '-14/45*27/56', '25/42*28/75', '39/50*35/52', '18/49*35/54', '44/63*81/88', '34/57*38/51'], W.mal) }
+  ] },
+  { id: '9r', nr: 9, seite: 'Rückseite', titel: 'Minuszeichen und drei Brüche', aufgaben: [
+    { nr: 2, auftrag: 'Bestimme zuerst das Vorzeichen. Berechne dann.', layout: 'raster', spalten: 2,
+      tipp: { art: 'Merke', text: 'Gerade Anzahl Minuszeichen → plus. Ungerade Anzahl → minus.' },
+      items: rechnen(['-4/9*(-15/16)', '10/21*(-7/12)*9/25', '-3/8*(-4/15)*(-10/9)', '2/3*9/10*5/6', '-5/12*8/15*(-9/4)', '7/10*(-5/14)*(-8/9)', '9/16*(-8/27)*4/5', '-6/7*14/15*(-5/8)'], W.mal) }
+  ] },
+  { id: '10v', nr: 10, seite: 'Vorderseite', titel: 'Gemischte und ganze Zahlen', aufgaben: [
+    { nr: 1, auftrag: 'Berechne. Wandle zuerst in Brüche um. Gib das Ergebnis als gemischte Zahl an.', layout: 'raster', spalten: 2,
+      tipp: { art: 'Merke', text: 'Gemischte Zahlen immer zuerst umwandeln: $2\\frac{1}{4}=\\frac{9}{4}$. Ganze Zahl: $6=\\frac{6}{1}$.' },
+      items: rechnen(['8*3/10', '1_2/3*9/10', '3_1/2*1_1/7', '-2_1/4*2/3', '1_1/3*9/16', '2_1/4*4/9', '6*2_5/9', '2_2/5*1_7/8', '3_3/4*(-1_3/5)', '4_1/2*2_2/9'], W.mal) }
+  ] },
+  { id: '10r', nr: 10, seite: 'Rückseite', titel: 'Klammern und Punkt vor Strich', aufgaben: [
+    { nr: 2, auftrag: 'Berechne. Was rechnest du zuerst? Klammer vor Punkt vor Strich!', layout: 'raster', spalten: 2,
+      tipp: { art: 'Merke', text: 'Klammer zuerst, dann Punkt (mal) vor Strich (plus/minus).' },
+      items: rechnen(['2/3*(5/6-1/2)', '1_1/4*2/5+3/8*2/3', '5/6-1_1/3*3/4', '1_1/2*4/9+5/8*2', '(3/4+1/6)*6/11', '3/5*(2_1/2-5/6)', '7/8-3/4*1/2', '2*3/4-5/6*3/10'], W.klammer) }
+  ] }
+];
+
+root.LT_DATEN = { ZETTEL: ZETTEL, FIG: FIG, GANZES: GANZES, STRAHL1: STRAHL1, STRAHL2: STRAHL2, STRAHL3: STRAHL3, PF1: PF1, PF2: PF2 };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* =====================================================================
+   Lerntheke Brüche – Oberfläche (Übersicht, Arbeitsblatt, Rechenweg)
+   ===================================================================== */
+(function () {
+'use strict';
+var LT = window.LT, D = window.LT_DATEN, Z = D.ZETTEL, S = LT.svg;
+var $ = function (id) { return document.getElementById(id); };
+
+/* ---------- Formeln ---------- */
+function tex(t, block, klein) {
+  if (window.katex) { try { return katex.renderToString((block || klein ? '' : '\\displaystyle ') + t, { throwOnError: false, strict: 'ignore', displayMode: !!block }); } catch (e) {} }
+  return '<span class="roh">' + t + '</span>';
+}
+function mt(html) { /* $...$ im Text -> KaTeX (kleine Brüche, für Erklärtexte) */
+  return String(html || '').replace(/\$([^$]+)\$/g, function (_, t) { return tex(t, false, true); });
+}
+function mtB(html) { /* $...$ im Text -> KaTeX mit großen Brüchen (wie auf dem Arbeitsblatt) */
+  return String(html || '').replace(/\$([^$]+)\$/g, function (_, t) { return tex(t); });
+}
+
+/* ---------- Symbole ---------- */
+var IC = {
+  weg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></svg>',
+  li: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4l-6 6 6 6"/></svg>',
+  re: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4l6 6-6 6"/></svg>',
+  auge: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  zu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 5.4-1.6"/></svg>'
+};
+
+/* ---------- Übersicht ---------- */
+function zettelSeite(nr, s) { return Z.filter(function (z) { return z.nr === nr && z.seite[0].toLowerCase() === s; })[0]; }
+function baueListe() {
+  var h = '';
+  for (var nr = 1; nr <= 10; nr++) {
+    var v = zettelSeite(nr, 'v'), r = zettelSeite(nr, 'r');
+    h += '<div class="zk"><span class="nr g' + nr + '">' + nr + '</span><span class="tt">Zettel ' + nr + '<small>' + v.titel + ' · ' + r.titel.replace('Sachaufgaben – ', '') + '</small></span>' +
+      '<div class="kn2"><a href="#' + v.id + '"><small>Vorderseite</small>' + v.titel + '</a><a href="#' + r.id + '"><small>Rückseite</small>' + r.titel + '</a></div></div>';
+  }
+  $('liste').innerHTML = h;
+}
+
+/* ---------- Arbeitsblatt ---------- */
+var aktuell = null, eintraege = [], offen = {};
+function weg(e) { if (!e.wegC) e.wegC = e.it.w(); return e.wegC; }
+
+function feld(i, inhalt, extraKlasse) {
+  return '<button type="button" class="feld' + (extraKlasse ? ' ' + extraKlasse : '') + '" data-i="' + i + '" aria-label="Lösung zeigen"><span class="inh">' + inhalt + '</span><span class="wegi" aria-hidden="true">' + IC.weg + '</span></button>';
+}
+function ergHtml(e) { var w = weg(e); return w.text ? mt(w.text) : tex(w.erg); }
+
+function renderAufgabe(z, a) {
+  var h = '<section class="afg"><h3>Aufgabe ' + a.nr + ':</h3>';
+  if (a.layout !== 'figuren' || true) h += '<div class="auftrag">' + mtB(a.auftrag) + (a.layout === 'markieren' ? '&ensp;' + a.items.map(function (it) { return tex(it.a); }).join('&emsp;') : '') + '</div>';
+  var start = eintraege.length;
+  a.items.forEach(function (it) { eintraege.push({ z: z, a: a, it: it }); });
+  var I = function (k) { return start + k; };
+  switch (a.layout) {
+    case 'raster':
+      h += '<div class="raster" style="--min:' + ({ 4: 150, 3: 215, 2: 300 })[a.spalten] + 'px">' + a.items.map(function (it, k) {
+        return '<div class="zelle"><span class="lb">' + it.l + '</span><span class="aufg">' + tex(it.a) + '</span>' + feld(I(k), ergHtml(eintraege[I(k)])) + '</div>';
+      }).join('') + '</div>';
+      break;
+    case 'fehlend':
+      h += '<div class="raster" style="--min:160px">' + a.items.map(function (it, k) {
+        var d = it.d, t = '\\frac{' + d.z1 + '}{' + d.n1 + '}=\\frac{' + (d.z2 === null ? '\\square' : d.z2) + '}{' + (d.n2 === null ? '\\square' : d.n2) + '}';
+        return '<div class="zelle"><span class="lb">' + it.l + '</span><span class="aufg">' + tex(t) + '</span>' + feld(I(k), ergHtml(eintraege[I(k)])) + '</div>';
+      }).join('') + '</div>';
+      break;
+    case 'vergleich':
+      h += '<div class="raster" style="--min:150px">' + a.items.map(function (it, k) {
+        return '<div class="zelle vg"><span class="lb">' + it.l + '</span><span class="aufg">' + tex(it.links) + '</span>' + feld(I(k), ergHtml(eintraege[I(k)])) + '<span class="re">' + tex(it.rechts) + '</span></div>';
+      }).join('') + '</div>';
+      break;
+    case 'figuren':
+      h += '<div class="figuren">' + a.items.map(function (it, k) {
+        return '<div class="fz"><span class="lb">' + it.l + '</span><div class="fbild">' + S.kaestchenFigur(it.fig, { u: 24 }) + '</div>' + feld(I(k), ergHtml(eintraege[I(k)])) + '</div>';
+      }).join('') + '</div>';
+      break;
+    case 'feld':
+      h += '<div class="felder" style="--min:' + (a.breit ? 300 : 190) + 'px">' + a.items.map(function (it, k) {
+        var g = it.ganz, f = g.feld;
+        return '<div class="fz" data-fz="' + I(k) + '"><span class="lb">' + it.l + ' ' + tex(it.a) + '</span>' +
+          '<button type="button" class="feld bild" data-i="' + I(k) + '" aria-label="Lösung zeigen"><span class="bildinh">' + S.ganzesFeld(g.fig, { cols: f[0], rows: f[1], ox: f[2], oy: f[3] }) + '</span><span class="wegi" aria-hidden="true">' + IC.weg + '</span></button>' +
+          '<div class="notiz">' + weg(eintraege[I(k)]).notiz + '</div></div>';
+      }).join('') + '</div>';
+      break;
+    case 'ablesen':
+      a.strahlen.forEach(function (s, j) {
+        h += '<div class="strahl">' + S.zahlenstrahl(s.abschn, s.pf.map(function (p) { return { x: p[1], lab: p[0], c: '#1d2b3a' }; }), { W: 480, y: 64 }) + '</div>';
+        h += '<div class="ablesezeile">' + s.pf.map(function (p, k) { var i = I(j * 4 + k); return '<div class="zelle"><span class="aufg">' + tex(p[0] + '=') + '</span>' + feld(i, ergHtml(eintraege[i])) + '</div>'; }).join('') + '</div>';
+      });
+      break;
+    case 'markieren':
+      h += '<div class="strahl" id="markstrahl" data-start="' + start + '"></div>';
+      h += '<div class="chips">' + a.items.map(function (it, k) { return feld(I(k), tex(it.a)); }).join('') + '</div>';
+      break;
+    case 'speicher':
+      h += '<div class="speicher" id="speicher">' + a.speicher.map(function (b, k) { return '<span data-k="' + k + '">' + tex('\\frac{' + b[0] + '}{' + b[1] + '}') + '</span>'; }).join('') + '</div>';
+      h += '<div class="zeilen">' + a.items.map(function (it, k) { return '<div class="zz"><span class="frage">' + mt(it.l) + '</span>' + feld(I(k), ergHtml(eintraege[I(k)])) + '</div>'; }).join('') + '</div>';
+      break;
+    case 'ordnen':
+      h += '<div class="zeilen ordnen">' + a.items.map(function (it, k) { return '<div class="zz"><span class="frage"><span class="lb">' + it.l + '</span>&ensp;' + tex(it.a) + '</span>' + feld(I(k), ergHtml(eintraege[I(k)])) + '</div>'; }).join('') + '</div>';
+      break;
+    case 'sach':
+      h += '<div class="zeilen sach">' + a.items.map(function (it, k) { return '<div class="zz"><span class="lb">' + it.l + '</span><span class="frage">' + it.frage + '</span>' + feld(I(k), ergHtml(eintraege[I(k)])) + '</div>'; }).join('') + '</div>';
+      h += '<div class="kaestchen" data-von="' + start + '"><span class="inh">' + a.rechnung.split(';').map(function (t) { return '<span>' + tex(t.replace('\\qquad', '')) + '</span>'; }).join('') + '</span></div>';
+      break;
+    case 'text':
+      h += '<div class="zeilen text">' + a.items.map(function (it, k) { return '<div class="zz"><span class="lb">' + it.l + '</span><span class="frage">' + mt(it.frage) + '</span>' + feld(I(k), ergHtml(eintraege[I(k)])) + '</div>'; }).join('') + '</div>';
+      break;
+    case 'lena':
+      h += '<div class="lena">' + feld(I(0), mt(weg(eintraege[I(0)]).text)) + '</div>';
+      break;
+  }
+  if (a.tipp) h += '<div class="tipp"><u>' + a.tipp.art + ':</u> ' + mtB(a.tipp.text) + '</div>';
+  return h + '</section>';
+}
+
+function zeigeBlatt(id) {
+  var z = Z.filter(function (x) { return x.id === id; })[0];
+  if (!z) return zeigeListe();
+  aktuell = z; eintraege = []; offen = {};
+  var h = '<div class="bkopf"><h2>Wiederholung: ' + z.titel + '</h2><span class="zlab">Zettel ' + z.nr + ' · ' + z.seite + ' · Lösung</span></div>';
+  z.aufgaben.forEach(function (a) { h += renderAufgabe(z, a); });
+  $('blatt').innerHTML = h;
+  zeichneMarkierung();
+  /* Umschalter Vorder-/Rückseite */
+  var v = zettelSeite(z.nr, 'v'), r = zettelSeite(z.nr, 'r');
+  $('seg').innerHTML = '<a href="#' + v.id + '"' + (z === v ? ' class="an"' : '') + '>' + z.nr + ' · Vorne</a><a href="#' + r.id + '"' + (z === r ? ' class="an"' : '') + '>' + z.nr + ' · Hinten</a>';
+  var idx = Z.indexOf(z), vor = Z[idx - 1], nach = Z[idx + 1];
+  $('blattnav').innerHTML = (vor ? '<a href="#' + vor.id + '">' + IC.li + 'Zettel ' + vor.nr + ' ' + (vor.seite === 'Vorderseite' ? 'vorne' : 'hinten') + '</a>' : '<a class="leer2"></a>') +
+    (nach ? '<a href="#' + nach.id + '">Zettel ' + nach.nr + ' ' + (nach.seite === 'Vorderseite' ? 'vorne' : 'hinten') + IC.re + '</a>' : '<a class="leer2"></a>');
+  setzeAlleKnopf();
+  $('uebersicht').hidden = true; $('blattansicht').hidden = false;
+  document.title = 'Zettel ' + z.nr + ' ' + z.seite + ' – Lösung · Lerntheke Brüche';
+  window.scrollTo(0, 0);
+}
+function zeigeListe() {
+  aktuell = null; $('uebersicht').hidden = false; $('blattansicht').hidden = true; document.title = 'Lerntheke Brüche – Lösungen · Mathe 6c';
+}
+
+/* Zahlenstrahl "Markiere" mit den aufgedeckten Pfeilen */
+function zeichneMarkierung() {
+  var el = document.getElementById('markstrahl'); if (!el) return;
+  var start = +el.dataset.start, pf = [];
+  for (var i = start; i < eintraege.length; i++) {
+    var e = eintraege[i]; if (e.a.layout !== 'markieren') continue;
+    if (offen[i]) pf.push({ x: e.it.x, lab: lab3(e.it.a), c: '#C00000' });
+  }
+  el.innerHTML = S.zahlenstrahl(D.STRAHL3, pf, { W: 480, y: 74 });
+}
+function lab3(t) { var m = t.match(/^(\d*)\\frac\{(\d+)\}\{(\d+)\}$/); return m ? [m[1], +m[2], +m[3]] : t; }
+
+/* ---------- Aufdecken ---------- */
+function aufdecken(i, still) {
+  if (offen[i]) return;
+  offen[i] = true;
+  var e = eintraege[i];
+  document.querySelectorAll('[data-i="' + i + '"]').forEach(function (b) {
+    b.classList.add('auf'); b.setAttribute('aria-label', 'Rechenweg ansehen');
+    if (!still) { b.classList.remove('blitz'); void b.offsetWidth; b.classList.add('blitz'); }
+  });
+  if (e.a.layout === 'feld') {
+    var g = e.it.ganz, f = g.feld, box = document.querySelector('[data-fz="' + i + '"]');
+    box.classList.add('auf');
+    box.querySelector('.bildinh').innerHTML = S.ganzesFeld(g.fig, { cols: f[0], rows: f[1], ox: f[2], oy: f[3], loesung: true });
+  }
+  if (e.a.layout === 'markieren') zeichneMarkierung();
+  if (e.a.layout === 'speicher') {
+    var k = e.a.items.indexOf(e.it), ziel = e.a.ziele[k];
+    e.a.speicher.forEach(function (b, j) { var r = LT.red(LT.Q(b[0], b[1])); if (r.z === ziel[0] && r.n === ziel[1]) document.querySelector('#speicher [data-k="' + j + '"]').classList.add('durch'); });
+  }
+  if (e.a.layout === 'sach') document.querySelectorAll('.kaestchen').forEach(function (k) { var v = +k.dataset.von; if (offen[v] || offen[v + 1]) k.classList.add('auf'); });
+  setzeAlleKnopf();
+}
+function alleOffen() { for (var i = 0; i < eintraege.length; i++) if (!offen[i]) return false; return eintraege.length > 0; }
+function setzeAlleKnopf() {
+  var b = $('alle'), an = alleOffen();
+  b.classList.toggle('an', an);
+  b.innerHTML = an ? IC.zu + '<span>Alle verdecken</span>' : IC.auge + '<span>Alle <span class="lang">Lösungen </span>zeigen</span>';
+}
+$('alle').addEventListener('click', function () {
+  if (alleOffen()) { var id = aktuell.id; zeigeBlatt(id); return; }
+  var k = 0;
+  eintraege.forEach(function (_, i) { if (!offen[i]) { setTimeout(function () { aufdecken(i, true); }, 18 * k++); } });
+});
+document.addEventListener('click', function (ev) {
+  var b = ev.target.closest('.feld[data-i]'); if (!b || !$('blatt').contains(b)) return;
+  var i = +b.dataset.i;
+  if (!offen[i]) aufdecken(i); else oeffneWeg(i);
+});
+
+/* ---------- Rechenweg-Fenster ---------- */
+var dlgI = -1, dlgSchritt = 0;
+function aufgabeHtml(e) {
+  var a = e.a, it = e.it;
+  switch (a.layout) {
+    case 'raster': return tex(it.a.replace(/=$/, '') + (/=$/.test(it.a) ? '=\\ ?' : '\\ \\Rightarrow\\ \\text{Ganzes}=\\ ?'));
+    case 'fehlend': var d = it.d; return tex('\\frac{' + d.z1 + '}{' + d.n1 + '}=\\frac{' + (d.z2 === null ? '\\square' : d.z2) + '}{' + (d.n2 === null ? '\\square' : d.n2) + '}');
+    case 'vergleich': return tex(it.links + '\\quad\\square\\quad ' + it.rechts);
+    case 'ordnen': return '<span class="klein">Ordne der Größe nach – beginne mit dem kleinsten:</span>' + tex(it.a);
+    case 'figuren': return '<span class="klein">Welcher Anteil der Figur ist grau?</span>' + S.kaestchenFigur(it.fig, { u: 26 });
+    case 'feld': return '<span class="klein">Die graue Fläche ist ' + tex(it.a) + ' einer Figur. Ergänze zum Ganzen.</span>';
+    case 'ablesen': return '<span class="klein">Lies die Zahl am Pfeil ' + tex(it.a.replace('=', '')) + ' ab.</span>';
+    case 'markieren': return '<span class="klein">Markiere am Zahlenstrahl:</span>' + tex(it.a);
+    case 'speicher': return '<span class="klein">Welche Brüche aus dem Speicher sind ' + mt(it.l.replace(':', '')) + '?</span>';
+    case 'sach': return '<span class="klein">' + mt(a.auftrag) + '</span><b>' + it.l + ' ' + it.frage + '</b>';
+    case 'text': return '<span class="klein">' + mt(it.frage) + '</span>';
+    case 'lena': return '<span class="klein">' + mt(a.auftrag) + '</span>';
+  }
+  return '';
+}
+function oeffneWeg(i) {
+  dlgI = i; dlgSchritt = 0;
+  var e = eintraege[i];
+  $('dlgwo').textContent = 'Zettel ' + e.z.nr + ' · Aufgabe ' + e.a.nr + (e.it.l && e.it.l.length < 4 ? ' ' + e.it.l.replace(/^([a-z])\)$/, '$1)') : '') + (e.a.layout === 'markieren' ? '' : '');
+  var w = weg(e);
+  $('dlgbody').innerHTML = '<div class="aufgabe">' + aufgabeHtml(e) + '</div><ol class="schritte" id="schritte"></ol><div id="ergebnisplatz"></div>';
+  $('dlgvor').disabled = !eintraege[i - 1]; $('dlgnach').disabled = !eintraege[i + 1];
+  zeigeSchritt();
+  var d = $('dlg');
+  if (!d.open) { if (d.showModal) d.showModal(); else d.setAttribute('open', ''); }
+  $('dlgbody').scrollTop = 0;
+}
+function schrittHtml(s, n) {
+  var f = s.f ? (Array.isArray(s.f) ? s.f : [s.f]).map(function (x) { return '<div class="f">' + tex(x, true) + '</div>'; }).join('') : '';
+  return '<li class="schritt"><span class="n">' + n + '</span><div>' + (s.k ? '<div class="k">' + s.k + '</div>' : '') + (s.t ? '<div class="t">' + mt(s.t) + '</div>' : '') + f + (s.g ? '<div class="g">' + s.g + '</div>' : '') + '</div></li>';
+}
+function zeigeSchritt(alle) {
+  var w = weg(eintraege[dlgI]), ol = $('schritte');
+  do {
+    if (dlgSchritt < w.schritte.length) { ol.insertAdjacentHTML('beforeend', schrittHtml(w.schritte[dlgSchritt], dlgSchritt + 1)); dlgSchritt++; }
+  } while (alle && dlgSchritt < w.schritte.length);
+  var fertig = dlgSchritt >= w.schritte.length;
+  if (fertig && !$('ergebnisplatz').innerHTML) $('ergebnisplatz').innerHTML = '<div class="ergebnis"><b>Lösung</b><span class="w">' + (w.text ? mt(w.text) : tex(w.erg)) + '</span></div>';
+  $('dlgweiter').disabled = fertig; $('dlgweiter').textContent = fertig ? 'Fertig ✓' : 'Nächster Schritt';
+  $('dlgalle').hidden = fertig;
+  if (!alle && dlgSchritt > 1) { var last = ol.lastElementChild; if (last) last.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  if (fertig && !alle) { var eg = $('ergebnisplatz').firstChild; if (eg) eg.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+}
+$('dlgweiter').addEventListener('click', function () { zeigeSchritt(false); });
+$('dlgalle').addEventListener('click', function () { zeigeSchritt(true); });
+$('dlgzu').addEventListener('click', function () { $('dlg').close(); });
+$('dlg').addEventListener('click', function (ev) { if (ev.target === this) this.close(); });
+$('dlgvor').addEventListener('click', function () { if (eintraege[dlgI - 1]) { aufdecken(dlgI - 1, true); oeffneWeg(dlgI - 1); } });
+$('dlgnach').addEventListener('click', function () { if (eintraege[dlgI + 1]) { aufdecken(dlgI + 1, true); oeffneWeg(dlgI + 1); } });
+
+/* ---------- Navigation über #hash ---------- */
+function route() {
+  if ($('dlg').open) $('dlg').close();
+  var h = location.hash.replace('#', '');
+  if (h) zeigeBlatt(h); else zeigeListe();
+}
+function start() { baueListe(); route(); window.addEventListener('hashchange', route); }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
