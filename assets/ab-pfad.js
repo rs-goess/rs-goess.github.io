@@ -12,6 +12,9 @@
   'use strict';
   var P = window.PFAD, PX = 52, BREITE = 19.05 * PX, LUPE = false, karten = [];
   var BIRNE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></svg>';
+  var HAKEN = '<svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var HALB = '<svg viewBox="0 0 26 24"><path d="M2 12 L9 20 L17 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function haken(p) { var h = ''; for (var i = 0; i < Math.floor(p + 1e-9); i++) h += HAKEN; if (p % 1 > 0.25) h += HALB; return h; }
   var KREUZ = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>';
 
   function tex(x) {
@@ -124,12 +127,14 @@
       blatt.appendChild(e);
       var lab = null;
       if (z.lab) { lab = el('div', 'bl-lab', z.lab); lab.style.left = px(z.labx != null ? z.labx : 0.65); lab.style.top = T(z.y); blatt.appendChild(lab); }
+      var hk = null;
+      if (z.p) { hk = el('div', 'bl-haken', haken(z.p)); hk.title = (String(z.p).replace('.', ',')) + (z.p === 1 ? ' Punkt' : ' Punkte'); blatt.appendChild(hk); }
       var b = null;
       if (z.erkl) {
         b = el('button', 'bl-birne' + (z.birne ? ' eck' : ''), BIRNE); b.type = 'button'; b.setAttribute('aria-label', 'Erklärung');
         b.onclick = function () { oeffneErkl(z, k.name); }; blatt.appendChild(b);
       }
-      return { z: z, e: e, lab: lab, b: b };
+      return { z: z, e: e, lab: lab, b: b, hk: hk };
     });
     var hin = el('div', 'bl-naechst'); blatt.appendChild(hin);
 
@@ -145,11 +150,22 @@
       zeilen.forEach(setzeBirne);
     }
     function setzeBirne(o) {
-      if (!o.b || !o.e.classList.contains('auf')) return;
+      if (!o.e.classList.contains('auf')) return;
+      var w, l, t;
+      if (o.z.typ === 'oval') { w = o.z.w * PX; l = (o.z.x - o.z.w / 2) * PX; t = (o.z.y - y0) * PX - 13; }
+      else { w = o.e.offsetWidth; l = o.e.offsetLeft - (o.z.mitte ? w / 2 : 0); t = o.e.offsetTop - (o.z.mitte ? 13 : 0); }
+      var rechts = l + w + 6;
+      if (o.hk) {
+        if (o.z.haken) { o.hk.style.left = (o.z.haken[0] * PX) + 'px'; o.hk.style.top = ((o.z.haken[1] - y0) * PX - 13) + 'px'; }
+        else { o.hk.style.left = rechts + 'px'; o.hk.style.top = (t - 6) + 'px'; rechts += o.hk.offsetWidth + 4; }
+      }
+      if (!o.b) return;
       if (o.z.birne) { o.b.style.left = (o.z.birne[0] * PX - 14) + 'px'; o.b.style.top = ((o.z.birne[1] - y0) * PX - 14 + 5) + 'px'; return; }
-      var w = o.e.offsetWidth, l = o.e.offsetLeft - (o.z.mitte ? w / 2 : 0);
-      o.b.style.left = (l + w + 8) + 'px';
-      o.b.style.top = (o.e.offsetTop - (o.z.mitte ? 13 : 0)) + 'px';
+      var strich = (k.striche && k.striche[0]) ? k.striche[0][0] * PX : BREITE;
+      if (o.z.typ !== 'oval' && !o.z.mitte && o.z.x * PX < strich && rechts + 40 > strich && !o.z.lab) {
+        o.b.style.left = (o.z.x * PX - 42) + 'px';            /* links in die freie geg.-Spalte */
+      } else o.b.style.left = (rechts + 2) + 'px';
+      o.b.style.top = t + 'px';
     }
     sec.skaliere = skaliere;
     window.addEventListener('resize', skaliere);
@@ -159,16 +175,21 @@
       '<button class="k-zur" type="button" title="Eine Zeile zurück" aria-label="Eine Zeile zurück">↶</button>' +
       '<button class="k-tipp" type="button">Tipp</button><button class="k-weiter" type="button">Nächster Schritt</button>' +
       '<button class="k-erkl" type="button">' + BIRNE + 'Erklärung</button><button class="k-alles" type="button">Ganze Lösung</button>');
-    var fertig = el('div', 'fertig', '✓ Fertig – vergleiche mit deinem Blatt und verbessere mit einer anderen Farbe.');
+    var punkte = k.zeilen.reduce(function (a, z) { return a + (z.p || 0); }, 0);
+    var fertig = el('div', 'fertig', '✓ Fertig – vergleiche mit deinem Blatt und verbessere mit einer anderen Farbe.' +
+      (punkte ? '<div class="punkte">So würde Herr Gößmann korrigieren: <b>' + String(punkte).replace('.', ',') + ' ' + (punkte === 1 ? 'Punkt' : 'Punkte') + '</b> ' +
+      '<span class="leg">(' + HAKEN + ' = 1 Punkt, ' + HALB + ' = ½ Punkt)</span></div>' : ''));
     r.appendChild(tippOrt); r.appendChild(leiste); r.appendChild(fertig);
     var bz = leiste.children[0], bt = leiste.children[1], bw = leiste.children[2], be = leiste.children[3], ba = leiste.children[4];
     var n = 0, warn = false, letzte = null;
     function zeige(o, neu) {
       o.e.classList.add('auf'); if (o.lab) o.lab.classList.add('auf');
-      if (o.b) { o.b.classList.add('auf'); setzeBirne(o); }
+      if (o.hk) o.hk.classList.add('auf');
+      if (o.b) o.b.classList.add('auf');
+      setzeBirne(o);
       if (neu && o.z.typ !== 'oval') { o.e.classList.remove('neu'); void o.e.offsetWidth; o.e.classList.add('neu'); }
     }
-    function verstecke(o) { o.e.classList.remove('auf', 'neu'); if (o.lab) o.lab.classList.remove('auf'); if (o.b) o.b.classList.remove('auf'); }
+    function verstecke(o) { o.e.classList.remove('auf', 'neu'); if (o.lab) o.lab.classList.remove('auf'); if (o.b) o.b.classList.remove('auf'); if (o.hk) o.hk.classList.remove('auf'); }
     function status() {
       var o = zeilen[n];
       if (o) {

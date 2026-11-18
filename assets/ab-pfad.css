@@ -155,3 +155,12 @@ dialog.dlg::backdrop{background:rgba(10,25,30,.55)}
 .bl-birne.eck{width:28px;height:28px}
 .bl-birne.eck svg{width:17px;height:17px}
 .spiel svg{max-width:560px;margin:0 auto}
+/* Haken wie bei der Korrektur (grün): ganzer Haken = 1 P, halber Haken = ½ P */
+.bl-haken{position:absolute;height:26px;display:none;gap:1px;color:#1E9E4A;pointer-events:none}
+.bl-haken.auf{display:flex;animation:hk .35s ease}
+.bl-haken svg{width:27px;height:25px}
+@keyframes hk{from{opacity:0;transform:scale(.6) rotate(-10deg)}to{opacity:1;transform:none}}
+.fertig .punkte{font-weight:normal;color:var(--dunkel);margin-top:4px}
+.fertig .punkte b{color:#1E9E4A}
+.fertig .leg svg{width:17px;height:15px;vertical-align:-2px;color:#1E9E4A}
+.mini-haken svg{width:18px;height:16px;vertical-align:-3px;color:#1E9E4A}
