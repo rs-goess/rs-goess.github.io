@@ -44,8 +44,9 @@ main{max-width:860px;margin:0 auto;padding:4px 8px 8px}
 .bl-wrap.lupe{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .bl-sizer{position:relative}
 .bl-blatt{position:absolute;left:0;top:0;transform-origin:0 0;background-color:#fff;background-repeat:no-repeat}
-.bl-karo{position:absolute;border:1px solid #9aa3aa;
-         background-image:linear-gradient(#cfd4d8 1px,transparent 1px),linear-gradient(90deg,#cfd4d8 1px,transparent 1px);
+.bl-bild{position:absolute;left:0;background-repeat:no-repeat}
+.bl-karo{position:absolute;border:1px solid #c9cfd4;background-color:#fff;
+         background-image:linear-gradient(#e9edf0 1px,transparent 1px),linear-gradient(90deg,#e9edf0 1px,transparent 1px);
          background-size:26px 26px;background-position:-1px -1px}
 .bl-z{position:absolute;height:26px;display:block;white-space:nowrap;color:var(--tinte);
       font-family:"Caveat",cursive;font-size:25px;line-height:26px;opacity:0;transition:opacity .35s;pointer-events:none}

@@ -92,6 +92,57 @@
     return box;
   }
 
+  /* ---------- Aufbau: Bildstücke vom AB + selbst gezeichnete Kästchenfelder für Rechnungen ----------
+     k.teile = [ { bild, top, y0, y1, zeilen } | { rechnung:{ links, ges, rechts, antwort, strich } } ]
+     Im Kästchenfeld: jede Zeile beginnt an einer Kästchenlinie, dazwischen bleibt eine Reihe frei,
+     Brüche belegen zwei Reihen. */
+  var R = 0.5;
+  function reihen(z) { return z.rows || (/\\d?frac/.test(z.z || '') ? 2 : 1); }
+  function layout(k) {
+    var teile = k.teile || [{ bild: k.bild.src, top: k.bild.y0, y0: k.bild.y0, y1: k.bild.y1, zeilen: k.zeilen, striche: k.striche, anhang: k.anhang }];
+    var off = 0, out = { bilder: [], karo: [], striche: [], zeilen: [] };
+    teile.forEach(function (t) {
+      if (t.bild) {
+        var d = off - t.y0;
+        out.bilder.push({ src: t.bild, top: off, h: t.y1 - t.y0, ab: t.y0 - t.top });
+        (t.striche || []).forEach(function (q) { out.striche.push([q[0], q[1] + d, q[2] + d]); });
+        ((t.anhang && t.anhang.karo) || []).forEach(function (q) { out.karo.push([q[0], q[1] + d, q[2], q[3]]); });
+        (t.zeilen || []).forEach(function (z) {
+          var c = Object.assign({}, z, { y: z.y + d });
+          if (z.birne) c.birne = [z.birne[0], z.birne[1] + d];
+          if (z.haken) c.haken = [z.haken[0], z.haken[1] + d];
+          out.zeilen.push(c);
+        });
+        off += (t.y1 - t.y0) + (t.anhang ? t.anhang.h : 0);
+        return;
+      }
+      var q = t.rechnung, x0 = q.x0 || 0.55, w = q.w || 18.0, st = q.strich || 9.65, lx = q.lx || 1.85, rx = st + 0.3;
+      var top = off + 0.15, rl = 0, rr = 0, letzteR = 0, liste = [];
+      q.links.forEach(function (z, i) {
+        if (z.dicht && i) rl -= 1;
+        liste.push(Object.assign({ x: lx, s: 'geg.' }, z, { y: top + rl * R, lab: i === 0 ? 'geg.:' : z.lab, rows: reihen(z) }));
+        rl += reihen(z) + 1;
+      });
+      var rechts = q.rechts.map(function (z, i) {
+        if (z.dicht && i) rr -= 1;
+        var c = Object.assign({ x: rx }, z, { y: top + rr * R, rows: reihen(z) });
+        letzteR = rr; rr += reihen(z) + 1; return c;
+      });
+      var gesRow = Math.max(rl, letzteR + (rechts.length ? rechts[rechts.length - 1].rows - 1 : 0));
+      liste.push(Object.assign({ x: lx, s: 'ges.', lab: 'ges.:' }, q.ges, { y: top + gesRow * R, rows: 1 }));
+      liste = liste.concat(rechts);
+      var unten = Math.max(gesRow + 1, rr - 1), antRow = unten + 1;
+      if (q.antwort) liste.push(Object.assign({ x: 2.75, s: 'Antwortsatz', lab: 'Antwort:', cls: 'satz' }, q.antwort, { y: top + antRow * R, rows: 1 }));
+      var hoehe = (antRow + (q.antwort ? 2 : 0)) * R + 0.3;
+      out.karo.push([x0, off, w, hoehe]);
+      out.striche.push([st, off + 0.1, top + unten * R + 0.1]);
+      out.zeilen = out.zeilen.concat(liste);
+      off += hoehe + 0.25;
+    });
+    out.hoehe = off;
+    return out;
+  }
+
   /* ---------- Eine Aufgabenkarte mit Blatt ---------- */
   function blattKarte(k, sec) {
     var r = el('div', 'rahmen'); sec.appendChild(r);
@@ -100,19 +151,23 @@
     r.appendChild(quer);
     if (k.check) r.appendChild(check(k.check, sec));
 
-    var y0 = k.bild.y0, hoehe = (k.bild.y1 - y0) + (k.anhang ? k.anhang.h : 0);
+    var L = layout(k), y0 = 0, hoehe = L.hoehe;
     var wrap = el('div', 'bl-wrap'), blatt = el('div', 'bl-blatt');
     blatt.style.width = BREITE + 'px'; blatt.style.height = px(hoehe);
-    blatt.style.backgroundImage = 'url(' + k.bild.src + ')'; blatt.style.backgroundSize = BREITE + 'px auto';
     blatt.setAttribute('role', 'img'); blatt.setAttribute('aria-label', 'Arbeitsblatt ' + k.name);
     var sizer = el('div', 'bl-sizer'); sizer.appendChild(blatt); wrap.appendChild(sizer); r.appendChild(wrap);
     function T(y) { return px(y - y0); }
-    ((k.anhang && k.anhang.karo) || []).forEach(function (q) {
+    L.bilder.forEach(function (b) {
+      var d = el('div', 'bl-bild'); d.style.top = px(b.top); d.style.height = px(b.h); d.style.width = BREITE + 'px';
+      d.style.backgroundImage = 'url(' + b.src + ')'; d.style.backgroundSize = BREITE + 'px auto'; d.style.backgroundPosition = '0 ' + px(-b.ab); blatt.appendChild(d);
+    });
+    L.karo.forEach(function (q) {
       var d = el('div', 'bl-karo'); d.style.left = px(q[0]); d.style.top = T(q[1]); d.style.width = px(q[2]); d.style.height = px(q[3]); blatt.appendChild(d);
     });
-    (k.striche || []).forEach(function (s) {
+    L.striche.forEach(function (s) {
       var d = el('div', 'bl-strich'); d.style.left = px(s[0]); d.style.top = T(s[1]); d.style.height = px(s[2] - s[1]); blatt.appendChild(d);
     });
+    k = Object.assign({}, k, { zeilen: L.zeilen, striche: L.striche });
 
     /* Zeilen anlegen */
     var zeilen = k.zeilen.map(function (z) {
@@ -121,6 +176,7 @@
         e = el('div', 'bl-oval'); e.style.left = px(z.x - z.w / 2); e.style.top = T(z.y - z.h / 2); e.style.width = px(z.w); e.style.height = px(z.h);
       } else {
         e = el('div', 'bl-z' + (z.mitte ? ' mitte' : ''), fmt(z.z)); e.style.left = px(z.x); e.style.top = T(z.y);
+        if (z.rows > 1) { e.style.height = (z.rows * 26) + 'px'; e.style.lineHeight = (z.rows * 26) + 'px'; }
         if (z.cls) e.className += ' ' + z.cls;
         if (z.cls && z.cls.indexOf('zwei') >= 0 && z.w) e.style.width = px(z.w);
       }
@@ -153,7 +209,7 @@
       if (!o.e.classList.contains('auf')) return;
       var w, l, t;
       if (o.z.typ === 'oval') { w = o.z.w * PX; l = (o.z.x - o.z.w / 2) * PX; t = (o.z.y - y0) * PX - 13; }
-      else { w = o.e.offsetWidth; l = o.e.offsetLeft - (o.z.mitte ? w / 2 : 0); t = o.e.offsetTop - (o.z.mitte ? 13 : 0); }
+      else { w = o.e.offsetWidth; l = o.e.offsetLeft - (o.z.mitte ? w / 2 : 0); t = o.e.offsetTop - (o.z.mitte ? 13 : 0) + ((o.z.rows || 1) - 1) * 13; }
       var rechts = l + w + 6;
       if (o.hk) {
         if (o.z.haken) { o.hk.style.left = (o.z.haken[0] * PX) + 'px'; o.hk.style.top = ((o.z.haken[1] - y0) * PX - 13) + 'px'; }
@@ -195,9 +251,9 @@
       if (o) {
         var z = o.z; hin.hidden = false; hin.textContent = (z.s || 'nächste Zeile') + '?';
         hin.className = 'bl-naechst' + (z.mitte || z.typ === 'oval' ? ' mitte' : '');
-        var w = z.w || (z.typ === 'oval' ? z.w : (z.x < 9 ? 9.1 - z.x : 18.4 - z.x));
+        var sx = (k.striche && k.striche[0]) ? k.striche[0][0] : 9.65; var w = z.w || (z.typ === 'oval' ? z.w : (z.x < sx ? sx - 0.2 - z.x : 18.4 - z.x));
         if (z.mitte && !z.w) w = 2.6;
-        hin.style.left = px(z.x); hin.style.top = T(z.y); hin.style.width = px(w);
+        hin.style.left = px(z.x); hin.style.top = T(z.y); hin.style.width = px(w); hin.style.height = ((z.rows || 1) * 26) + 'px';
         if (!z.mitte && z.typ !== 'oval' && z.lab) { hin.style.left = px(z.labx != null ? z.labx : 0.65); hin.style.width = px(w + z.x - (z.labx != null ? z.labx : 0.65)); }
       } else hin.hidden = true;
       bw.disabled = !o; ba.disabled = !o; bz.disabled = n === 0;
