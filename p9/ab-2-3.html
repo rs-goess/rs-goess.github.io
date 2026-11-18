@@ -34,7 +34,6 @@ function GEG(y, z, o) { return Object.assign(L(y, z, o), { lab: 'geg.:' }); }
 function GES(y, z, o) { return Object.assign({ x: LX, y: y, z: z, s: 'ges.', lab: 'ges.:' }, o || {}); }
 function R(y, z, s, o) { return Object.assign({ x: RX, y: y, z: z, s: s }, o || {}); }
 function ANT(y, z, o) { return Object.assign({ x: 2.75, y: y, z: z, s: 'Antwortsatz', lab: 'Antwort:', cls: 'satz' }, o || {}); }
-function ZIFF(y, t) { return { x: RX, y: y, z: '<span class="klein">' + t + '</span>', s: 'Ziffern' }; }
 
 /* ---------- Erklärungen ---------- */
 var E_KELVIN = function (c, k) { return { schritte: [
@@ -60,7 +59,7 @@ var E_KREUZ = function (ges, f) { return { schritte: [
   { k: 'Probe mit dem Verstand', t: 'Wird das Gas wärmer, muss der Druck (bzw. das Volumen) größer werden. Passt das zu deiner Formel?' }] }; };
 var E_TR = { schritte: [
   { k: 'Zehnerpotenz eintippen', t: 'Nutze die Taste <b>×10<sup>x</sup></b> (bei manchen Rechnern <b>EXP</b>). $4{,}0\\cdot10^5$ tippst du als <b>4 ×10<sup>x</sup> 5</b>.' },
-  { k: 'Teilen durch zwei Größen', t: 'Steht hinter dem „:“ eine Klammer, musst du auch im Taschenrechner eine Klammer setzen: <b>… ÷ ( … × … )</b>.' },
+  { k: 'Bruch eintippen', t: 'Erst den Zähler (oben) ausrechnen, dann durch den ganzen Nenner (unten) teilen. Stehen unten zwei Größen, setzt du sie in Klammern: <b>… ÷ ( … × … )</b>.' },
   { k: 'Anzeige lesen', t: 'Zeigt der Rechner z. B. <b>468259,3…</b>, schreibst du $4{,}68\\text{…}\\cdot 10^5$: Komma 5 Stellen nach links, Hochzahl 5.' }] };
 var E_ZIFFERN = function (angaben, erg) { return { schritte: [
   { k: 'Regel', t: 'Das Ergebnis bekommt so viele Ziffern wie die Angabe mit den <b>wenigsten Ziffern</b> – aber mindestens 2.' },
@@ -68,142 +67,9 @@ var E_ZIFFERN = function (angaben, erg) { return { schritte: [
   { k: 'Zehnerpotenz zählt nicht mit', t: 'Bei $4{,}7 \\cdot 10^5$ zählst du nur 4 und 7. Das $\\cdot 10^5$ sagt nur, wie groß die Zahl ist.' },
   { k: 'Also', f: erg }] }; };
 
-window.PFAD = {
-  fach: 'Physik 9b', titel: '2.3 Allgemeine Zustandsgleichung', zurueck: 'material.html',
-  ueberschrift: 'Lernpfad zum Arbeitsblatt – Lösung Zeile für Zeile',
-  karten: [
-
-  /* ===================== Start ===================== */
-  { chip: 'Start', start: true, titel: '2.3 Allgemeine Zustandsgleichung idealer Gase',
-    html:
-    '<p>Hier siehst du dein Arbeitsblatt. Mit <span class="mini" style="background:var(--petrol2);color:#fff">Nächster Schritt</span> erscheint die Lösung <b>Zeile für Zeile</b> in Blau – so, wie du sie auch auf dein Blatt schreibst.</p>' +
-    '<ol class="start"><li>Rechne zuerst <b>selbst</b> auf deinem Blatt.</li>' +
-    '<li>Gib dein Ergebnis bei <b>Ergebnis prüfen</b> ein.</li>' +
-    '<li>Hängst du fest? <span class="mini" style="background:var(--gelb)">Tipp</span> hilft beim nächsten Schritt. Der gelbe Rahmen zeigt, wo die nächste Zeile hinkommt.</li>' +
-    '<li>Bei schwierigen Zeilen erscheint eine <span class="mini" style="background:var(--orange);color:#fff">Glühbirne</span> – tippe darauf, dann bekommst du eine Erklärung.</li></ol>' +
-    '<div class="box">📱 Am Handy: <b>quer halten</b>, dann ist das Blatt größer. Du kannst auch mit zwei Fingern zoomen.</div>' +
-    '<div class="merk"><b>Umrechnen in die Grundeinheit</b><br>' +
-    'Temperatur: $T = (\\vartheta + 273)' + U('K') + '$ &nbsp;·&nbsp; Druck: $1' + U('bar') + ' = 10^5' + U('Pa') + '$, $1' + U('hPa') + ' = 10^2' + U('Pa') + '$<br>' +
-    'Volumen: $1' + U('l') + ' = 1' + U('dm^3') + ' = 10^{-3}' + U('m^3') + '$, $1' + U('cm^3') + ' = 10^{-6}' + U('m^3') + '$</div>' +
-    '<div class="box"><b>In der Physik gilt:</b> Jede Zeile bekommt eine Einheit. <b>Sinnvolle Ziffern:</b> so viele wie die Angabe mit den wenigsten Ziffern – mindestens 2. Die Zehnerpotenz zählt nicht mit.</div>' },
-
-  /* ===================== Tabelle ===================== */
-  { chip: 'Tabelle', name: 'Die Gasgesetze im Überblick', bild: { src: 'bilder/2-3/tabelle.webp', y0: 2.0, y1: 7.15 },
-    zeilen: [
-      { x: 6.8, y: 4.09, mitte: true, z: 'Temperatur $T$', s: 'bleibt gleich', tipp: 'Beim Gesetz von Boyle-Mariotte drückt man z. B. eine Spritze <b>langsam</b> zusammen. Was ändert sich dabei nicht?' },
-      { x: 11.5, y: 4.09, mitte: true, z: 'Druck $p$', s: 'bleibt gleich', tipp: 'Gay-Lussac: Ein dehnbarer Luftballon passt seinen Druck immer dem Luftdruck außen an.' },
-      { x: 16.2, y: 4.09, mitte: true, z: 'Volumen $V$', s: 'bleibt gleich', tipp: 'Amontons: Die Spraydose kann sich nicht ausdehnen.' },
-      { x: 6.8, y: 5.24, mitte: true, z: '$p \\cdot V = \\text{konstant}$', s: 'Formel', birne: [8.85, 4.75], tipp: 'Halbes Volumen → doppelter Druck. Was bleibt dann gleich: Produkt oder Quotient?',
-        erkl: { schritte: [{ k: 'Je – desto', t: 'Je kleiner das Volumen, desto größer der Druck (antiproportional).' }, { k: 'Formel', t: 'Bei antiproportionalen Größen bleibt das <b>Produkt</b> gleich:', f: '$p \\cdot V = \\text{konstant}$' }] } },
-      { x: 11.5, y: 5.24, mitte: true, z: '$V : T = \\text{konstant}$', s: 'Formel', tipp: 'Doppelte Temperatur (in K) → doppeltes Volumen. Bei proportionalen Größen bleibt der <b>Quotient</b> gleich.' },
-      { x: 16.2, y: 5.24, mitte: true, z: '$p : T = \\text{konstant}$', s: 'Formel', tipp: 'Doppelte Temperatur (in K) → doppelter Druck.' },
-      { x: 6.8, y: 6.39, mitte: true, w: 4.4, cls: 'zwei', z: 'Luftblase steigt beim Tauchen auf', s: 'Beispiel', tipp: 'Denk an Taucher: Je weiter oben, desto kleiner der Wasserdruck …' },
-      { x: 11.5, y: 6.39, mitte: true, w: 4.4, cls: 'zwei', z: 'Ballon in flüssigem Stickstoff', s: 'Beispiel', tipp: 'Denk an den Versuch aus 2.2.' },
-      { x: 16.2, y: 6.39, mitte: true, w: 4.4, cls: 'zwei', z: 'Spraydose im heißen Auto', s: 'Beispiel', tipp: 'Denk an den Warnhinweis auf Spraydosen.' }
-    ] },
-
-  /* ===================== Merkkasten ===================== */
-  { chip: 'Merke', name: 'Merke', bild: { src: 'bilder/2-3/merke.webp', y0: 7.35, y1: 13.95 },
-    zeilen: [
-      { x: 1.15, y: 8.98, z: '1. Für eine abgeschlossene Gasmenge gilt: &nbsp;$\\dfrac{p \\cdot V}{T} = \\text{konstant}$', s: '1.', tipp: 'Welche Größe steht oben, welche unten?' },
-      { x: 1.15, y: 10.48, z: '2. Für zwei Zustände gilt: &nbsp;$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$', s: '2.', tipp: 'Index 1 = vorher, Index 2 = nachher.' },
-      { x: 1.15, y: 11.98, z: '3. Die Temperatur immer in Kelvin einsetzen!', s: '3.', tipp: 'Was muss man bei der Temperatur immer beachten?' }
-    ] },
-
-  /* ===================== Aufgabe 1 ===================== */
-  { chip: 'A1', name: 'Aufgabe 1', bild: { src: 'bilder/2-3/a1.webp', y0: 15.0, y1: 26.4 },
-    zeilen: [
-      { x: 1.65, y: 17.58, cls: 'satz', z: 'Gegebene und gesuchte Größen herausschreiben, Temperaturen in Kelvin umrechnen', s: '1. Schritt', tipp: 'Was schreibst du ganz am Anfang links hin?' },
-      { x: 1.65, y: 18.48, cls: 'satz', z: 'Ansatz notieren: allgemeine Zustandsgleichung', s: '2. Schritt', tipp: 'Mit welcher Gleichung startest du immer?' },
-      { x: 1.65, y: 19.38, cls: 'satz', z: 'Nach der gesuchten Größe umstellen', s: '3. Schritt', tipp: 'Bevor du Zahlen einsetzt, muss die gesuchte Größe allein stehen.' },
-      { x: 1.65, y: 20.28, cls: 'satz', z: 'Zahlen mit Einheiten einsetzen und Ergebnis angeben', s: '4. Schritt', tipp: 'Was kommt ganz zum Schluss?' },
-      { x: 1.15, y: 22.18, cls: 'satz', z: 'Die Gasgesetze gelten nur mit der absoluten Temperatur – mit °C stimmen die Verhältnisse nicht.', s: 'b)',
-        tipp: 'Rechne testweise: Von 10 °C auf 20 °C – verdoppelt sich dann der Druck?',
-        erkl: { schritte: [
-          { k: 'Test mit °C', t: 'Von 10 °C auf 20 °C wäre „doppelt so warm“ – dann müsste sich der Druck verdoppeln. Das stimmt aber nicht!' },
-          { k: 'Test mit Kelvin', t: '10 °C sind 283 K, 20 °C sind 293 K. Das sind nur gut 3 % mehr – genau so viel steigt der Druck.' },
-          { k: 'Deshalb', t: 'Nur bei der Kelvin-Skala liegt der Nullpunkt dort, wo das Gas keinen Druck mehr hätte. Bei 0 °C würde man sogar durch 0 teilen.' }] } },
-      { x: 1.15, y: 23.83, cls: 'satz', z: 'Beide Seiten „über Kreuz“ mit $T_1$ und $T_2$ malnehmen, dann durch die übrigen Größen teilen.', s: 'c)', tipp: 'Die Temperaturen stehen unten. Wie bekommst du sie nach oben?' },
-      { x: 1.15, y: 25.48, cls: 'satz', z: 'Gleiche Größen in gleichen Einheiten einsetzen (z. B. beide Drücke in Pa), damit sie sich kürzen.', s: 'd)', tipp: 'Was passiert, wenn ein Druck in bar und der andere in hPa dasteht?' }
-    ] },
-
-  /* ===================== Aufgabe 2 ===================== */
-  { chip: 'A2', name: 'Aufgabe 2', bild: { src: 'bilder/2-3/a2.webp', y0: 0.85, y1: 8.85 },
-    check: { einh: 'bar', ok: [4.7], exakt: 4.68, bsp: '4,7', runden: 'Wie viele Ziffern hat die Angabe 4,0 bar?',
-      fehler: [{ w: 14, t: '<b>Achtung, °C!</b> Du hast mit 20 °C und 70 °C gerechnet. In die Gasgesetze gehört die Temperatur in <b>Kelvin</b>.' },
-               { w: 3.42, t: '<b>Falsch umgestellt?</b> Die Dose wird wärmer – dann muss der Druck <b>größer</b> werden, nicht kleiner.' },
-               { w: 468259, rel: 0.01, t: 'Das ist der Druck in <b>Pascal</b>. Gib ihn in bar an: $10^5' + U('Pa') + ' = 1' + U('bar') + '$.' }] },
-    striche: [[9.65, 2.71, 8.21]],
-    zeilen: [
-      GEG(2.73, '$p_1 = 4{,}0' + U('bar') + ' = ' + PA('4{,}0', 5) + '$', { tipp: 'Schreibe den Druck mit Formelzeichen $p_1$ auf und rechne gleich in Pascal um.', erkl: E_BAR }),
-      L(3.23, TK(1, 20, 293), { s: 'geg. (Kelvin)', tipp: 'Temperaturen sofort in Kelvin: $T = (\\vartheta + 273)' + U('K') + '$.', erkl: E_KELVIN(20, 293) }),
-      L(3.73, TK(2, 70, 343), { s: 'geg. (Kelvin)', tipp: 'Genauso wie $T_1$.' }),
-      L(4.23, '$V_1 = V_2$ &nbsp;(Dose gibt nicht nach)', { tipp: 'Kann sich eine Spraydose ausdehnen? Was weißt du also über das Volumen?' }),
-      GES(7.73, '$p_2$', { tipp: 'Wonach ist gefragt? Das schreibst du ganz unten links hin.' }),
-      R(2.73, '$p_1 \\cdot V_1 : T_1 = p_2 \\cdot V_2 : T_2$', 'Formel', { tipp: 'Starte immer mit der allgemeinen Zustandsgleichung.' }),
-      R(3.23, '$V$ kürzt sich: &nbsp;$p_1 : T_1 = p_2 : T_2$', 'Kürzen', { tipp: 'Wenn $V_1 = V_2$ ist, steht auf beiden Seiten das Gleiche – du darfst es weglassen.',
-        erkl: { schritte: [{ k: 'Warum darf ich V streichen?', t: 'Wenn $V_1 = V_2$ ist, kannst du beide Seiten durch das Volumen teilen. Es fällt weg.' }, { k: 'Ergebnis', t: 'Übrig bleibt das Gesetz von <b>Amontons</b>:', f: '$p_1 : T_1 = p_2 : T_2$' }] } }),
-      R(4.23, '$p_2 = p_1 \\cdot T_2 : T_1$', 'Umstellen', { tipp: 'Beide Seiten mit $T_2$ malnehmen.', erkl: E_KREUZ('p_2', '$p_1 : T_1 = p_2 : T_2 \\quad | \\cdot T_2 \\qquad\\Rightarrow\\qquad p_2 = p_1 \\cdot T_2 : T_1$') }),
-      R(5.23, '$p_2 = ' + PA('4{,}0', 5) + ' \\cdot 343' + U('K') + ' : 293' + U('K') + '$', 'Einsetzen', { tipp: 'Zahlen <b>mit Einheiten</b> einsetzen. Welche Einheit kürzt sich?', erkl: E_TR }),
-      R(6.23, '$p_2 = 4{,}68\\text{…} \\cdot 10^5' + U('Pa') + ' \\approx 4{,}7 \\cdot 10^5' + U('Pa') + ' =$&nbsp;<span class="unter">$4{,}7' + U('bar') + '$</span>', 'Ergebnis',
-        { tipp: 'Taschenrechner: $4 \\cdot 10^5 \\cdot 343 : 293$. Wie viele Ziffern hat die Angabe 4,0 bar?',
-          erkl: E_ZIFFERN('$4{,}0$ bar → 2 Ziffern. Die Temperaturen bestimmen hier nicht die Genauigkeit.', '$p_2 \\approx 4{,}7\\cdot 10^5' + U('Pa') + ' = 4{,}7' + U('bar') + '$') }),
-      ZIFF(6.73, '(2 sinnvolle Ziffern wie 4,0 bar)'),
-      ANT(8.23, 'Bei 70 °C herrscht in der Spraydose ein Druck von etwa 4,7 bar.', { tipp: 'Antworte in einem ganzen Satz mit dem gerundeten Ergebnis.' })
-    ] },
-
-  /* ===================== Aufgabe 3 ===================== */
-  { chip: 'A3', name: 'Aufgabe 3', bild: { src: 'bilder/2-3/a3.webp', y0: 9.95, y1: 15.95 },
-    check: { einh: 'bar', ok: [1.6], exakt: 1.646, bsp: '1,6', runden: 'Wie viele Ziffern hat 1,8 bar?',
-      fehler: [{ w: -0.45, t: '<b>Achtung, °C!</b> Mit −5 °C wird der Druck sogar negativ – das geht nicht. Rechne die Temperaturen in Kelvin um.' },
-               { w: 1.97, t: '<b>Falsch umgestellt?</b> Draußen ist es kälter – der Druck muss <b>kleiner</b> werden.' },
-               { w: 164642, rel: 0.01, t: 'Das ist der Druck in <b>Pascal</b>. Gib ihn in bar an: $10^5' + U('Pa') + ' = 1' + U('bar') + '$.' }] },
-    striche: [[9.65, 11.85, 15.35]],
-    zeilen: [
-      GEG(11.87, '$p_1 = 1{,}8' + U('bar') + ' = ' + PA('1{,}8', 5) + '$', { tipp: 'Druck mit Formelzeichen und gleich in Pa umrechnen.', erkl: E_BAR }),
-      L(12.37, TK(1, 20, 293), { s: 'geg. (Kelvin)', tipp: '$T = (\\vartheta + 273)' + U('K') + '$' }),
-      L(12.87, TK(2, '-5', 268), { s: 'geg. (Kelvin)', tipp: 'Vorsicht Minus: 5 Grad <b>unter</b> null.', erkl: E_MINUS('-5', 268) }),
-      L(13.37, '$V_1 = V_2$', { tipp: 'Was steht im Text über das Volumen?' }),
-      GES(14.87, '$p_2$', { tipp: 'Gesucht ist der Druck draußen – also im zweiten Zustand.' }),
-      R(11.87, '$p_1 \\cdot V_1 : T_1 = p_2 \\cdot V_2 : T_2$', 'Formel', { tipp: 'Allgemeine Zustandsgleichung.' }),
-      R(12.37, '$V$ kürzt sich: &nbsp;$p_1 : T_1 = p_2 : T_2$', 'Kürzen', { tipp: '$V_1 = V_2$ – was fällt weg?' }),
-      R(12.87, '$p_2 = p_1 \\cdot T_2 : T_1$', 'Umstellen', { tipp: 'Mit $T_2$ malnehmen.', erkl: E_KREUZ('p_2', '$p_2 = p_1 \\cdot T_2 : T_1$') }),
-      R(13.37, '$p_2 = ' + PA('1{,}8', 5) + ' \\cdot 268' + U('K') + ' : 293' + U('K') + '$', 'Einsetzen', { tipp: 'Mit Einheiten einsetzen – K kürzt sich.' }),
-      R(13.87, '$p_2 = 1{,}64\\text{…} \\cdot 10^5' + U('Pa') + ' \\approx 1{,}6 \\cdot 10^5' + U('Pa') + ' =$&nbsp;<span class="unter">$1{,}6' + U('bar') + '$</span>', 'Ergebnis',
-        { tipp: 'Wie viele Ziffern hat die Angabe 1,8 bar?', erkl: E_ZIFFERN('$1{,}8$ bar → 2 Ziffern.', '$p_2 \\approx 1{,}6\\cdot 10^5' + U('Pa') + ' = 1{,}6' + U('bar') + '$') }),
-      ZIFF(14.37, '(2 sinnvolle Ziffern wie 1,8 bar)'),
-      ANT(15.37, 'Draußen hat der Ball nur noch einen Druck von etwa 1,6 bar – er ist weicher.', { tipp: 'Ganzer Satz – und was merkt man beim Kicken?' })
-    ] },
-
-  /* ===================== Aufgabe 4 ===================== */
-  { chip: 'A4', name: 'Aufgabe 4', bild: { src: 'bilder/2-3/a4.webp', y0: 15.9, y1: 23.75 },
-    check: { frage: 'a) Ergebnis prüfen: Gib dein Volumen ein.', einh: 'm³', ok: [12], exakt: 11.84, bsp: '12', runden: 'Wie viele Ziffern hat die Angabe 4,0 m³?',
-      fehler: [{ w: 15.29, t: '<b>Temperatur vergessen?</b> Es ändern sich <b>alle drei</b> Größen – auch die Temperatur gehört in die Rechnung.' },
-               { w: -50.97, t: '<b>Achtung, °C!</b> Rechne die Temperaturen in Kelvin um.' },
-               { w: 1.35, t: '<b>Falsch umgestellt?</b> Oben ist der Druck viel kleiner – der Ballon muss <b>größer</b> werden.' }] },
-    striche: [[9.65, 18.7, 21.7]],
-    zeilen: [
-      GEG(18.72, '$V_1 = 4{,}0' + U('m^3') + '$', { tipp: 'Das Volumen am Boden. m³ ist schon die Grundeinheit.' }),
-      L(19.22, '$p_1 = 1013' + U('hPa') + ' = ' + PA('1{,}013', 5) + '$', { s: 'geg. (Umrechnen)', tipp: '$1' + U('hPa') + ' = 10^2' + U('Pa') + '$', erkl: E_HPA('1013', '1{,}013', 5) }),
-      L(19.72, TK(1, 15, 288), { s: 'geg. (Kelvin)', tipp: '$T = (\\vartheta + 273)' + U('K') + '$' }),
-      L(20.22, '$p_2 = 265' + U('hPa') + ' = ' + PA('2{,}65', 4) + '$', { s: 'geg. (Umrechnen)', tipp: 'Wie bei $p_1$ – das Komma wandert hier 2 Stellen.', erkl: E_HPA('265', '2{,}65', 4) }),
-      L(20.72, TK(2, '-50', 223), { s: 'geg. (Kelvin)', tipp: 'Vorsicht Minus: 50 Grad unter null.', erkl: E_MINUS('-50', 223) }),
-      GES(21.22, '$V_2$', { tipp: 'Gesucht ist das Volumen oben.' }),
-      R(18.72, '$p_1 \\cdot V_1 : T_1 = p_2 \\cdot V_2 : T_2$', 'Formel', { tipp: 'Hier ändern sich alle drei Größen – nichts kürzt sich.' }),
-      R(19.22, '$V_2 = p_1 \\cdot V_1 \\cdot T_2 : (p_2 \\cdot T_1)$', 'Umstellen', { tipp: 'Mit $T_2$ malnehmen, dann durch $p_2$ teilen.',
-        erkl: { schritte: [
-          { k: 'Mit T₂ malnehmen', f: '$p_1 \\cdot V_1 \\cdot T_2 : T_1 = p_2 \\cdot V_2$' },
-          { k: 'Durch p₂ teilen', t: 'Neben $V_2$ steht noch $p_2$ – teile beide Seiten durch $p_2$:', f: '$V_2 = p_1 \\cdot V_1 \\cdot T_2 : (p_2 \\cdot T_1)$' },
-          { k: 'Warum die Klammer?', t: 'Du teilst durch $p_2$ <b>und</b> durch $T_1$. Die Klammer sorgt dafür, dass beides im Nenner landet – auch im Taschenrechner.' }] } }),
-      R(19.72, '$V_2 = ' + PA('1{,}013', 5) + ' \\cdot 4{,}0' + U('m^3') + ' \\cdot 223' + U('K') + '$', 'Einsetzen', { tipp: 'Zahlen mit Einheiten einsetzen – erst der Teil vor dem „:“.', erkl: E_TR }),
-      R(20.22, '$\\qquad : (' + PA('2{,}65', 4) + ' \\cdot 288' + U('K') + ')$', 'Einsetzen (Teil 2)', { tipp: 'Jetzt der Teil nach dem „:“ – in Klammern. Pa und K kürzen sich, übrig bleibt m³.' }),
-      R(20.72, '$V_2 = 11{,}8\\text{…}' + U('m^3') + ' \\approx$&nbsp;<span class="unter">$12' + U('m^3') + '$</span>', 'Ergebnis',
-        { tipp: 'Die Angabe mit den wenigsten Ziffern ist 4,0 m³.', erkl: E_ZIFFERN('$4{,}0$ m³ → 2 Ziffern · $1013$ hPa → 4 Ziffern · $265$ hPa → 3 Ziffern. Am wenigsten: 2.', '$11{,}8\\text{…}' + U('m^3') + ' \\approx 12' + U('m^3') + '$') }),
-      ZIFF(21.22, '(2 Ziffern wie 4,0 m³)'),
-      ANT(21.72, 'In 10 km Höhe hat der Ballon ein Volumen von etwa 12 m³ – dreimal so viel wie am Boden.', { tipp: 'Ganzer Satz – vergleiche mit dem Volumen am Boden.' }),
-      { x: 1.15, y: 22.98, cls: 'satz', z: 'Der Luftdruck sinkt mit der Höhe stark, deshalb dehnt sich das Gas immer weiter aus, bis die Hülle reißt.', s: 'b)', tipp: 'Was passiert mit dem Luftdruck, je höher der Ballon steigt? Probier es unten aus!' }
-    ],
-    spiele: [{ titel: 'Ausprobieren: Lass den Ballon steigen',
+var FORMEL = '$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$';
+function ZIFF(t) { return { z: '<span class="klein">' + t + '</span>', s: 'Ziffern', p: 0.5 }; }
+var SPIEL_BALLON = { titel: 'Ausprobieren: Lass den Ballon steigen',
       html: '<input type="range" min="0" max="32" step="0.5" value="0" aria-label="Höhe in km"><div class="werte"></div><svg viewBox="0 0 320 210" role="img" aria-label="Wetterballon"></svg><p class="hinweis-klein">Werte der Normatmosphäre, gerechnet mit der allgemeinen Zustandsgleichung. Echte Wetterballons platzen meist in 30 bis 35 km Höhe.</p>',
       init: function (s, fmt) {
         var r = s.querySelector('input'), w = s.querySelector('.werte'), svg = s.querySelector('svg');
@@ -226,35 +92,184 @@ window.PFAD = {
             '<text x="8" y="16" font-size="12" fill="#555">' + zahl(h, 1) + ' km</text>';
         }
         r.oninput = neu; neu();
-      } }] },
+      } };
+
+window.PFAD = {
+  fach: 'Physik 9b', titel: '2.3 Allgemeine Zustandsgleichung', zurueck: 'material.html',
+  ueberschrift: 'Lernpfad zum Arbeitsblatt – Lösung Zeile für Zeile',
+  karten: [
+
+  /* ===================== Start ===================== */
+  { chip: 'Start', start: true, titel: '2.3 Allgemeine Zustandsgleichung idealer Gase',
+    html:
+    '<p>Hier siehst du dein Arbeitsblatt. Mit <span class="mini" style="background:var(--petrol2);color:#fff">Nächster Schritt</span> erscheint die Lösung <b>Zeile für Zeile</b> in Blau – so, wie du sie auch auf dein Blatt schreibst.</p>' +
+    '<ol class="start"><li>Rechne zuerst <b>selbst</b> auf deinem Blatt.</li>' +
+    '<li>Gib dein Ergebnis bei <b>Ergebnis prüfen</b> ein.</li>' +
+    '<li>Hängst du fest? <span class="mini" style="background:var(--gelb)">Tipp</span> hilft beim nächsten Schritt. Der gelbe Rahmen zeigt, wo die nächste Zeile hinkommt.</li>' +
+    '<li>Bei schwierigen Zeilen erscheint eine <span class="mini" style="background:var(--orange);color:#fff">Glühbirne</span> – tippe darauf, dann bekommst du eine Erklärung.</li>' +
+    '<li>Grüne Haken zeigen, wofür es Punkte gibt – so wie in der Ex oder Schulaufgabe korrigiert wird: <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = 1 Punkt, <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 12 L9 20 L17 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = ½ Punkt. Für geg., ges. und den Antwortsatz gibt es keine Punkte – aufschreiben musst du sie trotzdem.</li></ol>' +
+    '<div class="box">📱 Am Handy: <b>quer halten</b>, dann ist das Blatt größer. Du kannst auch mit zwei Fingern zoomen.</div>' +
+    '<div class="merk"><b>Umrechnen in die Grundeinheit</b><br>' +
+    'Temperatur: $T = (\\vartheta + 273)' + U('K') + '$ &nbsp;·&nbsp; Druck: $1' + U('bar') + ' = 10^5' + U('Pa') + '$, $1' + U('hPa') + ' = 10^2' + U('Pa') + '$<br>' +
+    'Volumen: $1' + U('l') + ' = 1' + U('dm^3') + ' = 10^{-3}' + U('m^3') + '$, $1' + U('cm^3') + ' = 10^{-6}' + U('m^3') + '$</div>' +
+    '<div class="box"><b>In der Physik gilt:</b> Jede Zeile bekommt eine Einheit. <b>Sinnvolle Ziffern:</b> so viele wie die Angabe mit den wenigsten Ziffern – mindestens 2. Die Zehnerpotenz zählt nicht mit.</div>' },
+
+  /* ===================== Tabelle ===================== */
+  { chip: 'Tabelle', name: 'Die Gasgesetze im Überblick', bild: { src: 'bilder/2-3/tabelle.webp', y0: 2.0, y1: 7.15 },
+    zeilen: [
+      { x: 6.8, y: 4.09, mitte: true, p: 0.5, z: 'Temperatur $T$', s: 'bleibt gleich', tipp: 'Beim Gesetz von Boyle-Mariotte drückt man z. B. eine Spritze <b>langsam</b> zusammen. Was ändert sich dabei nicht?' },
+      { x: 11.5, y: 4.09, mitte: true, p: 0.5, z: 'Druck $p$', s: 'bleibt gleich', tipp: 'Gay-Lussac: Ein dehnbarer Luftballon passt seinen Druck immer dem Luftdruck außen an.' },
+      { x: 16.2, y: 4.09, mitte: true, p: 0.5, z: 'Volumen $V$', s: 'bleibt gleich', tipp: 'Amontons: Die Spraydose kann sich nicht ausdehnen.' },
+      { x: 6.8, y: 5.24, mitte: true, p: 0.5, z: '$p \\cdot V = \\text{konstant}$', s: 'Formel', birne: [8.85, 4.75], tipp: 'Halbes Volumen → doppelter Druck. Was bleibt dann gleich: Produkt oder Quotient?',
+        erkl: { schritte: [{ k: 'Je – desto', t: 'Je kleiner das Volumen, desto größer der Druck (antiproportional).' }, { k: 'Formel', t: 'Bei antiproportionalen Größen bleibt das <b>Produkt</b> gleich:', f: '$p \\cdot V = \\text{konstant}$' }] } },
+      { x: 11.5, y: 5.24, mitte: true, p: 0.5, z: '$\\dfrac{V}{T} = \\text{konstant}$', s: 'Formel', tipp: 'Doppelte Temperatur (in K) → doppeltes Volumen. Bei proportionalen Größen bleibt der <b>Quotient</b> gleich.' },
+      { x: 16.2, y: 5.24, mitte: true, p: 0.5, z: '$\\dfrac{p}{T} = \\text{konstant}$', s: 'Formel', tipp: 'Doppelte Temperatur (in K) → doppelter Druck.' },
+      { x: 6.8, y: 6.39, mitte: true, p: 0.5, haken: [8.55, 6.72], w: 4.4, cls: 'zwei', z: 'Luftblase steigt beim Tauchen auf', s: 'Beispiel', tipp: 'Denk an Taucher: Je weiter oben, desto kleiner der Wasserdruck …' },
+      { x: 11.5, y: 6.39, mitte: true, p: 0.5, haken: [13.25, 6.72], w: 4.4, cls: 'zwei', z: 'Ballon in flüssigem Stickstoff', s: 'Beispiel', tipp: 'Denk an den Versuch aus 2.2.' },
+      { x: 16.2, y: 6.39, mitte: true, p: 0.5, haken: [17.95, 6.72], w: 4.4, cls: 'zwei', z: 'Spraydose im heißen Auto', s: 'Beispiel', tipp: 'Denk an den Warnhinweis auf Spraydosen.' }
+    ] },
+
+  /* ===================== Merkkasten ===================== */
+  { chip: 'Merke', name: 'Merke', bild: { src: 'bilder/2-3/merke.webp', y0: 7.35, y1: 13.95 },
+    zeilen: [
+      { x: 1.15, y: 8.98, z: '1. Für eine abgeschlossene Gasmenge gilt: &nbsp;$\\dfrac{p \\cdot V}{T} = \\text{konstant}$', s: '1.', tipp: 'Welche Größe steht oben, welche unten?' },
+      { x: 1.15, y: 10.48, z: '2. Für zwei Zustände gilt: &nbsp;$\\dfrac{p_1 \\cdot V_1}{T_1} = \\dfrac{p_2 \\cdot V_2}{T_2}$', s: '2.', tipp: 'Index 1 = vorher, Index 2 = nachher.' },
+      { x: 1.15, y: 11.98, z: '3. Die Temperatur immer in Kelvin einsetzen!', s: '3.', tipp: 'Was muss man bei der Temperatur immer beachten?' }
+    ] },
+
+  /* ===================== Aufgabe 1 ===================== */
+  { chip: 'A1', name: 'Aufgabe 1', bild: { src: 'bilder/2-3/a1.webp', y0: 15.0, y1: 26.4 },
+    zeilen: [
+      { x: 1.65, y: 17.58, cls: 'satz', z: 'Gegebene und gesuchte Größen herausschreiben, Temperaturen in Kelvin umrechnen', s: '1. Schritt', p: 0.5, tipp: 'Was schreibst du ganz am Anfang links hin?' },
+      { x: 1.65, y: 18.48, cls: 'satz', z: 'Ansatz notieren: allgemeine Zustandsgleichung', s: '2. Schritt', p: 0.5, tipp: 'Mit welcher Gleichung startest du immer?' },
+      { x: 1.65, y: 19.38, cls: 'satz', z: 'Nach der gesuchten Größe umstellen', s: '3. Schritt', p: 0.5, tipp: 'Bevor du Zahlen einsetzt, muss die gesuchte Größe allein stehen.' },
+      { x: 1.65, y: 20.28, cls: 'satz', z: 'Zahlen mit Einheiten einsetzen und Ergebnis angeben', s: '4. Schritt', p: 0.5, tipp: 'Was kommt ganz zum Schluss?' },
+      { x: 1.15, y: 22.18, cls: 'satz', z: 'Die Gasgesetze gelten nur mit der absoluten Temperatur – mit °C stimmen die Verhältnisse nicht.', s: 'b)', p: 1,
+        tipp: 'Rechne testweise: Von 10 °C auf 20 °C – verdoppelt sich dann der Druck?',
+        erkl: { schritte: [
+          { k: 'Test mit °C', t: 'Von 10 °C auf 20 °C wäre „doppelt so warm“ – dann müsste sich der Druck verdoppeln. Das stimmt aber nicht!' },
+          { k: 'Test mit Kelvin', t: '10 °C sind 283 K, 20 °C sind 293 K. Das sind nur gut 3 % mehr – genau so viel steigt der Druck.' },
+          { k: 'Deshalb', t: 'Nur bei der Kelvin-Skala liegt der Nullpunkt dort, wo das Gas keinen Druck mehr hätte. Bei 0 °C würde man sogar durch 0 teilen.' }] } },
+      { x: 1.15, y: 23.83, cls: 'satz', z: 'Beide Seiten „über Kreuz“ mit $T_1$ und $T_2$ malnehmen, dann durch die übrigen Größen teilen.', s: 'c)', p: 1, tipp: 'Die Temperaturen stehen unten. Wie bekommst du sie nach oben?' },
+      { x: 1.15, y: 25.48, cls: 'satz', z: 'Gleiche Größen in gleichen Einheiten einsetzen (z. B. beide Drücke in Pa), damit sie sich kürzen.', s: 'd)', p: 1, tipp: 'Was passiert, wenn ein Druck in bar und der andere in hPa dasteht?' }
+    ] },
+
+  /* ===================== Aufgabe 2 ===================== */
+  { chip: 'A2', name: 'Aufgabe 2',
+    check: { einh: 'bar', ok: [4.7], exakt: 4.68, bsp: '4,7', runden: 'Wie viele Ziffern hat die Angabe 4,0 bar?',
+      fehler: [{ w: 14, t: '<b>Achtung, °C!</b> Du hast mit 20 °C und 70 °C gerechnet. In die Gasgesetze gehört die Temperatur in <b>Kelvin</b>.' },
+               { w: 3.42, t: '<b>Falsch umgestellt?</b> Die Dose wird wärmer – dann muss der Druck <b>größer</b> werden, nicht kleiner.' },
+               { w: 468259, rel: 0.01, t: 'Das ist der Druck in <b>Pascal</b>. Gib ihn in bar an: $10^5' + U('Pa') + ' = 1' + U('bar') + '$.' }] },
+    teile: [
+      { bild: 'bilder/2-3/a2.webp', top: 0.85, y0: 0.85, y1: 2.68 },
+      { rechnung: {
+        links: [
+          { z: '$p_1 = 4{,}0' + U('bar') + ' = ' + PA('4{,}0', 5) + '$', tipp: 'Schreibe den Druck mit Formelzeichen $p_1$ auf und rechne gleich in Pascal um.', erkl: E_BAR },
+          { z: TK(1, 20, 293), s: 'geg. (Kelvin)', p: 0.5, tipp: 'Temperaturen sofort in Kelvin: $T = (\\vartheta + 273)' + U('K') + '$.', erkl: E_KELVIN(20, 293) },
+          { z: TK(2, 70, 343), s: 'geg. (Kelvin)', p: 0.5, tipp: 'Genauso wie $T_1$.' },
+          { z: '$V_1 = V_2$ &nbsp;(Dose gibt nicht nach)', tipp: 'Kann sich eine Spraydose ausdehnen? Was weißt du also über das Volumen?' }],
+        ges: { z: '$p_2$', tipp: 'Wonach ist gefragt? Das schreibst du ganz unten links hin.' },
+        rechts: [
+          { z: FORMEL, s: 'Formel', tipp: 'Starte immer mit der allgemeinen Zustandsgleichung.' },
+          { z: '$V$ kürzt sich: &nbsp;$\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$', s: 'Kürzen', tipp: 'Wenn $V_1 = V_2$ ist, steht auf beiden Seiten das Gleiche – du darfst es weglassen.',
+            erkl: { schritte: [{ k: 'Warum darf ich V streichen?', t: 'Wenn $V_1 = V_2$ ist, kannst du beide Seiten durch das Volumen teilen. Es fällt weg.' }, { k: 'Ergebnis', t: 'Übrig bleibt das Gesetz von <b>Amontons</b>:', f: '$\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$' }] } },
+          { z: '$p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$', s: 'Umstellen', p: 1, tipp: 'Beide Seiten mit $T_2$ malnehmen.', erkl: E_KREUZ('p_2', '$\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2} \\quad | \\cdot T_2 \\qquad\\Rightarrow\\qquad p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$') },
+          { z: '$p_2 = \\dfrac{' + PA('4{,}0', 5) + ' \\cdot 343' + U('K') + '}{293' + U('K') + '}$', s: 'Einsetzen', p: 0.5, tipp: 'Zahlen <b>mit Einheiten</b> einsetzen. Welche Einheit kürzt sich?', erkl: E_TR },
+          { z: '$p_2 = 4{,}68\\text{…} \\cdot 10^5' + U('Pa') + ' \\approx 4{,}7 \\cdot 10^5' + U('Pa') + ' =$&nbsp;<span class="unter">$4{,}7' + U('bar') + '$</span>', s: 'Ergebnis', p: 1,
+            tipp: 'Taschenrechner: 4 ×10<sup>x</sup> 5 × 343 ÷ 293. Wie viele Ziffern hat die Angabe 4,0 bar?',
+            erkl: E_ZIFFERN('$4{,}0$ bar → 2 Ziffern. Die Temperaturen bestimmen hier nicht die Genauigkeit.', '$p_2 \\approx 4{,}7\\cdot 10^5' + U('Pa') + ' = 4{,}7' + U('bar') + '$') },
+          ZIFF('(2 sinnvolle Ziffern wie 4,0 bar)')],
+        antwort: { z: 'Bei 70 °C herrscht in der Spraydose ein Druck von etwa 4,7 bar.', tipp: 'Antworte in einem ganzen Satz mit dem gerundeten Ergebnis.' } } }
+    ] },
+
+  /* ===================== Aufgabe 3 ===================== */
+  { chip: 'A3', name: 'Aufgabe 3',
+    check: { einh: 'bar', ok: [1.6], exakt: 1.646, bsp: '1,6', runden: 'Wie viele Ziffern hat 1,8 bar?',
+      fehler: [{ w: -0.45, t: '<b>Achtung, °C!</b> Mit −5 °C wird der Druck sogar negativ – das geht nicht. Rechne die Temperaturen in Kelvin um.' },
+               { w: 1.97, t: '<b>Falsch umgestellt?</b> Draußen ist es kälter – der Druck muss <b>kleiner</b> werden.' },
+               { w: 164642, rel: 0.01, t: 'Das ist der Druck in <b>Pascal</b>. Gib ihn in bar an: $10^5' + U('Pa') + ' = 1' + U('bar') + '$.' }] },
+    teile: [
+      { bild: 'bilder/2-3/a3.webp', top: 9.95, y0: 9.95, y1: 11.82 },
+      { rechnung: {
+        links: [
+          { z: '$p_1 = 1{,}8' + U('bar') + ' = ' + PA('1{,}8', 5) + '$', tipp: 'Druck mit Formelzeichen und gleich in Pa umrechnen.', erkl: E_BAR },
+          { z: TK(1, 20, 293), s: 'geg. (Kelvin)', p: 0.5, tipp: '$T = (\\vartheta + 273)' + U('K') + '$' },
+          { z: TK(2, '-5', 268), s: 'geg. (Kelvin)', p: 0.5, tipp: 'Vorsicht Minus: 5 Grad <b>unter</b> null.', erkl: E_MINUS('-5', 268) },
+          { z: '$V_1 = V_2$', tipp: 'Was steht im Text über das Volumen?' }],
+        ges: { z: '$p_2$', tipp: 'Gesucht ist der Druck draußen – also im zweiten Zustand.' },
+        rechts: [
+          { z: FORMEL, s: 'Formel', tipp: 'Allgemeine Zustandsgleichung.' },
+          { z: '$V$ kürzt sich: &nbsp;$\\dfrac{p_1}{T_1} = \\dfrac{p_2}{T_2}$', s: 'Kürzen', tipp: '$V_1 = V_2$ – was fällt weg?' },
+          { z: '$p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$', s: 'Umstellen', p: 1, tipp: 'Mit $T_2$ malnehmen.', erkl: E_KREUZ('p_2', '$p_2 = \\dfrac{p_1 \\cdot T_2}{T_1}$') },
+          { z: '$p_2 = \\dfrac{' + PA('1{,}8', 5) + ' \\cdot 268' + U('K') + '}{293' + U('K') + '}$', s: 'Einsetzen', p: 0.5, tipp: 'Mit Einheiten einsetzen – K kürzt sich.' },
+          { z: '$p_2 = 1{,}64\\text{…} \\cdot 10^5' + U('Pa') + ' \\approx 1{,}6 \\cdot 10^5' + U('Pa') + ' =$&nbsp;<span class="unter">$1{,}6' + U('bar') + '$</span>', s: 'Ergebnis', p: 1,
+            tipp: 'Wie viele Ziffern hat die Angabe 1,8 bar?', erkl: E_ZIFFERN('$1{,}8$ bar → 2 Ziffern.', '$p_2 \\approx 1{,}6\\cdot 10^5' + U('Pa') + ' = 1{,}6' + U('bar') + '$') },
+          ZIFF('(2 sinnvolle Ziffern wie 1,8 bar)')],
+        antwort: { z: 'Draußen hat der Ball nur noch einen Druck von etwa 1,6 bar – er ist weicher.', tipp: 'Ganzer Satz – und was merkt man beim Kicken?' } } }
+    ] },
+
+  /* ===================== Aufgabe 4 ===================== */
+  { chip: 'A4', name: 'Aufgabe 4',
+    check: { frage: 'a) Ergebnis prüfen: Gib dein Volumen ein.', einh: 'm³', ok: [12], exakt: 11.84, bsp: '12', runden: 'Wie viele Ziffern hat die Angabe 4,0 m³?',
+      fehler: [{ w: 15.29, t: '<b>Temperatur vergessen?</b> Es ändern sich <b>alle drei</b> Größen – auch die Temperatur gehört in die Rechnung.' },
+               { w: -50.97, t: '<b>Achtung, °C!</b> Rechne die Temperaturen in Kelvin um.' },
+               { w: 1.35, t: '<b>Falsch umgestellt?</b> Oben ist der Druck viel kleiner – der Ballon muss <b>größer</b> werden.' }] },
+    teile: [
+      { bild: 'bilder/2-3/a4.webp', top: 15.9, y0: 15.9, y1: 18.67 },
+      { rechnung: {
+        links: [
+          { z: '$V_1 = 4{,}0' + U('m^3') + '$', tipp: 'Das Volumen am Boden. m³ ist schon die Grundeinheit.' },
+          { z: '$p_1 = 1013' + U('hPa') + ' = ' + PA('1{,}013', 5) + '$', s: 'geg. (Umrechnen)', tipp: '$1' + U('hPa') + ' = 10^2' + U('Pa') + '$', erkl: E_HPA('1013', '1{,}013', 5) },
+          { z: TK(1, 15, 288), s: 'geg. (Kelvin)', p: 0.5, tipp: '$T = (\\vartheta + 273)' + U('K') + '$' },
+          { z: '$p_2 = 265' + U('hPa') + ' = ' + PA('2{,}65', 4) + '$', s: 'geg. (Umrechnen)', tipp: 'Wie bei $p_1$ – das Komma wandert hier 2 Stellen.', erkl: E_HPA('265', '2{,}65', 4) },
+          { z: TK(2, '-50', 223), s: 'geg. (Kelvin)', p: 0.5, tipp: 'Vorsicht Minus: 50 Grad unter null.', erkl: E_MINUS('-50', 223) }],
+        ges: { z: '$V_2$', tipp: 'Gesucht ist das Volumen oben.' },
+        rechts: [
+          { z: FORMEL, s: 'Formel', tipp: 'Hier ändern sich alle drei Größen – nichts kürzt sich.' },
+          { z: '$V_2 = \\dfrac{p_1 \\cdot V_1 \\cdot T_2}{p_2 \\cdot T_1}$', s: 'Umstellen', p: 1, tipp: 'Mit $T_2$ malnehmen, dann durch $p_2$ teilen.',
+            erkl: { schritte: [
+              { k: 'Mit T₂ malnehmen', f: '$\\dfrac{p_1 \\cdot V_1 \\cdot T_2}{T_1} = p_2 \\cdot V_2$' },
+              { k: 'Durch p₂ teilen', t: 'Neben $V_2$ steht noch $p_2$ – teile beide Seiten durch $p_2$. Es wandert unter den Bruchstrich:', f: '$V_2 = \\dfrac{p_1 \\cdot V_1 \\cdot T_2}{p_2 \\cdot T_1}$' },
+              { k: 'Merkhilfe', t: 'Die Größen, die bei $V_2$ stehen ($p_2$ und $T_2$), wechseln die Etage: $p_2$ geht nach unten, $T_2$ nach oben.' }] } },
+          { z: '$V_2 = \\dfrac{' + PA('1{,}013', 5) + ' \\cdot 4{,}0' + U('m^3') + ' \\cdot 223' + U('K') + '}{' + PA('2{,}65', 4) + ' \\cdot 288' + U('K') + '}$', s: 'Einsetzen', p: 0.5,
+            tipp: 'Zahlen mit Einheiten einsetzen: Pa und K kürzen sich, übrig bleibt m³.', erkl: E_TR },
+          { z: '$V_2 = 11{,}8\\text{…}' + U('m^3') + ' \\approx$&nbsp;<span class="unter">$12' + U('m^3') + '$</span>', s: 'Ergebnis', p: 1,
+            tipp: 'Die Angabe mit den wenigsten Ziffern ist 4,0 m³.', erkl: E_ZIFFERN('$4{,}0$ m³ → 2 Ziffern · $1013$ hPa → 4 Ziffern · $265$ hPa → 3 Ziffern. Am wenigsten: 2.', '$11{,}8\\text{…}' + U('m^3') + ' \\approx 12' + U('m^3') + '$') },
+          ZIFF('(2 Ziffern wie 4,0 m³)')],
+        antwort: { z: 'In 10 km Höhe hat der Ballon ein Volumen von etwa 12 m³ – dreimal so viel wie am Boden.', tipp: 'Ganzer Satz – vergleiche mit dem Volumen am Boden.' } } },
+      { bild: 'bilder/2-3/a4.webp', top: 15.9, y0: 22.25, y1: 23.75, zeilen: [
+        { x: 1.15, y: 22.98, cls: 'satz', p: 1, z: 'Der Luftdruck sinkt mit der Höhe stark, deshalb dehnt sich das Gas immer weiter aus, bis die Hülle reißt.', s: 'b)', tipp: 'Was passiert mit dem Luftdruck, je höher der Ballon steigt? Probier es unten aus!' }] }
+    ],
+    spiele: [SPIEL_BALLON] },
 
   /* ===================== Aufgabe 5 (HA) ===================== */
-  { chip: 'A5', name: 'Aufgabe 5', bild: { src: 'bilder/2-3/a5.webp', y0: 23.8, y1: 26.0 },
-    anhang: { h: 4.4, karo: [[0.55, 26.2, 18.0, 4.0]] },
+  { chip: 'A5', name: 'Aufgabe 5',
     check: { einh: 'cm³', ok: [6.2], exakt: 6.21, bsp: '6,2', runden: 'Alle Angaben haben 2 Ziffern.',
       fehler: [{ w: 13.5, t: '<b>Achtung, °C!</b> Rechne 8 °C und 18 °C in Kelvin um.' },
                { w: 0.644, t: '<b>Falsch umgestellt?</b> Oben ist der Druck kleiner – die Blase muss <b>größer</b> werden.' },
                { w: 6.0, rel: 0.001, t: '<b>Fast!</b> Das wäre richtig, wenn die Temperatur gleich bliebe. Oben ist das Wasser aber wärmer – nimm $T$ mit in die Rechnung.' }] },
-    striche: [[9.65, 26.2, 29.7]],
-    zeilen: [
-      GEG(26.22, '$p_1 = 3{,}0' + U('bar') + ' = ' + PA('3{,}0', 5) + '$', { tipp: 'Zustand 1 ist unten in 20 m Tiefe.', erkl: E_BAR }),
-      L(26.72, '$V_1 = 2{,}0' + U('cm^3') + ' = ' + M3('2{,}0', -6) + '$', { s: 'geg. (Umrechnen)', tipp: '$1' + U('cm^3') + ' = 10^{-6}' + U('m^3') + '$',
-        erkl: { schritte: [
-          { k: 'Warum 10⁻⁶?', t: 'Ein Würfel mit 1 m Kante ist 100 cm lang, breit und hoch: $1' + U('m^3') + ' = 100 \\cdot 100 \\cdot 100' + U('cm^3') + ' = 10^6' + U('cm^3') + '$.' },
-          { k: 'Umgekehrt', t: 'Also ist $1' + U('cm^3') + '$ ein Millionstel Kubikmeter:', f: '$1' + U('cm^3') + ' = 10^{-6}' + U('m^3') + '$' },
-          { k: 'Hier', f: '$2{,}0' + U('cm^3') + ' = ' + M3('2{,}0', -6) + '$' }] } }),
-      L(27.22, TK(1, 8, 281), { s: 'geg. (Kelvin)', tipp: '$T = (\\vartheta + 273)' + U('K') + '$' }),
-      L(27.72, '$p_2 = 1{,}0' + U('bar') + ' = ' + PA('1{,}0', 5) + '$', { tipp: 'Zustand 2 ist an der Oberfläche.' }),
-      L(28.22, TK(2, 18, 291), { s: 'geg. (Kelvin)', tipp: 'Wie bei $T_1$.' }),
-      GES(29.22, '$V_2$', { tipp: 'Gesucht ist das Volumen oben.' }),
-      R(26.22, '$p_1 \\cdot V_1 : T_1 = p_2 \\cdot V_2 : T_2$', 'Formel', { tipp: 'Alle drei Größen ändern sich.' }),
-      R(26.72, '$V_2 = p_1 \\cdot V_1 \\cdot T_2 : (p_2 \\cdot T_1)$', 'Umstellen', { tipp: 'Genau wie beim Wetterballon.' }),
-      R(27.22, '$V_2 = ' + PA('3{,}0', 5) + ' \\cdot ' + M3('2{,}0', -6) + ' \\cdot 291' + U('K') + '$', 'Einsetzen', { tipp: 'Erst der Teil vor dem „:“.', erkl: E_TR }),
-      R(27.72, '$\\qquad : (' + PA('1{,}0', 5) + ' \\cdot 281' + U('K') + ')$', 'Einsetzen (Teil 2)', { tipp: 'Pa und K kürzen sich, übrig bleibt m³.' }),
-      R(28.22, '$V_2 = 6{,}21\\text{…} \\cdot 10^{-6}' + U('m^3') + ' \\approx 6{,}2 \\cdot 10^{-6}' + U('m^3') + ' =$&nbsp;<span class="unter">$6{,}2' + U('cm^3') + '$</span>', 'Ergebnis',
-        { tipp: 'Die $10^5$ oben und unten kürzen sich – du musst sie nicht eintippen.', erkl: E_ZIFFERN('$3{,}0$ bar, $2{,}0$ cm³ und $1{,}0$ bar haben je 2 Ziffern.', '$V_2 \\approx 6{,}2 \\cdot 10^{-6}' + U('m^3') + ' = 6{,}2' + U('cm^3') + '$') }),
-      ZIFF(28.72, '(2 Ziffern wie alle Angaben)'),
-      ANT(29.72, 'An der Oberfläche hat die Luftblase ein Volumen von etwa 6,2 cm³.', { tipp: 'Ganzer Satz.' })
+    teile: [
+      { bild: 'bilder/2-3/a5.webp', top: 23.8, y0: 23.8, y1: 26.0 },
+      { rechnung: {
+        links: [
+          { z: '$p_1 = 3{,}0' + U('bar') + ' = ' + PA('3{,}0', 5) + '$', tipp: 'Zustand 1 ist unten in 20 m Tiefe.', erkl: E_BAR },
+          { z: '$V_1 = 2{,}0' + U('cm^3') + ' = ' + M3('2{,}0', -6) + '$', s: 'geg. (Umrechnen)', tipp: '$1' + U('cm^3') + ' = 10^{-6}' + U('m^3') + '$',
+            erkl: { schritte: [
+              { k: 'Warum 10⁻⁶?', t: 'Ein Würfel mit 1 m Kante ist 100 cm lang, breit und hoch: $1' + U('m^3') + ' = 100 \\cdot 100 \\cdot 100' + U('cm^3') + ' = 10^6' + U('cm^3') + '$.' },
+              { k: 'Umgekehrt', t: 'Also ist $1' + U('cm^3') + '$ ein Millionstel Kubikmeter:', f: '$1' + U('cm^3') + ' = 10^{-6}' + U('m^3') + '$' },
+              { k: 'Hier', f: '$2{,}0' + U('cm^3') + ' = ' + M3('2{,}0', -6) + '$' }] } },
+          { z: TK(1, 8, 281), s: 'geg. (Kelvin)', p: 0.5, tipp: '$T = (\\vartheta + 273)' + U('K') + '$' },
+          { z: '$p_2 = 1{,}0' + U('bar') + ' = ' + PA('1{,}0', 5) + '$', tipp: 'Zustand 2 ist an der Oberfläche.' },
+          { z: TK(2, 18, 291), s: 'geg. (Kelvin)', p: 0.5, tipp: 'Wie bei $T_1$.' }],
+        ges: { z: '$V_2$', tipp: 'Gesucht ist das Volumen oben.' },
+        rechts: [
+          { z: FORMEL, s: 'Formel', tipp: 'Alle drei Größen ändern sich.' },
+          { z: '$V_2 = \\dfrac{p_1 \\cdot V_1 \\cdot T_2}{p_2 \\cdot T_1}$', s: 'Umstellen', p: 1, tipp: 'Genau wie beim Wetterballon.' },
+          { z: '$V_2 = \\dfrac{' + PA('3{,}0', 5) + ' \\cdot ' + M3('2{,}0', -6) + ' \\cdot 291' + U('K') + '}{' + PA('1{,}0', 5) + ' \\cdot 281' + U('K') + '}$', s: 'Einsetzen', p: 0.5, tipp: 'Pa und K kürzen sich, übrig bleibt m³.', erkl: E_TR },
+          { z: '$V_2 = 6{,}21\\text{…} \\cdot 10^{-6}' + U('m^3') + ' \\approx 6{,}2 \\cdot 10^{-6}' + U('m^3') + ' =$&nbsp;<span class="unter">$6{,}2' + U('cm^3') + '$</span>', s: 'Ergebnis', p: 1,
+            tipp: 'Die $10^5$ oben und unten kürzen sich – du musst sie nicht eintippen.', erkl: E_ZIFFERN('$3{,}0$ bar, $2{,}0$ cm³ und $1{,}0$ bar haben je 2 Ziffern.', '$V_2 \\approx 6{,}2 \\cdot 10^{-6}' + U('m^3') + ' = 6{,}2' + U('cm^3') + '$') },
+          ZIFF('(2 Ziffern wie alle Angaben)')],
+        antwort: { z: 'An der Oberfläche hat die Luftblase ein Volumen von etwa 6,2 cm³.', tipp: 'Ganzer Satz.' } } }
     ] },
 
   /* ===================== Ende ===================== */
