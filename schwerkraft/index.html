@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Schwerkraft-Labor – Astronaut auf anderen Himmelskörpern</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232F5FB3'/%3E%3Ccircle cx='32' cy='38' r='16' fill='%23fff'/%3E%3Cpath d='M32 6v14M26 15l6 6 6-6' stroke='%23FFD23F' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#FFF9F0; --karte:#fff; --text:#1B1F2A; --text2:#6B6252; --linie:#EDE3D1; --leise:#9A8F7C;
+  --blau:#2F5FB3; --blau-hell:#E7F0F8; --blau-text:#285B85; --rot:#E11D48;
+  --akzent:#D9601F; --schatten:0 10px 24px -14px rgba(60,40,10,.35); --r:22px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#12151C; --karte:#1C212B; --text:#F2F4F8; --text2:#A8B1C2; --linie:#2B3240; --leise:#7F899B;
+    --blau-hell:#1E3247; --blau-text:#9CC6EA; --akzent:#FFB36B; --schatten:0 10px 24px -14px rgba(0,0,0,.7); }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-weight:500;font-size:16.5px;line-height:1.45}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.seite{max-width:920px;margin:0 auto;padding:14px 14px 40px}
+.zurueck{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:var(--text2);text-decoration:none;
+  background:var(--karte);border:1px solid var(--linie);border-radius:999px;padding:8px 14px 8px 10px;min-height:40px}
+.zurueck svg{width:18px;height:18px}
+.kopf{margin:14px 2px 14px}
+.kopf .ober{font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--akzent)}
+.kopf h1{margin:2px 0 4px;font-size:clamp(25px,6vw,34px);line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.kopf p{margin:0;color:var(--text2);max-width:36em}
+
+/* Bühne */
+.buehne{position:relative;border-radius:var(--r) var(--r) 0 0;overflow:hidden;height:clamp(350px,60vw,470px);background:#000;
+  box-shadow:var(--schatten);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.buehne canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;left:10px;top:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.chip{background:rgba(10,14,24,.62);color:#fff;border-radius:999px;padding:5px 11px;font-size:13.5px;font-weight:700;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);white-space:nowrap}
+.chip.fg{background:rgba(225,29,72,.85)}
+.chip.wert{background:#FFD23F;color:#3A2A00;display:none}
+.chip.wert.an{display:inline-block}
+.chip.wert b{font-weight:800}
+@media (max-width:480px){.chip{font-size:12.5px;padding:4px 9px}}
+.schalter{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.schalter button{flex:1 1 0;min-height:44px;border-radius:14px;background:var(--karte);border:1px solid var(--linie);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;gap:6px;font-size:14.5px;font-weight:700;padding:6px 10px;white-space:nowrap}
+.schalter button.an{border-color:var(--blau);background:var(--blau-hell);color:var(--blau-text)}
+.schalter svg{width:19px;height:19px;flex:none}
+
+/* Planetenwahl */
+.planeten{display:flex;gap:6px;overflow-x:auto;padding:10px 10px 12px;background:var(--karte);border:1px solid var(--linie);border-top:0;
+  scrollbar-width:thin;scroll-snap-type:x proximity}
+.pl{flex:1 0 86px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 4px 8px;border-radius:16px;
+  border:2px solid transparent;min-height:44px}
+.pl .kugel{width:42px;height:42px;border-radius:50%;box-shadow:inset -6px -7px 12px rgba(0,0,0,.35)}
+.pl b{font-size:14px;font-weight:800;line-height:1.1}
+.pl small{font-size:12px;color:var(--text2);font-weight:600;white-space:nowrap}
+.pl[aria-pressed="true"]{border-color:var(--blau);background:var(--blau-hell)}
+.pl[aria-pressed="true"] small{color:var(--blau-text)}
+.k-mond{background:radial-gradient(circle at 62% 62%,#8d8d8d 0 9%,transparent 10%),radial-gradient(circle at 34% 58%,#9a9a9a 0 6%,transparent 7%),radial-gradient(circle at 35% 30%,#f4f4f2,#a9a9a6 58%,#6a6a67)}
+.k-mars{background:radial-gradient(circle at 60% 45%,#9c3412 0 12%,transparent 13%),radial-gradient(circle at 35% 30%,#f6ad7b,#cc5420 58%,#7d2a0c)}
+.k-erde{background:radial-gradient(circle at 62% 60%,#43a34f 0 16%,transparent 17%),radial-gradient(circle at 36% 38%,#4cae58 0 11%,transparent 12%),radial-gradient(circle at 35% 30%,#a8e3ff,#2f86d6 55%,#1b4f8a)}
+.k-jupiter{background:linear-gradient(180deg,#eedcc0 0 17%,#c58b5a 17% 29%,#f0e2c8 29% 43%,#b5703f 43% 54%,#ead6b3 54% 72%,#c9915f 72% 84%,#e5cfa9 84%)}
+.k-gravitron{background:radial-gradient(circle at 35% 30%,#e3c6ff,#8b45f0 52%,#2e1065)}
+.k-sonne{background:radial-gradient(circle at 40% 38%,#fffbd0,#ffd23f 42%,#ff8a00 78%,#e65100);box-shadow:0 0 14px 3px rgba(255,170,0,.55)!important}
+
+/* Steuerung */
+.steuer{display:grid;grid-template-columns:64px 1fr 1fr 64px;gap:8px;margin-top:12px}
+.knopf{min-height:58px;border-radius:18px;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--karte);border:1px solid var(--linie);box-shadow:var(--schatten);touch-action:none}
+.knopf svg{width:24px;height:24px;flex:none}
+.knopf.huepfen{background:linear-gradient(135deg,#3B8FD0,#2F5FB3);color:#fff;border:0}
+.knopf.werfen{background:linear-gradient(135deg,#F47B3E,#E0457B);color:#fff;border:0}
+.knopf:active,.knopf.druck{transform:scale(.97);filter:brightness(1.06)}
+.winkel{display:flex;align-items:center;gap:12px;margin-top:10px;background:var(--karte);border:1px solid var(--linie);border-radius:16px;padding:8px 14px}
+.winkel label{font-weight:700;font-size:15px;white-space:nowrap}
+.winkel input{flex:1;accent-color:#E0457B;height:30px}
+.winkel output{font-weight:800;min-width:3ch;text-align:right}
+.tasten{margin:6px 4px 0;font-size:13px;color:var(--leise)}
+@media (hover:none){.tasten{display:none}}
+
+/* Karten */
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:var(--r);padding:16px 16px;margin-top:14px;box-shadow:var(--schatten)}
+.karte h2{margin:0 0 8px;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text2)}
+.info{display:flex;gap:14px;align-items:flex-start}
+.info .kugel{flex:none;width:58px;height:58px;border-radius:50%;box-shadow:inset -8px -9px 14px rgba(0,0,0,.35)}
+.info h3{margin:0;font-size:21px;font-weight:800}
+.info .g{font-weight:700;color:var(--blau-text)}
+.formel{margin:8px 0 6px;font-size:16px;font-weight:600}
+.formel .fg{color:var(--rot);font-weight:800}
+.info p{margin:4px 0 0;color:var(--text2);font-size:15px}
+.tabelle{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:420px}
+th,td{padding:8px 8px;text-align:right;border-bottom:1px solid var(--linie);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:12.5px;color:var(--text2);font-weight:800;letter-spacing:.03em}
+tr.aktuell td{background:var(--blau-hell)}
+td.leer{color:var(--leise)}
+.punkt{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:-1px}
+.zeile{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
+.klein{font-size:14px;font-weight:700;color:var(--blau-text);padding:8px 10px;border-radius:12px;min-height:40px}
+details{border:1px solid var(--linie);border-radius:16px;padding:0 14px;margin-top:8px}
+summary{cursor:pointer;font-weight:700;padding:12px 0;list-style:none;display:flex;gap:10px;align-items:flex-start}
+summary::-webkit-details-marker{display:none}
+summary .nr{flex:none;width:26px;height:26px;border-radius:50%;background:var(--blau);color:#fff;font-size:14px;display:grid;place-items:center;margin-top:-1px}
+details p{margin:0 0 12px 36px;color:var(--text2)}
+details[open] summary{color:var(--blau-text)}
+.hinweis{font-size:14px;color:var(--text2);margin:0}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" id="zurueck" href="../p8/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg><span id="zurueckText">Physik 8b</span></a>
+<header class="kopf">
+  <div class="ober" id="ober">Physik 8b · Gewichtskraft</div>
+  <h1>Schwerkraft-Labor</h1>
+  <p>Wie hüpft, läuft und wirft ein Astronaut auf dem Mond, dem Mars oder sogar auf der Sonne? Probier es aus und vergleiche!</p>
+</header>
+
+<div class="buehne" id="buehne">
+  <canvas id="cv" aria-label="Simulation: Astronaut auf einem Himmelskörper"></canvas>
+  <div class="hud"><span class="chip" id="hudPl">Erde · g = 9,81 N/kg</span><span class="chip">m = 100 kg</span><span class="chip fg" id="hudFg">F<sub>G</sub> = 981 N</span><span class="chip wert" id="wert"></span></div>
+
+</div>
+<div class="planeten" id="planeten" role="group" aria-label="Himmelskörper wählen"></div>
+
+<div class="steuer">
+  <button class="knopf" id="bLinks" aria-label="Nach links laufen (gedrückt halten)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button class="knopf huepfen" id="bHuepf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M6 11l6-6 6 6"/><path d="M5 21h14"/></svg>Hüpfen</button>
+  <button class="knopf werfen" id="bWurf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19c4-9 10-12 17-11" stroke-dasharray="2.5 3"/><circle cx="19" cy="8" r="3" fill="currentColor"/></svg>Werfen</button>
+  <button class="knopf" id="bRechts" aria-label="Nach rechts laufen (gedrückt halten)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+</div>
+<div class="winkel"><label for="win">Wurfwinkel</label><input type="range" id="win" min="10" max="80" step="5" value="45"><output id="winOut">45°</output></div>
+<div class="schalter">
+    <button id="bPfeil" class="an" title="Gewichtskraft-Pfeil zeigen" aria-label="Gewichtskraft-Pfeil zeigen" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v16M6 13l6 6 6-6"/></svg>Kraftpfeil</button>
+    <button id="bLupe" title="Zeitlupe" aria-label="Zeitlupe" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>Zeitlupe</button>
+    <button id="bWeg" title="Spuren löschen" aria-label="Spuren löschen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Spuren löschen</button>
+  </div>
+<p class="tasten">Am PC: ← → laufen · Leertaste hüpfen · W werfen</p>
+
+<section class="karte" aria-live="polite">
+  <div class="info">
+    <span class="kugel" id="infoKugel"></span>
+    <div>
+      <h3 id="infoName">Erde</h3>
+      <div class="g" id="infoG"></div>
+      <div class="formel" id="infoFormel"></div>
+      <p id="infoText"></p>
+    </div>
+  </div>
+</section>
+
+<section class="karte">
+  <div class="zeile"><h2>Deine Messwerte</h2><button class="klein" id="bTabWeg">Tabelle leeren</button></div>
+  <div class="tabelle"><table>
+    <thead><tr><th>Himmelskörper</th><th>g in N/kg</th><th>Sprunghöhe</th><th>Zeit in der Luft</th><th>Wurfweite</th></tr></thead>
+    <tbody id="tab"></tbody>
+  </table></div>
+  <p class="hinweis" style="margin-top:8px">Hüpfe und wirf auf verschiedenen Himmelskörpern – die Werte erscheinen hier.</p>
+</section>
+
+<section class="karte">
+  <h2>Beobachten und erklären</h2>
+  <details><summary><span class="nr">1</span>Vergleiche die Sprunghöhe auf der Erde und auf dem Mond. Was fällt dir auf?</summary>
+    <p>Auf dem Mond springt der Astronaut etwa 6-mal so hoch (1,78 m statt 29 cm). Der Ortsfaktor ist dort etwa 6-mal kleiner. Die Gewichtskraft zieht ihn also viel schwächer zurück nach unten – er wird langsamer abgebremst und kommt höher.</p></details>
+  <details><summary><span class="nr">2</span>Hat der Astronaut auf dem Mond weniger Masse?</summary>
+    <p>Nein! Seine Masse ist überall gleich: 100 kg. Sie gibt an, wie schwer und wie träge ein Körper ist – und das hängt nicht vom Ort ab. Was sich ändert, ist die Gewichtskraft F<sub>G</sub> = m · g, weil der Ortsfaktor g überall anders ist.</p></details>
+  <details><summary><span class="nr">3</span>Berechne die Gewichtskraft des Astronauten auf dem Mars.</summary>
+    <p>F<sub>G</sub> = m · g = 100 kg · 3,71 N/kg = 371 N. Das ist etwas mehr als ein Drittel seiner Gewichtskraft auf der Erde (981 N).</p></details>
+  <details><summary><span class="nr">4</span>Warum fliegt der Ball auf dem Mond so viel weiter als auf der Erde?</summary>
+    <p>Der Ball wird überall gleich schnell abgeworfen. Auf dem Mond zieht ihn die Gewichtskraft aber viel schwächer nach unten. Er bleibt deshalb viel länger in der Luft – und fliegt in dieser Zeit ein viel längeres Stück nach vorne.</p></details>
+  <details><summary><span class="nr">5</span>Warum könnte niemand auf der Sonne stehen?</summary>
+    <p>Die Sonne hat keine feste Oberfläche und ist außen über 5 500 °C heiß. Und selbst wenn: Die Gewichtskraft wäre etwa 28-mal so groß wie auf der Erde (27 400 N). Das ist so, als müsstest du auf der Erde ein großes Auto (rund 2,7 t) auf den Schultern tragen – das halten deine Beine nicht aus.</p></details>
+</section>
+
+<section class="karte">
+  <h2>So rechnet die Simulation</h2>
+  <p class="hinweis">Der Astronaut (mit Anzug 100 kg) springt überall gleich kräftig ab (2,4 m/s) und wirft den Ball überall gleich schnell (10 m/s). Den Luftwiderstand lassen wir weg. Auf dem Jupiter und auf der Sonne gibt es eigentlich keinen festen Boden – hier tun wir so, als ob. Wird die Gewichtskraft sehr groß, geht er in die Knie und kommt nur mühsam voran; bei sehr kleiner Gewichtskraft hüpft er beim Laufen – so wie die Apollo-Astronauten auf dem Mond.</p>
+</section>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- Einstellungen ---------- */
+var KLASSEN = { p7:{name:'Physik 7a', link:'../p7/'}, p8:{name:'Physik 8b', link:'../p8/'} };
+var MASSE = 100, V_SPRUNG = 2.4, V_WURF = 10, V_LAUF = 1.4, V_HOPS = 0.9, BALL_R = 0.11, H_WURF = 1.45;
+var PLANETEN = [
+  { id:'mond', name:'Mond', g:1.62, farbe:'#D3DCE6',
+    text:'Hier gibt es keine Luft – ohne Raumanzug geht nichts. Die Apollo-Astronauten sind über den Mond gehüpft statt gelaufen.',
+    himmel:['#03050B','#121826'], boden:['#BDBDB8','#8A8A85','#5F5F5B'], sterne:true, deko:'erde' },
+  { id:'mars', name:'Mars', g:3.71, farbe:'#FF8A50',
+    text:'Der Mars ist kleiner als die Erde. Die Gewichtskraft ist hier nur etwas mehr als ein Drittel so groß.',
+    himmel:['#B9774A','#E9C29A'], boden:['#C4602F','#99421D','#6E2C12'], deko:'sonneKlein' },
+  { id:'erde', name:'Erde', g:9.81, farbe:'#3BA3FF',
+    text:'Unser Vergleich: Auf der Erde wirkt auf 1 kg eine Gewichtskraft von 9,81 N.',
+    himmel:['#4FA9EA','#CDEBFF'], boden:['#62AD4C','#7A5434','#5A3C22'], deko:'sonneWolken' },
+  { id:'jupiter', name:'Jupiter', g:24.79, farbe:'#F2B15C',
+    text:'Der größte Planet unseres Sonnensystems. Er besteht aus Gas – einen festen Boden gibt es nicht. Wir tun so, als ob.',
+    himmel:['#A9693C','#E9D2AC'], boden:['#E3C49A','#B98C5E','#8E653D'], deko:'baender' },
+  { id:'gravitron', name:'Gravitron', g:60, farbe:'#C084FC', fantasie:true,
+    text:'Ein ausgedachter Planet aus extrem dichtem Gestein. Die Gewichtskraft ist hier gut 6-mal so groß wie auf der Erde.',
+    himmel:['#14072E','#4B2179'], boden:['#4A3672','#2E2150','#1C1433'], sterne:true, deko:'ringmond' },
+  { id:'sonne', name:'Sonne', g:274, farbe:'#FFE14D',
+    text:'Kein fester Boden und über 5 500 °C heiß – hier könnte niemand stehen. Wir zeigen trotzdem, wie stark die Sonne alles nach unten ziehen würde.',
+    himmel:['#1A0300','#6B1600'], boden:['#FFC21A','#FF8A00','#D94A00'], deko:'glut' }
+];
+var PL = {}; PLANETEN.forEach(function(p){ PL[p.id] = p; });
+
+/* ---------- Klasse ---------- */
+var k = 'p8';
+try { var q = new URLSearchParams(location.search).get('k'); if (KLASSEN[q]) k = q; } catch(e){}
+document.getElementById('zurueck').href = KLASSEN[k].link;
+document.getElementById('zurueckText').textContent = KLASSEN[k].name;
+document.getElementById('ober').textContent = KLASSEN[k].name + ' · Gewichtskraft';
+var SPEICHER = 'schwerkraft-' + k;
+var mess = {};
+try { mess = JSON.parse(localStorage.getItem(SPEICHER) || '{}') || {}; } catch(e){ mess = {}; }
+function speichern(){ try { localStorage.setItem(SPEICHER, JSON.stringify(mess)); } catch(e){} }
+
+/* ---------- Zahlen ---------- */
+function z(x, d){ return x.toLocaleString('de-DE', { minimumFractionDigits:d, maximumFractionDigits:d }).replace(/\./g,' '); }
+function laenge(m){
+  if (m < 0.1) return z(m*100, 1) + ' cm';
+  if (m < 1)   return z(m*100, 0) + ' cm';
+  if (m < 10)  return z(m, 2) + ' m';
+  if (m < 100) return z(m, 1) + ' m';
+  return z(m, 0) + ' m';
+}
+function zeit(s){ return s < 0.1 ? z(s, 3) + ' s' : (s < 10 ? z(s, 2) + ' s' : z(s, 1) + ' s'); }
+function gTxt(g){ return g >= 100 ? z(g,0) : (g >= 20 && g % 1 === 0 ? z(g,0) : z(g,2)); }
+function kraft(g){ return z(Math.round(MASSE*g), 0) + ' N'; }
+
+/* ---------- Zustand ---------- */
+var planet = PL.erde;
+try { var lp = localStorage.getItem(SPEICHER + '-planet'); if (PL[lp]) planet = PL[lp]; } catch(e){}
+var A = { x:0, y:0, vx:0, vy:0, boden:true, blick:1, phase:0, wurfT:-1, sprung:false, hops:false, sprungX:0, maxY:0 };
+var gehRichtung = 0;           // −1, 0, 1
+var ball = null;               // { x,y,vx,vy,fliegt,spur,startX,planet }
+var spuren = [];               // { planet, pts, landX, startX, apexX, apexY, weite }
+var marken = [];               // { planet, x, h }
+var zeigePfeil = true, lupe = false;
+var cam = { x:0, s:80, ziel:null };
+var winkel = 45;
+var anzeige = { text:'', bis:0 };
+var wertEl = document.getElementById('wert');
+
+/* ---------- Planetenwahl ---------- */
+var leiste = document.getElementById('planeten');
+PLANETEN.forEach(function(p){
+  var b = document.createElement('button');
+  b.className = 'pl'; b.dataset.id = p.id;
+  b.innerHTML = '<span class="kugel k-' + p.id + '"></span><b>' + p.name + '</b><small>' + gTxt(p.g) + ' N/kg</small>';
+  b.addEventListener('click', function(){ waehle(p.id); });
+  leiste.appendChild(b);
+});
+function waehle(id){
+  planet = PL[id];
+  try { localStorage.setItem(SPEICHER + '-planet', id); } catch(e){}
+  // Astronaut landet sofort, Ball verschwindet
+  A.y = 0; A.vy = 0; A.boden = true; A.sprung = false; A.hops = false; A.vx = 0;
+  if (ball && ball.fliegt) ball = null;
+  anzeige.bis = 0; wertEl.classList.remove('an');
+  [].forEach.call(leiste.children, function(b){ b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
+  var p = planet, f = p.g / 9.81;
+  document.getElementById('hudPl').textContent = p.name + ' · g = ' + gTxt(p.g) + ' N/kg';
+  document.getElementById('hudFg').innerHTML = 'F<sub>G</sub> = ' + kraft(p.g);
+  document.getElementById('infoKugel').className = 'kugel k-' + p.id;
+  document.getElementById('infoName').textContent = p.name + (p.fantasie ? ' (Fantasieplanet)' : '');
+  document.getElementById('infoG').textContent = 'Ortsfaktor g = ' + gTxt(p.g) + ' N/kg' +
+    (p.id === 'erde' ? '' : ' · ' + (f < 1 ? 'nur ' + z(f, 2) + '-mal' : 'etwa ' + (f < 10 ? z(f, 1) : z(f, 0)) + '-mal') + ' so groß wie auf der Erde');
+  document.getElementById('infoFormel').innerHTML = '<span class="fg">F<sub>G</sub></span> = m · g = 100 kg · ' + gTxt(p.g) + ' N/kg = <span class="fg">' + kraft(p.g) + '</span>';
+  document.getElementById('infoText').textContent = p.text;
+  tabelle();
+}
+
+/* ---------- Tabelle ---------- */
+function tabelle(){
+  var h = '';
+  PLANETEN.forEach(function(p){
+    var m = mess[p.id] || {};
+    h += '<tr' + (p === planet ? ' class="aktuell"' : '') + '><td><span class="punkt" style="background:' + p.farbe + ';box-shadow:0 0 0 1px rgba(0,0,0,.25)"></span>' + p.name + '</td>' +
+      '<td>' + gTxt(p.g) + '</td>' +
+      (m.h != null ? '<td>' + laenge(m.h) + '</td><td>' + zeit(m.t) + '</td>' : '<td class="leer">–</td><td class="leer">–</td>') +
+      (m.w != null ? '<td>' + laenge(m.w) + ' <small style="color:var(--text2)">(' + m.a + '°)</small></td>' : '<td class="leer">–</td>') + '</tr>';
+  });
+  document.getElementById('tab').innerHTML = h;
+}
+document.getElementById('bTabWeg').addEventListener('click', function(){ mess = {}; speichern(); tabelle(); });
+
+/* ---------- Aktionen ---------- */
+function laufTempo(){ return V_LAUF * Math.min(1, Math.sqrt(9.81 / planet.g)); }
+function huepfeLaufen(){ return V_LAUF * V_LAUF / (planet.g * 0.9) > 0.5; }   // Froude-Zahl: bei kleiner Schwerkraft wird gehüpft
+function huepfen(){
+  if (!A.boden) return;
+  A.vy = V_SPRUNG; A.boden = false; A.sprung = true; A.hops = false; A.maxY = 0; A.sprungX = A.x;
+  A.vx = gehRichtung ? gehRichtung * laufTempo() : 0;
+}
+function werfen(){
+  if (A.wurfT >= 0) return;
+  A.wurfT = 0; A.abgang = false;
+}
+function abwurf(){
+  var a = winkel * Math.PI / 180, d = A.blick;
+  var b = { x:A.x + d * 0.32, y:A.y + H_WURF, vx:d * V_WURF * Math.cos(a), vy:V_WURF * Math.sin(a), fliegt:true, startX:A.x + d * 0.32, planet:planet };
+  var g = planet.g, h0 = b.y - BALL_R;
+  var tf = (b.vy + Math.sqrt(b.vy * b.vy + 2 * g * h0)) / g;
+  var apexY = b.y + b.vy * b.vy / (2 * g);
+  var spur = { planet:planet, pts:[[b.x, b.y]], startX:b.startX, landX:null, apexX:b.x + b.vx * (b.vy / g), apexY:apexY, weite:null, ende:b.x + b.vx * tf };
+  b.spur = spur; spuren.push(spur);
+  if (spuren.length > 8) spuren.shift();
+  ball = b;
+}
+function landungBall(b){
+  b.fliegt = false;
+  var w = Math.abs(b.x - b.startX);
+  b.spur.landX = b.x; b.spur.weite = w;
+  mess[b.planet.id] = mess[b.planet.id] || {};
+  mess[b.planet.id].w = w; mess[b.planet.id].a = winkel;
+  speichern(); tabelle();
+  zeige('Wurfweite <b>' + laenge(w) + '</b>', 5000);
+}
+function landungSprung(){
+  var h = V_SPRUNG * V_SPRUNG / (2 * planet.g), t = 2 * V_SPRUNG / planet.g;
+  marken = marken.filter(function(m){ return m.planet !== planet; });
+  marken.push({ planet:planet, x:A.sprungX, h:h });
+  mess[planet.id] = mess[planet.id] || {};
+  mess[planet.id].h = h; mess[planet.id].t = t;
+  speichern(); tabelle();
+  zeige('Sprunghöhe <b>' + laenge(h) + '</b> · in der Luft ' + zeit(t), 5000);
+}
+function zeige(html, ms){ anzeige.text = html; anzeige.bis = Date.now() + ms; wertEl.innerHTML = html; wertEl.classList.add('an'); }
+
+/* ---------- Eingaben ---------- */
+function halten(el, dir){
+  var an = function(e){ e.preventDefault(); gehRichtung = dir; A.blick = dir; el.classList.add('druck'); try{ el.setPointerCapture(e.pointerId); }catch(_){} };
+  var aus = function(){ if (gehRichtung === dir) gehRichtung = 0; el.classList.remove('druck'); };
+  el.addEventListener('pointerdown', an);
+  el.addEventListener('pointerup', aus); el.addEventListener('pointercancel', aus); el.addEventListener('lostpointercapture', aus);
+  el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+}
+halten(document.getElementById('bLinks'), -1);
+halten(document.getElementById('bRechts'), 1);
+document.getElementById('bHuepf').addEventListener('click', huepfen);
+document.getElementById('bWurf').addEventListener('click', werfen);
+var winEl = document.getElementById('win'), winOut = document.getElementById('winOut');
+winEl.addEventListener('input', function(){ winkel = +winEl.value; winOut.textContent = winkel + '°'; });
+function schalter(id, setze){
+  var b = document.getElementById(id);
+  b.addEventListener('click', function(){ var an = !b.classList.contains('an'); b.classList.toggle('an', an); b.setAttribute('aria-pressed', an); setze(an); });
+}
+schalter('bPfeil', function(an){ zeigePfeil = an; });
+schalter('bLupe', function(an){ lupe = an; });
+document.getElementById('bWeg').addEventListener('click', function(){ spuren = []; marken = []; if (ball && !ball.fliegt) ball = null; });
+var tastenAn = {};
+document.addEventListener('keydown', function(e){
+  if (e.target.tagName === 'INPUT' && e.key !== ' ') return;
+  if (e.key === 'ArrowLeft'){ gehRichtung = -1; A.blick = -1; tastenAn.l = 1; e.preventDefault(); }
+  else if (e.key === 'ArrowRight'){ gehRichtung = 1; A.blick = 1; tastenAn.r = 1; e.preventDefault(); }
+  else if (e.key === ' ' || e.key === 'ArrowUp'){ if (!e.repeat) huepfen(); e.preventDefault(); }
+  else if ((e.key === 'w' || e.key === 'W') && !e.repeat){ werfen(); }
+});
+document.addEventListener('keyup', function(e){
+  if (e.key === 'ArrowLeft'){ tastenAn.l = 0; gehRichtung = tastenAn.r ? 1 : 0; }
+  if (e.key === 'ArrowRight'){ tastenAn.r = 0; gehRichtung = tastenAn.l ? -1 : 0; }
+});
+
+/* ---------- Physik ---------- */
+var DT = 0.001;
+function schritt(dt){
+  var g = planet.g;
+  // Astronaut
+  if (A.boden){
+    if (gehRichtung){
+      if (huepfeLaufen()){ A.vy = V_HOPS; A.boden = false; A.hops = true; A.vx = gehRichtung * laufTempo(); }
+      else { A.vx = gehRichtung * laufTempo(); A.x += A.vx * dt; A.phase += Math.abs(A.vx) * dt / 0.11; }
+    } else A.vx = 0;
+  } else {
+    var y0 = A.y, vy0 = A.vy;
+    A.x += A.vx * dt; A.y += A.vy * dt - 0.5 * g * dt * dt; A.vy -= g * dt;
+    if (A.y > A.maxY) A.maxY = A.y;
+    if (A.y <= 0){
+      A.y = 0; A.vy = 0; A.boden = true;
+      if (A.sprung){ A.sprung = false; landungSprung(); }
+      A.hops = false;
+      if (!gehRichtung) A.vx = 0;
+    }
+  }
+  // Ball
+  if (ball && ball.fliegt){
+    var b = ball, by0 = b.y, bvy0 = b.vy;
+    b.x += b.vx * dt; b.y += b.vy * dt - 0.5 * g * dt * dt; b.vy -= g * dt;
+    if (b.y <= BALL_R){
+      var h0 = by0 - BALL_R, tau = (bvy0 + Math.sqrt(Math.max(0, bvy0 * bvy0 + 2 * g * h0))) / g;
+      b.x = b.x - b.vx * dt + b.vx * Math.min(tau, dt); b.y = BALL_R;
+      b.spur.pts.push([b.x, b.y]);
+      landungBall(b);
+    } else {
+      var l = b.spur.pts[b.spur.pts.length - 1];
+      if (Math.abs(b.x - l[0]) + Math.abs(b.y - l[1]) > 0.02) b.spur.pts.push([b.x, b.y]);
+    }
+  }
+}
+
+/* ---------- Zeichnen ---------- */
+var cv = document.getElementById('cv'), ctx = cv.getContext('2d'), buehne = document.getElementById('buehne');
+var W = 0, H = 0, DPR = 1, BODEN = 44, hudEl = document.querySelector('.hud');
+function groesse(){
+  DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  W = buehne.clientWidth; H = buehne.clientHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+}
+window.addEventListener('resize', groesse);
+var sterne = []; (function(){ var s = 7; function r(){ s = (s * 16807) % 2147483647; return s / 2147483647; } for (var i = 0; i < 140; i++) sterne.push([r(), r(), r()]); })();
+function hash(n){ var x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+function kamera(dtReal){
+  var x0 = A.x - 1.6, x1 = A.x + 1.6, y1 = A.y + 2.4;
+  if (A.sprung){ var hS = V_SPRUNG * V_SPRUNG / (2 * planet.g); y1 = Math.max(y1, hS + 2.3); }
+  marken.forEach(function(m){ if (m.planet === planet && Math.abs(m.x - A.x) < 3) y1 = Math.max(y1, m.h + 2.3); });
+  spuren.forEach(function(s){
+    if (Math.abs(s.startX - A.x) > 4 && !(ball && ball.spur === s && ball.fliegt)) return;
+    var e = s.landX != null ? s.landX : s.ende;
+    x0 = Math.min(x0, s.startX - 1, e - 1); x1 = Math.max(x1, s.startX + 1, e + 1.2); y1 = Math.max(y1, s.apexY * 1.12 + 0.6);
+  });
+  var nutzH = H - BODEN - (hudEl.offsetHeight + 22);
+  var sMax = Math.min(W / 5.2, nutzH / 3.0);
+  var s = Math.min(sMax, W / (x1 - x0), nutzH / y1);
+  var cx = (x0 + x1) / 2;
+  var f = 1 - Math.exp(-dtReal * 4);
+  if (!cam.init){ cam.s = s; cam.x = cx; cam.init = true; }
+  // Zoom in Log-Skala glätten
+  cam.s = Math.exp(Math.log(cam.s) + (Math.log(s) - Math.log(cam.s)) * f);
+  cam.x += (cx - cam.x) * f;
+}
+function sx(x){ return W / 2 + (x - cam.x) * cam.s; }
+function sy(y){ return H - BODEN - y * cam.s; }
+
+function himmel(t){
+  var p = planet, gB = H - BODEN;
+  var gr = ctx.createLinearGradient(0, 0, 0, gB);
+  gr.addColorStop(0, p.himmel[0]); gr.addColorStop(1, p.himmel[1]);
+  ctx.fillStyle = gr; ctx.fillRect(0, 0, W, gB + 1);
+  if (p.sterne){
+    ctx.fillStyle = '#fff';
+    sterne.forEach(function(s){ ctx.globalAlpha = 0.35 + 0.6 * s[2]; ctx.fillRect(s[0] * W, s[1] * gB * 0.95, 1 + s[2] * 1.4, 1 + s[2] * 1.4); });
+    ctx.globalAlpha = 1;
+  }
+  var d = p.deko, R = Math.min(W, H);
+  if (d === 'erde'){
+    var ex = W * 0.8, ey = gB * 0.26, er = R * 0.075;
+    var g2 = ctx.createRadialGradient(ex - er * .4, ey - er * .4, er * .1, ex, ey, er);
+    g2.addColorStop(0, '#a8e3ff'); g2.addColorStop(.6, '#2f86d6'); g2.addColorStop(1, '#173f72');
+    ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(ex, ey, er, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(70,170,80,.9)'; ctx.beginPath(); ctx.ellipse(ex + er * .2, ey + er * .15, er * .35, er * .22, .5, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.beginPath(); ctx.ellipse(ex - er * .3, ey - er * .35, er * .4, er * .1, -.2, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(3,5,11,.55)'; ctx.beginPath(); ctx.arc(ex + er * .45, ey + er * .2, er * 1.02, 0, 7); ctx.fill();
+  } else if (d === 'sonneWolken' || d === 'sonneKlein'){
+    var klein = d === 'sonneKlein', sxp = W * 0.84, syp = gB * 0.2, sr = R * (klein ? 0.03 : 0.055);
+    var g3 = ctx.createRadialGradient(sxp, syp, 0, sxp, syp, sr * 3);
+    g3.addColorStop(0, klein ? 'rgba(255,250,230,.95)' : 'rgba(255,250,210,1)'); g3.addColorStop(.33, klein ? 'rgba(255,245,220,.6)' : 'rgba(255,236,150,.8)'); g3.addColorStop(1, 'rgba(255,240,200,0)');
+    ctx.fillStyle = g3; ctx.beginPath(); ctx.arc(sxp, syp, sr * 3, 0, 7); ctx.fill();
+    if (!klein){
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      for (var i = 0; i < 3; i++){
+        var wx = ((i * 0.37 + t * 0.006) % 1.3 - 0.15) * W, wy = gB * (0.14 + i * 0.12), wr = R * (0.05 + i * 0.01);
+        ctx.beginPath(); ctx.ellipse(wx, wy, wr * 1.8, wr * .55, 0, 0, 7); ctx.ellipse(wx + wr * .5, wy - wr * .35, wr, wr * .6, 0, 0, 7); ctx.fill();
+      }
+    }
+  } else if (d === 'baender'){
+    for (var j = 0; j < 7; j++){
+      ctx.fillStyle = j % 2 ? 'rgba(255,240,215,.16)' : 'rgba(120,60,20,.14)';
+      ctx.fillRect(0, gB * (j / 7) + Math.sin(t * 0.2 + j) * 4, W, gB / 9);
+    }
+  } else if (d === 'ringmond'){
+    var mx = W * 0.22, my = gB * 0.28, mr = R * 0.09;
+    var g4 = ctx.createRadialGradient(mx - mr * .4, my - mr * .4, mr * .1, mx, my, mr);
+    g4.addColorStop(0, '#f0c6ff'); g4.addColorStop(1, '#7a2fb0');
+    ctx.strokeStyle = 'rgba(255,210,120,.7)'; ctx.lineWidth = mr * .12;
+    ctx.beginPath(); ctx.ellipse(mx, my, mr * 1.9, mr * .45, -.35, Math.PI, 2 * Math.PI); ctx.stroke();
+    ctx.fillStyle = g4; ctx.beginPath(); ctx.arc(mx, my, mr, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(mx, my, mr * 1.9, mr * .45, -.35, 0, Math.PI); ctx.stroke();
+  } else if (d === 'glut'){
+    for (var n = 0; n < 5; n++){
+      var px = ((n * 0.23 + 0.1) % 1) * W, ph = gB * (0.25 + 0.2 * Math.sin(t * 0.7 + n * 2));
+      var g5 = ctx.createRadialGradient(px, gB, 0, px, gB, ph);
+      g5.addColorStop(0, 'rgba(255,160,0,.55)'); g5.addColorStop(1, 'rgba(255,80,0,0)');
+      ctx.fillStyle = g5; ctx.beginPath(); ctx.arc(px, gB, ph, Math.PI, 2 * Math.PI); ctx.fill();
+    }
+  }
+}
+
+function boden(t){
+  var p = planet, gB = H - BODEN;
+  var gr = ctx.createLinearGradient(0, gB, 0, H);
+  gr.addColorStop(0, p.boden[1]); gr.addColorStop(1, p.boden[2]);
+  ctx.fillStyle = gr; ctx.fillRect(0, gB, W, BODEN);
+  ctx.fillStyle = p.boden[0]; ctx.fillRect(0, gB, W, Math.max(4, Math.min(10, cam.s * 0.08)));
+  // Steinchen / Kristalle / Glut am Boden
+  var xa = cam.x - W / 2 / cam.s, xb = cam.x + W / 2 / cam.s;
+  if (p.deko === 'glut'){
+    for (var c = 0; c < 26; c++){
+      var gx = (c + 0.5) / 26 * W + Math.sin(t * 1.3 + c) * 6, gw = 0.5 + 0.5 * Math.sin(t * 2.1 + c * 1.7);
+      ctx.fillStyle = 'rgba(255,240,150,' + (0.25 + 0.35 * gw) + ')';
+      ctx.beginPath(); ctx.ellipse(gx, gB + 16 + (c % 3) * 7, 10 + gw * 6, 4 + gw * 2, 0, 0, 7); ctx.fill();
+    }
+  } else if (cam.s > 14){
+    var step = 0.45, i0 = Math.floor(xa / step), i1 = Math.ceil(xb / step);
+    for (var i = i0; i <= i1; i++){
+      var hx = hash(i), x = sx(i * step + hx * step), r = (0.03 + 0.07 * hash(i + 99)) * cam.s;
+      if (p.deko === 'ringmond'){
+        ctx.fillStyle = 'rgba(200,150,255,.75)';
+        ctx.beginPath(); ctx.moveTo(x - r * .5, gB + 2); ctx.lineTo(x, gB - r * 2.4); ctx.lineTo(x + r * .5, gB + 2); ctx.fill();
+      } else if (p.id === 'erde'){
+        ctx.strokeStyle = '#4E9A3C'; ctx.lineWidth = Math.max(1, cam.s * 0.012);
+        ctx.beginPath(); ctx.moveTo(x, gB + 1); ctx.lineTo(x - r * .3, gB - r * 1.6); ctx.moveTo(x + 2, gB + 1); ctx.lineTo(x + r * .4, gB - r * 1.3); ctx.stroke();
+      } else {
+        ctx.fillStyle = p.boden[1];
+        ctx.beginPath(); ctx.ellipse(x, gB + 1, r, r * .55, 0, Math.PI, 2 * Math.PI); ctx.fill();
+      }
+    }
+  }
+  // Maßband
+  var schritte = [0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500], st = 1;
+  for (var s = 0; s < schritte.length; s++){ st = schritte[s]; if (st * cam.s >= 52) break; }
+  ctx.font = '700 12px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (var m = Math.ceil(xa / st) * st; m <= xb + 1e-9; m += st){
+    var X = sx(m); if (Math.abs(m) < 1e-9) m = 0;
+    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(Math.round(X) - 1, gB + 11, 2, 8);
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillText(z(m, st < 1 ? 2 : 0).replace(/,00$/, '') + ' m', X + 1, gB + 23);
+    ctx.fillStyle = '#fff'; ctx.fillText(z(m, st < 1 ? 2 : 0).replace(/,00$/, '') + ' m', X, gB + 22);
+  }
+}
+
+function spurZeichnen(s){
+  if (s.pts.length < 2) return;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.beginPath();
+  s.pts.forEach(function(p, i){ var X = sx(p[0]), Y = sy(p[1]); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+  ctx.setLineDash([]); ctx.strokeStyle = 'rgba(0,0,0,.45)'; ctx.lineWidth = 5; ctx.stroke();
+  ctx.setLineDash([7, 6]); ctx.strokeStyle = s.planet.farbe; ctx.lineWidth = 3; ctx.stroke(); ctx.setLineDash([]);
+  if (s.landX != null){
+    var X = sx(s.landX), Y = H - BODEN;
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(X, Y - 30); ctx.stroke();
+    ctx.fillStyle = s.planet.farbe; ctx.beginPath(); ctx.moveTo(X, Y - 30); ctx.lineTo(X + 16, Y - 25); ctx.lineTo(X, Y - 20); ctx.fill();
+    schild(s.planet.name + ': ' + laenge(s.weite), X, Y - 36, s.planet.farbe);
+  }
+}
+function schild(txt, x, y, farbe){
+  ctx.font = '800 12.5px "Plus Jakarta Sans",system-ui,sans-serif';
+  var w = ctx.measureText(txt).width + 14;
+  x = Math.max(w / 2 + 4, Math.min(W - w / 2 - 4, x));
+  ctx.fillStyle = 'rgba(10,14,24,.75)';
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x - w / 2, y - 20, w, 20, 10) : ctx.rect(x - w / 2, y - 20, w, 20); ctx.fill();
+  ctx.fillStyle = farbe; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x, y - 10);
+}
+function markeZeichnen(m, aktiv, belegt){
+  var X = sx(m.x), Y0 = sy(0), Y1 = sy(m.h), b = Math.max(18, 0.5 * cam.s);
+  ctx.strokeStyle = m.planet.farbe; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(X - b, Y1); ctx.lineTo(X + b, Y1); ctx.stroke();
+  var lx = X + b + 10;
+  ctx.globalAlpha = aktiv ? 1 : .8;
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+  if (Y0 - Y1 > 14){
+    ctx.beginPath(); ctx.moveTo(lx, Y0 - 1); ctx.lineTo(lx, Y1 + 1);
+    ctx.moveTo(lx - 4, Y1 + 6); ctx.lineTo(lx, Y1 + 1); ctx.lineTo(lx + 4, Y1 + 6);
+    ctx.moveTo(lx - 4, Y0 - 6); ctx.lineTo(lx, Y0 - 1); ctx.lineTo(lx + 4, Y0 - 6); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.font = '800 12.5px "Plus Jakarta Sans",system-ui,sans-serif';
+  var txt = m.planet.name + ': ' + laenge(m.h), w = ctx.measureText(txt).width + 14;
+  var tx = lx + 8 + w / 2, ty = Math.min(Y1 + 10, Y0 - 4);
+  belegt.forEach(function(b){ if (Math.abs(ty - b) < 23) ty = b - 23; });
+  belegt.push(ty);
+  schild(txt, tx, ty, m.planet.farbe);
+}
+
+/* Astronaut (eigene Zeichnung, Einheit cm, y nach oben) */
+function glied(x, y, a1, l1, a2, l2, breite, farbe){
+  var r1 = a1 * Math.PI / 180, r2 = (a1 - a2) * Math.PI / 180;
+  var kx = x + l1 * Math.sin(r1), ky = y - l1 * Math.cos(r1);
+  var fx = kx + l2 * Math.sin(r2), fy = ky - l2 * Math.cos(r2);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#3E4A5C'; ctx.lineWidth = breite + 3;
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
+  ctx.strokeStyle = farbe; ctx.lineWidth = breite;
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
+  return [fx, fy, r2];
+}
+function astronaut(t){
+  var g = planet.g;
+  var c = Math.max(0, Math.min(1, Math.log(g / 9.81) / Math.log(28)));   // In-die-Knie-Gehen
+  var beinV, beinH, armV, armH;
+  var luft = !A.boden;
+  var knie = 6 + 62 * c, schenkel = knie * 0.55;
+  if (A.wurfT >= 0 && A.wurfT < 0.45){
+    var u = A.wurfT / 0.45;
+    armV = [u < 0.3 ? 20 - 170 * (u / 0.3) : 210 - 150 * Math.min(1, (u - 0.3) / 0.4), 15];
+    armH = [55, 20];
+  } else if (luft && A.sprung){
+    armV = [150, 15]; armH = [125, 20];
+  } else if (luft && A.hops){
+    armV = [45, 20]; armH = [25, 20];
+  } else if (A.boden && gehRichtung){
+    var sw = Math.sin(A.phase);
+    armV = [-22 * sw + 8, 20]; armH = [22 * sw + 8, 20];
+  } else { armV = [10 + 8 * c, 12]; armH = [4 + 8 * c, 12]; }
+  if (luft && A.sprung){ beinV = [28, 45]; beinH = [-8, 25]; }
+  else if (luft && A.hops){ beinV = [22, 32]; beinH = [8, 30]; }
+  else if (A.boden && gehRichtung){
+    var s2 = Math.sin(A.phase);
+    beinV = [schenkel + 26 * s2, knie + 14 * Math.max(0, -Math.cos(A.phase))];
+    beinH = [schenkel - 26 * s2, knie + 14 * Math.max(0, Math.cos(A.phase))];
+  } else { beinV = [schenkel + 4, knie]; beinH = [schenkel - 5, knie]; }
+  var L = 44;
+  function hoehe(b){ var r1 = b[0] * Math.PI / 180, r2 = (b[0] - b[1]) * Math.PI / 180; return L * Math.cos(r1) + L * Math.cos(r2); }
+  var hip = luft ? hoehe([10, 12]) + 2 : Math.max(hoehe(beinV), hoehe(beinH)) + 7;
+  var lehne = 10 * c;
+
+  ctx.save();
+  ctx.translate(sx(A.x), sy(A.y));
+  var sc = cam.s / 100;
+  ctx.scale(A.blick * sc, -sc);
+  // Schatten
+  ctx.fillStyle = 'rgba(0,0,0,' + (0.28 / (1 + A.y)) + ')'; ctx.beginPath(); ctx.ellipse(0, -A.y * 100, 30, 5, 0, 0, 7); ctx.fill();
+  var hX = 0, hY = hip;
+  // hinteres Bein
+  var fh = glied(hX - 3, hY, beinH[0], L, beinH[1], L, 15, '#C9D1DC');
+  stiefel(fh, '#6B7686');
+  ctx.save(); ctx.translate(hX, hY); ctx.rotate(-lehne * Math.PI / 180); ctx.translate(-hX, -hY);
+  var sh = [hX + 2, hY + 50];
+  // hinterer Arm
+  var ah = glied(sh[0] - 4, sh[1], armH[0], 27, -armH[1], 26, 12, '#C9D1DC'); handschuh(ah);
+  // Rucksack
+  rr(-31, hY + 4, 17, 54, 5, '#AEB8C6');
+  rr(-29, hY + 40, 6, 12, 2, '#E8590C');
+  // Rumpf
+  rr(-16, hY - 6, 34, 64, 12, '#F3F5F9');
+  rr(-2, hY + 26, 14, 12, 3, '#4C7BD9'); rr(1, hY + 29, 3, 3, 1, '#FFD23F'); rr(6, hY + 29, 3, 3, 1, '#E11D48');
+  ctx.restore();
+  // vorderes Bein
+  var fv = glied(hX + 3, hY, beinV[0], L, beinV[1], L, 15, '#F3F5F9');
+  stiefel(fv, '#7D8899');
+  ctx.save(); ctx.translate(hX, hY); ctx.rotate(-lehne * Math.PI / 180); ctx.translate(-hX, -hY);
+  // Helm
+  var kx = 3, ky = hY + 78;
+  ctx.fillStyle = '#DDE3EB'; ctx.beginPath(); ctx.ellipse(kx, hY + 58, 15, 5, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = '#F7F9FC'; ctx.strokeStyle = '#3E4A5C'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.arc(kx, ky, 19, 0, 7); ctx.fill(); ctx.stroke();
+  var gv = ctx.createLinearGradient(kx, ky + 12, kx + 16, ky - 10);
+  gv.addColorStop(0, '#8A4B00'); gv.addColorStop(.55, '#F2A900'); gv.addColorStop(1, '#FFE58A');
+  ctx.fillStyle = gv; ctx.beginPath(); ctx.ellipse(kx + 8, ky + 1, 11.5, 11, 0, 0, 7); ctx.fill();
+  ctx.strokeStyle = '#3E4A5C'; ctx.lineWidth = 1.6; ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.beginPath(); ctx.ellipse(kx + 12, ky + 6, 3.2, 2, -.6, 0, 7); ctx.fill();
+  // vorderer Arm (Wurfarm)
+  var av = glied(sh[0] + 4, sh[1], armV[0], 27, -armV[1], 26, 12, '#F3F5F9'); handschuh(av);
+  if (A.wurfT >= 0 && !A.abgang){ ctx.fillStyle = '#FF7A1A'; ctx.beginPath(); ctx.arc(av[0], av[1], 11, 0, 7); ctx.fill(); }
+  ctx.restore();
+  ctx.restore();
+  // Gewichtskraft-Pfeil
+  if (zeigePfeil){
+    var px = sx(A.x), py = sy(A.y + (hip + 22) / 100);
+    var zf = Math.max(0.4, Math.min(1, cam.s / 75));
+    var lang = 48 * zf * g / 9.81, max = Math.max(60 * zf, Math.min(160 * zf, H - BODEN - py + 18)), bruch = lang > max;
+    if (bruch) lang = max;
+    var ende = py + lang;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, ende - 8); ctx.stroke();
+    ctx.strokeStyle = '#E11D48'; ctx.lineWidth = 4.5; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, ende - 8); ctx.stroke();
+    ctx.fillStyle = '#E11D48'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(px - 9, ende - 12); ctx.lineTo(px, ende + 2); ctx.lineTo(px + 9, ende - 12); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(px, py, 4, 0, 7); ctx.fill(); ctx.stroke();
+    if (bruch){
+      var my = py + lang * 0.55;
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(px - 10, my - 2); ctx.lineTo(px + 10, my - 8); ctx.moveTo(px - 10, my + 6); ctx.lineTo(px + 10, my); ctx.stroke();
+    }
+    ctx.font = '800 13px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    var lt = 'F', lx = px + 14, ly = py + Math.min(lang * 0.4, 40);
+    ctx.lineWidth = 3.5; ctx.strokeStyle = 'rgba(0,0,0,.55)';
+    ctx.strokeText('F', lx, ly); ctx.fillStyle = '#fff'; ctx.fillText('F', lx, ly);
+    var fw = ctx.measureText('F').width;
+    ctx.font = '800 10px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.strokeText('G', lx + fw, ly + 4); ctx.fillText('G', lx + fw, ly + 4);
+  }
+}
+function stiefel(f, farbe){ ctx.fillStyle = farbe; ctx.beginPath(); ctx.ellipse(f[0] + 4, f[1] + 1, 11, 6, 0, 0, 7); ctx.fill(); }
+function handschuh(f){ ctx.fillStyle = '#E8590C'; ctx.beginPath(); ctx.arc(f[0], f[1], 6, 0, 7); ctx.fill(); }
+function rr(x, y, w, h, r, farbe){
+  ctx.fillStyle = farbe; ctx.strokeStyle = '#3E4A5C'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+function ballZeichnen(){
+  if (!ball) return;
+  var r = Math.max(4, BALL_R * cam.s), X = sx(ball.x), Y = sy(ball.y);
+  var gb = ctx.createRadialGradient(X - r * .35, Y - r * .35, r * .1, X, Y, r);
+  gb.addColorStop(0, '#FFC48A'); gb.addColorStop(1, '#E2560C');
+  ctx.fillStyle = gb; ctx.strokeStyle = '#5A2305'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(X, Y, r, 0, 7); ctx.fill(); ctx.stroke();
+}
+
+/* ---------- Schleife ---------- */
+var letzte = performance.now(), tGes = 0;
+function bild(jetzt){
+  var dtReal = Math.min(0.05, (jetzt - letzte) / 1000); letzte = jetzt; tGes += dtReal;
+  var dt = dtReal * (lupe ? 0.2 : 1);
+  if (A.wurfT >= 0){ A.wurfT += dt; if (!A.abgang && A.wurfT >= 0.225){ A.abgang = true; abwurf(); } if (A.wurfT > 0.6) A.wurfT = -1; }
+  var n = Math.max(1, Math.round(dt / DT));
+  for (var i = 0; i < n; i++) schritt(dt / n);
+  if (!A.boden && A.sprung){ wertEl.innerHTML = 'Höhe <b>' + laenge(Math.max(0, A.y)) + '</b>'; wertEl.classList.add('an'); anzeige.bis = Date.now() + 99999; }
+  else if (ball && ball.fliegt){ wertEl.innerHTML = 'Weite <b>' + laenge(Math.abs(ball.x - ball.startX)) + '</b>'; wertEl.classList.add('an'); anzeige.bis = Date.now() + 99999; }
+  else if (Date.now() > anzeige.bis) wertEl.classList.remove('an');
+  kamera(dtReal);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  himmel(tGes);
+  spuren.forEach(spurZeichnen);
+  if (cam.s > 30){
+    var belegt = [];
+    marken.filter(function(m){ return Math.abs(m.x - A.x) < 3; }).sort(function(a, b){ return a.h - b.h; })
+      .forEach(function(m){ markeZeichnen(m, m.planet === planet, belegt); });
+  }
+  boden(tGes);
+  astronaut(tGes);
+  ballZeichnen();
+  requestAnimationFrame(bild);
+}
+groesse();
+waehle(planet.id);
+requestAnimationFrame(bild);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
