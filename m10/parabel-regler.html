@@ -190,7 +190,7 @@ h3{margin:2px 0 8px;font-size:13px;font-weight:800;letter-spacing:.09em;text-tra
     }
   }
   function ausReglern(){ zust={a:+ra.value,e:+re.value,d:$('sLinks').checked?+rd.value:0}; zeichne(); }
-  [ra,re,rd].forEach(r=>r.addEventListener('input',()=>{ if(anim){cancelAnimationFrame(anim);anim=null;} ausReglern(); }));
+  [ra,re,rd].forEach(r=>r.addEventListener('input',()=>{ if(anim){clearTimeout(anim);anim=null;} ausReglern(); }));
   ['sNormal','sPunkte'].forEach(id=>$(id).addEventListener('change',zeichne));
   $('sLinks').addEventListener('change',()=>{ $('rd').classList.toggle('aus',!$('sLinks').checked); if(!$('sLinks').checked) rd.value=0; ausReglern(); });
 
@@ -199,11 +199,12 @@ h3{margin:2px 0 8px;font-size:13px;font-weight:800;letter-spacing:.09em;text-tra
     ra.value=a; re.value=e; rd.value=d;
     if(d!==0 && !$('sLinks').checked){ $('sLinks').checked=true; $('rd').classList.remove('aus'); }
     const start={...zust}, t0=performance.now(), dauer=650;
-    if(anim) cancelAnimationFrame(anim);
+    if(anim) clearTimeout(anim);
+    const naechst=f=>setTimeout(()=>f(performance.now()),16);
     const schritt=t=>{ let p=Math.min(1,(t-t0)/dauer); p=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
       zust={a:start.a+(a-start.a)*p,e:start.e+(e-start.e)*p,d:start.d+(d-start.d)*p}; zeichne();
-      if(p<1) anim=requestAnimationFrame(schritt); else {anim=null; zust={a,e,d}; zeichne();} };
-    anim=requestAnimationFrame(schritt);
+      if(p<1) anim=naechst(schritt); else {anim=null; zust={a,e,d}; zeichne();} };
+    anim=naechst(schritt);
   }
   const VOR=[['y = x²',1,0,0],['x² + 1',1,1,0],['x² − 2',1,-2,0],['0,5 · x²',0.5,0,0],['1,5 · x²',1.5,0,0],['−x²',-1,0,0]];
   const box=$('vorgaben');
