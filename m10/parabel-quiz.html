@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Parabel-Quiz – Mathe 10c</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../assets/portal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E97132'/%3E%3Cpath d='M14 14 Q32 70 50 14' fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{--graph:#D33A2C;--gitter:#E3E8EE;--achse:#1B1F2A;--normal:#9AA3AE;--rot:#C0392B;--rot-hell:#FBE7E4}
+@media (prefers-color-scheme:dark){:root{--graph:#FF7A6B;--gitter:#2B3240;--achse:#E7EAF0;--normal:#7F899B;--rot:#FF8A7A;--rot-hell:#3A1F1C}}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:22px;padding:16px;box-shadow:var(--schatten)}
+.leiste{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2);margin-bottom:10px}
+.leiste b{color:var(--text)}
+.balken{flex:1;height:8px;background:var(--linie);border-radius:9px;overflow:hidden}
+.balken i{display:block;height:100%;width:0;background:linear-gradient(90deg,#F47B3E,#E0457B);transition:width .3s}
+.frage{font-size:19px;font-weight:700;line-height:1.4;margin:2px 0 12px}
+.frage .katex{font-size:1.08em;white-space:nowrap}
+.antworten .katex,.rueck .katex{white-space:nowrap}
+.bild{max-width:260px;margin:0 auto 10px}
+.antworten{display:grid;gap:10px}
+.antworten.graphen{grid-template-columns:1fr 1fr}
+.antworten button{font:inherit;font-size:18px;font-weight:600;text-align:left;border:2px solid var(--linie);background:var(--bg);color:var(--text);
+  border-radius:16px;padding:12px 14px;min-height:54px;cursor:pointer;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent}
+.antworten.graphen button{flex-direction:column;padding:8px;gap:2px}
+.antworten button .bu{flex:none;width:30px;height:30px;border-radius:10px;background:var(--blau-hell);color:var(--blau-text);display:grid;place-items:center;font-weight:800;font-size:15px}
+.antworten button:disabled{cursor:default}
+.antworten button.richtig{border-color:var(--gruen);background:var(--gruen-hell)}
+.antworten button.falsch{border-color:var(--rot);background:var(--rot-hell)}
+.antworten button.blass{opacity:.55}
+svg.mini{display:block;width:100%;height:auto}
+svg text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:11px;fill:var(--text2)}
+.rueck{border-radius:16px;padding:12px 14px;margin-top:12px;font-size:16.5px;line-height:1.45;display:none}
+.rueck.ok{display:block;background:var(--gruen-hell);border:2px solid var(--gruen)}
+.rueck.no{display:block;background:var(--rot-hell);border:2px solid var(--rot)}
+.rueck b.t{display:block;font-size:17px;margin-bottom:2px}
+.weiter{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:16px;padding:14px;width:100%;margin-top:12px;color:#fff;
+  background:linear-gradient(135deg,#F47B3E,#E0457B);cursor:pointer;display:none}
+.ende{text-align:center}
+.ende .punkte{font-size:52px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0}
+.ende p{color:var(--text2);margin:4px 0 14px}
+.ende .weiter{display:block}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" href="material.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Material</a>
+<header class="kopf">
+  <div class="ober">Mathe 10c · 2.1 Parabeln</div>
+  <h1>Parabel-Quiz</h1>
+  <p>10 kurze Fragen – fast ohne Rechnen. Schau genau hin und denk an unsere Graphen-Tafel!</p>
+</header>
+<div class="karte" id="quiz"></div>
+</div>
+
+<script>
+(function(){
+  // ---------- Mini-Koordinatensystem (quadratisches Gitter) ----------
+  const NS='http://www.w3.org/2000/svg';
+  function mini(fn, opt={}){
+    const xmin=opt.xmin??-3, xmax=opt.xmax??3, ymin=opt.ymin??-4, ymax=opt.ymax??7;
+    const u=opt.u??20, pad=8, W=(xmax-xmin)*u+2*pad, H=(ymax-ymin)*u+2*pad;
+    const X=x=>pad+(x-xmin)*u, Y=y=>pad+(ymax-y)*u;
+    let s=`<svg class="mini" viewBox="0 0 ${W} ${H}" xmlns="${NS}" aria-hidden="true">`;
+    for(let v=xmin;v<=xmax;v++) s+=`<line x1="${X(v)}" y1="${Y(ymin)}" x2="${X(v)}" y2="${Y(ymax)}" stroke="var(--gitter)" stroke-width="1"/>`;
+    for(let v=ymin;v<=ymax;v++) s+=`<line x1="${X(xmin)}" y1="${Y(v)}" x2="${X(xmax)}" y2="${Y(v)}" stroke="var(--gitter)" stroke-width="1"/>`;
+    s+=`<line x1="${X(xmin)}" y1="${Y(0)}" x2="${X(xmax)}" y2="${Y(0)}" stroke="var(--achse)" stroke-width="1.6"/>`;
+    s+=`<line x1="${X(0)}" y1="${Y(ymin)}" x2="${X(0)}" y2="${Y(ymax)}" stroke="var(--achse)" stroke-width="1.6"/>`;
+    for(const v of (opt.ylab??[-2,2,4,6])) if(v>ymin&&v<ymax) s+=`<text x="${X(0)-4}" y="${Y(v)+4}" text-anchor="end">${String(v).replace('-','−')}</text>`;
+    for(const v of (opt.xlab??[-2,2])) s+=`<text x="${X(v)}" y="${Y(0)+13}" text-anchor="middle">${String(v).replace('-','−')}</text>`;
+    s+=`<clipPath id="c${opt.id||0}"><rect x="${X(xmin)}" y="${Y(ymax)}" width="${(xmax-xmin)*u}" height="${(ymax-ymin)*u}"/></clipPath>`;
+    const pfad=f=>{let d='';for(let i=0;i<=240;i++){const x=xmin+(xmax-xmin)*i/240;let y=Math.max(ymin-2,Math.min(ymax+2,f(x)));d+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1);}return d};
+    if(opt.normal) s+=`<path d="${pfad(x=>x*x)}" fill="none" stroke="var(--normal)" stroke-width="1.6" stroke-dasharray="5 4" clip-path="url(#c${opt.id||0})"/>`;
+    s+=`<path d="${pfad(fn)}" fill="none" stroke="var(--graph)" stroke-width="3" stroke-linecap="round" clip-path="url(#c${opt.id||0})"/>`;
+    for(const [px,py] of (opt.punkte||[])) s+=`<circle cx="${X(px)}" cy="${Y(py)}" r="4.5" fill="var(--karte)" stroke="var(--achse)" stroke-width="2"/>`;
+    return s+'</svg>';
+  }
+  const tex=t=>{try{return katex.renderToString(t,{throwOnError:false})}catch(e){return t}};
+  const T=s=>s.replace(/\$([^$]+)\$/g,(m,t)=>tex(t));   // $…$ im Text
+
+  // ---------- Fragenpool (richtig = erste Antwort, wird gemischt) ----------
+  const F=[
+    {f:'Welcher Graph gehört zu $y=x^2+5$?', graph:true,
+     a:[[x=>x*x+5,'nach oben verschoben um 5'],[x=>x*x-5],[x=>x*x+2],[x=>-x*x+5]],
+     opt:{ymin:-6,ymax:8,ylab:[-4,4],u:15},
+     e:'Die Zahl <b>+5</b> verschiebt die Normalparabel um 5 nach <b>oben</b>. Der Scheitelpunkt ist $S\\,(0\\,|\\,5)$.'},
+    {f:'Wo liegt der Scheitelpunkt von $y=x^2-3$?', a:['$S\\,(0\\,|\\,{-3})$','$S\\,(0\\,|\\,3)$','$S\\,(-3\\,|\\,0)$','$S\\,(3\\,|\\,0)$'],
+     e:'$-3$ verschiebt die Normalparabel um 3 nach unten – der tiefste Punkt rutscht von $(0\\,|\\,0)$ nach $(0\\,|\\,{-3})$.'},
+    {f:'Welche Gleichung gehört zu diesem Graphen?', bild:[x=>-x*x,{ymin:-7,ymax:3,ylab:[-6,-4,-2,2]}],
+     a:['$y=-x^2$','$y=x^2$','$y=x^2-1$','$y=0{,}5x^2$'],
+     e:'Die Parabel ist nach <b>unten</b> geöffnet und so breit wie die Normalparabel – das macht das Minus vor $x^2$.'},
+    {f:'Wie ist die Parabel $y=-2x^2$ geöffnet?', a:['nach unten','nach oben','gar nicht – das ist eine Gerade'],
+     e:'Ein <b>Minus</b> vor dem $x^2$ heißt: Jeder $y$-Wert wird negativ – die Parabel ist nach unten geöffnet.'},
+    {f:'Welche Parabel ist am <b>engsten</b>?', a:['$y=3x^2$','$y=x^2$','$y=0{,}5x^2$','$y=0{,}2x^2$'],
+     e:'Je größer der Faktor vor $x^2$, desto schneller wachsen die $y$-Werte – die Parabel wird enger. Bei $3x^2$ ist schon $x=1$ auf Höhe 3.'},
+    {f:'Welcher $y$-Wert gehört bei $y=x^2$ zu $x=-3$?', a:['$9$','$-9$','$6$','$-6$'],
+     e:'$(-3)^2=(-3)\\cdot(-3)=9$. Beim Quadrieren wird ein negatives $x$ positiv – deshalb die Klammer!'},
+    {f:'Liegt der Punkt $P\\,(2\\,|\\,4)$ auf der Normalparabel?', a:['Ja','Nein'],
+     e:'Einsetzen: $2^2=4$ – der $y$-Wert passt, also liegt $P$ auf der Normalparabel.'},
+    {f:'Welcher Graph gehört zu $y=0{,}5x^2$?', graph:true,
+     a:[[x=>0.5*x*x],[x=>2*x*x],[x=>x*x],[x=>-0.5*x*x]], opt:{ymin:-5,ymax:7,ylab:[-4,4],u:15,normal:true},
+     e:'Der Faktor $0{,}5$ halbiert jeden $y$-Wert – die Parabel wird <b>weiter</b> als die Normalparabel (gestrichelt).'},
+    {f:'Die Normalparabel wird um 2 nach unten verschoben. Wie heißt die neue Gleichung?', a:['$y=x^2-2$','$y=x^2+2$','$y=-2x^2$','$y=2x^2$'],
+     e:'Verschieben nach unten heißt: von jedem $y$-Wert 2 abziehen → $y=x^2-2$.'},
+    {f:'Was ist der <b>kleinste</b> $y$-Wert von $y=x^2+1$?', a:['$1$','$0$','$-1$','Es gibt keinen kleinsten.'],
+     e:'$x^2$ ist nie negativ, am kleinsten ist es bei $x=0$. Dann ist $y=0+1=1$ – das ist der Scheitelpunkt $S\\,(0\\,|\\,1)$.'},
+    {f:'Bei $y=x^2$ gehört zu $x=1{,}5$ der Wert $y=2{,}25$. Welcher $y$-Wert gehört zu $x=-1{,}5$?', a:['$2{,}25$','$-2{,}25$','$-1{,}5$','$0$'],
+     e:'Die Normalparabel ist <b>symmetrisch zur $y$-Achse</b>: $x$ und $-x$ haben denselben $y$-Wert.'},
+    {f:'Welche Aussage über die Normalparabel stimmt?', a:['Sie ist symmetrisch zur $y$-Achse.','Ihr Scheitelpunkt ist $S\\,(1\\,|\\,1)$.','Sie ist nach unten geöffnet.','Sie ist eine Gerade.'],
+     e:'Normalparabel $y=x^2$: Scheitelpunkt $S\\,(0\\,|\\,0)$, nach oben geöffnet, symmetrisch zur $y$-Achse.'},
+    {f:'Welcher Graph gehört zu $y=1{,}5x$?', graph:true,
+     a:[[x=>1.5*x],[x=>1.5*x*x],[x=>x*x+1.5],[x=>-1.5*x]], opt:{ymin:-5,ymax:7,ylab:[-4,4],u:15},
+     e:'Kein $x^2$ → keine Parabel. $y=1{,}5x$ ist eine <b>Gerade</b> durch den Ursprung – wie Pias erste Idee.'}
+  ];
+
+  const mischen=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a};
+  const box=document.getElementById('quiz');
+  let runde=[], nr=0, punkte=0;
+
+  function neu(){ runde=mischen(F).slice(0,10); nr=0; punkte=0; zeige(); }
+
+  function zeige(){
+    const q=runde[nr];
+    let h=`<div class="leiste"><span>Frage <b>${nr+1}</b> von ${runde.length}</span><span class="balken"><i style="width:${nr/runde.length*100}%"></i></span><span><b>${punkte}</b> richtig</span></div>`;
+    h+=`<div class="frage">${T(q.f)}</div>`;
+    if(q.bild) h+=`<div class="bild">${mini(q.bild[0],Object.assign({id:'b'},q.bild[1]))}</div>`;
+    const reihen=q.a.map((x,i)=>({x,ok:i===0}));
+    const gem=mischen(reihen);
+    h+=`<div class="antworten${q.graph?' graphen':''}">`;
+    gem.forEach((r,i)=>{
+      const inhalt=q.graph ? mini(r.x[0],Object.assign({id:'g'+i},q.opt)) : `<span class="bu">${'ABCD'[i]}</span><span>${T(r.x)}</span>`;
+      h+=`<button type="button" data-ok="${r.ok?1:0}">${q.graph?`<span class="bu">${'ABCD'[i]}</span>`:''}${inhalt}</button>`;
+    });
+    h+=`</div><div class="rueck" id="rueck"></div><button class="weiter" id="weiter" type="button">${nr+1<runde.length?'Nächste Frage':'Zum Ergebnis'}</button>`;
+    box.innerHTML=h;
+    box.querySelectorAll('.antworten button').forEach(b=>b.addEventListener('click',()=>antwort(b,q)));
+    document.getElementById('weiter').onclick=()=>{ nr++; if(nr<runde.length) zeige(); else ende(); };
+  }
+
+  function antwort(b,q){
+    const alle=box.querySelectorAll('.antworten button');
+    const ok=b.dataset.ok==='1';
+    alle.forEach(x=>{x.disabled=true; if(x.dataset.ok==='1') x.classList.add('richtig'); else if(x!==b) x.classList.add('blass');});
+    if(!ok) b.classList.add('falsch'); else punkte++;
+    const r=document.getElementById('rueck');
+    r.className='rueck '+(ok?'ok':'no');
+    r.innerHTML=`<b class="t">${ok?'Richtig!':'Leider nicht.'}</b>${T(q.e)}`;
+    document.getElementById('weiter').style.display='block';
+    box.querySelector('.balken i').style.width=((nr+1)/runde.length*100)+'%';
+    box.querySelector('.leiste span:last-child b').textContent=punkte;
+    document.getElementById('weiter').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  function ende(){
+    const n=runde.length;
+    const s= punkte===n?'Perfekt – du hast die Parabeln voll im Griff!': punkte>=n-2?'Sehr gut! Nur kleine Ausrutscher.':
+             punkte>=n/2?'Gut gemacht! Schau dir die Erklärungen bei den Fehlern nochmal an.':'Noch nicht ganz – probier den Parabel-Regler aus und versuch es nochmal.';
+    box.innerHTML=`<div class="ende"><div class="ober" style="color:var(--akzent);font-weight:800;letter-spacing:.09em;font-size:13px;text-transform:uppercase">Ergebnis</div>
+      <div class="punkte">${punkte} / ${n}</div><p>${s}</p>
+      <button class="weiter" type="button" id="nochmal">Neue Runde (andere Fragen)</button>
+      <p style="margin-top:12px"><a href="parabel-regler.html" style="color:var(--blau-text);font-weight:700">Zum Parabel-Regler →</a></p></div>`;
+    document.getElementById('nochmal').onclick=neu;
+  }
+
+  function start(){ neu(); }
+  if(window.katex) start(); else window.addEventListener('load',start);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
