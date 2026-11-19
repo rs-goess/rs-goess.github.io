@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Parabel-Regler – Mathe 10c</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../assets/portal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233B77A8'/%3E%3Cpath d='M14 14 Q32 70 50 14' fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{--fa:#8E3BA6;--fe:#3B77A8;--fd:#2E8B57;--graph:#D33A2C;--gitter:#E3E8EE;--achse:#1B1F2A;--normal:#9AA3AE}
+@media (prefers-color-scheme:dark){:root{--fa:#D7A2E8;--fe:#8DC0EC;--fd:#7FD3A2;--graph:#FF7A6B;--gitter:#2B3240;--achse:#E7EAF0;--normal:#7F899B}}
+.seite{max-width:1000px}
+.buehne{display:grid;gap:16px}
+@media (min-width:860px){.buehne{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:22px;padding:14px;box-shadow:var(--schatten)}
+.formel{font-size:27px;text-align:center;padding:10px 4px 6px;min-height:64px;overflow-x:auto}
+.formel .katex{font-size:1.05em}
+.beschreibung{text-align:center;color:var(--text2);font-size:15.5px;margin:0 0 6px;min-height:44px}
+.beschreibung b{color:var(--text)}
+svg.kos{display:block;width:100%;height:auto;touch-action:manipulation;user-select:none}
+svg.kos text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:12px;fill:var(--text2)}
+.regler{display:grid;gap:14px}
+.regel{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.regel label{font-weight:800;font-size:16px}
+.regel .wert{font-weight:800;font-size:18px;min-width:3.6em;text-align:right;font-variant-numeric:tabular-nums}
+.regel small{grid-column:1/-1;color:var(--text2);font-size:13.5px;margin-top:-2px}
+.regel input[type=range]{grid-column:1/-1;width:100%;height:34px;margin:0}
+.r-a label,.r-a .wert{color:var(--fa)} .r-a input{accent-color:var(--fa)}
+.r-e label,.r-e .wert{color:var(--fe)} .r-e input{accent-color:var(--fe)}
+.r-d label,.r-d .wert{color:var(--fd)} .r-d input{accent-color:var(--fd)}
+.r-d.aus{display:none}
+.schalter{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:15px;color:var(--text2)}
+.schalter label{display:inline-flex;align-items:center;gap:7px;min-height:36px;cursor:pointer}
+.schalter input{width:20px;height:20px;accent-color:var(--blau)}
+.vorgaben{display:flex;flex-wrap:wrap;gap:8px}
+.vorgaben button{font:inherit;font-weight:700;font-size:15px;border:1px solid var(--linie);background:var(--bg);color:var(--text);
+  border-radius:12px;padding:8px 12px;min-height:42px;cursor:pointer}
+.vorgaben button:active{transform:translateY(1px)}
+.vorgaben button.weg{background:var(--blau-hell);color:var(--blau-text);border-color:transparent}
+h3{margin:2px 0 8px;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text2)}
+.tabelle{overflow-x:auto}
+.tabelle table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;margin:0 auto}
+.tabelle td,.tabelle th{border:1px solid var(--linie);padding:5px 7px;text-align:center;white-space:nowrap}
+.tabelle th{background:var(--blau-hell);color:var(--blau-text)}
+.tabelle td.aus{color:var(--leise)}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" href="material.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Material</a>
+<header class="kopf">
+  <div class="ober">Mathe 10c · 2.1 Parabeln</div>
+  <h1>Parabel-Regler</h1>
+  <p>Schieb an den Reglern und beobachte, was mit der Parabel passiert. Die gestrichelte Kurve ist die Normalparabel.</p>
+</header>
+
+<div class="buehne">
+  <div class="karte">
+    <div class="formel" id="formel"></div>
+    <p class="beschreibung" id="beschreibung"></p>
+    <svg class="kos" id="kos" viewBox="0 0 420 470" role="img" aria-label="Koordinatensystem mit Parabel"></svg>
+  </div>
+  <div class="regler">
+    <div class="karte regler">
+      <div class="regel r-a"><label for="a">Faktor vor x²</label><span class="wert" id="wa"></span>
+        <input type="range" id="a" min="-3" max="3" step="0.1" value="1"><small>verändert die Form</small></div>
+      <div class="regel r-e"><label for="e">Zahl dazu</label><span class="wert" id="we"></span>
+        <input type="range" id="e" min="-5" max="5" step="0.5" value="0"><small>verschiebt nach oben oder unten</small></div>
+      <div class="regel r-d aus" id="rd"><label for="d">Zahl in der Klammer</label><span class="wert" id="wd"></span>
+        <input type="range" id="d" min="-4" max="4" step="0.5" value="0"><small>verschiebt nach links oder rechts</small></div>
+      <div class="schalter">
+        <label><input type="checkbox" id="sNormal" checked>Normalparabel</label>
+        <label><input type="checkbox" id="sPunkte">Punkte wie an der Tafel</label>
+        <label><input type="checkbox" id="sLinks">Links/rechts verschieben</label>
+      </div>
+    </div>
+    <div class="karte">
+      <h3>Wie an der Graphen-Tafel</h3>
+      <div class="vorgaben" id="vorgaben"></div>
+    </div>
+    <div class="karte tabelle" id="tabKarte" hidden>
+      <h3>Wertetabelle</h3>
+      <div id="tabelle"></div>
+    </div>
+  </div>
+</div>
+<p class="fuss">Tipp: Am Beamer zeigt „Punkte wie an der Tafel“ die Magnete für x = −2,5 … 2,5.</p>
+</div>
+
+<script>
+(function(){
+  const XMIN=-5, XMAX=5, YMIN=-5, YMAX=6.5;
+  const W=420, H=470, PAD=18;
+  const U=Math.min((W-2*PAD)/(XMAX-XMIN),(H-2*PAD)/(YMAX-YMIN));   // quadratisch
+  const OX=(W-(XMAX-XMIN)*U)/2, OY=(H-(YMAX-YMIN)*U)/2;
+  const X=x=>OX+(x-XMIN)*U, Y=y=>OY+(YMAX-y)*U;
+  const svg=document.getElementById('kos');
+  const NS='http://www.w3.org/2000/svg';
+  function el(n,attr,parent){const e=document.createElementNS(NS,n);for(const k in attr)e.setAttribute(k,attr[k]);(parent||svg).appendChild(e);return e}
+  // Gitter (alle 0,5) und Achsen
+  const g=el('g',{});
+  for(let v=XMIN;v<=XMAX+1e-9;v+=0.5) el('line',{x1:X(v),y1:Y(YMIN),x2:X(v),y2:Y(YMAX),stroke:'var(--gitter)','stroke-width':Number.isInteger(v)?1.2:.6},g);
+  for(let v=YMIN;v<=YMAX+1e-9;v+=0.5) el('line',{x1:X(XMIN),y1:Y(v),x2:X(XMAX),y2:Y(v),stroke:'var(--gitter)','stroke-width':Number.isInteger(v)?1.2:.6},g);
+  el('defs',{}).innerHTML='<marker id="pf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--achse)"/></marker>';
+  el('line',{x1:X(XMIN),y1:Y(0),x2:X(XMAX)+2,y2:Y(0),stroke:'var(--achse)','stroke-width':1.8,'marker-end':'url(#pf)'});
+  el('line',{x1:X(0),y1:Y(YMIN),x2:X(0),y2:Y(YMAX)-2,stroke:'var(--achse)','stroke-width':1.8,'marker-end':'url(#pf)'});
+  for(let v=-4;v<=4;v++){ if(!v) continue; const t=el('text',{x:X(v),y:Y(0)+16,'text-anchor':'middle'}); t.textContent=String(v).replace('-','−'); }
+  for(let v=-4;v<=6;v++){ if(!v) continue; const t=el('text',{x:X(0)-7,y:Y(v)+4,'text-anchor':'end'}); t.textContent=String(v).replace('-','−'); }
+  const tx=el('text',{x:X(XMAX)-4,y:Y(0)-8,'text-anchor':'end','font-style':'italic'}); tx.textContent='x';
+  const ty=el('text',{x:X(0)+9,y:Y(YMAX)+12,'font-style':'italic'}); ty.textContent='y';
+  // Clip auf den Ausschnitt
+  el('clipPath',{id:'clip'}).innerHTML=`<rect x="${X(XMIN)}" y="${Y(YMAX)}" width="${(XMAX-XMIN)*U}" height="${(YMAX-YMIN)*U}"/>`;
+  const normal=el('path',{fill:'none',stroke:'var(--normal)','stroke-width':2,'stroke-dasharray':'6 5','clip-path':'url(#clip)'});
+  const kurve=el('path',{fill:'none',stroke:'var(--graph)','stroke-width':3.4,'stroke-linecap':'round','clip-path':'url(#clip)'});
+  const punkte=el('g',{'clip-path':'url(#clip)'});
+  const scheitel=el('circle',{r:5.5,fill:'var(--karte)',stroke:'var(--graph)','stroke-width':2.6});
+  const sLabel=el('text',{'font-weight':'800',style:'font-size:14px;fill:var(--text)'});
+
+  function pfad(f){let d='';const n=400;for(let i=0;i<=n;i++){const x=XMIN+(XMAX-XMIN)*i/n;let y=f(x);
+    y=Math.max(YMIN-3,Math.min(YMAX+3,y)); d+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1);}return d}
+  normal.setAttribute('d',pfad(x=>x*x));
+
+  const $=id=>document.getElementById(id);
+  const ra=$('a'), re=$('e'), rd=$('d');
+  let zust={a:1,e:0,d:0}, ziel=null, anim=null;
+
+  function z(v,st=2){ // Zahl mit Komma
+    const f=Math.pow(10,st); let s=(Math.round(v*f)/f).toString(); if(s==='-0')s='0'; return s.replace('.',',').replace('-','−'); }
+  function zl(v){ return z(v).replace('−','-').replace(',','{,}'); }
+
+  function formelTex(a,e,d){
+    const A=Math.round(a*10)/10, E=Math.round(e*2)/2, D=Math.round(d*2)/2;
+    const ca=css('--fa'), ce=css('--fe'), cd=css('--fd');
+    if(A===0) return `y=\\textcolor{${ce}}{${zl(E)}}\\quad\\text{(keine Parabel)}`;
+    const xt = D===0 ? 'x^2' : `(x${D>0?'-':'+'}\\textcolor{${cd}}{${zl(Math.abs(D))}})^2`;
+    let s;
+    if(A===1) s=`y=${xt}`;
+    else if(A===-1) s=`y=\\textcolor{${ca}}{-}${xt}`;
+    else s=`y=\\textcolor{${ca}}{${zl(A)}}\\cdot ${xt}`;
+    if(E!==0) s+=(E>0?'+':'-')+`\\textcolor{${ce}}{${zl(Math.abs(E))}}`;
+    return s;
+  }
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim()||'#000'; }
+
+  function text(a,e,d){
+    const A=Math.round(a*10)/10;
+    if(A===0) return 'Mit dem Faktor 0 fällt <b>x²</b> weg – es bleibt eine <b>waagrechte Gerade</b>.';
+    const teile=[];
+    teile.push(A>0?'nach <b>oben</b> geöffnet':'nach <b>unten</b> geöffnet');
+    const b=Math.abs(A);
+    if(b>1) teile.push('<b>enger</b> als die Normalparabel (gestreckt)');
+    else if(b<1) teile.push('<b>weiter</b> als die Normalparabel (gestaucht)');
+    else teile.push('so breit wie die Normalparabel');
+    teile.push(`Scheitelpunkt <b>S(${z(d)}&#8202;|&#8202;${z(e)})</b>`);
+    return teile.join(' · ');
+  }
+
+  function zeichne(){
+    const {a,e,d}=zust;
+    const f=x=>a*(x-d)*(x-d)+e;
+    kurve.setAttribute('d',pfad(f));
+    const sx=X(d), sy=Y(e);
+    const drin = e>=YMIN && e<=YMAX && d>=XMIN && d<=XMAX;
+    scheitel.style.display=drin?'':'none'; sLabel.style.display=drin?'':'none';
+    scheitel.setAttribute('cx',sx); scheitel.setAttribute('cy',sy);
+    sLabel.setAttribute('x',sx+9); sLabel.setAttribute('y',a>=0?sy+19:sy-10); sLabel.textContent='S';
+    punkte.innerHTML='';
+    if($('sPunkte').checked){
+      for(let i=-5;i<=5;i++){const x=i/2,y=f(x); if(y<YMIN-0.2||y>YMAX+0.2) continue;
+        el('circle',{cx:X(x),cy:Y(y),r:6,fill:'var(--graph)',stroke:'var(--karte)','stroke-width':2},punkte);}
+    }
+    normal.style.display=$('sNormal').checked?'':'none';
+    if(window.katex){ try{ katex.render(formelTex(a,e,d),$('formel'),{throwOnError:false,trust:true,strict:false}); }catch(err){ $('formel').textContent=''; } }
+    else $('formel').textContent='y = '+z(a)+' · (x − '+z(d)+')² + '+z(e);
+    $('beschreibung').innerHTML=text(a,e,d);
+    $('wa').textContent=z(Math.round(a*10)/10); $('we').textContent=z(e); $('wd').textContent=z(d);
+    // Tabelle
+    const tk=$('tabKarte'); tk.hidden=!$('sPunkte').checked;
+    if(!tk.hidden){
+      let h='<table><tr><th>x</th>'; for(let i=-5;i<=5;i++) h+='<th>'+z(i/2)+'</th>'; h+='</tr><tr><th>y</th>';
+      for(let i=-5;i<=5;i++){const y=Math.round(f(i/2)*1000)/1000; const aus=y<YMIN||y>YMAX; h+='<td'+(aus?' class="aus" title="liegt nicht mehr im Bild"':'')+'>'+z(y,3)+'</td>';}
+      tk.querySelector('#tabelle').innerHTML=h+'</tr></table>';
+    }
+  }
+  function ausReglern(){ zust={a:+ra.value,e:+re.value,d:$('sLinks').checked?+rd.value:0}; zeichne(); }
+  [ra,re,rd].forEach(r=>r.addEventListener('input',()=>{ if(anim){cancelAnimationFrame(anim);anim=null;} ausReglern(); }));
+  ['sNormal','sPunkte'].forEach(id=>$(id).addEventListener('change',zeichne));
+  $('sLinks').addEventListener('change',()=>{ $('rd').classList.toggle('aus',!$('sLinks').checked); if(!$('sLinks').checked) rd.value=0; ausReglern(); });
+
+  // sanft zu einer Vorgabe gleiten
+  function gleite(a,e,d){
+    ra.value=a; re.value=e; rd.value=d;
+    if(d!==0 && !$('sLinks').checked){ $('sLinks').checked=true; $('rd').classList.remove('aus'); }
+    const start={...zust}, t0=performance.now(), dauer=650;
+    if(anim) cancelAnimationFrame(anim);
+    const schritt=t=>{ let p=Math.min(1,(t-t0)/dauer); p=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      zust={a:start.a+(a-start.a)*p,e:start.e+(e-start.e)*p,d:start.d+(d-start.d)*p}; zeichne();
+      if(p<1) anim=requestAnimationFrame(schritt); else {anim=null; zust={a,e,d}; zeichne();} };
+    anim=requestAnimationFrame(schritt);
+  }
+  const VOR=[['y = x²',1,0,0],['x² + 1',1,1,0],['x² − 2',1,-2,0],['0,5 · x²',0.5,0,0],['1,5 · x²',1.5,0,0],['−x²',-1,0,0]];
+  const box=$('vorgaben');
+  VOR.forEach(([t,a,e,d])=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=()=>gleite(a,e,d);box.appendChild(b);});
+  const r=document.createElement('button'); r.type='button'; r.className='weg'; r.textContent='Zurück zur Normalparabel';
+  r.onclick=()=>gleite(1,0,0); box.appendChild(r);
+
+  function start(){ ausReglern(); }
+  if(window.katex) start(); else window.addEventListener('load',start);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',zeichne);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
