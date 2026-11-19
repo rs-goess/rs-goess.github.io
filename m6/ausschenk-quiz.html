@@ -25,7 +25,6 @@
 .frage b{font-weight:800}
 .katex{font-size:1.12em}
 .frage .katex,.antworten .katex,.rueck .katex{white-space:nowrap}
-.ml{color:var(--text2);font-size:15px;font-weight:600;white-space:nowrap}
 .buehne{background:var(--bg);border:1px solid var(--linie);border-radius:18px;margin:6px 0 12px;padding:6px 4px 2px}
 svg.szene{display:block;width:100%;height:auto;max-height:340px}
 svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--text2);font-weight:700}
@@ -90,7 +89,6 @@ svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--t
     return `\\frac{${a.z}}{${a.n}}`;
   }
   const unecht=a=>`\\frac{${a.z}}{${a.n}}`;
-  const ml=a=>Math.round(wert(a)*1000);
 
   const tex=t=>{try{return katex.renderToString(t,{throwOnError:false})}catch(e){return t}};
   const T=s=>s.replace(/\$([^$]+)\$/g,(m,t)=>tex(t));
@@ -104,19 +102,20 @@ svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--t
   };
   const A=[
     // Stufe 1: das Ergebnis ist eine ganze Zahl, Stammbrüche
-    {s:1,g:'wasser', m:B(1),    gl:B(1,4)},
+    {s:1,g:'wasser', m:B(3),    gl:B(1,2)},
     {s:1,g:'kakao',  m:B(1,2),  gl:B(1,8)},
     {s:1,g:'schorle',m:B(3,4),  gl:B(1,8)},
     {s:1,g:'osaft',  m:B(1),    gl:B(1,5)},
+    {s:1,g:'wasser', m:B(1),    gl:B(1,4)},
     // Stufe 2: ganze Zahl, auch gemischte Zahlen und Nicht-Stammbrüche
-    {s:2,g:'wasser', m:B(1,5),  gl:B(1,25), klein:true},
     {s:2,g:'eistee', m:B(3,2),  gl:B(1,4)},
     {s:2,g:'kirsch', m:B(3,4),  gl:B(3,8)},
-    {s:2,g:'wasser', m:B(2,5),  gl:B(1,25), klein:true},
+    {s:2,g:'wasser', m:B(2),    gl:B(1,4)},
+    {s:2,g:'osaft',  m:B(3,2),  gl:B(3,4)},
     // Stufe 3: es bleibt ein Rest – das letzte Glas wird nicht voll
     {s:3,g:'kirsch', m:B(1,2),  gl:B(1,5)},
     {s:3,g:'schorle',m:B(3,4),  gl:B(1,2)},
-    {s:3,g:'wasser', m:B(1,10), gl:B(1,25), klein:true},
+    {s:3,g:'eistee', m:B(1),    gl:B(3,4)},
     {s:3,g:'osaft',  m:B(2),    gl:B(3,8)}
   ];
   A.forEach(a=>{a.e=durch(a.m,a.gl);});
@@ -147,7 +146,7 @@ svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--t
   function szene(a,{glaeserZeigen}){
     const svg=el('svg',{class:'szene',viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Messbecher und Gläser'});
     const farbe=GETRAENK[a.g].farbe;
-    const v0=wert(a.m), kap=v0>1?2:v0>=0.5?1:v0>0.25?0.5:0.25;   // Messbecher: 250 ml, 500 ml, 1 l oder 2 l
+    const v0=wert(a.m), kap=v0>2?4:v0>1?2:v0>=0.5?1:0.5;   // Messbecher: halber Liter, 1 l, 2 l oder 4 l
     // Messbecher
     const bx=18, by=26, bw=82, bh=170;
     const yAus=v=>by+bh-(v/kap)*bh;                 // Füllhöhe -> y
@@ -160,7 +159,7 @@ svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--t
     el('path',{d:`M${bx} ${by-6} L${bx} ${by+bh-6} Q${bx} ${by+bh} ${bx+6} ${by+bh} L${bx+bw-6} ${by+bh} Q${bx+bw} ${by+bh} ${bx+bw} ${by+bh-6} L${bx+bw} ${by-6}`,
       fill:'none',stroke:'var(--glas)','stroke-width':3,'stroke-linejoin':'round'},svg);
     el('path',{d:`M${bx+bw} ${by+8} q16 2 16 22 q0 24 -16 30`,fill:'none',stroke:'var(--glas)','stroke-width':3,'stroke-linecap':'round'},svg); // Griff
-    const lab=el('text',{x:bx+bw/2,y:by+bh+22,'text-anchor':'middle','font-size':14},svg); lab.textContent=kap>=1?`${kap} l`:`${kap*1000} ml`;
+    const lab=el('text',{x:bx+bw/2,y:by+bh+22,'text-anchor':'middle','font-size':14},svg); lab.textContent=kap>=1?`${kap} l`:'½ l';
     // Trennstriche „ein Glas“ – erscheinen beim Ausschenken
     const striche=[];
     const n=Math.ceil(wert(a.e)-1e-9);
@@ -247,17 +246,13 @@ svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--t
     const s1=mischen(A.filter(a=>a.s===1)).slice(0,3);
     const s2=mischen(A.filter(a=>a.s===2)).slice(0,4);
     const s3=mischen(A.filter(a=>a.s===3)).slice(0,3);
-    // die Aufgabe aus der Stunde (3/4 l : 1/8 l) immer als Erste
-    const stunde=A[2];
-    runde=[stunde,...s1.filter(a=>a!==stunde).slice(0,2),...s2,...s3];
+    // die Aufgaben aus der Stunde immer zuerst: Versuch 3 l : 1/2 l, dann Norbert 3/4 l : 1/8 l
+    const stunde=[A[0],A[2]];
+    runde=[...stunde,...s1.filter(a=>!stunde.includes(a)).slice(0,1),...s2,...s3];
     nr=0; punkte=0; zeige();
   }
 
-  function glasText(a){
-    const g=`$${tx(a.gl)}$ l`;
-    return a.klein? `ein kleines Glas (4 cl) fasst ${g} <span class="ml">(${ml(a.gl)}&nbsp;ml)</span>`
-                  : `ein Glas fasst ${g} <span class="ml">(${ml(a.gl)}&nbsp;ml)</span>`;
-  }
+  function glasText(a){ return `ein Glas fasst <b>$${tx(a.gl)}$ l</b>`; }
   function antwortText(x){ return x.n===1&&x.z===1? '$1$ <small>Glas</small>' : `$${tx(x)}$ <small>Gläser</small>`; }
 
   function rechnung(a){
@@ -280,7 +275,7 @@ svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--t
   function zeige(){
     const a=runde[nr], gt=GETRAENK[a.g];
     let h=`<div class="leiste"><span>Aufgabe <b>${nr+1}</b> von ${runde.length}</span><span class="balken"><i style="width:${nr/runde.length*100}%"></i></span><span><b>${punkte}</b> richtig</span></div>`;
-    h+=`<div class="frage">${T(`Im Messbecher sind <b>$${tx(a.m)}$ l ${gt.name}</b> <span class="ml">(${ml(a.m)}&nbsp;ml)</span>,<br>${glasText(a)}.`)}</div>`;
+    h+=`<div class="frage">${T(`${wert(a.m)>2?'Im Eimer':'Im Messbecher'} sind <b>$${tx(a.m)}$ l ${gt.name}</b>,<br>${glasText(a)}.`)}</div>`;
     h+=`<div class="buehne" id="buehne"></div><div class="zaehler" id="zaehler"></div>`;
     h+=`<p class="hinweis">Wie viele Gläser kannst du damit füllen? Tippe deine Vermutung.</p>`;
     h+=`<div class="antworten">`;
