@@ -119,6 +119,8 @@
     <g id="kraftD"></g>
     <g id="electrons"></g>
     <g id="electronsD"></g>
+    <g id="poleStep" opacity="0"></g>
+    <g id="poleDyn"></g>
     <g id="motion" opacity="0"></g>
     <g id="hint"></g>
   </svg>
@@ -128,6 +130,7 @@
     <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="20" y2="5" stroke="#8FD86E" stroke-width="2.4"/><path d="M18,1 L25,5 L18,9z" fill="#7FCB5B"/></svg>Magnetfeld (von N nach S)</span>
     <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="19" y2="5" stroke="#E8822A" stroke-width="3"/><path d="M17,0.5 L25,5 L17,9.5z" fill="#D9701B"/></svg>Bewegungsrichtung der Elektronen</span>
     <span><svg width="26" height="12" viewBox="0 0 26 12"><path d="M25,6 L15,0 L15,3 L1,3 L1,9 L15,9 L15,12z" fill="#9A9A9A"/></svg>Bewegung</span>
+    <span><svg width="34" height="16" viewBox="0 0 34 16"><circle cx="8" cy="8" r="7.5" fill="#D9363E"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">N</text><circle cx="25" cy="8" r="7.5" fill="#3F8A4E"/><text x="25" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">S</text></svg>Pol, der durch die Wirbelströme an der Platte entsteht (Vorderseite)</span>
     <span class="nurDi"><svg width="26" height="14" viewBox="0 0 26 14"><path d="M25,7 L14,0 L14,3.5 L1,3.5 L1,10.5 L14,10.5 L14,14z" fill="#E8822A" fill-opacity=".55" stroke="#C9661A"/></svg>Kraft auf die Platte</span>
   </div>
 
@@ -159,6 +162,7 @@
       <button class="knopf" id="stoss" type="button">Anstoßen ▶</button>
       <label class="check"><input type="checkbox" id="zeigPfeile" checked> Bewegung der Elektronen als Pfeile</label>
       <label class="check"><input type="checkbox" id="zeigKraft" checked> Kraft auf die Platte</label>
+      <label class="check"><input type="checkbox" id="zeigPole" checked> Pole an der Platte (N/S)</label>
       <button class="knopf grau" id="resetD" type="button" title="Zurücksetzen">↺ Neu</button>
     </div>
     <p class="fuss">Zieh die Platte (oder den Magneten) mit der Maus oder dem Finger nach links und rechts. Lässt du beim Ziehen los,
@@ -185,7 +189,12 @@
       <li>Nach der Regel von Lenz wirken sie ihrer Ursache entgegen → die Platte wird <b>abgebremst</b> (Wirbelstrombremse).</li></ol>
       Bei der <b>geschlitzten</b> Platte unterbrechen die Schlitze die großen Wirbel – wie beim offenen Ring in 2.3. Es fließen nur kleine Ströme,
       die Platte wird kaum gebremst und rutscht durch.</div></details>
-  <details><summary><span class="nr">5</span><span>Für Profis: Wo genau entstehen die Wirbel? Schau dir dazu die Pfeile an.</span><span class="mehr">Lösung</span></summary>
+  <details><summary><span class="nr">5</span><span>Achte auf N und S an der Platte: Welcher Pol entsteht vorne, wenn du die Platte ins Magnetfeld schiebst – und welcher, wenn du sie herausziehst?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Die Wirbelströme machen die Platte selbst zu einem (schwachen) Magneten. Vorne vor der Platte sitzt der <b>Nordpol</b> des Magneten.<ol>
+      <li><b>Hineinschieben:</b> Vorne an der Platte entsteht ein <b>Nordpol</b> → gleiche Pole stoßen sich ab → die Platte wird gebremst.</li>
+      <li><b>Herausziehen:</b> Vorne entsteht ein <b>Südpol</b> → ungleiche Pole ziehen sich an → die Platte wird festgehalten.</li></ol>
+      In beiden Fällen wirkt das Magnetfeld der Wirbelströme gegen die Bewegung – das ist die Regel von Lenz. Je schneller die Bewegung, desto deutlicher sind die Pole; ohne Bewegung verschwinden sie.</div></details>
+  <details><summary><span class="nr">6</span><span>Für Profis: Wo genau entstehen die Wirbel? Schau dir dazu die Pfeile an.</span><span class="mehr">Lösung</span></summary>
     <div class="erkl">Am <b>Rand des Magnetfelds</b> – dort, wo ein Teil der Platte im Feld ist und ein Teil nicht. Steht das Magnetfeld mitten in der Platte
       und du bewegst sie, entstehen <b>zwei</b> Wirbel mit entgegengesetztem Drehsinn: einer dort, wo die Platte ins Feld hineinkommt, und einer dort, wo sie es verlässt.</div></details>
 </section>
@@ -305,6 +314,15 @@ const WC = 150;
   el("polygon",{fill:"#E8822A","fill-opacity":.75,points:pts([P(WC+8,-hy+22,TH),P(WC+8,-hy-22,TH),P(WC-18,-hy,TH)])},g);
 })();
 
+function polPlakette(parent) {
+  const g = el("g", {opacity: 0}, parent);
+  const c = el("circle", {r: 21, stroke: "#fff", "stroke-width": 2.5}, g);
+  const t = el("text", {y: 9.5, "text-anchor": "middle", "font-size": 27, "font-weight": "bold", fill: "#fff"}, g);
+  g.setPol = n => { c.setAttribute("fill", n === "N" ? "#D9363E" : "#3F8A4E"); t.textContent = n; };
+  return g;
+}
+(() => { const g = polPlakette($("poleStep")); g.setPol("N"); g.setAttribute("opacity", 0.95);
+  const [x, y] = P(WC, 0, TH); g.setAttribute("transform", `translate(${x},${y})`); })();
 function elektron(parent) {
   const g = el("g", {}, parent);
   el("circle", {r: 8.5, fill: "#1F5FBF", stroke: "#fff", "stroke-width": 1.2}, g);
@@ -383,7 +401,7 @@ const CAPS = [
   "<b>Bewegung:</b> Die Platte wird in das Magnetfeld hineingeschoben. In dem Teil der Platte, der ins Feld kommt, ändert sich das Magnetfeld.",
   "<b>Ablenkung:</b> Die Elektronen bewegen sich mit der Platte durch das Magnetfeld. Dabei werden sie abgelenkt – hier nach oben.",
   "<b>Kreislauf:</b> Oben drängen sich die Elektronen und weichen außen herum aus. Sie strömen im Kreis – die Platte ist ein geschlossener Leiter.",
-  "<b>Wirbelstrom:</b> Diese kreisförmigen Induktionsströme heißen Wirbelströme. Nach der Regel von Lenz wirken sie ihrer Ursache entgegen: Sie bremsen die Platte."
+  "<b>Wirbelstrom:</b> Diese kreisförmigen Induktionsströme heißen Wirbelströme. Sie machen die Platte selbst zu einem Magneten: Vorne entsteht ein Nordpol – gegenüber dem Nordpol des Magneten. Gleiche Pole stoßen sich ab → die Platte wird gebremst (Regel von Lenz)."
 ];
 let step = 0, t0 = performance.now(), acc = 0, animate = true;
 const ease = t => t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 3);
@@ -398,6 +416,7 @@ function frameStep(now, dtF) {
   $("motion").setAttribute("opacity", step === 0 ? 0 : step === 1 ? 0.9 : 0.35);
   $("force").setAttribute("opacity", step === 2 ? 0.35 + 0.65 * ease(dt / 0.6) : 0);
   $("wirbel").setAttribute("opacity", step === 4 ? ease(dt / 0.8) : 0);
+  $("poleStep").setAttribute("opacity", step === 4 ? ease((dt - 0.6) / 0.8) : 0);
   acc += dtF;
   while (acc >= SIM.DT) {
     acc -= SIM.DT;
@@ -493,12 +512,14 @@ function sample(A, u, v) {
 }
 
 // Kalibrierung: Bremsstärke und Stromstärke, wenn das Feld mitten in der ganzen Platte steht
-let GREF = 1, JREF = 1;
+let GREF = 1, JREF = 1, PSIREF = 0;
 (() => {
   slotted = false; buildMask(); setSource(0); psi1.fill(0); solve(1500);
   GREF = gamma(); stromfeld(psi1);
   let m = 0; for (let k = 0; k < NN; k++) m = Math.max(m, Math.hypot(JX[k], JY[k]));
-  JREF = m; psi1.fill(0);
+  JREF = m;
+  for (let k = 0; k < NN; k++) PSIREF = Math.max(PSIREF, Math.abs(psi1[k]));
+  psi1.fill(0);
 })();
 
 const WREF = 450;             // „typische“ Zieh-Geschwindigkeit (Einheiten/s)
@@ -553,6 +574,32 @@ for (let a = 0; a < 8; a++) for (let b = 0; b < 6; b++) {
   PF.push({u, v, node: el("line", {stroke: "#E8822A", "stroke-width": 4.5, "stroke-linecap": "round", "marker-end": "url(#ahO)", opacity: 0}, $("pfeile"))});
 }
 const kraftPoly = el("polygon", {fill: "#E8822A", "fill-opacity": .62, stroke: "#B9560F", "stroke-width": 1.5, "stroke-linejoin": "round"}, $("kraftD"));
+const POLE = [0, 1, 2, 3].map(() => polPlakette($("poleDyn")));
+// Wirbelzentren = Extrema der Stromfunktion. ψ > 0: Strom gegen den Uhrzeigersinn (Elektronen im Uhrzeigersinn)
+// → Magnetfeld der Platte zeigt nach vorne → vorne Nordpol. ψ < 0 → vorne Südpol.
+function wirbelZentren() {
+  let mx = 0; for (let k = 0; k < NN; k++) mx = Math.max(mx, Math.abs(psiD[k]));
+  const out = [];
+  if (mx === 0) return out;
+  for (let j = 1; j < NV - 1; j++) for (let i = 1; i < NU - 1; i++) {
+    const k = i + j * NU, p = psiD[k], a = Math.abs(p);
+    if (!inner[k] || a < 0.3 * mx) continue;
+    let ext = true;
+    for (let dj = -1; dj <= 1 && ext; dj++) for (let di = -1; di <= 1; di++) {
+      if (!di && !dj) continue;
+      const q = psiD[k + di + dj * NU];
+      if (p > 0 ? q > p : q < p) { ext = false; break; }
+    }
+    if (!ext) continue;
+    const fu = (psiD[k-1] - psiD[k+1]) / (2 * (psiD[k-1] - 2 * p + psiD[k+1]) || 1);
+    const fv = (psiD[k-NU] - psiD[k+NU]) / (2 * (psiD[k-NU] - 2 * p + psiD[k+NU]) || 1);
+    out.push({u: uOf(i) + Math.max(-.5, Math.min(.5, fu)) * H, v: vOf(j) + Math.max(-.5, Math.min(.5, fv)) * H, psi: p});
+  }
+  out.sort((a, b) => Math.abs(b.psi) - Math.abs(a.psi));
+  const wahl = [];
+  for (const z of out) if (wahl.every(w => Math.hypot(w.u - z.u, w.v - z.v) > 70)) { wahl.push(z); if (wahl.length === POLE.length) break; }
+  return wahl;
+}
 const hintT = el("text", {"text-anchor": "middle", "font-size": 24, "font-weight": "bold", fill: "#0E7490"}, $("hint"));
 
 function pos() { return D.obj === "platte" ? D.px : D.mx; }
@@ -630,6 +677,18 @@ function zeichneDyn() {
     mArrow.setAttribute("points", pts(arrowPts(xc + dir * lv / 2, dir, lv, -185, 0)));
     $("motion").setAttribute("opacity", 0.8);
   } else $("motion").setAttribute("opacity", 0);
+  // Pole an der Platte (Deckkraft = Stärke des Wirbels)
+  const zent = $("zeigPole").checked && D.level > 0 ? wirbelZentren() : [];
+  POLE.forEach((g, n) => {
+    const z = zent[n];
+    if (!z) { g.setAttribute("opacity", 0); return; }
+    const o = Math.min(1, Math.abs(z.psi) / (0.7 * PSIREF * WREF));
+    if (o < 0.05) { g.setAttribute("opacity", 0); return; }
+    g.setPol(z.psi > 0 ? "N" : "S");
+    const [x, y] = P(px + z.u, z.v, TH);
+    g.setAttribute("transform", `translate(${x.toFixed(1)},${y.toFixed(1)})`);
+    g.setAttribute("opacity", (0.95 * o).toFixed(2));
+  });
   // Hinweis
   if (D.hint) {
     const [hx, hy] = P(pos(), HH + 26, D.obj === "platte" ? 0 : -140);
@@ -694,7 +753,8 @@ function setMode(m) {
   document.querySelectorAll(".modi button").forEach(b => b.classList.toggle("an", b.dataset.m === m));
   const s = m === "schritt";
   $("electrons").style.display = s ? "" : "none";
-  for (const id of ["electronsD", "pfeile", "kraftD", "hint"]) $(id).style.display = s ? "none" : "";
+  $("poleStep").style.display = s ? "" : "none";
+  for (const id of ["electronsD", "pfeile", "kraftD", "hint", "poleDyn"]) $(id).style.display = s ? "none" : "";
   $("force").setAttribute("opacity", 0); $("wirbel").setAttribute("opacity", 0); $("motion").setAttribute("opacity", 0);
   if (s) {
     if (slotted) { slotted = false; }
