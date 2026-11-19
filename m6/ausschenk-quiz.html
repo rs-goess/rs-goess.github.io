@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Ausschenk-Quiz – Mathe 6c</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../assets/portal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233480DC'/%3E%3Cpath d='M20 16h24l-4 34H24z' fill='%23fff'/%3E%3Cpath d='M22.5 32h19l-1.9 16H24.4z' fill='%23FFC93C'/%3E%3C/svg%3E">
+<style>
+:root{--rot:#C0392B;--rot-hell:#FBE7E4;--glas:#1B1F2A;--skala:#9AA3AE}
+@media (prefers-color-scheme:dark){:root{--rot:#FF8A7A;--rot-hell:#3A1F1C;--glas:#E7EAF0;--skala:#7F899B}}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:22px;padding:16px;box-shadow:var(--schatten)}
+.leiste{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2);margin-bottom:10px}
+.leiste b{color:var(--text)}
+.balken{flex:1;height:8px;background:var(--linie);border-radius:9px;overflow:hidden}
+.balken i{display:block;height:100%;width:0;background:linear-gradient(135deg,#3480DC,#2552B6);transition:width .3s}
+.frage{font-size:18px;font-weight:600;line-height:1.45;margin:2px 0 8px}
+.frage b{font-weight:800}
+.katex{font-size:1.12em}
+.frage .katex,.antworten .katex,.rueck .katex{white-space:nowrap}
+.ml{color:var(--text2);font-size:15px;font-weight:600;white-space:nowrap}
+.buehne{background:var(--bg);border:1px solid var(--linie);border-radius:18px;margin:6px 0 12px;padding:6px 4px 2px}
+svg.szene{display:block;width:100%;height:auto;max-height:340px}
+svg.szene text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;fill:var(--text2);font-weight:700}
+.zaehler{text-align:center;font-weight:800;font-size:17px;min-height:26px;margin:0 0 6px;color:var(--blau-text)}
+.hinweis{font-size:15px;font-weight:700;color:var(--text2);margin:0 0 8px}
+.antworten{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.antworten button{font:inherit;font-size:19px;font-weight:700;border:2px solid var(--linie);background:var(--bg);color:var(--text);
+  border-radius:16px;padding:10px 12px;min-height:58px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  -webkit-tap-highlight-color:transparent}
+.antworten button small{font-size:14px;font-weight:600;color:var(--text2)}
+.antworten button:disabled{cursor:default}
+.antworten button.gewaehlt{border-color:var(--blau);background:var(--blau-hell)}
+.antworten button.richtig{border-color:var(--gruen);background:var(--gruen-hell)}
+.antworten button.falsch{border-color:var(--rot);background:var(--rot-hell)}
+.antworten button.blass{opacity:.5}
+.rueck{border-radius:16px;padding:12px 14px;margin-top:12px;font-size:16.5px;line-height:1.5;display:none}
+.rueck.ok{display:block;background:var(--gruen-hell);border:2px solid var(--gruen)}
+.rueck.no{display:block;background:var(--rot-hell);border:2px solid var(--rot)}
+.rueck b.t{display:block;font-size:17px;margin-bottom:4px}
+.rueck .rechnung{display:block;overflow-x:auto;padding:6px 0 2px;font-size:17px}
+.knoepfe{display:flex;gap:10px;margin-top:12px}
+.weiter,.nochmal{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:16px;padding:14px;cursor:pointer}
+.weiter{flex:1;color:#fff;background:linear-gradient(135deg,#3480DC,#2552B6);display:none}
+.nochmal{background:var(--blau-hell);color:var(--blau-text);display:none;flex:0 0 auto;font-size:15px;padding:14px 12px}
+.ende{text-align:center}
+.ende .punkte{font-size:52px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0}
+.ende .sterne{font-size:34px;letter-spacing:4px;margin:4px 0}
+.ende p{color:var(--text2);margin:4px 0 14px}
+.ende .weiter{display:block;width:100%}
+.merke{margin-top:14px;border:2px solid var(--orange);border-radius:18px;padding:12px 14px;background:var(--karte);font-size:15.5px;line-height:1.5}
+.merke b{color:var(--akzent)}
+@media (prefers-reduced-motion:reduce){.balken i{transition:none}}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" href="material.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Material</a>
+<header class="kopf">
+  <div class="ober">Mathe 6c · 1.13 Brüche dividieren</div>
+  <h1>Ausschenk-Quiz</h1>
+  <p>Wie oft passt das Glas in den Messbecher? Tippe zuerst deine Vermutung – dann wird ausgeschenkt.</p>
+</header>
+<div class="karte" id="quiz"></div>
+<div class="merke"><b>Merke:</b> Dividieren heißt „Wie oft passt der Bruch hinein?“. Du rechnest mit dem <b>Kehrbruch</b>:
+  <span id="merkeformel"></span></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  // ---------------------------------------------------------------- Brüche
+  const ggT=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a||1};
+  const B=(z,n=1)=>{const g=ggT(z,n);return {z:z/g,n:n/g}};
+  const mal=(a,b)=>B(a.z*b.z,a.n*b.n);
+  const durch=(a,b)=>B(a.z*b.n,a.n*b.z);
+  const wert=a=>a.z/a.n;
+  const gleich=(a,b)=>a.z===b.z&&a.n===b.n;
+  // LaTeX für einen Bruch: ganze Zahl, echter Bruch oder gemischte Zahl
+  function tx(a,{gemischt=true}={}){
+    if(a.n===1) return String(a.z);
+    if(gemischt && a.z>a.n){const g=Math.floor(a.z/a.n), r=a.z%a.n; return `${g}\\frac{${r}}{${a.n}}`;}
+    return `\\frac{${a.z}}{${a.n}}`;
+  }
+  const unecht=a=>`\\frac{${a.z}}{${a.n}}`;
+  const ml=a=>Math.round(wert(a)*1000);
+
+  const tex=t=>{try{return katex.renderToString(t,{throwOnError:false})}catch(e){return t}};
+  const T=s=>s.replace(/\$([^$]+)\$/g,(m,t)=>tex(t));
+
+  // ---------------------------------------------------------------- Aufgaben
+  // menge = Inhalt des Messbechers (Liter), glas = Inhalt eines Glases (Liter)
+  const GETRAENK={
+    wasser:{name:'Wasser',farbe:'#7EC4EE'}, kakao:{name:'Kakao',farbe:'#9A6233'},
+    schorle:{name:'Apfelschorle',farbe:'#F4C431'}, osaft:{name:'Orangensaft',farbe:'#F5A01A'},
+    eistee:{name:'Eistee',farbe:'#C9772B'}, kirsch:{name:'Kirschsaft',farbe:'#C0313E'}
+  };
+  const A=[
+    // Stufe 1: das Ergebnis ist eine ganze Zahl, Stammbrüche
+    {s:1,g:'wasser', m:B(1),    gl:B(1,4)},
+    {s:1,g:'kakao',  m:B(1,2),  gl:B(1,8)},
+    {s:1,g:'schorle',m:B(3,4),  gl:B(1,8)},
+    {s:1,g:'osaft',  m:B(1),    gl:B(1,5)},
+    // Stufe 2: ganze Zahl, auch gemischte Zahlen und Nicht-Stammbrüche
+    {s:2,g:'wasser', m:B(1,5),  gl:B(1,25), klein:true},
+    {s:2,g:'eistee', m:B(3,2),  gl:B(1,4)},
+    {s:2,g:'kirsch', m:B(3,4),  gl:B(3,8)},
+    {s:2,g:'wasser', m:B(2,5),  gl:B(1,25), klein:true},
+    // Stufe 3: es bleibt ein Rest – das letzte Glas wird nicht voll
+    {s:3,g:'kirsch', m:B(1,2),  gl:B(1,5)},
+    {s:3,g:'schorle',m:B(3,4),  gl:B(1,2)},
+    {s:3,g:'wasser', m:B(1,10), gl:B(1,25), klein:true},
+    {s:3,g:'osaft',  m:B(2),    gl:B(3,8)}
+  ];
+  A.forEach(a=>{a.e=durch(a.m,a.gl);});
+
+  // Ablenker: typische Fehler
+  function antworten(a){
+    const r=a.e, liste=[r];
+    const kand=[
+      B(Math.floor(wert(r))),                 // nur volle Gläser gezählt
+      mal(a.m,a.gl),                          // mal statt geteilt (ergibt weniger als 1 Glas)
+      B(r.z+r.n,r.n), B(Math.max(1,r.z-r.n),r.n), // eins mehr / weniger
+      B(2*r.z,r.n), B(r.z+2*r.n,r.n)
+    ];
+    for(const k of kand){
+      if(liste.length>=4) break;
+      if(k.z<=0) continue;
+      if(liste.some(x=>gleich(x,k))) continue;
+      liste.push(k);
+    }
+    return liste;
+  }
+
+  // ---------------------------------------------------------------- Zeichnung
+  const NS='http://www.w3.org/2000/svg';
+  const W=360, H=230;
+  function el(tag,attr,eltern){const e=document.createElementNS(NS,tag);for(const k in attr)e.setAttribute(k,attr[k]);if(eltern)eltern.appendChild(e);return e;}
+
+  function szene(a,{glaeserZeigen}){
+    const svg=el('svg',{class:'szene',viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Messbecher und Gläser'});
+    const farbe=GETRAENK[a.g].farbe;
+    const v0=wert(a.m), kap=v0>1?2:v0>=0.5?1:v0>0.25?0.5:0.25;   // Messbecher: 250 ml, 500 ml, 1 l oder 2 l
+    // Messbecher
+    const bx=18, by=26, bw=82, bh=170;
+    const yAus=v=>by+bh-(v/kap)*bh;                 // Füllhöhe -> y
+    const clip=el('clipPath',{id:'bc'},svg); el('rect',{x:bx,y:by,width:bw,height:bh,rx:6},clip);
+    const fl=el('rect',{x:bx,y:yAus(wert(a.m)),width:bw,height:bh-(yAus(wert(a.m))-by),fill:farbe,'clip-path':'url(#bc)'},svg);
+    // Skala (Viertel bzw. halbe Liter)
+    const schritte=4;
+    for(let i=1;i<schritte;i++){const v=kap*i/schritte, y=yAus(v);
+      el('line',{x1:bx,y1:y,x2:bx+16,y2:y,stroke:'var(--skala)','stroke-width':2},svg);}
+    el('path',{d:`M${bx} ${by-6} L${bx} ${by+bh-6} Q${bx} ${by+bh} ${bx+6} ${by+bh} L${bx+bw-6} ${by+bh} Q${bx+bw} ${by+bh} ${bx+bw} ${by+bh-6} L${bx+bw} ${by-6}`,
+      fill:'none',stroke:'var(--glas)','stroke-width':3,'stroke-linejoin':'round'},svg);
+    el('path',{d:`M${bx+bw} ${by+8} q16 2 16 22 q0 24 -16 30`,fill:'none',stroke:'var(--glas)','stroke-width':3,'stroke-linecap':'round'},svg); // Griff
+    const lab=el('text',{x:bx+bw/2,y:by+bh+22,'text-anchor':'middle','font-size':14},svg); lab.textContent=kap>=1?`${kap} l`:`${kap*1000} ml`;
+    // Trennstriche „ein Glas“ – erscheinen beim Ausschenken
+    const striche=[];
+    const n=Math.ceil(wert(a.e)-1e-9);
+    for(let k=1;k<n;k++){const v=wert(a.m)-k*wert(a.gl);
+      striche.push(el('line',{x1:bx+4,y1:yAus(v),x2:bx+bw-4,y2:yAus(v),stroke:'var(--glas)','stroke-width':1.6,'stroke-dasharray':'5 4',opacity:0},svg));}
+
+    // Gläser
+    const glas=[];
+    const proReihe=n<=5?n:Math.ceil(n/2), reihen=n<=5?1:2;
+    const gx0=130, gbreite=W-gx0-8;
+    const gw=Math.min(40,gbreite/proReihe-10), gh=reihen===1?72:58;
+    const abst=(gbreite-proReihe*gw)/(proReihe+1);
+    const gy0=reihen===1?by+bh-gh: by+bh-2*gh-22;
+    for(let i=0;i<(glaeserZeigen?n:1);i++){
+      const r=Math.floor(i/proReihe), c=i%proReihe;
+      const x=gx0+abst+c*(gw+abst), y=gy0+r*(gh+22);
+      const g=el('g',{},svg);
+      const id='g'+i;
+      const cp=el('clipPath',{id},g);
+      const d=`M${x} ${y} L${x+gw} ${y} L${x+gw*0.86} ${y+gh} L${x+gw*0.14} ${y+gh} Z`;
+      el('path',{d},cp);
+      const fill=el('rect',{x:x-2,y:y+gh,width:gw+4,height:0,fill:farbe,'clip-path':`url(#${id})`},g);
+      el('path',{d,fill:'none',stroke:'var(--glas)','stroke-width':2.6,'stroke-linejoin':'round'},g);
+      const nr=el('text',{x:x+gw/2,y:y+gh+16,'text-anchor':'middle','font-size':13},g); nr.textContent=glaeserZeigen?String(i+1):'';
+      glas.push({x,y,gw,gh,fill,nr});
+    }
+    if(!glaeserZeigen){
+      const g0=glas[0];
+      const t=el('text',{x:g0.x+gw+12,y:g0.y+gh/2+5,'font-size':15},svg);
+      t.textContent='= 1 Glas';
+    }
+    const strahl=el('path',{d:'',fill:'none',stroke:farbe,'stroke-width':6,'stroke-linecap':'round',opacity:0},svg);
+    return {svg,fl,yAus,bx,by,bw,glas,striche,strahl,kap};
+  }
+
+  // Ausschenken: ein Glas nach dem anderen
+  const ruhig=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animiere(dauer,schritt){
+    return new Promise(res=>{
+      if(ruhig){schritt(1);res();return;}
+      const t0=performance.now();
+      function f(t){const p=Math.max(0,Math.min(1,(t-t0)/dauer));schritt(p);if(p<1)requestAnimationFrame(f);else res();}
+      requestAnimationFrame(f);
+    });
+  }
+  let laeuft=0;
+  async function ausschenken(sz,a,zaehler){
+    const meinLauf=++laeuft;
+    const n=sz.glas.length;
+    let rest=wert(a.m);
+    const gl=wert(a.gl);
+    zaehler.textContent='Es wird ausgeschenkt …';
+    for(let i=0;i<n;i++){
+      if(meinLauf!==laeuft) return false;
+      const g=sz.glas[i];
+      const portion=Math.min(gl,rest);
+      const anteil=portion/gl;
+      const sx=sz.bx+sz.bw-2, sy=sz.by-4;
+      const zx=g.x+g.gw/2, zy=g.y+4;
+      sz.strahl.setAttribute('d',`M${sx} ${sy} Q${(sx+zx)/2} ${Math.min(sy,zy)-34} ${zx} ${zy}`);
+      sz.strahl.setAttribute('opacity',0.9);
+      const vorher=rest;
+      await animiere(650,p=>{
+        const r=vorher-portion*p;
+        const y=sz.yAus(r); sz.fl.setAttribute('y',y); sz.fl.setAttribute('height',sz.by+170-y);
+        const h=(g.gh-2)*anteil*p; g.fill.setAttribute('y',g.y+g.gh-h); g.fill.setAttribute('height',h);
+      });
+      sz.strahl.setAttribute('opacity',0);
+      rest=Math.max(0,vorher-portion);
+      if(sz.striche[i]) sz.striche[i].setAttribute('opacity',1);
+      const voll=anteil>0.999;
+      zaehler.innerHTML= voll? `${i+1} ${i+1===1?'Glas':'Gläser'} voll` : T(`${i} voll, das letzte ist zu $${tx(B(Math.round(anteil*1000),1000))}$ gefüllt`);
+      await new Promise(r=>setTimeout(r,ruhig?0:160));
+    }
+    return true;
+  }
+
+  // ---------------------------------------------------------------- Ablauf
+  const mischen=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a};
+  const box=document.getElementById('quiz');
+  let runde=[], nr=0, punkte=0;
+
+  function neu(){
+    const s1=mischen(A.filter(a=>a.s===1)).slice(0,3);
+    const s2=mischen(A.filter(a=>a.s===2)).slice(0,4);
+    const s3=mischen(A.filter(a=>a.s===3)).slice(0,3);
+    // die Aufgabe aus der Stunde (3/4 l : 1/8 l) immer als Erste
+    const stunde=A[2];
+    runde=[stunde,...s1.filter(a=>a!==stunde).slice(0,2),...s2,...s3];
+    nr=0; punkte=0; zeige();
+  }
+
+  function glasText(a){
+    const g=`$${tx(a.gl)}$ l`;
+    return a.klein? `ein kleines Glas (4 cl) fasst ${g} <span class="ml">(${ml(a.gl)}&nbsp;ml)</span>`
+                  : `ein Glas fasst ${g} <span class="ml">(${ml(a.gl)}&nbsp;ml)</span>`;
+  }
+  function antwortText(x){ return x.n===1&&x.z===1? '$1$ <small>Glas</small>' : `$${tx(x)}$ <small>Gläser</small>`; }
+
+  function rechnung(a){
+    const m=a.m, g=a.gl, kehr=B(g.n,g.z), erg=a.e;
+    let s=`${tx(m)}:${tx(g)}`;
+    if(m.n!==1&&m.z>m.n) s+=`=${unecht(m)}:${tx(g)}`;
+    s+=`=${m.n===1?m.z:unecht(m)}\\cdot ${kehr.n===1?kehr.z:unecht(kehr)}`;
+    const roh={z:m.z*kehr.z,n:m.n*kehr.n};
+    if(roh.n!==1){
+      s+=`=\\frac{${roh.z}}{${roh.n}}`;
+      if(erg.n!==1){
+        if(!(roh.z===erg.z&&roh.n===erg.n)) s+=`=${unecht(erg)}`;
+        if(erg.z>erg.n) s+=`=${tx(erg)}`;
+      } else s+=`=${erg.z}`;
+    } else if(m.n!==1||kehr.n!==1) s+=`=${roh.z}`;
+    else s+=`=${roh.z}`;
+    return s;
+  }
+
+  function zeige(){
+    const a=runde[nr], gt=GETRAENK[a.g];
+    let h=`<div class="leiste"><span>Aufgabe <b>${nr+1}</b> von ${runde.length}</span><span class="balken"><i style="width:${nr/runde.length*100}%"></i></span><span><b>${punkte}</b> richtig</span></div>`;
+    h+=`<div class="frage">${T(`Im Messbecher sind <b>$${tx(a.m)}$ l ${gt.name}</b> <span class="ml">(${ml(a.m)}&nbsp;ml)</span>,<br>${glasText(a)}.`)}</div>`;
+    h+=`<div class="buehne" id="buehne"></div><div class="zaehler" id="zaehler"></div>`;
+    h+=`<p class="hinweis">Wie viele Gläser kannst du damit füllen? Tippe deine Vermutung.</p>`;
+    h+=`<div class="antworten">`;
+    mischen(antworten(a)).forEach(x=>{h+=`<button type="button" data-z="${x.z}" data-n="${x.n}">${T(antwortText(x))}</button>`;});
+    h+=`</div><div class="rueck" id="rueck"></div><div class="knoepfe"><button class="nochmal" id="nochmal" type="button">Nochmal ausschenken</button>`+
+       `<button class="weiter" id="weiter" type="button">${nr+1<runde.length?'Nächste Aufgabe':'Zum Ergebnis'}</button></div>`;
+    box.innerHTML=h;
+    const sz=szene(a,{glaeserZeigen:false});
+    document.getElementById('buehne').appendChild(sz.svg);
+    box.querySelectorAll('.antworten button').forEach(b=>b.addEventListener('click',()=>antwort(b,a)));
+    document.getElementById('weiter').onclick=()=>{laeuft++; nr++; if(nr<runde.length) zeige(); else ende();};
+  }
+
+  async function antwort(b,a){
+    const alle=box.querySelectorAll('.antworten button');
+    const wahl=B(+b.dataset.z,+b.dataset.n);
+    const ok=gleich(wahl,a.e);
+    alle.forEach(x=>{x.disabled=true;});
+    b.classList.add('gewaehlt');
+    // Ausschenken zeigen
+    const buehne=document.getElementById('buehne'), zaehler=document.getElementById('zaehler');
+    async function abspielen(){
+      buehne.innerHTML='';
+      const sz=szene(a,{glaeserZeigen:true}); buehne.appendChild(sz.svg);
+      return ausschenken(sz,a,zaehler);
+    }
+    const fertig=await abspielen();
+    if(!fertig) return;
+    alle.forEach(x=>{const y=B(+x.dataset.z,+x.dataset.n); if(gleich(y,a.e)) x.classList.add('richtig'); else if(x!==b) x.classList.add('blass');});
+    if(ok) punkte++; else b.classList.add('falsch');
+    b.classList.remove('gewaehlt');
+    const r=document.getElementById('rueck');
+    r.className='rueck '+(ok?'ok':'no');
+    const ganz=a.e.n===1;
+    const satz= ganz? `Es werden genau <b>$${tx(a.e)}$ Gläser</b> voll.`
+      : `Es werden <b>${Math.floor(wert(a.e))} Gläser</b> voll, das letzte Glas nur zu $${tx(B(a.e.z%a.e.n,a.e.n))}$ – zusammen <b>$${tx(a.e)}$ Gläser</b>.`;
+    r.innerHTML=`<b class="t">${ok?'Richtig!':'Leider nicht – schau aufs Ausschenken.'}</b>${T(satz)}`+
+      `<span class="rechnung">${tex(rechnung(a))}</span>`+
+      `<span style="font-size:15px;color:var(--text2)">Durch $${tx(a.gl)}$ teilen heißt: mit dem Kehrbruch $${a.gl.z===1?a.gl.n:unecht(B(a.gl.n,a.gl.z))}$ malnehmen.</span>`.replace(/\$([^$]+)\$/g,(m,t)=>tex(t));
+    const w=document.getElementById('weiter'), n=document.getElementById('nochmal');
+    w.style.display='block'; n.style.display='block';
+    n.onclick=async()=>{n.disabled=true; await abspielen(); n.disabled=false;};
+    box.querySelector('.balken i').style.width=((nr+1)/runde.length*100)+'%';
+    box.querySelector('.leiste span:last-child b').textContent=punkte;
+    w.scrollIntoView({behavior:ruhig?'auto':'smooth',block:'nearest'});
+  }
+
+  function ende(){
+    const n=runde.length;
+    let best=0; try{best=+localStorage.getItem('m6-ausschenk-best')||0; if(punkte>best) localStorage.setItem('m6-ausschenk-best',punkte);}catch(e){}
+    const sterne=punkte>=n?3:punkte>=n-2?2:punkte>=n/2?1:0;
+    const s= punkte===n?'Perfekt – du weißt genau, wie oft das Glas hineinpasst!': punkte>=n-2?'Sehr gut! Nur kleine Ausrutscher.':
+             punkte>=n/2?'Gut gemacht! Schau dir bei den Fehlern die Rechnung mit dem Kehrbruch nochmal an.':'Noch nicht ganz – probier es gleich nochmal und schau genau beim Ausschenken zu.';
+    box.innerHTML=`<div class="ende"><div class="ober" style="color:var(--akzent);font-weight:800;letter-spacing:.09em;font-size:13px;text-transform:uppercase">Ergebnis</div>
+      <div class="punkte">${punkte} / ${n}</div><div class="sterne" aria-label="${sterne} von 3 Sternen">${'★'.repeat(sterne)}${'☆'.repeat(3-sterne)}</div><p>${s}</p>
+      ${Math.max(best,punkte)>0?`<p>Dein bestes Ergebnis: <b>${Math.max(best,punkte)} / ${n}</b></p>`:''}
+      <button class="weiter" type="button" id="neu">Neue Runde (andere Aufgaben)</button></div>`;
+    document.getElementById('neu').onclick=neu;
+  }
+
+  function start(){
+    document.getElementById('merkeformel').innerHTML=tex('\\frac34:\\frac18=\\frac34\\cdot 8=\\frac{24}{4}=6');
+    neu();
+  }
+  // Test-Zugriff
+  window.__ausschenk={A,rechnung,antworten,tx};
+  if(window.katex) start(); else window.addEventListener('load',start);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
