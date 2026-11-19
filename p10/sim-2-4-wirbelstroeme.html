@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.4 Wirbelströme – Simulation</title>
+<style>
+  :root{--petrol:#0B3B47;--petrol2:#0E7490;--orange:#E8822A;--dunkel:#1f2f3d;--grau:#f2f4f5;--gelb:#ffd23f;--blau:#1F5FBF}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--petrol);color:var(--dunkel);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;
+       font-size:17px;line-height:1.45;padding-bottom:40px}
+  header{color:#fff;max-width:1000px;margin:0 auto;padding:12px 16px 6px}
+  header small{opacity:.85;display:block;font-size:13px}
+  header h1{margin:2px 0 10px;font-size:21px;line-height:1.25}
+  .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
+            font-size:14px;font-weight:bold;text-decoration:none}
+  .modi{display:inline-flex;background:rgba(255,255,255,.14);border-radius:999px;padding:4px;gap:4px}
+  .modi button{border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:15px;font-weight:bold;background:transparent;
+               color:#fff;cursor:pointer;min-height:42px}
+  .modi button.an{background:var(--gelb);color:#222}
+  main{max-width:1000px;margin:0 auto;padding:6px 12px}
+  .karte{background:#fff;border-radius:16px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.18);margin-bottom:12px;position:relative}
+  #stage{position:relative}
+  #stage svg{width:100%;height:auto;display:block;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+  body.dyn #stage svg{cursor:grab;touch-action:none}
+  body.dyn.zieht #stage svg{cursor:grabbing}
+  #fs{position:absolute;top:10px;right:10px;z-index:2;border:0;border-radius:10px;background:#f2f2f2;font:inherit;font-size:14px;
+      padding:6px 10px;opacity:.75;cursor:pointer}
+  .quer{display:none;font-size:13.5px;color:#6b7780;margin:2px 100px 4px 2px;line-height:1.3}
+  @media (orientation:portrait) and (max-width:600px){ body.dyn .quer{display:block} main{padding:6px 6px} .karte{padding:8px} }
+  .legende{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:#55606a;margin:4px 2px 8px}
+  .legende span{display:inline-flex;align-items:center;gap:6px}
+  .legende svg{flex:none}
+  /* Schritt-Modus */
+  .cap{background:var(--grau);border-radius:12px;padding:10px 12px;min-height:3.4em}
+  .standbild{margin-top:8px;font-size:14.5px;background:#FFF8DB;border:1.5px dashed #F2B705;border-radius:10px;padding:7px 10px;color:#5c4a00}
+  .standbild a{color:var(--petrol2);font-weight:bold;cursor:pointer;text-decoration:underline}
+  #bar{display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 0 2px}
+  #bar button{font:inherit;font-size:16px;border:none;background:#F2F2F2;color:#1A1A1A;border-radius:10px;padding:9px 16px;cursor:pointer;min-height:44px}
+  #bar button:hover{background:#e4e4e4}
+  #bar button:disabled{opacity:.35;cursor:default}
+  #dots{display:flex;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#d4d4d4}
+  .dot.on{background:#6C9EBC}
+  /* Dynamischer Modus */
+  .status{display:flex;align-items:center;gap:10px;background:var(--grau);border-radius:12px;padding:8px 12px;min-height:58px}
+  .status .punkt{width:14px;height:14px;border-radius:50%;flex:none;background:#b8c0c6;transition:background .2s}
+  .status .tx{flex:1;font-size:16px;line-height:1.3}
+  .meter{flex:none;display:block;width:110px;font-size:12.5px;color:#6b7780;text-align:center}
+  .meter .rohr{display:block;height:12px;border-radius:6px;background:#e1e6ea;overflow:hidden;margin-top:3px}
+  .meter .rohr i{display:block;height:100%;width:0;background:var(--orange);border-radius:6px}
+  .reihe{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:10px}
+  .gruppe{display:inline-flex;align-items:center;gap:8px;font-size:15px}
+  .seg{display:inline-flex;border:2px solid #d5dde3;border-radius:12px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:8px 12px;font:inherit;font-size:15px;min-height:42px;cursor:pointer;color:var(--dunkel)}
+  .seg button+button{border-left:2px solid #d5dde3}
+  .seg button.an{background:var(--petrol2);color:#fff;font-weight:bold}
+  .knopf{border:0;border-radius:12px;padding:9px 14px;font:inherit;font-weight:bold;font-size:15px;background:var(--orange);color:#fff;
+         min-height:44px;cursor:pointer}
+  .knopf.grau{background:#e1e6ea;color:var(--dunkel)}
+  label.check{display:inline-flex;gap:7px;align-items:center;font-size:15px;cursor:pointer;min-height:42px}
+  label.check input{width:20px;height:20px;accent-color:var(--orange)}
+  .fuss{font-size:13.5px;color:#6b7780;margin:10px 2px 0}
+  .nurS,.nurD{display:none}
+  body:not(.dyn) .nurS{display:block}
+  body.dyn .nurD{display:block}
+  .legende .nurDi{display:none}
+  body.dyn .legende .nurDi{display:inline-flex}
+  /* Beobachtungsaufträge */
+  .auftraege h2{margin:2px 0 8px;font-size:19px;color:var(--petrol2)}
+  .auftraege details{border:2px solid #e3e8ec;border-radius:12px;margin:8px 0;padding:0 12px;background:#fff}
+  .auftraege summary{cursor:pointer;padding:10px 0;font-weight:bold;list-style:none;display:flex;gap:10px;align-items:baseline}
+  .auftraege summary::-webkit-details-marker{display:none}
+  .auftraege summary .nr{flex:none;background:var(--petrol2);color:#fff;border-radius:999px;font-size:13px;padding:1px 9px}
+  .auftraege summary .mehr{margin-left:auto;flex:none;font-size:13px;color:var(--petrol2);font-weight:bold}
+  .auftraege details[open] summary .mehr{visibility:hidden}
+  .auftraege .erkl{border-top:1px dashed #d5dde3;padding:8px 0 12px;font-size:16px}
+  .auftraege .erkl ol{margin:4px 0 0;padding-left:22px}
+  /* Vollbild */
+  #karte:fullscreen{display:flex;flex-direction:column;border-radius:0;padding:14px;background:#fff;overflow:auto}
+  #karte:fullscreen #stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+  #karte:fullscreen #stage svg{width:auto;height:100%;max-width:100%}
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 10c · 2.4 Wirbelströme · Simulation</small>
+  <h1>Wirbelströme in einer Metallplatte</h1>
+  <div class="modi" role="tablist">
+    <button type="button" data-m="schritt" class="an">Schritt für Schritt</button>
+    <button type="button" data-m="dyn">Selbst ausprobieren</button>
+  </div>
+</header>
+<main>
+<section class="karte" id="karte">
+  <button id="fs" type="button" title="Vollbild (F)">⛶ Vollbild</button>
+  <p class="quer">Tipp: Halte dein Handy quer – dann ist alles größer.</p>
+  <div id="stage">
+  <svg id="svg" viewBox="0 80 1300 450" preserveAspectRatio="xMidYMid meet" aria-label="Simulation Wirbelströme">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#7FCB5B"/>
+      </marker>
+      <marker id="ahO" viewBox="0 0 10 10" refX="4" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#D9701B"/>
+      </marker>
+      <clipPath id="pclip"><polygon id="pclipPoly"/></clipPath>
+    </defs>
+    <g id="sPole"></g>
+    <g id="linesBack"></g>
+    <g id="plate"></g>
+    <g id="wirbel" opacity="0"></g>
+    <g id="pfeile"></g>
+    <g id="force" opacity="0"></g>
+    <g id="linesFront"></g>
+    <g id="nPole"></g>
+    <g id="kraftD"></g>
+    <g id="electrons"></g>
+    <g id="electronsD"></g>
+    <g id="motion" opacity="0"></g>
+    <g id="hint"></g>
+  </svg>
+  </div>
+  <div class="legende">
+    <span><svg width="16" height="16" viewBox="-9 -9 18 18"><circle r="8" fill="#1F5FBF"/><line x1="-4" x2="4" stroke="#fff" stroke-width="2"/></svg>Elektron</span>
+    <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="20" y2="5" stroke="#8FD86E" stroke-width="2.4"/><path d="M18,1 L25,5 L18,9z" fill="#7FCB5B"/></svg>Magnetfeld (von N nach S)</span>
+    <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="19" y2="5" stroke="#E8822A" stroke-width="3"/><path d="M17,0.5 L25,5 L17,9.5z" fill="#D9701B"/></svg>Bewegungsrichtung der Elektronen</span>
+    <span><svg width="26" height="12" viewBox="0 0 26 12"><path d="M25,6 L15,0 L15,3 L1,3 L1,9 L15,9 L15,12z" fill="#9A9A9A"/></svg>Bewegung</span>
+    <span class="nurDi"><svg width="26" height="14" viewBox="0 0 26 14"><path d="M25,7 L14,0 L14,3.5 L1,3.5 L1,10.5 L14,10.5 L14,14z" fill="#E8822A" fill-opacity=".55" stroke="#C9661A"/></svg>Kraft auf die Platte</span>
+  </div>
+
+  <!-- Schritt für Schritt -->
+  <div class="nurS">
+    <div class="cap" id="cap"></div>
+    <div class="standbild" id="standbild" hidden>⏸ <b>Standbild:</b> Damit du genau hinschauen kannst, steht die Platte hier still.
+      In Wirklichkeit fließen Wirbelströme nur, <b>solange sich die Platte bewegt</b> – probier es unter
+      <a data-geh="dyn">„Selbst ausprobieren“</a> aus.</div>
+    <div id="bar">
+      <button id="prev" type="button">◀ zurück</button>
+      <div id="dots"></div>
+      <button id="next" type="button">weiter ▶</button>
+      <button id="reset" type="button" title="Von vorn">↺</button>
+    </div>
+  </div>
+
+  <!-- Selbst ausprobieren -->
+  <div class="nurD">
+    <div class="status"><span class="punkt" id="punkt"></span><span class="tx" id="status"></span>
+      <span class="meter">Wirbelströme<span class="rohr"><i id="meter"></i></span></span></div>
+    <div class="reihe">
+      <span class="gruppe">Ich bewege:
+        <span class="seg" id="segObj"><button type="button" data-v="platte" class="an">die Platte</button><button type="button" data-v="magnet">den Magneten</button></span></span>
+      <span class="gruppe">Platte:
+        <span class="seg" id="segPlatte"><button type="button" data-v="ganz" class="an">ganz</button><button type="button" data-v="schlitz">geschlitzt</button></span></span>
+    </div>
+    <div class="reihe">
+      <button class="knopf" id="stoss" type="button">Anstoßen ▶</button>
+      <label class="check"><input type="checkbox" id="zeigPfeile" checked> Bewegung der Elektronen als Pfeile</label>
+      <label class="check"><input type="checkbox" id="zeigKraft" checked> Kraft auf die Platte</label>
+      <button class="knopf grau" id="resetD" type="button" title="Zurücksetzen">↺ Neu</button>
+    </div>
+    <p class="fuss">Zieh die Platte (oder den Magneten) mit der Maus oder dem Finger nach links und rechts. Lässt du beim Ziehen los,
+      rutscht sie weiter. Die Simulation läuft in <b>Zeitlupe</b>: In Wirklichkeit klingen Wirbelströme in Sekundenbruchteilen ab.</p>
+  </div>
+</section>
+
+<section class="karte auftraege nurD">
+  <h2>Beobachte und erkläre</h2>
+  <details><summary><span class="nr">1</span><span>Schieb die Platte langsam ins Magnetfeld und halte sie dann fest. Wann bewegen sich die Elektronen?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Nur, <b>solange sich die Platte bewegt</b>. Dann ändert sich das Magnetfeld in einem Teil der Platte → es wird eine Spannung induziert → in der Platte fließen Ströme im Kreis.
+      Hältst du die Platte fest, ändert sich nichts mehr → keine Induktion → die Wirbelströme klingen ab und die Elektronen bleiben stehen –
+      auch wenn die Platte mitten im Magnetfeld steht.</div></details>
+  <details><summary><span class="nr">2</span><span>Bewege die Platte einmal langsam und einmal schnell. Was ändert sich?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Je schneller sich das Magnetfeld in der Platte ändert, desto größer ist die Induktionsspannung – und desto <b>stärker</b> sind die Wirbelströme (wie beim Induktionsgesetz in 2.2).</div></details>
+  <details><summary><span class="nr">3</span><span>Stell auf „den Magneten“ um und bewege jetzt den Magneten statt der Platte.</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Es passiert dasselbe: Entscheidend ist nur, dass sich <b>Platte und Magnet gegeneinander</b> bewegen. Der Kraftpfeil zeigt:
+      Die Platte wird vom bewegten Magneten ein Stück <b>mitgezogen</b> – auch das ist die Regel von Lenz (die Bewegung gegeneinander wird gebremst).</div></details>
+  <details><summary><span class="nr">4</span><span>Tippe auf „Anstoßen“ – einmal mit der ganzen und einmal mit der geschlitzten Platte. Vergleiche!</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl"><ol>
+      <li>Die Platte bewegt sich ins Magnetfeld → das Magnetfeld in der Platte ändert sich.</li>
+      <li>Es wird eine Induktionsspannung induziert.</li>
+      <li>Weil die Platte ein geschlossener Leiter ist, fließen Induktionsströme im Kreis: <b>Wirbelströme</b>.</li>
+      <li>Nach der Regel von Lenz wirken sie ihrer Ursache entgegen → die Platte wird <b>abgebremst</b> (Wirbelstrombremse).</li></ol>
+      Bei der <b>geschlitzten</b> Platte unterbrechen die Schlitze die großen Wirbel – wie beim offenen Ring in 2.3. Es fließen nur kleine Ströme,
+      die Platte wird kaum gebremst und rutscht durch.</div></details>
+  <details><summary><span class="nr">5</span><span>Für Profis: Wo genau entstehen die Wirbel? Schau dir dazu die Pfeile an.</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Am <b>Rand des Magnetfelds</b> – dort, wo ein Teil der Platte im Feld ist und ein Teil nicht. Steht das Magnetfeld mitten in der Platte
+      und du bewegst sie, entstehen <b>zwei</b> Wirbel mit entgegengesetztem Drehsinn: einer dort, wo die Platte ins Feld hineinkommt, und einer dort, wo sie es verlässt.</div></details>
+</section>
+</main>
+
+<script>
+// ================= Geometrie (Schrägbild) – wie in der Vorlage =================
+const CX = 440, CY = 300, K = 0.4;           // K: Verkürzung der Tiefe (z nach hinten = rechts oben)
+const P = (X, Y, Z) => [CX + X - K * Z, CY - Y + K * Z];
+const pts = a => a.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const $ = id => document.getElementById(id);
+
+const FX = 150, FY = 120;           // halbe Breite/Höhe der Polflächen
+const ZN0 = 110, ZN1 = 170, ZS0 = -110, ZS1 = -170;
+
+function box(g, x0, x1, y0, y1, zBack, zFront, cFront, cTop, cSide, stroke, opacity) {
+  const f = [P(x0,y0,zFront),P(x1,y0,zFront),P(x1,y1,zFront),P(x0,y1,zFront)];
+  const t = [P(x0,y1,zFront),P(x1,y1,zFront),P(x1,y1,zBack),P(x0,y1,zBack)];
+  const s = [P(x1,y0,zFront),P(x1,y0,zBack),P(x1,y1,zBack),P(x1,y1,zFront)];
+  const o = opacity ?? 1;
+  el("polygon",{points:pts(t),fill:cTop,"fill-opacity":o,stroke,"stroke-width":1.5,"stroke-linejoin":"round"},g);
+  el("polygon",{points:pts(s),fill:cSide,"fill-opacity":o,stroke,"stroke-width":1.5,"stroke-linejoin":"round"},g);
+  el("polygon",{points:pts(f),fill:cFront,"fill-opacity":o,stroke,"stroke-width":1.5,"stroke-linejoin":"round"},g);
+  return f;
+}
+(() => {  // Südpol (hinten)
+  const g = $("sPole");
+  box(g, -FX, FX, -FY, FY, ZS1, ZS0, "#3F8A4E", "#5FA86C", "#2F6E3C", "#2F6E3C");
+  const [x, y] = P(0, FY, (ZS0 + ZS1) / 2);
+  el("text",{x, y:y+11, "text-anchor":"middle","font-size":30,"font-weight":"bold",fill:"#fff"},g).textContent="S";
+})();
+(() => {  // Nordpol (vorne, durchscheinend)
+  const g = $("nPole");
+  box(g, -FX, FX, -FY, FY, ZN0, ZN1, "#D9363E", "#E86A70", "#B8262D", "#B8262D", 0.22);
+  const [x, y] = P(-FX + 32, -FY + 30, ZN1);
+  el("text",{x, y, "text-anchor":"middle","font-size":38,"font-weight":"bold",fill:"#C62A31"},g).textContent="N";
+})();
+(() => {  // Feldlinien von N nach S
+  const gb = $("linesBack"), gf = $("linesFront");
+  for (const X of [-120, -60, 0, 60, 120]) for (const Y of [-90, -30, 30, 90]) {
+    const st = {fill:"none",stroke:"#8FD86E","stroke-width":2.4,"stroke-linecap":"round","marker-mid":"url(#ah)"};
+    el("polyline",{...st, points:pts([P(X,Y,ZN0),P(X,Y,ZN0/2),P(X,Y,0)])},gf);
+    el("polyline",{...st, points:pts([P(X,Y,0),P(X,Y,ZS0/2),P(X,Y,ZS0)])},gb);
+  }
+})();
+let MX = 0;                          // Lage des Magneten (Mitte)
+function setMagnet(mx) {
+  MX = mx;
+  for (const id of ["sPole","linesBack","linesFront","nPole"]) $(id).setAttribute("transform", `translate(${mx.toFixed(1)},0)`);
+}
+
+// ================= Platte =================
+const HW = 180, HH = 130, TH = 7;
+const SLOTS = [-120, -60, 0, 60, 120], SW = 6, SY = 70;   // Schlitze von unten bis v = SY
+let slotted = false;
+const plateG = $("plate");
+const pTop = el("polygon",{fill:"#D5DAE1",stroke:"#9AA4B1","stroke-width":1.5,"stroke-linejoin":"round"},plateG);
+const pSide = el("polygon",{fill:"#C3C9D2",stroke:"#9AA4B1","stroke-width":1.5,"stroke-linejoin":"round"},plateG);
+const slotWalls = el("g",{},plateG);
+const pFront = el("polygon",{fill:"#E9ECF0",stroke:"#9AA4B1","stroke-width":1.5,"stroke-linejoin":"round"},plateG);
+const pField = el("polygon",{fill:"#8FD86E","fill-opacity":.18,"clip-path":"url(#pclip)"},plateG);
+const SLOT_W = SLOTS.map(() => el("polygon",{fill:"#C3C9D2",stroke:"#9AA4B1","stroke-width":1},slotWalls));
+function outline() {
+  const o = [[-HW,-HH]];
+  if (slotted) for (const s of SLOTS) o.push([s-SW,-HH],[s-SW,SY],[s+SW,SY],[s+SW,-HH]);
+  o.push([HW,-HH],[HW,HH],[-HW,HH]);
+  return o;
+}
+function drawPlate(px) {
+  const x0 = px - HW, x1 = px + HW;
+  const f = pts(outline().map(([u, v]) => P(px + u, v, TH)));
+  pFront.setAttribute("points", f);
+  $("pclipPoly").setAttribute("points", f);
+  pTop.setAttribute("points", pts([P(x0,HH,TH),P(x1,HH,TH),P(x1,HH,-TH),P(x0,HH,-TH)]));
+  pSide.setAttribute("points", pts([P(x1,-HH,TH),P(x1,-HH,-TH),P(x1,HH,-TH),P(x1,HH,TH)]));
+  SLOT_W.forEach((w, i) => {
+    const s = px + SLOTS[i] - SW;
+    w.setAttribute("points", slotted ? pts([P(s,-HH,TH),P(s,-HH,-TH),P(s,SY,-TH),P(s,SY,TH)]) : "");
+  });
+  const a = Math.max(MX - FX, x0), b = Math.min(MX + FX, x1);
+  pField.setAttribute("points", b > a ? pts([P(a,-FY,TH),P(b,-FY,TH),P(b,FY,TH),P(a,FY,TH)]) : "");
+}
+
+// Pfeil (Spitze bei xTip, dir = -1 nach links / +1 nach rechts)
+function arrowPts(xTip, dir, len, y, z, hw = 10, hh = 24, hl = 38) {
+  const s = -dir, a = xTip;
+  hl = Math.min(hl, len);
+  return [P(a,y,z),P(a+s*hl,y+hh,z),P(a+s*hl,y+hw,z),P(a+s*len,y+hw,z),P(a+s*len,y-hw,z),P(a+s*hl,y-hw,z),P(a+s*hl,y-hh,z)];
+}
+const mArrow = el("polygon",{fill:"#9A9A9A"},$("motion"));
+
+// ================= Schritt-Modus (Vorlage der Kollegin) =================
+(() => {  // Kraftpfeil (Schritt 2)
+  const g = $("force"), X = 45, w = 26;
+  el("polygon",{fill:"#E8822A","fill-opacity":.35,points:pts([
+    P(X-w,-95,TH),P(X+w,-95,TH),P(X+w,40,TH),P(X+2*w,40,TH),P(X,100,TH),P(X-2*w,40,TH),P(X-w,40,TH)])},g);
+})();
+const WC = 150;
+(() => {  // Wirbel-Pfeil (Schritt 4)
+  const g = $("wirbel"), hx = 115, hy = 100, n = 120, ring = [];
+  for (let i = 0; i <= n; i++) {
+    const t = -i / n * 2 * Math.PI, c = Math.cos(t), s = Math.sin(t);
+    ring.push(P(WC + hx * Math.sign(c) * Math.abs(c) ** 0.6, hy * Math.sign(s) * Math.abs(s) ** 0.6, TH));
+  }
+  el("polyline",{points:pts(ring),fill:"none",stroke:"#E8822A","stroke-width":14,"stroke-opacity":.4,"stroke-linejoin":"round"},g);
+  const head = (X, Y, dir) => el("polygon",{fill:"#E8822A","fill-opacity":.75,points:pts([P(X-22,Y-dir*14,TH),P(X+22,Y-dir*14,TH),P(X,Y+dir*22,TH)])},g);
+  head(WC - hx, 8, 1);
+  head(WC + hx, -8, -1);
+  el("polygon",{fill:"#E8822A","fill-opacity":.75,points:pts([P(WC-8,hy+22,TH),P(WC-8,hy-22,TH),P(WC+18,hy,TH)])},g);
+  el("polygon",{fill:"#E8822A","fill-opacity":.75,points:pts([P(WC+8,-hy+22,TH),P(WC+8,-hy-22,TH),P(WC-18,-hy,TH)])},g);
+})();
+
+function elektron(parent) {
+  const g = el("g", {}, parent);
+  el("circle", {r: 8.5, fill: "#1F5FBF", stroke: "#fff", "stroke-width": 1.2}, g);
+  el("line", {x1: -4, x2: 4, y1: 0, y2: 0, stroke: "#fff", "stroke-width": 2, "stroke-linecap": "round"}, g);
+  return g;
+}
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const X_START = 690, X_STOP = 120;
+const E = [];
+for (let i = 0; i < 10; i++) for (let j = 0; j < 7; j++)
+  E.push({u: -162 + 36 * i + (rnd() - .5) * 12, v: -111 + 37 * j + (rnd() - .5) * 12});
+E.forEach(e => e.node = elektron($("electrons")));
+const U_EDGE = FX - X_STOP;
+E.forEach(e => e.inField0 = e.u < U_EDGE);
+
+const SIM = {R: 46, K: 55, FL: 34, WALL: 9, KW: 40, VMAX: 55, DT: 1 / 60};
+let S = [], simT3 = 0;
+function simReset() { S = E.map(e => ({x: e.u, y: e.v})); simT3 = 0; }
+function smooth(x) { return x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x); }
+const FLOW_A = 3600;
+function flow(x, y) {
+  let sv, sd;
+  if (x < U_EDGE) { const k = Math.PI / 2 / (U_EDGE + HW); sv = Math.sin(k * (x + HW)); sd = k * Math.cos(k * (x + HW)); }
+  else { const k = Math.PI / 2 / (HW - U_EDGE); sv = Math.cos(k * (x - U_EDGE)); sd = -k * Math.sin(k * (x - U_EDGE)); }
+  const m = Math.PI / (2 * HH), cv = Math.cos(m * y), cd = -m * Math.sin(m * y);
+  return [-FLOW_A * sv * cd, FLOW_A * sd * cv];
+}
+const PHI0 = 0.92 * Math.PI, T_FRONT = 3.6, T_RAMP = 0.9;
+function gate(p) {
+  const phi = Math.atan2(p.y, p.x - U_EDGE);
+  let a = PHI0 - phi; a = ((a % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  return smooth((simT3 - a / (2 * Math.PI) * T_FRONT) / T_RAMP);
+}
+function simStep(mode) {
+  const {R, K, FL, WALL, KW, VMAX, DT} = SIM, n = S.length, F = [];
+  const K3 = 22;
+  for (let i = 0; i < n; i++) {
+    const p = S[i];
+    let fx = 0, fy = 0;
+    if (mode === 2 && !E[i].inField0) { F.push([0, 0]); continue; }
+    if (mode === 2) fy += FL * smooth((U_EDGE + 6 - p.x) / 12);
+    const kk = mode === 2 ? K : K3;
+    for (let j = 0; j < n; j++) {
+      if (j === i) continue;
+      const dx = p.x - S[j].x, dy = p.y - S[j].y, d = Math.hypot(dx, dy);
+      if (d < R && d > 0.01) { const f = kk * (1 - d / R); fx += f * dx / d; fy += f * dy / d; }
+    }
+    const L = -HW + WALL, Rt = (mode === 2 ? U_EDGE - 4 : HW - WALL), B = -HH + WALL, T = HH - WALL;
+    if (p.x < L) fx += KW * (L - p.x);
+    if (p.x > Rt) fx -= KW * (p.x - Rt);
+    if (p.y < B) fy += KW * (B - p.y);
+    if (p.y > T) fy -= KW * (p.y - T);
+    if (mode === 3) { const g = gate(p), [ux, uy] = flow(p.x, p.y); fx = g * (fx + ux); fy = g * (fy + uy); }
+    F.push([fx, fy]);
+  }
+  if (mode === 3) simT3 += DT;
+  for (let i = 0; i < n; i++) {
+    let [vx, vy] = F[i];
+    const v = Math.hypot(vx, vy);
+    if (v > VMAX) { vx *= VMAX / v; vy *= VMAX / v; }
+    S[i].x += vx * DT; S[i].y += vy * DT;
+    S[i].x = Math.max(-HW + 4, Math.min(HW - 4, S[i].x));
+    S[i].y = Math.max(-HH + 4, Math.min(HH - 4, S[i].y));
+  }
+}
+const T2 = 3.5, T3 = 8;
+function simJump(st) {
+  simReset();
+  if (st >= 2) for (let k = 0; k < T2 / SIM.DT; k++) simStep(2);
+  if (st >= 3) for (let k = 0; k < T3 / SIM.DT; k++) simStep(3);
+}
+const STEPS = 5;
+const CAPS = [
+  "<b>Ausgangslage:</b> Eine Metallplatte (z. B. aus Aluminium) liegt neben einem Magnetfeld. In der Platte gibt es viele frei bewegliche Elektronen.",
+  "<b>Bewegung:</b> Die Platte wird in das Magnetfeld hineingeschoben. In dem Teil der Platte, der ins Feld kommt, ändert sich das Magnetfeld.",
+  "<b>Ablenkung:</b> Die Elektronen bewegen sich mit der Platte durch das Magnetfeld. Dabei werden sie abgelenkt – hier nach oben.",
+  "<b>Kreislauf:</b> Oben drängen sich die Elektronen und weichen außen herum aus. Sie strömen im Kreis – die Platte ist ein geschlossener Leiter.",
+  "<b>Wirbelstrom:</b> Diese kreisförmigen Induktionsströme heißen Wirbelströme. Nach der Regel von Lenz wirken sie ihrer Ursache entgegen: Sie bremsen die Platte."
+];
+let step = 0, t0 = performance.now(), acc = 0, animate = true;
+const ease = t => t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 3);
+const easeIO = t => t < 0 ? 0 : t > 1 ? 1 : t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+
+function frameStep(now, dtF) {
+  const dt = animate ? (now - t0) / 1000 : 99;
+  let px = step === 0 ? X_START : X_STOP;
+  if (step === 1) px = X_START + (X_STOP - X_START) * easeIO(dt / 2.6);
+  drawPlate(px);
+  mArrow.setAttribute("points", pts(arrowPts(px - 10, -1, 200, -172, 0)));
+  $("motion").setAttribute("opacity", step === 0 ? 0 : step === 1 ? 0.9 : 0.35);
+  $("force").setAttribute("opacity", step === 2 ? 0.35 + 0.65 * ease(dt / 0.6) : 0);
+  $("wirbel").setAttribute("opacity", step === 4 ? ease(dt / 0.8) : 0);
+  acc += dtF;
+  while (acc >= SIM.DT) {
+    acc -= SIM.DT;
+    if (step === 2 && dt > 0.5) simStep(2);
+    else if (step >= 3) simStep(3);
+  }
+  E.forEach((e, i) => {
+    const X = step <= 1 ? px + e.u : X_STOP + S[i].x;
+    const Y = step <= 1 ? e.v : S[i].y;
+    const [sx, sy] = P(X, Y, TH);
+    e.node.setAttribute("transform", `translate(${sx.toFixed(1)},${sy.toFixed(1)})`);
+  });
+}
+const dots = $("dots");
+for (let i = 0; i < STEPS; i++) dots.appendChild(Object.assign(document.createElement("div"), {className: "dot"}));
+function uiStep() {
+  [...dots.children].forEach((d, i) => d.classList.toggle("on", i === step));
+  $("prev").disabled = step === 0;
+  $("next").disabled = step === STEPS - 1;
+  $("cap").innerHTML = CAPS[step];
+  $("standbild").hidden = step < 2;
+}
+function go(n, anim) {
+  if (n < 0 || n >= STEPS) return;
+  step = n; animate = anim; t0 = performance.now();
+  if (!anim) simJump(n);
+  else if (n === 2) simReset();
+  uiStep();
+}
+const next = () => go(step + 1, true), prev = () => go(step - 1, false);
+$("next").onclick = e => { e.stopPropagation(); next(); };
+$("prev").onclick = e => { e.stopPropagation(); prev(); };
+$("reset").onclick = e => { e.stopPropagation(); go(0, false); };
+
+// ================= Dynamischer Modus =================
+// Rechnung: dünne Platte, j = σ(E + v×B). Mit der Stromfunktion ψ (j = (∂ψ/∂v, −∂ψ/∂u), ψ = 0 am Rand
+// und an den Schlitzen) gilt ∇²ψ = −w·∂B/∂u (w: Geschwindigkeit der Platte relativ zum Magneten).
+// Die gezeigten Ströme folgen dem berechneten Wert verzögert (Zeitlupe) und klingen ohne Bewegung ab.
+const H = 10, NU = 2 * HW / H + 1, NV = 2 * HH / H + 1, NN = NU * NV;
+const EDGE = 24;                                  // weicher Feldrand
+const psi1 = new Float32Array(NN), psiD = new Float32Array(NN), Bn = new Float32Array(NN), Src = new Float32Array(NN);
+const JX = new Float32Array(NN), JY = new Float32Array(NN);
+const inner = new Uint8Array(NN);
+const uOf = i => -HW + i * H, vOf = j => -HH + j * H;
+function soft(x) { return smooth(x / EDGE + 0.5); }
+function Bfeld(s, v) { return soft(FX - Math.abs(s)) * soft(FY - Math.abs(v)); }
+function buildMask() {
+  for (let j = 0; j < NV; j++) for (let i = 0; i < NU; i++) {
+    const k = i + j * NU, u = uOf(i), v = vOf(j);
+    let ok = i > 0 && j > 0 && i < NU - 1 && j < NV - 1;
+    if (ok && slotted) for (const s of SLOTS) if (Math.abs(u - s) <= SW && v <= SY) ok = false;
+    inner[k] = ok ? 1 : 0;
+    if (!ok) { psi1[k] = 0; psiD[k] = 0; }
+  }
+}
+function setSource(c) {
+  for (let j = 0; j < NV; j++) for (let i = 0; i < NU; i++) Bn[i + j * NU] = Bfeld(uOf(i) - c, vOf(j));
+  for (let j = 0; j < NV; j++) for (let i = 0; i < NU; i++) {
+    const k = i + j * NU, u = uOf(i), v = vOf(j);
+    Src[k] = -(Bfeld(u + H - c, v) - Bfeld(u - H - c, v)) / (2 * H);
+  }
+}
+function solve(iter) {
+  const w = 1.85, h2 = H * H;
+  for (let it = 0; it < iter; it++)
+    for (let j = 1; j < NV - 1; j++) for (let i = 1; i < NU - 1; i++) {
+      const k = i + j * NU;
+      if (!inner[k]) continue;
+      psi1[k] += w * (0.25 * (psi1[k-1] + psi1[k+1] + psi1[k-NU] + psi1[k+NU] - h2 * Src[k]) - psi1[k]);
+    }
+}
+function gamma() {            // Bremsstärke: F = −γ·w
+  let g = 0;
+  for (let j = 1; j < NV - 1; j++) for (let i = 1; i < NU - 1; i++) {
+    const k = i + j * NU;
+    g += Bn[k] * (-(psi1[k+1] - psi1[k-1]) / (2 * H));
+  }
+  return g * H * H;
+}
+function stromfeld(src) {     // j aus ψ (an Rändern einseitig)
+  for (let j = 0; j < NV; j++) for (let i = 0; i < NU; i++) {
+    const k = i + j * NU;
+    const iL = Math.max(0, i - 1), iR = Math.min(NU - 1, i + 1), jD = Math.max(0, j - 1), jU = Math.min(NV - 1, j + 1);
+    JX[k] = (src[i + jU * NU] - src[i + jD * NU]) / ((jU - jD) * H);
+    JY[k] = -(src[iR + j * NU] - src[iL + j * NU]) / ((iR - iL) * H);
+  }
+}
+function sample(A, u, v) {
+  let fi = (u + HW) / H, fj = (v + HH) / H;
+  fi = Math.max(0, Math.min(NU - 1.001, fi)); fj = Math.max(0, Math.min(NV - 1.001, fj));
+  const i = fi | 0, j = fj | 0, a = fi - i, b = fj - j, k = i + j * NU;
+  return (A[k] * (1 - a) + A[k + 1] * a) * (1 - b) + (A[k + NU] * (1 - a) + A[k + NU + 1] * a) * b;
+}
+
+// Kalibrierung: Bremsstärke und Stromstärke, wenn das Feld mitten in der ganzen Platte steht
+let GREF = 1, JREF = 1;
+(() => {
+  slotted = false; buildMask(); setSource(0); psi1.fill(0); solve(1500);
+  GREF = gamma(); stromfeld(psi1);
+  let m = 0; for (let k = 0; k < NN; k++) m = Math.max(m, Math.hypot(JX[k], JY[k]));
+  JREF = m; psi1.fill(0);
+})();
+
+const WREF = 450;             // „typische“ Zieh-Geschwindigkeit (Einheiten/s)
+const KE = 110 / (JREF * WREF); // Elektronen-Driftgeschwindigkeit pro Stromdichte
+const TAU_B = 0.32, TAU_F = 3.0, TAU_AUF = 0.12, TAU_AB = 0.65;
+const PLATE_MIN = -250, PLATE_MAX = 665, MAG_MIN = -205, MAG_MAX = 625;
+const D = {px: 640, mx: 210, obj: "platte", v: 0, drag: false, w: 0, rel: 0, vDrag: 0, lastPos: 0,
+           moving: false, gam: 0, level: 0, hint: true, startX: 0, startPos: 0};
+const ED = [];                // Elektronen (Plattenkoordinaten)
+const eDG = $("electronsD");
+function imSchlitz(u, v) { if (!slotted) return null; for (const s of SLOTS) if (Math.abs(u - s) < SW + 6 && v < SY + 6) return s; return null; }
+function initElektronen() {
+  eDG.textContent = ""; ED.length = 0; seed = 11;
+  for (let i = 0; i < 11; i++) for (let j = 0; j < 8; j++) {
+    const u = -165 + 33 * i + (rnd() - .5) * 8, v = -115.5 + 33 * j + (rnd() - .5) * 8;
+    if (imSchlitz(u, v) !== null) continue;
+    ED.push({u, v, node: elektron(eDG)});
+  }
+  for (let k = 0; k < 250; k++) bewegeElektronen(1 / 60, false);
+}
+function bewegeElektronen(dt, mitStrom) {
+  const n = ED.length, R = 29, KR = 30, VM = 170;
+  const vel = [];
+  for (let a = 0; a < n; a++) {
+    const p = ED[a];
+    let vx = 0, vy = 0;
+    if (mitStrom) { vx = -KE * sample(JX, p.u, p.v); vy = -KE * sample(JY, p.u, p.v); }
+    for (let b = 0; b < n; b++) {
+      if (b === a) continue;
+      const dx = p.u - ED[b].u, dy = p.v - ED[b].v;
+      if (Math.abs(dx) > R || Math.abs(dy) > R) continue;
+      const d = Math.hypot(dx, dy);
+      if (d < R && d > 0.01) { const f = KR * (1 - d / R); vx += f * dx / d; vy += f * dy / d; }
+    }
+    const m = Math.hypot(vx, vy);
+    if (m > VM) { vx *= VM / m; vy *= VM / m; }
+    vel.push([vx, vy]);
+  }
+  for (let a = 0; a < n; a++) {
+    const p = ED[a];
+    p.u = Math.max(-HW + 9, Math.min(HW - 9, p.u + vel[a][0] * dt));
+    p.v = Math.max(-HH + 9, Math.min(HH - 9, p.v + vel[a][1] * dt));
+    const s = imSchlitz(p.u, p.v);
+    if (s !== null) p.u = p.u < s ? s - SW - 6 : s + SW + 6;
+  }
+}
+
+// Pfeile für die Bewegung der Elektronen
+const PF = [];
+for (let a = 0; a < 8; a++) for (let b = 0; b < 6; b++) {
+  const u = -157.5 + 45 * a, v = -112.5 + 45 * b;
+  PF.push({u, v, node: el("line", {stroke: "#E8822A", "stroke-width": 4.5, "stroke-linecap": "round", "marker-end": "url(#ahO)", opacity: 0}, $("pfeile"))});
+}
+const kraftPoly = el("polygon", {fill: "#E8822A", "fill-opacity": .62, stroke: "#B9560F", "stroke-width": 1.5, "stroke-linejoin": "round"}, $("kraftD"));
+const hintT = el("text", {"text-anchor": "middle", "font-size": 24, "font-weight": "bold", fill: "#0E7490"}, $("hint"));
+
+function pos() { return D.obj === "platte" ? D.px : D.mx; }
+function setPos(x) {
+  if (D.obj === "platte") D.px = Math.max(PLATE_MIN, Math.min(PLATE_MAX, x));
+  else D.mx = Math.max(MAG_MIN, Math.min(MAG_MAX, x));
+}
+function dynReset() {
+  D.px = 640; D.mx = 210; D.v = 0; D.w = 0; D.drag = false; D.level = 0; D.vDrag = 0;
+  D.rel = D.px - D.mx; D.lastPos = pos(); D.hint = true;
+  buildMask(); psi1.fill(0); psiD.fill(0); setSource(D.mx - D.px); solve(400);
+  initElektronen();
+}
+function frameDyn(dt) {
+  // Bewegung des losgelassenen Gegenstands (gebremst durch die Wirbelströme)
+  if (!D.drag && D.v !== 0) {
+    const g = Math.max(0, D.gam / GREF);
+    D.v /= 1 + dt * (g / TAU_B + 1 / TAU_F);
+    if (Math.abs(D.v) < 4) D.v = 0;
+    const alt = pos(); setPos(alt + D.v * dt);
+    if (pos() === alt && D.v !== 0) D.v = 0;          // am Rand angekommen
+  }
+  const p = pos();
+  if (D.drag) D.vDrag += ((p - D.lastPos) / dt - D.vDrag) * (1 - Math.exp(-dt / 0.06));
+  D.lastPos = p;
+  setMagnet(D.mx);
+  const rel = D.px - D.mx, wRoh = (rel - D.rel) / dt; D.rel = rel;
+  D.w += (wRoh - D.w) * (1 - Math.exp(-dt / 0.05));
+  if (Math.abs(D.w) < 0.5) D.w = 0;
+  const c = D.mx - D.px;
+  setSource(c); solve(36); D.gam = gamma();
+  // gezeigte Ströme folgen verzögert
+  let sT = 0, sD = 0;
+  for (let k = 0; k < NN; k++) { sT += Math.abs(D.w * psi1[k]); sD += Math.abs(psiD[k]); }
+  const f = 1 - Math.exp(-dt / (sT > sD ? TAU_AUF : TAU_AB));
+  for (let k = 0; k < NN; k++) psiD[k] += (D.w * psi1[k] - psiD[k]) * f;
+  stromfeld(psiD);
+  let jm = 0; for (let k = 0; k < NN; k++) { const m = JX[k] * JX[k] + JY[k] * JY[k]; if (m > jm) jm = m; }
+  D.level = Math.sqrt(jm) / (JREF * WREF);
+  if (D.level < 0.004) { psiD.fill(0); JX.fill(0); JY.fill(0); D.level = 0; }
+  bewegeElektronen(dt, D.level > 0);
+  zeichneDyn();
+}
+function zeichneDyn() {
+  const px = D.px;
+  drawPlate(px);
+  ED.forEach(e => { const [sx, sy] = P(px + e.u, e.v, TH); e.node.setAttribute("transform", `translate(${sx.toFixed(1)},${sy.toFixed(1)})`); });
+  // Pfeile
+  const zeig = $("zeigPfeile").checked, JA = 0.55 * JREF * WREF;
+  PF.forEach(a => {
+    let o = 0;
+    if (zeig && imSchlitz(a.u, a.v) === null && D.level > 0) {
+      const ex = -sample(JX, a.u, a.v), ey = -sample(JY, a.u, a.v), m = Math.hypot(ex, ey), r = Math.min(1, m / JA);
+      if (r > 0.06) {
+        const L = 12 + 22 * r, dx = ex / m * L, dy = ey / m * L;
+        const [x1, y1] = P(px + a.u - dx / 2, a.v - dy / 2, TH), [x2, y2] = P(px + a.u + dx / 2, a.v + dy / 2, TH);
+        a.node.setAttribute("x1", x1.toFixed(1)); a.node.setAttribute("y1", y1.toFixed(1));
+        a.node.setAttribute("x2", x2.toFixed(1)); a.node.setAttribute("y2", y2.toFixed(1));
+        o = Math.min(0.9, 0.25 + r);
+      }
+    }
+    a.node.setAttribute("opacity", o.toFixed(2));
+  });
+  // Kraft auf die Platte: F = −γ·w
+  const F = -D.gam * D.w / (GREF * WREF);
+  const L = Math.min(210, 150 * Math.abs(F));
+  if ($("zeigKraft").checked && L > 12) {
+    const dir = Math.sign(F);
+    kraftPoly.setAttribute("points", pts(arrowPts(px + dir * L / 2, dir, L, 0, TH, 13, 30, 42)));
+  } else kraftPoly.setAttribute("points", "");
+  // Bewegungspfeil unter dem bewegten Gegenstand
+  const vo = D.drag ? D.vDrag : D.v, lv = Math.min(200, Math.abs(vo) * 0.3);
+  if (lv > 15) {
+    const dir = Math.sign(vo), xc = pos();
+    mArrow.setAttribute("points", pts(arrowPts(xc + dir * lv / 2, dir, lv, -185, 0)));
+    $("motion").setAttribute("opacity", 0.8);
+  } else $("motion").setAttribute("opacity", 0);
+  // Hinweis
+  if (D.hint) {
+    const [hx, hy] = P(pos(), HH + 26, D.obj === "platte" ? 0 : -140);
+    hintT.setAttribute("x", hx); hintT.setAttribute("y", hy);
+    hintT.textContent = D.obj === "platte" ? "⟵ Platte ziehen ⟶" : "⟵ Magnet ziehen ⟶";
+  } else hintT.textContent = "";
+  // Status
+  const ueber = Math.abs(D.mx - D.px) < FX + HW - 6;
+  if (Math.abs(D.w) > 30) D.moving = true; else if (Math.abs(D.w) < 12) D.moving = false;
+  let t, farbe;
+  if (D.moving && ueber) { t = "<b>Bewegung im Magnetfeld:</b> Das Magnetfeld in der Platte ändert sich → Wirbelströme werden induziert."; farbe = "#E8822A"; }
+  else if (D.moving) { t = "<b>Bewegung außerhalb des Magnetfelds:</b> Das Magnetfeld in der Platte ändert sich nicht → keine Wirbelströme."; farbe = "#b8c0c6"; }
+  else if (D.level > 0.02) { t = "<b>Keine Bewegung mehr:</b> Das Magnetfeld ändert sich nicht mehr → die Wirbelströme klingen ab."; farbe = "#F4B67E"; }
+  else if (ueber) { t = "<b>Ruhe:</b> Die Platte steht im Magnetfeld, aber nichts ändert sich → kein Strom, die Elektronen bleiben stehen."; farbe = "#b8c0c6"; }
+  else { t = "<b>Ruhe:</b> Die Elektronen bewegen sich nicht. Zieh die " + (D.obj === "platte" ? "Platte" : "den Magneten") + " – oder tippe auf „Anstoßen“!"; farbe = "#b8c0c6"; }
+  if ($("status").innerHTML !== t) $("status").innerHTML = t;
+  $("punkt").style.background = farbe;
+  $("meter").style.width = Math.min(100, D.level * 100).toFixed(0) + "%";
+}
+
+// Ziehen
+const svg = $("svg");
+function svgX(e) { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()).x; }
+svg.addEventListener("pointerdown", e => {
+  if (mode !== "dyn") return;
+  e.preventDefault();
+  try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+  D.drag = true; D.v = 0; D.vDrag = 0; D.hint = false; D.startX = svgX(e); D.startPos = pos(); D.lastPos = pos();
+  document.body.classList.add("zieht");
+});
+svg.addEventListener("pointermove", e => { if (D.drag) setPos(D.startPos + svgX(e) - D.startX); });
+function loslassen() {
+  if (!D.drag) return;
+  D.drag = false; document.body.classList.remove("zieht");
+  D.v = Math.abs(D.vDrag) > 60 ? Math.max(-1400, Math.min(1400, D.vDrag)) : 0;
+}
+svg.addEventListener("pointerup", loslassen);
+svg.addEventListener("pointercancel", loslassen);
+svg.addEventListener("lostpointercapture", loslassen);
+$("stage").addEventListener("click", () => { if (mode === "schritt") next(); });
+
+function anstossen() {
+  D.hint = false;
+  if (D.obj === "platte") { const d = D.mx - D.px; D.v = (Math.abs(d) < 40 ? -1 : Math.sign(d)) * 950; }
+  else { const d = D.px - D.mx; D.v = (Math.abs(d) < 40 ? -1 : Math.sign(d)) * 950; }
+}
+$("stoss").onclick = anstossen;
+$("resetD").onclick = () => { const o = D.obj; dynReset(); D.obj = o; D.lastPos = pos(); };
+function seg(id, fn) {
+  $(id).querySelectorAll("button").forEach(b => b.onclick = () => {
+    $(id).querySelectorAll("button").forEach(x => x.classList.toggle("an", x === b)); fn(b.dataset.v);
+  });
+}
+seg("segObj", v => { D.obj = v === "magnet" ? "magnet" : "platte"; D.v = 0; D.lastPos = pos(); D.hint = true; });
+seg("segPlatte", v => { slotted = v === "schlitz"; buildMask(); psiD.fill(0); setSource(D.mx - D.px); solve(400); initElektronen(); });
+
+// ================= Moduswechsel, Tasten, Vollbild =================
+let mode = "schritt";
+function setMode(m) {
+  mode = m;
+  document.body.classList.toggle("dyn", m === "dyn");
+  document.querySelectorAll(".modi button").forEach(b => b.classList.toggle("an", b.dataset.m === m));
+  const s = m === "schritt";
+  $("electrons").style.display = s ? "" : "none";
+  for (const id of ["electronsD", "pfeile", "kraftD", "hint"]) $(id).style.display = s ? "none" : "";
+  $("force").setAttribute("opacity", 0); $("wirbel").setAttribute("opacity", 0); $("motion").setAttribute("opacity", 0);
+  if (s) {
+    if (slotted) { slotted = false; }
+    setMagnet(0); go(0, false);
+  } else {
+    slotted = $("segPlatte").querySelector(".an").dataset.v === "schlitz";
+    dynReset();
+    D.obj = $("segObj").querySelector(".an").dataset.v === "magnet" ? "magnet" : "platte"; D.lastPos = pos();
+  }
+}
+document.querySelectorAll(".modi button").forEach(b => b.onclick = () => { if (b.dataset.m !== mode) setMode(b.dataset.m); });
+document.querySelectorAll("[data-geh]").forEach(a => a.onclick = e => { e.preventDefault(); setMode(a.dataset.geh); });
+document.addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("summary,input,button")) { if (e.key !== "f" && e.key !== "F") return; }
+  if (mode === "schritt") {
+    if (["ArrowRight","PageDown"," ","Enter"].includes(e.key)) { e.preventDefault(); next(); }
+    if (["ArrowLeft","PageUp","Backspace"].includes(e.key)) { e.preventDefault(); prev(); }
+  } else {
+    if (e.key === "ArrowLeft") { e.preventDefault(); D.hint = false; D.v = -700; }
+    if (e.key === "ArrowRight") { e.preventDefault(); D.hint = false; D.v = 700; }
+    if (e.key === " ") { e.preventDefault(); anstossen(); }
+  }
+  if (e.key === "f" || e.key === "F") toggleFS();
+});
+function toggleFS() {
+  try { document.fullscreenElement ? document.exitFullscreen() : $("karte").requestFullscreen(); } catch (_) {}
+}
+$("fs").onclick = e => { e.stopPropagation(); toggleFS(); };
+
+let last = performance.now();
+function loop(now) {
+  const dtF = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
+  if (mode === "schritt") frameStep(now, dtF); else frameDyn(dtF);
+  requestAnimationFrame(loop);
+}
+setMode("schritt");
+requestAnimationFrame(loop);
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
