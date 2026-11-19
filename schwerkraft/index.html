@@ -77,6 +77,14 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .knopf.huepfen{background:linear-gradient(135deg,#3B8FD0,#2F5FB3);color:#fff;border:0}
 .knopf.werfen{background:linear-gradient(135deg,#F47B3E,#E0457B);color:#fff;border:0}
 .knopf:active,.knopf.druck{transform:scale(.97);filter:brightness(1.06)}
+.aktionen{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.aktionen .knopf{font-size:15.5px;min-height:52px;color:#fff;border:0;padding:6px 8px;line-height:1.15;text-align:center}
+.aktionen .knopf svg{width:22px;height:22px}
+.knopf.waage{background:linear-gradient(135deg,#2FA866,#178A78)}
+.knopf.waage.an{box-shadow:0 0 0 3px #FFD23F inset,var(--schatten)}
+.knopf.fall{background:linear-gradient(135deg,#8E3BA6,#5B3FC4)}
+.knopf.brett{background:linear-gradient(135deg,#15A0A2,#0F6E8C)}
+@media (max-width:420px){.aktionen .knopf{font-size:14px;gap:5px}.aktionen .knopf svg{width:19px;height:19px}}
 .winkel{display:flex;align-items:center;gap:12px;margin-top:10px;background:var(--karte);border:1px solid var(--linie);border-radius:16px;padding:8px 14px}
 .winkel label{font-weight:700;font-size:15px;white-space:nowrap}
 .winkel input{flex:1;accent-color:#E0457B;height:30px}
@@ -119,7 +127,7 @@ details[open] summary{color:var(--blau-text)}
 <header class="kopf">
   <div class="ober" id="ober">Physik 8b · Gewichtskraft</div>
   <h1>Schwerkraft-Labor</h1>
-  <p>Wie hüpft, läuft und wirft ein Astronaut auf dem Mond, dem Mars oder sogar auf der Sonne? Probier es aus und vergleiche!</p>
+  <p>Wie hüpft, wirft und rollt ein Astronaut auf dem Mond, dem Mars oder sogar auf der Sonne – und was zeigt dort seine Waage? Probier es aus und vergleiche!</p>
 </header>
 
 <div class="buehne" id="buehne">
@@ -135,13 +143,18 @@ details[open] summary{color:var(--blau-text)}
   <button class="knopf werfen" id="bWurf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19c4-9 10-12 17-11" stroke-dasharray="2.5 3"/><circle cx="19" cy="8" r="3" fill="currentColor"/></svg>Werfen</button>
   <button class="knopf" id="bRechts" aria-label="Nach rechts laufen (gedrückt halten)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
 </div>
+<div class="aktionen">
+  <button class="knopf waage" id="bWaage" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M9 17h6M8 11a4 4 0 0 1 8 0"/><path d="M12 11l2-2"/></svg>Waage</button>
+  <button class="knopf fall" id="bFall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v9M4 3h6M7 15v2M7 20v1"/><path d="M17 3c-3 3-3 6 0 9 3-3 3-6 0-9zM17 12v3M17 18v1"/></svg>Hammer &amp; Feder</button>
+  <button class="knopf brett" id="bBrett"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h18"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M11 10h9M14 7l3 3-3 3"/></svg>Rollbrett</button>
+</div>
 <div class="winkel"><label for="win">Wurfwinkel</label><input type="range" id="win" min="10" max="80" step="5" value="45"><output id="winOut">45°</output></div>
 <div class="schalter">
     <button id="bPfeil" class="an" title="Gewichtskraft-Pfeil zeigen" aria-label="Gewichtskraft-Pfeil zeigen" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v16M6 13l6 6 6-6"/></svg>Kraftpfeil</button>
     <button id="bLupe" title="Zeitlupe" aria-label="Zeitlupe" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>Zeitlupe</button>
     <button id="bWeg" title="Spuren löschen" aria-label="Spuren löschen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Spuren löschen</button>
   </div>
-<p class="tasten">Am PC: ← → laufen · Leertaste hüpfen · W werfen</p>
+<p class="tasten">Am PC: ← → laufen · Leertaste hüpfen · W werfen · G Waage · F fallen lassen · R Rollbrett</p>
 
 <section class="karte" aria-live="polite">
   <div class="info">
@@ -151,6 +164,7 @@ details[open] summary{color:var(--blau-text)}
       <div class="g" id="infoG"></div>
       <div class="formel" id="infoFormel"></div>
       <p id="infoText"></p>
+      <p id="infoLuft" style="font-weight:600"></p>
     </div>
   </div>
 </section>
@@ -158,16 +172,16 @@ details[open] summary{color:var(--blau-text)}
 <section class="karte">
   <div class="zeile"><h2>Deine Messwerte</h2><button class="klein" id="bTabWeg">Tabelle leeren</button></div>
   <div class="tabelle"><table>
-    <thead><tr><th>Himmelskörper</th><th>g in N/kg</th><th>Sprunghöhe</th><th>Zeit in der Luft</th><th>Wurfweite</th></tr></thead>
+    <thead><tr><th>Himmelskörper</th><th>g in N/kg</th><th>Waage</th><th>Sprunghöhe</th><th>Wurfweite</th><th>Fallzeit Hammer / Feder</th><th>Ausrollweg</th></tr></thead>
     <tbody id="tab"></tbody>
   </table></div>
-  <p class="hinweis" style="margin-top:8px">Hüpfe und wirf auf verschiedenen Himmelskörpern – die Werte erscheinen hier.</p>
+  <p class="hinweis" style="margin-top:8px">Hüpfe, wirf, stell dich auf die Waage, lass Hammer und Feder fallen oder fahr Rollbrett – auf verschiedenen Himmelskörpern. Die Werte erscheinen hier.</p>
 </section>
 
 <section class="karte">
   <h2>Beobachten und erklären</h2>
   <details><summary><span class="nr">1</span>Vergleiche die Sprunghöhe auf der Erde und auf dem Mond. Was fällt dir auf?</summary>
-    <p>Auf dem Mond springt der Astronaut etwa 6-mal so hoch (1,78 m statt 29 cm). Der Ortsfaktor ist dort etwa 6-mal kleiner. Die Gewichtskraft zieht ihn also viel schwächer zurück nach unten – er wird langsamer abgebremst und kommt höher.</p></details>
+    <p>Auf dem Mond springt der Astronaut etwa 6-mal so hoch (2,42 m statt 40 cm). Der Ortsfaktor ist dort etwa 6-mal kleiner. Die Gewichtskraft zieht ihn also viel schwächer zurück nach unten – er wird langsamer abgebremst und kommt höher.</p></details>
   <details><summary><span class="nr">2</span>Hat der Astronaut auf dem Mond weniger Masse?</summary>
     <p>Nein! Seine Masse ist überall gleich: 100 kg. Sie gibt an, wie schwer und wie träge ein Körper ist – und das hängt nicht vom Ort ab. Was sich ändert, ist die Gewichtskraft F<sub>G</sub> = m · g, weil der Ortsfaktor g überall anders ist.</p></details>
   <details><summary><span class="nr">3</span>Berechne die Gewichtskraft des Astronauten auf dem Mars.</summary>
@@ -176,11 +190,19 @@ details[open] summary{color:var(--blau-text)}
     <p>Der Ball wird überall gleich schnell abgeworfen. Auf dem Mond zieht ihn die Gewichtskraft aber viel schwächer nach unten. Er bleibt deshalb viel länger in der Luft – und fliegt in dieser Zeit ein viel längeres Stück nach vorne.</p></details>
   <details><summary><span class="nr">5</span>Warum könnte niemand auf der Sonne stehen?</summary>
     <p>Die Sonne hat keine feste Oberfläche und ist außen über 5 500 °C heiß. Und selbst wenn: Die Gewichtskraft wäre etwa 28-mal so groß wie auf der Erde (27 400 N). Das ist so, als müsstest du auf der Erde ein großes Auto (rund 2,7 t) auf den Schultern tragen – das halten deine Beine nicht aus.</p></details>
+  <details><summary><span class="nr">6</span>Stell den Astronauten auf dem Mond auf die Waage. Eine normale Personenwaage zeigt kg an. Was würde sie auf dem Mond anzeigen?</summary>
+    <p>Eine Waage misst eigentlich, wie stark der Astronaut auf sie drückt – also seine Gewichtskraft. Auf dem Mond sind das 162 N. Eine Personenwaage ist für die Erde eingestellt: Sie rechnet mit 9,81 N/kg um und würde nur etwa 16,5 kg anzeigen. Seine Masse ist aber weiterhin 100 kg.</p></details>
+  <details><summary><span class="nr">7</span>Hüpf auf der Waage. Was zeigt sie, solange der Astronaut in der Luft ist?</summary>
+    <p>0 N – in der Luft drückt er nicht auf die Waage. Die Gewichtskraft wirkt aber trotzdem weiter: Sie zieht ihn wieder nach unten.</p></details>
+  <details><summary><span class="nr">8</span>Lass Hammer und Feder auf der Erde und auf dem Mond fallen. Was fällt dir auf?</summary>
+    <p>Auf der Erde bremst die Luft die leichte, große Feder stark ab – sie schwebt langsam herunter, der Hammer ist viel schneller unten. Auf dem Mond gibt es keine Luft: Beide kommen gleichzeitig unten an, obwohl der Hammer viel schwerer ist. Genau das hat der Astronaut David Scott 1971 bei der Mission Apollo 15 auf dem Mond vorgeführt. Dass der Fall auf dem Mond länger dauert, liegt am kleineren Ortsfaktor.</p></details>
+  <details><summary><span class="nr">9</span>Stoß das Rollbrett auf der Erde und auf dem Mond an. Warum rollt es auf dem Mond viel weiter, obwohl der Boden gleich rau ist?</summary>
+    <p>1. Auf dem Mond ist die Gewichtskraft kleiner. 2. Deshalb drückt der Astronaut mit dem Brett weniger stark auf den Boden (Normalkraft F<sub>N</sub> = F<sub>G</sub>). 3. Die Reibungskraft F<sub>R</sub> = μ · F<sub>N</sub> wird kleiner: auf der Erde 0,1 · 981 N = 98,1 N, auf dem Mond nur 0,1 · 162 N = 16,2 N. 4. Das Brett wird schwächer abgebremst und rollt etwa 6-mal so weit.</p></details>
 </section>
 
 <section class="karte">
   <h2>So rechnet die Simulation</h2>
-  <p class="hinweis">Der Astronaut (mit Anzug 100 kg) springt überall gleich kräftig ab (2,4 m/s) und wirft den Ball überall gleich schnell (10 m/s). Den Luftwiderstand lassen wir weg. Auf dem Jupiter und auf der Sonne gibt es eigentlich keinen festen Boden – hier tun wir so, als ob. Wird die Gewichtskraft sehr groß, geht er in die Knie und kommt nur mühsam voran; bei sehr kleiner Gewichtskraft hüpft er beim Laufen – so wie die Apollo-Astronauten auf dem Mond.</p>
+  <p class="hinweis">Der Astronaut (mit Anzug 100 kg) springt überall gleich kräftig ab (mit 2,8 m/s – damit kommt er auf der Erde 40 cm hoch) und wirft den Ball überall gleich schnell (10 m/s). Beim Springen, Werfen und Rollbrettfahren lassen wir den Luftwiderstand weg. Hammer (1,3 kg) und Feder (3 g) starten in 1,15 m Höhe; hier rechnen wir mit Luft, wo es welche gibt (Erde, sehr dünn auf dem Mars, Gashülle auf dem Jupiter) – Mond und Gravitron haben keine. Das Rollbrett wird überall auf 3 m/s angestoßen, die Reibungszahl ist überall μ = 0,1 (holpriger Boden); nur die Normalkraft ändert sich. Auf dem Jupiter und auf der Sonne gibt es eigentlich keinen festen Boden – hier tun wir so, als ob. Wird die Gewichtskraft sehr groß, geht er in die Knie und kommt nur mühsam voran; bei sehr kleiner Gewichtskraft hüpft er beim Laufen – so wie die Apollo-Astronauten auf dem Mond.</p>
 </section>
 </div>
 
@@ -189,24 +211,29 @@ details[open] summary{color:var(--blau-text)}
 'use strict';
 /* ---------- Einstellungen ---------- */
 var KLASSEN = { p7:{name:'Physik 7a', link:'../p7/'}, p8:{name:'Physik 8b', link:'../p8/'} };
-var MASSE = 100, V_SPRUNG = 2.4, V_WURF = 10, V_LAUF = 1.4, V_HOPS = 0.9, BALL_R = 0.11, H_WURF = 1.45;
+var MASSE = 100, V_SPRUNG = Math.sqrt(2 * 9.81 * 0.40),   // Absprung so, dass er auf der Erde 40 cm hochkommt
+     V_WURF = 10, V_LAUF = 1.4, V_HOPS = 0.9, BALL_R = 0.11, H_WURF = 1.45;
+var WAAGE_H = 0.07, WAAGE_B = 0.28;                       // Höhe, halbe Breite der Waage (m)
+var BRETT_H = 0.1, V_BRETT = 3, MU = 0.1;                 // Rollbrett: Höhe, Anstoßtempo, Reibungszahl
+var FALL_H = 1.15;                                        // Hammer und Feder: Fallhöhe (m)
+var HAMMER = { m:1.32, cA:0.004 }, FEDER = { m:0.003, cA:0.2 };   // Masse (kg), c_w · A (m²)
 var PLANETEN = [
-  { id:'mond', name:'Mond', g:1.62, farbe:'#D3DCE6',
+  { id:'mond', name:'Mond', g:1.62, farbe:'#D3DCE6', luft:0, luftText:'keine Luft',
     text:'Hier gibt es keine Luft – ohne Raumanzug geht nichts. Die Apollo-Astronauten sind über den Mond gehüpft statt gelaufen.',
     himmel:['#03050B','#121826'], boden:['#BDBDB8','#8A8A85','#5F5F5B'], sterne:true, deko:'erde' },
-  { id:'mars', name:'Mars', g:3.71, farbe:'#FF8A50',
+  { id:'mars', name:'Mars', g:3.71, farbe:'#FF8A50', luft:0.020, luftText:'sehr dünne Luft (etwa 1/60 der Erdluft)',
     text:'Der Mars ist kleiner als die Erde. Die Gewichtskraft ist hier nur etwas mehr als ein Drittel so groß.',
     himmel:['#B9774A','#E9C29A'], boden:['#C4602F','#99421D','#6E2C12'], deko:'sonneKlein' },
-  { id:'erde', name:'Erde', g:9.81, farbe:'#3BA3FF',
+  { id:'erde', name:'Erde', g:9.81, farbe:'#3BA3FF', luft:1.2, luftText:'normale Luft',
     text:'Unser Vergleich: Auf der Erde wirkt auf 1 kg eine Gewichtskraft von 9,81 N.',
     himmel:['#4FA9EA','#CDEBFF'], boden:['#62AD4C','#7A5434','#5A3C22'], deko:'sonneWolken' },
-  { id:'jupiter', name:'Jupiter', g:24.79, farbe:'#F2B15C',
+  { id:'jupiter', name:'Jupiter', g:24.79, farbe:'#F2B15C', luft:0.16, luftText:'Gashülle (dünner als unsere Luft)',
     text:'Der größte Planet unseres Sonnensystems. Er besteht aus Gas – einen festen Boden gibt es nicht. Wir tun so, als ob.',
     himmel:['#A9693C','#E9D2AC'], boden:['#E3C49A','#B98C5E','#8E653D'], deko:'baender' },
-  { id:'gravitron', name:'Gravitron', g:60, farbe:'#C084FC', fantasie:true,
+  { id:'gravitron', name:'Gravitron', g:60, farbe:'#C084FC', fantasie:true, luft:0, luftText:'keine Luft',
     text:'Ein ausgedachter Planet aus extrem dichtem Gestein. Die Gewichtskraft ist hier gut 6-mal so groß wie auf der Erde.',
     himmel:['#14072E','#4B2179'], boden:['#4A3672','#2E2150','#1C1433'], sterne:true, deko:'ringmond' },
-  { id:'sonne', name:'Sonne', g:274, farbe:'#FFE14D',
+  { id:'sonne', name:'Sonne', g:274, farbe:'#FFE14D', luft:0.0002, luftText:'hauchdünne Gashülle',
     text:'Kein fester Boden und über 5 500 °C heiß – hier könnte niemand stehen. Wir zeigen trotzdem, wie stark die Sonne alles nach unten ziehen würde.',
     himmel:['#1A0300','#6B1600'], boden:['#FFC21A','#FF8A00','#D94A00'], deko:'glut' }
 ];
@@ -239,11 +266,14 @@ function kraft(g){ return z(Math.round(MASSE*g), 0) + ' N'; }
 /* ---------- Zustand ---------- */
 var planet = PL.erde;
 try { var lp = localStorage.getItem(SPEICHER + '-planet'); if (PL[lp]) planet = PL[lp]; } catch(e){}
-var A = { x:0, y:0, vx:0, vy:0, boden:true, blick:1, phase:0, wurfT:-1, sprung:false, hops:false, sprungX:0, maxY:0 };
+var A = { x:0, y:0, vx:0, vy:0, boden:true, blick:1, phase:0, wurfT:-1, fallT:-1, sprung:false, hops:false, sprungX:0, sprungB:0, maxY:0, brett:null };
 var gehRichtung = 0;           // −1, 0, 1
 var ball = null;               // { x,y,vx,vy,fliegt,spur,startX,planet }
 var spuren = [];               // { planet, pts, landX, startX, apexX, apexY, weite }
-var marken = [];               // { planet, x, h }
+var marken = [];               // { planet, x, h, b }
+var waage = null;              // { x }
+var fall = null;               // [hammer, feder]: { typ, x, y, v, t, m, cA, gelandet, zeit, planet }
+var fahrten = [];              // { planet, startX, endX, weite }
 var zeigePfeil = true, lupe = false;
 var cam = { x:0, s:80, ziel:null };
 var winkel = 45;
@@ -263,8 +293,10 @@ function waehle(id){
   planet = PL[id];
   try { localStorage.setItem(SPEICHER + '-planet', id); } catch(e){}
   // Astronaut landet sofort, Ball verschwindet
-  A.y = 0; A.vy = 0; A.boden = true; A.sprung = false; A.hops = false; A.vx = 0;
+  A.vy = 0; A.boden = true; A.sprung = false; A.hops = false; A.vx = 0; A.brett = null; A.fallT = -1;
+  A.y = basis(A.x);
   if (ball && ball.fliegt) ball = null;
+  fall = null;
   anzeige.bis = 0; wertEl.classList.remove('an');
   [].forEach.call(leiste.children, function(b){ b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
   var p = planet, f = p.g / 9.81;
@@ -276,6 +308,7 @@ function waehle(id){
     (p.id === 'erde' ? '' : ' · ' + (f < 1 ? 'nur ' + z(f, 2) + '-mal' : 'etwa ' + (f < 10 ? z(f, 1) : z(f, 0)) + '-mal') + ' so groß wie auf der Erde');
   document.getElementById('infoFormel').innerHTML = '<span class="fg">F<sub>G</sub></span> = m · g = 100 kg · ' + gTxt(p.g) + ' N/kg = <span class="fg">' + kraft(p.g) + '</span>';
   document.getElementById('infoText').textContent = p.text;
+  document.getElementById('infoLuft').textContent = 'Luft: ' + p.luftText;
   tabelle();
 }
 
@@ -284,10 +317,14 @@ function tabelle(){
   var h = '';
   PLANETEN.forEach(function(p){
     var m = mess[p.id] || {};
+    var leer = '<td class="leer">–</td>', klein = function(t){ return ' <small style="color:var(--text2)">' + t + '</small>'; };
     h += '<tr' + (p === planet ? ' class="aktuell"' : '') + '><td><span class="punkt" style="background:' + p.farbe + ';box-shadow:0 0 0 1px rgba(0,0,0,.25)"></span>' + p.name + '</td>' +
       '<td>' + gTxt(p.g) + '</td>' +
-      (m.h != null ? '<td>' + laenge(m.h) + '</td><td>' + zeit(m.t) + '</td>' : '<td class="leer">–</td><td class="leer">–</td>') +
-      (m.w != null ? '<td>' + laenge(m.w) + ' <small style="color:var(--text2)">(' + m.a + '°)</small></td>' : '<td class="leer">–</td>') + '</tr>';
+      (m.waage != null ? '<td>' + z(Math.round(m.waage), 0) + ' N</td>' : leer) +
+      (m.h != null ? '<td>' + laenge(m.h) + klein('(' + zeit(m.t) + ')') + '</td>' : leer) +
+      (m.w != null ? '<td>' + laenge(m.w) + klein('(' + m.a + '°)') + '</td>' : leer) +
+      (m.fh != null ? '<td>' + zeit(m.fh) + ' / ' + zeit(m.ff) + '</td>' : leer) +
+      (m.r != null ? '<td>' + laenge(m.r) + '</td>' : leer) + '</tr>';
   });
   document.getElementById('tab').innerHTML = h;
 }
@@ -296,13 +333,21 @@ document.getElementById('bTabWeg').addEventListener('click', function(){ mess = 
 /* ---------- Aktionen ---------- */
 function laufTempo(){ return V_LAUF * Math.min(1, Math.sqrt(9.81 / planet.g)); }
 function huepfeLaufen(){ return V_LAUF * V_LAUF / (planet.g * 0.9) > 0.5; }   // Froude-Zahl: bei kleiner Schwerkraft wird gehüpft
+function basis(x){
+  if (A.brett) return BRETT_H;
+  if (waage && Math.abs(x - waage.x) < WAAGE_B) return WAAGE_H;
+  return 0;
+}
+function faehrt(){ return A.brett && A.brett.v > 0; }
 function huepfen(){
-  if (!A.boden) return;
+  if (!A.boden || faehrt()) return;
+  if (A.brett){ A.brett = null; }
+  A.sprungB = A.y;
   A.vy = V_SPRUNG; A.boden = false; A.sprung = true; A.hops = false; A.maxY = 0; A.sprungX = A.x;
   A.vx = gehRichtung ? gehRichtung * laufTempo() : 0;
 }
 function werfen(){
-  if (A.wurfT >= 0) return;
+  if (A.wurfT >= 0 || faehrt() || A.fallT >= 0) return;
   A.wurfT = 0; A.abgang = false;
 }
 function abwurf(){
@@ -328,11 +373,55 @@ function landungBall(b){
 function landungSprung(){
   var h = V_SPRUNG * V_SPRUNG / (2 * planet.g), t = 2 * V_SPRUNG / planet.g;
   marken = marken.filter(function(m){ return m.planet !== planet; });
-  marken.push({ planet:planet, x:A.sprungX, h:h });
+  marken.push({ planet:planet, x:A.sprungX, h:h, b:A.sprungB });
   mess[planet.id] = mess[planet.id] || {};
   mess[planet.id].h = h; mess[planet.id].t = t;
   speichern(); tabelle();
   zeige('Sprunghöhe <b>' + laenge(h) + '</b> · in der Luft ' + zeit(t), 5000);
+}
+function waageUmschalten(){
+  if (waage){ waage = null; if (A.boden && !A.brett) A.y = 0; }
+  else {
+    if (!A.boden || faehrt()) return;
+    A.brett = null;
+    waage = { x:A.x }; A.y = WAAGE_H;
+  }
+  var b = document.getElementById('bWaage'); b.classList.toggle('an', !!waage); b.setAttribute('aria-pressed', !!waage);
+}
+function aufWaage(){ return waage && A.boden && !A.brett && Math.abs(A.x - waage.x) < WAAGE_B; }
+function rollbrett(){
+  if (!A.boden || faehrt() || A.fallT >= 0 || A.wurfT >= 0) return;
+  A.brett = { v:V_BRETT, dir:A.blick, startX:A.x, rad:0 };
+  A.y = BRETT_H;
+}
+function endeFahrt(){
+  var br = A.brett, w = Math.abs(A.x - br.startX);
+  fahrten.push({ planet:planet, startX:br.startX, endX:A.x, weite:w });
+  if (fahrten.length > 6) fahrten.shift();
+  mess[planet.id] = mess[planet.id] || {}; mess[planet.id].r = w;
+  speichern(); tabelle();
+  var fr = MU * MASSE * planet.g;
+  zeige('Ausrollweg <b>' + laenge(w) + '</b> · F<sub>R</sub> = 0,1 · ' + kraft(planet.g) + ' = ' + kraftTxt(fr), 6000);
+}
+function kraftTxt(f){ return z(f, f < 100 ? 1 : 0) + ' N'; }
+function fallenLassen(){
+  if (!A.boden || faehrt() || A.fallT >= 0 || A.wurfT >= 0) return;
+  if (A.brett) A.brett = null, A.y = basis(A.x);
+  fall = null; A.fallT = 0;
+}
+function fallPos(typ){ return A.x + A.blick * (typ === 'hammer' ? 0.47 : 0.64); }
+function loslassen(){
+  fall = ['hammer', 'feder'].map(function(typ){
+    var d = typ === 'hammer' ? HAMMER : FEDER;
+    return { typ:typ, x:fallPos(typ), y:A.y + FALL_H, v:0, t:0, m:d.m, cA:d.cA, gelandet:false, zeit:0, planet:planet };
+  });
+}
+function landungFall(){
+  if (!fall || !fall.every(function(o){ return o.gelandet; })) return;
+  var th = fall[0].zeit, tf = fall[1].zeit, p = fall[0].planet;
+  mess[p.id] = mess[p.id] || {}; mess[p.id].fh = th; mess[p.id].ff = tf;
+  speichern(); tabelle();
+  zeige('Hammer <b>' + zeit(th) + '</b> · Feder <b>' + zeit(tf) + '</b>', 6000);
 }
 function zeige(html, ms){ anzeige.text = html; anzeige.bis = Date.now() + ms; wertEl.innerHTML = html; wertEl.classList.add('an'); }
 
@@ -348,6 +437,9 @@ halten(document.getElementById('bLinks'), -1);
 halten(document.getElementById('bRechts'), 1);
 document.getElementById('bHuepf').addEventListener('click', huepfen);
 document.getElementById('bWurf').addEventListener('click', werfen);
+document.getElementById('bWaage').addEventListener('click', waageUmschalten);
+document.getElementById('bFall').addEventListener('click', fallenLassen);
+document.getElementById('bBrett').addEventListener('click', rollbrett);
 var winEl = document.getElementById('win'), winOut = document.getElementById('winOut');
 winEl.addEventListener('input', function(){ winkel = +winEl.value; winOut.textContent = winkel + '°'; });
 function schalter(id, setze){
@@ -356,7 +448,7 @@ function schalter(id, setze){
 }
 schalter('bPfeil', function(an){ zeigePfeil = an; });
 schalter('bLupe', function(an){ lupe = an; });
-document.getElementById('bWeg').addEventListener('click', function(){ spuren = []; marken = []; if (ball && !ball.fliegt) ball = null; });
+document.getElementById('bWeg').addEventListener('click', function(){ spuren = []; marken = []; fahrten = []; if (ball && !ball.fliegt) ball = null; if (fall && fall.every(function(o){ return o.gelandet; })) fall = null; });
 var tastenAn = {};
 document.addEventListener('keydown', function(e){
   if (e.target.tagName === 'INPUT' && e.key !== ' ') return;
@@ -364,6 +456,9 @@ document.addEventListener('keydown', function(e){
   else if (e.key === 'ArrowRight'){ gehRichtung = 1; A.blick = 1; tastenAn.r = 1; e.preventDefault(); }
   else if (e.key === ' ' || e.key === 'ArrowUp'){ if (!e.repeat) huepfen(); e.preventDefault(); }
   else if ((e.key === 'w' || e.key === 'W') && !e.repeat){ werfen(); }
+  else if ((e.key === 'g' || e.key === 'G') && !e.repeat){ waageUmschalten(); }
+  else if ((e.key === 'f' || e.key === 'F') && !e.repeat){ fallenLassen(); }
+  else if ((e.key === 'r' || e.key === 'R') && !e.repeat){ rollbrett(); }
 });
 document.addEventListener('keyup', function(e){
   if (e.key === 'ArrowLeft'){ tastenAn.l = 0; gehRichtung = tastenAn.r ? 1 : 0; }
@@ -375,22 +470,42 @@ var DT = 0.001;
 function schritt(dt){
   var g = planet.g;
   // Astronaut
-  if (A.boden){
+  if (A.brett){
+    var br = A.brett;
+    if (br.v > 0){
+      var a = MU * g, v1 = Math.max(0, br.v - a * dt), tt = (br.v - v1) / a;   // gleichmäßig abgebremst: a = F_R / m = μ · g
+      var dx = br.v * tt - 0.5 * a * tt * tt;
+      A.x += br.dir * dx; br.rad += dx / 0.035; br.v = v1; A.vx = br.dir * br.v;
+      if (br.v === 0){ A.vx = 0; endeFahrt(); }
+    } else if (gehRichtung){ A.brett = null; A.blick = gehRichtung; A.y = basis(A.x); }
+    if (A.brett) A.y = BRETT_H;
+  } else if (A.boden){
     if (gehRichtung){
       if (huepfeLaufen()){ A.vy = V_HOPS; A.boden = false; A.hops = true; A.vx = gehRichtung * laufTempo(); }
-      else { A.vx = gehRichtung * laufTempo(); A.x += A.vx * dt; A.phase += Math.abs(A.vx) * dt / 0.11; }
+      else { A.vx = gehRichtung * laufTempo(); A.x += A.vx * dt; A.phase += Math.abs(A.vx) * dt / 0.11; A.y = basis(A.x); }
     } else A.vx = 0;
   } else {
     var y0 = A.y, vy0 = A.vy;
     A.x += A.vx * dt; A.y += A.vy * dt - 0.5 * g * dt * dt; A.vy -= g * dt;
     if (A.y > A.maxY) A.maxY = A.y;
-    if (A.y <= 0){
-      A.y = 0; A.vy = 0; A.boden = true;
+    var bs = basis(A.x);
+    if (A.y <= bs && A.vy < 0){
+      A.y = bs; A.vy = 0; A.boden = true;
       if (A.sprung){ A.sprung = false; landungSprung(); }
       A.hops = false;
       if (!gehRichtung) A.vx = 0;
     }
   }
+  // Hammer und Feder (mit Luftwiderstand F_L = ½ · ρ · c_w · A · v²)
+  if (fall) fall.forEach(function(o){
+    if (o.gelandet) return;
+    var k = planet.luft * o.cA / (2 * o.m), af = -g + k * o.v * o.v;
+    var yn = o.y + o.v * dt + 0.5 * af * dt * dt;
+    if (yn <= 0){
+      var tau = dt * o.y / Math.max(1e-9, o.y - yn);
+      o.t += tau; o.y = 0; o.gelandet = true; o.zeit = o.t; landungFall();
+    } else { o.y = yn; o.v += af * dt; o.t += dt; }
+  });
   // Ball
   if (ball && ball.fliegt){
     var b = ball, by0 = b.y, bvy0 = b.vy;
@@ -427,6 +542,14 @@ function kamera(dtReal){
     if (Math.abs(s.startX - A.x) > 4 && !(ball && ball.spur === s && ball.fliegt)) return;
     var e = s.landX != null ? s.landX : s.ende;
     x0 = Math.min(x0, s.startX - 1, e - 1); x1 = Math.max(x1, s.startX + 1, e + 1.2); y1 = Math.max(y1, s.apexY * 1.12 + 0.6);
+  });
+  if (faehrt()){
+    var sEnd = A.brett.startX + A.brett.dir * V_BRETT * V_BRETT / (2 * MU * planet.g);
+    x0 = Math.min(x0, A.brett.startX - 1, sEnd - 1.4); x1 = Math.max(x1, A.brett.startX + 1, sEnd + 1.4);
+  }
+  fahrten.forEach(function(f){
+    if (f.planet !== planet || (Math.abs(f.endX - A.x) > 4 && Math.abs(f.startX - A.x) > 4)) return;
+    x0 = Math.min(x0, f.startX - 1, f.endX - 1.4); x1 = Math.max(x1, f.startX + 1, f.endX + 1.4);
   });
   var nutzH = H - BODEN - (hudEl.offsetHeight + 22);
   var sMax = Math.min(W / 5.2, nutzH / 3.0);
@@ -548,7 +671,7 @@ function spurZeichnen(s){
     var X = sx(s.landX), Y = H - BODEN;
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(X, Y - 30); ctx.stroke();
     ctx.fillStyle = s.planet.farbe; ctx.beginPath(); ctx.moveTo(X, Y - 30); ctx.lineTo(X + 16, Y - 25); ctx.lineTo(X, Y - 20); ctx.fill();
-    schild(s.planet.name + ': ' + laenge(s.weite), X, Y - 36, s.planet.farbe);
+    if (X > -10 && X < W + 10) schild(s.planet.name + ': ' + laenge(s.weite), X, Y - 36, s.planet.farbe);
   }
 }
 function schild(txt, x, y, farbe){
@@ -560,7 +683,7 @@ function schild(txt, x, y, farbe){
   ctx.fillStyle = farbe; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x, y - 10);
 }
 function markeZeichnen(m, aktiv, belegt){
-  var X = sx(m.x), Y0 = sy(0), Y1 = sy(m.h), b = Math.max(18, 0.5 * cam.s);
+  var X = sx(m.x), Y0 = sy(m.b || 0), Y1 = sy((m.b || 0) + m.h), b = Math.max(18, 0.5 * cam.s);
   ctx.strokeStyle = m.planet.farbe; ctx.lineWidth = 2.5;
   ctx.beginPath(); ctx.moveTo(X - b, Y1); ctx.lineTo(X + b, Y1); ctx.stroke();
   var lx = X + b + 10;
@@ -598,7 +721,12 @@ function astronaut(t){
   var beinV, beinH, armV, armH;
   var luft = !A.boden;
   var knie = 6 + 62 * c, schenkel = knie * 0.55;
-  if (A.wurfT >= 0 && A.wurfT < 0.45){
+  var aufBrett = !!A.brett && A.boden;
+  if (A.fallT >= 0){
+    armV = [88, 0]; armH = [80, 2];
+  } else if (aufBrett){
+    armV = [faehrt() ? 70 : 30, 15]; armH = [faehrt() ? -40 : 12, 15];
+  } else if (A.wurfT >= 0 && A.wurfT < 0.45){
     var u = A.wurfT / 0.45;
     armV = [u < 0.3 ? 20 - 170 * (u / 0.3) : 210 - 150 * Math.min(1, (u - 0.3) / 0.4), 15];
     armH = [55, 20];
@@ -606,13 +734,14 @@ function astronaut(t){
     armV = [150, 15]; armH = [125, 20];
   } else if (luft && A.hops){
     armV = [45, 20]; armH = [25, 20];
-  } else if (A.boden && gehRichtung){
+  } else if (A.boden && gehRichtung && !A.brett){
     var sw = Math.sin(A.phase);
     armV = [-22 * sw + 8, 20]; armH = [22 * sw + 8, 20];
   } else { armV = [10 + 8 * c, 12]; armH = [4 + 8 * c, 12]; }
-  if (luft && A.sprung){ beinV = [28, 45]; beinH = [-8, 25]; }
+  if (aufBrett){ beinV = [schenkel + 20, knie + 22]; beinH = [schenkel - 20, knie + 6]; }
+  else if (luft && A.sprung){ beinV = [28, 45]; beinH = [-8, 25]; }
   else if (luft && A.hops){ beinV = [22, 32]; beinH = [8, 30]; }
-  else if (A.boden && gehRichtung){
+  else if (A.boden && gehRichtung && !A.brett){
     var s2 = Math.sin(A.phase);
     beinV = [schenkel + 26 * s2, knie + 14 * Math.max(0, -Math.cos(A.phase))];
     beinH = [schenkel - 26 * s2, knie + 14 * Math.max(0, Math.cos(A.phase))];
@@ -697,6 +826,95 @@ function rr(x, y, w, h, r, farbe){
   ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);
   ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath(); ctx.fill(); ctx.stroke();
 }
+function inCm(x, y, spiegeln){   // Zeichnen in cm, y nach oben, Ursprung bei (x, y) in m
+  ctx.save(); ctx.translate(sx(x), sy(y)); var k = cam.s / 100; ctx.scale((spiegeln || 1) * k, -k);
+}
+function waageZeichnen(){
+  if (!waage) return;
+  inCm(waage.x, 0);
+  rr(-WAAGE_B * 100, 0, WAAGE_B * 200, WAAGE_H * 100, 2.5, '#E7ECF2');
+  ctx.fillStyle = '#1F2937'; ctx.fillRect(-9, 1.5, 18, 4);
+  ctx.restore();
+  var an = aufWaage(), wert = an ? MASSE * planet.g : 0;
+  var txt = 'Waage: ' + z(Math.round(wert), 0) + ' N';
+  ctx.font = '800 12.5px "Plus Jakarta Sans",system-ui,sans-serif';
+  var w = ctx.measureText(txt).width + 14;
+  var X = sx(waage.x - WAAGE_B) - w / 2 - 10, Y = sy(WAAGE_H) - Math.max(22, 0.35 * cam.s);
+  ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(Math.max(w + 4, X) + w / 2 - 6, Y - 10); ctx.lineTo(sx(waage.x - WAAGE_B * 0.6), sy(WAAGE_H * 0.6)); ctx.stroke();
+  schild(txt, Math.max(w / 2 + 4, X), Y, '#4ADE80');
+}
+function brettZeichnen(){
+  if (!A.brett) return;
+  var br = A.brett;
+  inCm(A.x, 0);
+  [-28, 28].forEach(function(xr){
+    ctx.fillStyle = '#FFD23F'; ctx.strokeStyle = '#3E4A5C'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(xr, 3.5, 3.5, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = '#8A6A00'; ctx.beginPath(); ctx.moveTo(xr, 3.5); ctx.lineTo(xr + 3.2 * Math.cos(-br.rad * br.dir), 3.5 + 3.2 * Math.sin(-br.rad * br.dir)); ctx.stroke();
+  });
+  rr(-40, 6.5, 80, 3.5, 1.7, '#0E7490');
+  ctx.restore();
+  // Reibungskraft-Pfeil (entgegen der Bewegung)
+  if (faehrt() && zeigePfeil){
+    var fr = MU * MASSE * planet.g, zf = Math.max(0.4, Math.min(1, cam.s / 75));
+    var lang = 48 * zf * fr / (MU * MASSE * 9.81), max = 150 * zf, bruch = lang > max; if (bruch) lang = max;
+    var d = -br.dir, x0 = sx(A.x - br.dir * 0.4), y0 = sy(0.05), x1 = x0 + d * lang;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1 - d * 8, y0); ctx.stroke();
+    ctx.strokeStyle = '#F59E0B'; ctx.lineWidth = 4.5; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1 - d * 8, y0); ctx.stroke();
+    ctx.fillStyle = '#F59E0B'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x1 - d * 12, y0 - 8); ctx.lineTo(x1 + d * 2, y0); ctx.lineTo(x1 - d * 12, y0 + 8); ctx.closePath(); ctx.fill(); ctx.stroke();
+    if (bruch){ var mx = x0 + d * lang * 0.5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(mx - 2, y0 - 9); ctx.lineTo(mx - 8, y0 + 9); ctx.moveTo(mx + 6, y0 - 9); ctx.lineTo(mx, y0 + 9); ctx.stroke(); }
+    ctx.font = '800 13px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    var lx = x0 + d * Math.max(20, lang * 0.5), ly = y0 - 16;
+    ctx.lineWidth = 3.5; ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.strokeText('F', lx - 3, ly); ctx.fillStyle = '#fff'; ctx.fillText('F', lx - 3, ly);
+    ctx.font = '800 10px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.strokeText('R', lx + 5, ly + 4); ctx.fillText('R', lx + 5, ly + 4);
+  }
+}
+function fahrtenZeichnen(){
+  fahrten.forEach(function(f, i){
+    var Y = H - BODEN, X0 = sx(f.startX), X1 = sx(f.endX);
+    ctx.strokeStyle = f.planet.farbe; ctx.lineWidth = 3; ctx.setLineDash([6, 5]);
+    ctx.beginPath(); ctx.moveTo(X0, Y - 3); ctx.lineTo(X1, Y - 3); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(X0, Y); ctx.lineTo(X0, Y - 12); ctx.moveTo(X1, Y); ctx.lineTo(X1, Y - 30); ctx.stroke();
+    ctx.fillStyle = f.planet.farbe; ctx.beginPath(); ctx.moveTo(X1, Y - 30); ctx.lineTo(X1 + 16 * Math.sign(f.endX - f.startX || 1), Y - 25); ctx.lineTo(X1, Y - 20); ctx.fill();
+    if (X1 > -10 && X1 < W + 10) schild(f.planet.name + ': ' + laenge(f.weite), X1, Y - 36, f.planet.farbe);
+  });
+}
+function hammerZeichnen(x, y, liegt){
+  inCm(x, y, A.blick);
+  if (liegt){ rr(-16, 4.5, 30, 3, 1.4, '#9C6B3C'); rr(14, 0, 6, 12, 1.5, '#8E99A8'); }
+  else { rr(-1.5, 5, 3, 28, 1.4, '#9C6B3C'); rr(-6.5, 0, 13, 6, 1.5, '#8E99A8'); }
+  ctx.restore();
+}
+function federZeichnen(x, y, dreh){
+  inCm(x, y, A.blick);
+  ctx.translate(0, 12); ctx.rotate(dreh); ctx.translate(0, -12);
+  ctx.fillStyle = '#FFF7E0'; ctx.strokeStyle = '#8A7A55'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, 2); ctx.quadraticCurveTo(-7, 10, -2.5, 24); ctx.quadraticCurveTo(0, 25.5, 2.5, 24); ctx.quadraticCurveTo(7, 10, 0, 2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = '#8A7A55'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(0.8, 12, 0, 25); ctx.stroke();
+  ctx.restore();
+}
+function fallZeichnen(){
+  if (A.fallT >= 0 && !fall){
+    hammerZeichnen(fallPos('hammer'), A.y + FALL_H, false);
+    federZeichnen(fallPos('feder'), A.y + FALL_H, 0);
+    return;
+  }
+  if (!fall) return;
+  var belegt = 0;
+  fall.forEach(function(o){
+    var schw = o.typ === 'feder' ? 0.07 * Math.min(1, o.planet.luft / 0.5) : 0;
+    var xs = o.x + (o.gelandet ? 0 : schw * Math.sin(o.t * 5));
+    if (o.typ === 'hammer') hammerZeichnen(xs, o.y, o.gelandet);
+    else federZeichnen(xs, o.y, o.gelandet ? Math.PI / 2 * A.blick : schw * 8 * Math.sin(o.t * 5 + 1));
+    if (o.gelandet && cam.s > 25){
+      schild((o.typ === 'hammer' ? 'Hammer ' : 'Feder ') + zeit(o.zeit), sx(o.x), H - BODEN - 14 - (o.typ === 'hammer' ? 24 : 0), o.typ === 'hammer' ? '#CBD5E1' : '#FDE68A');
+    }
+  });
+}
 function ballZeichnen(){
   if (!ball) return;
   var r = Math.max(4, BALL_R * cam.s), X = sx(ball.x), Y = sy(ball.y);
@@ -712,22 +930,31 @@ function bild(jetzt){
   var dtReal = Math.min(0.05, (jetzt - letzte) / 1000); letzte = jetzt; tGes += dtReal;
   var dt = dtReal * (lupe ? 0.2 : 1);
   if (A.wurfT >= 0){ A.wurfT += dt; if (!A.abgang && A.wurfT >= 0.225){ A.abgang = true; abwurf(); } if (A.wurfT > 0.6) A.wurfT = -1; }
+  if (A.fallT >= 0){ A.fallT += dt; if (!fall && A.fallT >= 0.5) loslassen(); if (fall && A.fallT > 0.9) A.fallT = -1; }
   var n = Math.max(1, Math.round(dt / DT));
   for (var i = 0; i < n; i++) schritt(dt / n);
   if (!A.boden && A.sprung){ wertEl.innerHTML = 'Höhe <b>' + laenge(Math.max(0, A.y)) + '</b>'; wertEl.classList.add('an'); anzeige.bis = Date.now() + 99999; }
   else if (ball && ball.fliegt){ wertEl.innerHTML = 'Weite <b>' + laenge(Math.abs(ball.x - ball.startX)) + '</b>'; wertEl.classList.add('an'); anzeige.bis = Date.now() + 99999; }
+  else if (faehrt()){ wertEl.innerHTML = 'Tempo <b>' + z(A.brett.v, 1) + ' m/s</b> · Weg ' + laenge(Math.abs(A.x - A.brett.startX)) + ' · F<sub>R</sub> = ' + kraftTxt(MU * MASSE * planet.g); wertEl.classList.add('an'); anzeige.bis = Date.now() + 99999; }
+  else if (fall && !fall.every(function(o){ return o.gelandet; })){ wertEl.innerHTML = 'Fallzeit <b>' + zeit(Math.max(fall[0].gelandet ? 0 : fall[0].t, fall[1].t)) + '</b>'; wertEl.classList.add('an'); anzeige.bis = Date.now() + 99999; }
+  else if (aufWaage() && Date.now() > anzeige.bis){ wertEl.innerHTML = 'Waage <b>' + kraft(planet.g) + '</b>'; wertEl.classList.add('an'); anzeige.bis = 0;
+    var mw = mess[planet.id] || (mess[planet.id] = {}); if (mw.waage !== MASSE * planet.g){ mw.waage = MASSE * planet.g; speichern(); tabelle(); } }
   else if (Date.now() > anzeige.bis) wertEl.classList.remove('an');
   kamera(dtReal);
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   himmel(tGes);
   spuren.forEach(spurZeichnen);
-  if (cam.s > 30){
+  if (cam.s > 30 && !fall && A.fallT < 0){
     var belegt = [];
     marken.filter(function(m){ return Math.abs(m.x - A.x) < 3; }).sort(function(a, b){ return a.h - b.h; })
       .forEach(function(m){ markeZeichnen(m, m.planet === planet, belegt); });
   }
   boden(tGes);
+  fahrtenZeichnen();
+  waageZeichnen();
+  brettZeichnen();
   astronaut(tGes);
+  fallZeichnen();
   ballZeichnen();
   requestAnimationFrame(bild);
 }
