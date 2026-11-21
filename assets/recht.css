@@ -1,0 +1,14 @@
+/* Impressum und Datenschutz – ergänzt portal.css */
+.recht-text{display:grid;gap:12px}
+.karte-recht{background:var(--karte);border:1px solid var(--linie);border-radius:20px;padding:18px 18px 16px;box-shadow:var(--schatten)}
+.karte-recht h2{margin:0 0 8px;font-size:18px;line-height:1.25;font-weight:800;letter-spacing:-.01em}
+.karte-recht h3{margin:14px 0 4px;font-size:15.5px;font-weight:800}
+.karte-recht p,.karte-recht li{margin:0 0 8px;font-size:15.5px;color:var(--text);line-height:1.5}
+.karte-recht p:last-child,.karte-recht li:last-child{margin-bottom:0}
+.karte-recht ul{margin:0;padding-left:20px}
+.karte-recht .klein{font-size:13.5px;color:var(--text2)}
+.karte-recht a,.weiter a{color:var(--lila);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.adresse{font-size:17px!important;font-weight:600}
+.gut{background:var(--gruen-hell);border-color:transparent}
+.gut h2{color:var(--gruen-text)}
+.weiter{margin:6px 2px 0;font-weight:700;font-size:15.5px}
