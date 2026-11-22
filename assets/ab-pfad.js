@@ -7,19 +7,33 @@
    Z = { x, y, z, s (Schrittname), tipp, erkl:{ schritte:[{ k, t, f }] }, lab, labx, mitte, w,
          typ:'oval' (rote Markierung: x, y = Mitte, w, h) }
    Alle Maße in cm auf dem Blatt (wie in PowerPoint). Formeln zwischen $…$ (KaTeX).
+   Seit 18.11.: P.breite (Blattbreite in cm, Standard 19,05; Mathe-ABs 21), P.thema ('mathe' = blauer Hintergrund),
+   Zeile.cmd = Kommandostrich (z. B. ':V_2' → „| :V₂“), \weg{T_1} = rot durchgestrichen (Kürzen).
+   Kommandostrich und Durchstreichen erscheinen erst, wenn die NÄCHSTE Zeile aufgedeckt wird.
+   Baustein { loesung:{ spalten:[{ x, zeilen:[Z] }], strich } } für Lösungen ohne geg./ges. (Mathe),
+   Z.tl = Teilaufgabe ('a)'), Z.luft = zusätzliche freie Reihen davor, Z.dx = Einrückung,
+   Z.typ:'skizze' (html = SVG, w, h in cm). Rechnung: strich = Lage des Mittelstrichs (cm).
+   Bewertung (grüne Haken, Punkte) erst nach „Bewertung einblenden“ (wird im Browser gemerkt).
    ===================================================================== */
 (function () {
   'use strict';
-  var P = window.PFAD, PX = 52, BREITE = 19.05 * PX, LUPE = false, karten = [];
+  var P = window.PFAD, PX = 52, BW = P.breite || 19.05, BREITE = BW * PX, LUPE = false, karten = [];
+  if (P.thema) document.body.classList.add(P.thema);
+  var BEW = false; try { BEW = localStorage.getItem('abpfad-bewertung') === '1'; } catch (e) {}
+  document.body.classList.toggle('bewertung', BEW);
   var BIRNE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></svg>';
   var HAKEN = '<svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var HALB = '<svg viewBox="0 0 26 24"><path d="M2 12 L9 20 L17 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function haken(p) { var h = ''; for (var i = 0; i < Math.floor(p + 1e-9); i++) h += HAKEN; if (p % 1 > 0.25) h += HALB; return h; }
   var KREUZ = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>';
 
+  var MAKROS = { '\\weg': '\\htmlClass{st}{\\cancel{#1}}' };
   function tex(x) {
     x = x.replace(/\\cdot(?!\\nobreak)/g, '\\cdot\\nobreak ');
-    try { return window.katex.renderToString(x, { throwOnError: false, strict: false }); } catch (e) { return x; }
+    try {
+      return window.katex.renderToString(x, { throwOnError: false, strict: false, macros: MAKROS,
+        trust: function (c) { return c.command === '\\htmlClass'; } });
+    } catch (e) { return x; }
   }
   function fmt(s) { return (s || '').replace(/\$([^$]+)\$/g, function (_, x) { return tex(x); }); }
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
@@ -74,7 +88,7 @@
   }
   function nah(a, b, rel) { return Math.abs(a - b) <= Math.abs(b) * (rel || 0.004) + 1e-9; }
   function check(c, karte) {
-    var box = el('div', 'check', '<label>' + (c.frage || 'Ergebnis prüfen: Gib dein Ergebnis ein.') + '</label><div class="reihe">' +
+    var box = el('div', 'check', '<label>' + fmt(c.frage || 'Ergebnis prüfen: Gib dein Ergebnis ein.') + '</label><div class="reihe">' +
       '<input type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. ' + (c.bsp || '2,5') + '"><span class="einh">' + c.einh + '</span>' +
       '<button type="button">Prüfen</button></div><div class="ort"></div>');
     var inp = box.querySelector('input'), ort = box.querySelector('.ort');
@@ -116,6 +130,25 @@
         off += (t.y1 - t.y0) + (t.anhang ? t.anhang.h : 0);
         return;
       }
+      if (t.loesung) {
+        var m = t.loesung, mx0 = m.x0 || 0.55, mw = m.w || (BW - 1.05), mtop = off + 0.15, maxR = 0;
+        (m.spalten || [{ x: m.lx || 1.4, zeilen: m.zeilen }]).forEach(function (sp) {
+          var r = 0, sx = sp.x || 1.4;
+          sp.zeilen.forEach(function (z) {
+            r += z.luft || 0;
+            var rows = z.typ === 'skizze' ? Math.round(z.h / R) : reihen(z);
+            var c = Object.assign({ x: sx + (z.dx || 0), s: z.tl ? 'Teilaufgabe ' + z.tl : 'nächste Zeile' }, z, { y: mtop + r * R, rows: rows });
+            if (z.tl) { c.lab = z.tl; c.labx = sp.tlx != null ? sp.tlx : sx - 0.8; c.labcls = 'tl'; }
+            out.zeilen.push(c); r += rows + 1;
+          });
+          maxR = Math.max(maxR, r);
+        });
+        var mh = maxR * R + 0.15;
+        out.karo.push([mx0, off, mw, mh]);
+        if (m.strich) out.striche.push([m.strich, off, off + mh]);
+        off += mh + 0.25;
+        return;
+      }
       var q = t.rechnung, x0 = q.x0 || 0.55, w = q.w || 18.0, st = q.strich || 9.65, lx = q.lx || 1.85, rx = st + 0.3;
       var top = off + 0.15, rl = 0, rr = 0, letzteR = 0, liste = [];
       q.links.forEach(function (z, i) {
@@ -135,7 +168,7 @@
       if (q.antwort) liste.push(Object.assign({ x: 2.75, s: 'Antwortsatz', lab: 'Antwort:', cls: 'satz' }, q.antwort, { y: top + antRow * R, rows: 1 }));
       var hoehe = (antRow + (q.antwort ? 2 : 0)) * R + 0.3;
       out.karo.push([x0, off, w, hoehe]);
-      out.striche.push([st, off + 0.1, top + unten * R + 0.1]);
+      out.striche.push([st, off, top + unten * R + 0.15]);
       out.zeilen = out.zeilen.concat(liste);
       off += hoehe + 0.25;
     });
@@ -149,9 +182,15 @@
     var quer = el('div', 'quer', '📱 <span>Dreh dein Handy <b>quer</b> – dann wird das Blatt größer. Oder nimm die Lupe.</span><button type="button" class="lupe-k">🔍 Lupe</button>');
     quer.querySelector('button').onclick = function () { LUPE = !LUPE; document.querySelectorAll('.lupe-k').forEach(function (b) { b.textContent = LUPE ? '↔ Ganzes Blatt' : '🔍 Lupe'; }); karten.forEach(function (x) { if (x.skaliere) x.skaliere(); }); };
     r.appendChild(quer);
+    var L = layout(k);
+    if (L.zeilen.some(function (z) { return z.p; })) {
+      var sb = el('div', 'bew-leiste', '<button type="button" class="bew-k"></button>');
+      sb.firstChild.onclick = function () { setzeBew(!BEW); };
+      r.appendChild(sb);
+    }
     if (k.check) r.appendChild(check(k.check, sec));
 
-    var L = layout(k), y0 = 0, hoehe = L.hoehe;
+    var y0 = 0, hoehe = L.hoehe;
     var wrap = el('div', 'bl-wrap'), blatt = el('div', 'bl-blatt');
     blatt.style.width = BREITE + 'px'; blatt.style.height = px(hoehe);
     blatt.setAttribute('role', 'img'); blatt.setAttribute('aria-label', 'Arbeitsblatt ' + k.name);
@@ -174,15 +213,18 @@
       var e;
       if (z.typ === 'oval') {
         e = el('div', 'bl-oval'); e.style.left = px(z.x - z.w / 2); e.style.top = T(z.y - z.h / 2); e.style.width = px(z.w); e.style.height = px(z.h);
+      } else if (z.typ === 'skizze') {
+        e = el('div', 'bl-z bl-skizze', z.html); e.style.left = px(z.x); e.style.top = T(z.y); e.style.width = px(z.w); e.style.height = px(z.h);
       } else {
-        e = el('div', 'bl-z' + (z.mitte ? ' mitte' : ''), fmt(z.z)); e.style.left = px(z.x); e.style.top = T(z.y);
+        e = el('div', 'bl-z' + (z.mitte ? ' mitte' : ''), fmt(z.z) + (z.cmd ? '<span class="cmd">' + fmt('${}' + z.cmd + '$') + '</span>' : ''));
+        e.style.left = px(z.x); e.style.top = T(z.y);
         if (z.rows > 1) { e.style.height = (z.rows * 26) + 'px'; e.style.lineHeight = (z.rows * 26) + 'px'; }
         if (z.cls) e.className += ' ' + z.cls;
         if (z.cls && z.cls.indexOf('zwei') >= 0 && z.w) e.style.width = px(z.w);
       }
       blatt.appendChild(e);
       var lab = null;
-      if (z.lab) { lab = el('div', 'bl-lab', z.lab); lab.style.left = px(z.labx != null ? z.labx : 0.65); lab.style.top = T(z.y); blatt.appendChild(lab); }
+      if (z.lab) { lab = el('div', 'bl-lab' + (z.labcls ? ' ' + z.labcls : ''), z.lab); lab.style.left = px(z.labx != null ? z.labx : 0.65); lab.style.top = T(z.y); blatt.appendChild(lab); }
       var hk = null;
       if (z.p) { hk = el('div', 'bl-haken', haken(z.p)); hk.title = (String(z.p).replace('.', ',')) + (z.p === 1 ? ' Punkt' : ' Punkte'); blatt.appendChild(hk); }
       var b = null;
@@ -192,6 +234,7 @@
       }
       return { z: z, e: e, lab: lab, b: b, hk: hk };
     });
+    zeilen.forEach(function (o, j) { o.vor = zeilen[j - 1] || null; });
     var hin = el('div', 'bl-naechst'); blatt.appendChild(hin);
 
     /* Skalieren: das Blatt hat feste Maße und wird nur verkleinert */
@@ -209,9 +252,9 @@
       if (!o.e.classList.contains('auf')) return;
       var w, l, t;
       if (o.z.typ === 'oval') { w = o.z.w * PX; l = (o.z.x - o.z.w / 2) * PX; t = (o.z.y - y0) * PX - 13; }
-      else { w = o.e.offsetWidth; l = o.e.offsetLeft - (o.z.mitte ? w / 2 : 0); t = o.e.offsetTop - (o.z.mitte ? 13 : 0) + ((o.z.rows || 1) - 1) * 13; }
+      else { w = o.e.offsetWidth; l = o.e.offsetLeft - (o.z.mitte ? w / 2 : 0); t = o.e.offsetTop - (o.z.mitte ? 13 : 0) + (o.z.typ === 'skizze' ? o.e.offsetHeight / 2 - 13 : ((o.z.rows || 1) - 1) * 13); }
       var rechts = l + w + 6;
-      if (o.hk) {
+      if (o.hk && BEW) {
         if (o.z.haken) { o.hk.style.left = (o.z.haken[0] * PX) + 'px'; o.hk.style.top = ((o.z.haken[1] - y0) * PX - 13) + 'px'; }
         else { o.hk.style.left = rechts + 'px'; o.hk.style.top = (t - 6) + 'px'; rechts += o.hk.offsetWidth + 4; }
       }
@@ -233,7 +276,7 @@
       '<button class="k-erkl" type="button">' + BIRNE + 'Erklärung</button><button class="k-alles" type="button">Ganze Lösung</button>');
     var punkte = k.zeilen.reduce(function (a, z) { return a + (z.p || 0); }, 0);
     var fertig = el('div', 'fertig', '✓ Fertig – vergleiche mit deinem Blatt und verbessere mit einer anderen Farbe.' +
-      (punkte ? '<div class="punkte">So würde Herr Gößmann korrigieren: <b>' + String(punkte).replace('.', ',') + ' ' + (punkte === 1 ? 'Punkt' : 'Punkte') + '</b> ' +
+      (punkte ? '<div class="punkte nur-bew">So würde Herr Gößmann korrigieren: <b>' + String(punkte).replace('.', ',') + ' ' + (punkte === 1 ? 'Punkt' : 'Punkte') + '</b> ' +
       '<span class="leg">(' + HAKEN + ' = 1 Punkt, ' + HALB + ' = ½ Punkt)</span></div>' : ''));
     r.appendChild(tippOrt); r.appendChild(leiste); r.appendChild(fertig);
     var bz = leiste.children[0], bt = leiste.children[1], bw = leiste.children[2], be = leiste.children[3], ba = leiste.children[4];
@@ -242,18 +285,19 @@
       o.e.classList.add('auf'); if (o.lab) o.lab.classList.add('auf');
       if (o.hk) o.hk.classList.add('auf');
       if (o.b) o.b.classList.add('auf');
+      if (o.vor) o.vor.e.classList.add('folge');
       setzeBirne(o);
       if (neu && o.z.typ !== 'oval') { o.e.classList.remove('neu'); void o.e.offsetWidth; o.e.classList.add('neu'); }
     }
-    function verstecke(o) { o.e.classList.remove('auf', 'neu'); if (o.lab) o.lab.classList.remove('auf'); if (o.b) o.b.classList.remove('auf'); if (o.hk) o.hk.classList.remove('auf'); }
+    function verstecke(o) { if (o.vor) o.vor.e.classList.remove('folge'); o.e.classList.remove('auf', 'neu'); if (o.lab) o.lab.classList.remove('auf'); if (o.b) o.b.classList.remove('auf'); if (o.hk) o.hk.classList.remove('auf'); }
     function status() {
       var o = zeilen[n];
       if (o) {
         var z = o.z; hin.hidden = false; hin.textContent = (z.s || 'nächste Zeile') + '?';
         hin.className = 'bl-naechst' + (z.mitte || z.typ === 'oval' ? ' mitte' : '');
-        var sx = (k.striche && k.striche[0]) ? k.striche[0][0] : 9.65; var w = z.w || (z.typ === 'oval' ? z.w : (z.x < sx ? sx - 0.2 - z.x : 18.4 - z.x));
+        var sx = (k.striche && k.striche[0]) ? k.striche[0][0] : null; var w = z.w || (sx != null && z.x < sx ? sx - 0.2 - z.x : BW - 0.65 - z.x);
         if (z.mitte && !z.w) w = 2.6;
-        hin.style.left = px(z.x); hin.style.top = T(z.y); hin.style.width = px(w); hin.style.height = ((z.rows || 1) * 26) + 'px';
+        hin.style.left = px(z.x); hin.style.top = T(z.y); hin.style.width = px(w); hin.style.height = (z.typ === 'skizze' ? z.h * PX : (z.rows || 1) * 26) + 'px';
         if (!z.mitte && z.typ !== 'oval' && z.lab) { hin.style.left = px(z.labx != null ? z.labx : 0.65); hin.style.width = px(w + z.x - (z.labx != null ? z.labx : 0.65)); }
       } else hin.hidden = true;
       bw.disabled = !o; ba.disabled = !o; bz.disabled = n === 0;
@@ -283,6 +327,18 @@
     });
   }
 
+  /* ---------- Bewertung ein-/ausblenden (gilt für alle Karten, wird gemerkt) ---------- */
+  function setzeBew(an) {
+    BEW = an; document.body.classList.toggle('bewertung', an);
+    try { localStorage.setItem('abpfad-bewertung', an ? '1' : '0'); } catch (e) {}
+    beschrifteBew(); karten.forEach(function (x) { if (x.skaliere) x.skaliere(); });
+  }
+  function beschrifteBew() {
+    document.querySelectorAll('.bew-k').forEach(function (b) {
+      b.innerHTML = HAKEN + (BEW ? 'Bewertung ausblenden' : 'Bewertung einblenden'); b.setAttribute('aria-pressed', BEW ? 'true' : 'false');
+    });
+  }
+
   /* ---------- Karten ---------- */
   var chipVon = {}, i = 0;
   P.karten.forEach(function (k) {
@@ -292,6 +348,7 @@
     else blattKarte(k, sec);
     main.appendChild(sec); karten.push(sec);
   });
+  beschrifteBew();
   var chips = document.getElementById('chips');
   karten.forEach(function (k, j) {
     if (!k.dataset.chip) return;

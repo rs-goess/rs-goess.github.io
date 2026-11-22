@@ -12,15 +12,27 @@
 <link rel="stylesheet" href="../assets/portal.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E97132'/%3E%3Cpath d='M14 14 Q32 70 50 14' fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
-:root{--graph:#D33A2C;--gitter:#E3E8EE;--achse:#1B1F2A;--normal:#9AA3AE;--rot:#C0392B;--rot-hell:#FBE7E4}
-@media (prefers-color-scheme:dark){:root{--graph:#FF7A6B;--gitter:#2B3240;--achse:#E7EAF0;--normal:#7F899B;--rot:#FF8A7A;--rot-hell:#3A1F1C}}
+:root{--graph:#D33A2C;--gitter:#E3E8EE;--achse:#1B1F2A;--normal:#9AA3AE;--rot:#C0392B;--rot-hell:#FBE7E4;--mark:#1F5FC4;--mark-hell:#E9F1FC}
+@media (prefers-color-scheme:dark){:root{--graph:#FF7A6B;--gitter:#2B3240;--achse:#E7EAF0;--normal:#7F899B;--rot:#FF8A7A;--rot-hell:#3A1F1C;--mark:#8DB8FF;--mark-hell:#1B2A40}}
 .karte{background:var(--karte);border:1px solid var(--linie);border-radius:22px;padding:16px;box-shadow:var(--schatten)}
 .leiste{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2);margin-bottom:10px}
 .leiste b{color:var(--text)}
 .balken{flex:1;height:8px;background:var(--linie);border-radius:9px;overflow:hidden}
 .balken i{display:block;height:100%;width:0;background:linear-gradient(90deg,#F47B3E,#E0457B);transition:width .3s}
 .frage{font-size:19px;font-weight:700;line-height:1.4;margin:2px 0 12px}
-.frage .katex{font-size:1.08em;white-space:nowrap}
+.frage .katex{font-size:1.08em}
+.nw{white-space:nowrap}
+.frage .fkt{display:inline-block;font-size:15px;font-weight:700;color:var(--blau-text);background:var(--blau-hell);border-radius:10px;padding:3px 10px;margin-bottom:6px}
+.hilfen{display:flex;gap:6px;flex-wrap:wrap;margin:-2px 0 12px}
+.hilfen button{font:inherit;font-size:15px;font-weight:700;border:2px solid var(--linie);background:var(--karte);color:var(--text2);border-radius:999px;padding:6px 11px;min-height:40px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;-webkit-tap-highlight-color:transparent}
+.hilfen button svg{width:16px;height:16px;flex:none}
+.hilfen .pf{width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s;margin-left:2px}
+.hilfen button[aria-expanded="true"] .pf{transform:translateY(2px) rotate(-135deg)}
+.hilfen button[aria-expanded="true"]{border-color:var(--mark);color:var(--mark);background:var(--mark-hell)}
+.hilfe{display:none;border-radius:16px;background:var(--mark-hell);padding:12px 14px;margin:0 0 12px;font-size:16px;line-height:1.45}
+.hilfe.auf{display:block}
+.hilfe .bild{margin:0 auto}
+.hilfe .klein{display:block;text-align:center;font-size:13px;color:var(--text2);margin-top:4px}
 .antworten .katex,.rueck .katex{white-space:nowrap}
 .bild{max-width:260px;margin:0 auto 10px}
 .antworten{display:grid;gap:10px}
@@ -34,6 +46,8 @@
 .antworten button.falsch{border-color:var(--rot);background:var(--rot-hell)}
 .antworten button.blass{opacity:.55}
 svg.mini{display:block;width:100%;height:auto}
+svg text.m{font-weight:800;fill:var(--mark);font-size:12.5px}
+svg text.m.p{paint-order:stroke;stroke:var(--mark-hell);stroke-width:4px}
 svg text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:11px;fill:var(--text2)}
 .rueck{border-radius:16px;padding:12px 14px;margin-top:12px;font-size:16.5px;line-height:1.45;display:none}
 .rueck.ok{display:block;background:var(--gruen-hell);border:2px solid var(--gruen)}
@@ -75,46 +89,92 @@ svg text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:11px;fil
     for(const v of (opt.xlab??[-2,2])) s+=`<text x="${X(v)}" y="${Y(0)+13}" text-anchor="middle">${String(v).replace('-','−')}</text>`;
     s+=`<clipPath id="c${opt.id||0}"><rect x="${X(xmin)}" y="${Y(ymax)}" width="${(xmax-xmin)*u}" height="${(ymax-ymin)*u}"/></clipPath>`;
     const pfad=f=>{let d='';for(let i=0;i<=240;i++){const x=xmin+(xmax-xmin)*i/240;let y=Math.max(ymin-2,Math.min(ymax+2,f(x)));d+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1);}return d};
+    const MK='var(--mark)', id=opt.id||0;
+    if(opt.pfeile) s+=`<defs><marker id="pf${id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${MK}"/></marker></defs>`;
     if(opt.normal) s+=`<path d="${pfad(x=>x*x)}" fill="none" stroke="var(--normal)" stroke-width="1.6" stroke-dasharray="5 4" clip-path="url(#c${opt.id||0})"/>`;
-    s+=`<path d="${pfad(fn)}" fill="none" stroke="var(--graph)" stroke-width="3" stroke-linecap="round" clip-path="url(#c${opt.id||0})"/>`;
+    if(fn) s+=`<path d="${pfad(fn)}" fill="none" stroke="var(--graph)" stroke-width="3" stroke-linecap="round" clip-path="url(#c${opt.id||0})"/>`;
+    for(const [x1,y1,x2,y2] of (opt.pfeile||[])) s+=`<line x1="${X(x1)}" y1="${Y(y1)}" x2="${X(x2)}" y2="${Y(y2)}" stroke="${MK}" stroke-width="2.4" marker-end="url(#pf${id})"/>`;
     for(const [px,py] of (opt.punkte||[])) s+=`<circle cx="${X(px)}" cy="${Y(py)}" r="4.5" fill="var(--karte)" stroke="var(--achse)" stroke-width="2"/>`;
+    // Markierungen: {x,y, xl:'−3' (Wert an der x-Achse), yl:'?' (Wert an der y-Achse, mit Hilfslinie), pl:'P' (Text am Punkt)}
+    for(const m of (opt.marken||[])){
+      if(m.xl!==undefined) s+=`<line x1="${X(m.x)}" y1="${Y(0)}" x2="${X(m.x)}" y2="${Y(m.y)}" stroke="${MK}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+      if(m.yl) s+=`<line x1="${X(m.x)}" y1="${Y(m.y)}" x2="${X(0)}" y2="${Y(m.y)}" stroke="${MK}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+      s+=`<circle cx="${X(m.x)}" cy="${Y(m.y)}" r="5" fill="${MK}"/>`;
+      if(m.xl) s+=`<text class="m p" x="${X(m.x)}" y="${Y(0)+(m.y<0?-6:15)}" text-anchor="middle">${m.xl}</text>`;
+      if(m.yl){const w=m.yl.length*7.5+10; s+=`<rect x="${X(0)-w/2}" y="${Y(m.y)-9}" width="${w}" height="18" rx="7" fill="var(--karte)" stroke="${MK}" stroke-width="1.6"/><text class="m" x="${X(0)}" y="${Y(m.y)+4.5}" text-anchor="middle">${m.yl}</text>`;}
+      if(m.pl){const lage=m.lage||(m.x<0?'l':'r');
+        s+= lage==='o' ? `<text class="m p" x="${X(m.x)}" y="${Y(m.y)-10}" text-anchor="middle">${m.pl}</text>`
+          : lage==='u' ? `<text class="m p" x="${X(m.x)}" y="${Y(m.y)+19}" text-anchor="middle">${m.pl}</text>`
+          : `<text class="m p" x="${X(m.x)+(lage==='l'?-9:9)}" y="${Y(m.y)-7}" text-anchor="${lage==='l'?'end':'start'}">${m.pl}</text>`;}
+    }
     return s+'</svg>';
   }
   const tex=t=>{try{return katex.renderToString(t,{throwOnError:false})}catch(e){return t}};
-  const T=s=>s.replace(/\$([^$]+)\$/g,(m,t)=>tex(t));   // $…$ im Text
+  const T=s=>s.replace(/([^\s>$]*)\$([^$]+)\$([^\s<$]*)/g,(m,a,t,b)=>`<span class="nw">${a}${tex(t)}${b}</span>`);   // $…$ im Text, ohne Umbruch an den Rändern
 
   // ---------- Fragenpool (richtig = erste Antwort, wird gemischt) ----------
+  // tipp: Text zum Einblenden · skizze: {fn, opt} vor der Antwort, {fn2, opt2} danach (Wert wird markiert)
+  const NP=x=>x*x;
   const F=[
     {f:'Welcher Graph gehört zu $y=x^2+5$?', graph:true,
      a:[[x=>x*x+5,'nach oben verschoben um 5'],[x=>x*x-5],[x=>x*x+2],[x=>-x*x+5]],
      opt:{ymin:-6,ymax:8,ylab:[-4,4],u:15},
+     tipp:'Die Zahl hinter $x^2$ schiebt die ganze Parabel: <b>+</b> nach oben, <b>−</b> nach unten. Wo landet dann der Scheitelpunkt?',
      e:'Die Zahl <b>+5</b> verschiebt die Normalparabel um 5 nach <b>oben</b>. Der Scheitelpunkt ist $S\\,(0\\,|\\,5)$.'},
-    {f:'Wo liegt der Scheitelpunkt von $y=x^2-3$?', a:['$S\\,(0\\,|\\,{-3})$','$S\\,(0\\,|\\,3)$','$S\\,(-3\\,|\\,0)$','$S\\,(3\\,|\\,0)$'],
+    {f:'<span class="fkt">$y=x^2-3$</span><br>Wo liegt der Scheitelpunkt?', a:['$S\\,(0\\,|\\,{-3})$','$S\\,(0\\,|\\,3)$','$S\\,(-3\\,|\\,0)$','$S\\,(3\\,|\\,0)$'],
+     tipp:'Von <b>jedem</b> $y$-Wert der Normalparabel wird 3 abgezogen. Der Scheitelpunkt der Normalparabel ist $S\\,(0\\,|\\,0)$ – wohin wandert er?',
+     skizze:{fn:NP, opt:{xmin:-3,xmax:3,ymin:-4,ymax:6,ylab:[-2,2,4],marken:[{x:0,y:0,pl:'S'}],pfeile:[[0,-0.2,0,-2.8],[2,3.8,2,1.2],[-2,3.8,-2,1.2]]},
+             fn2:x=>x*x-3, opt2:{xmin:-3,xmax:3,ymin:-4,ymax:6,ylab:[-2,2,4],normal:true,marken:[{x:0,y:-3,pl:'S (0 | −3)'}]}},
      e:'$-3$ verschiebt die Normalparabel um 3 nach unten – der tiefste Punkt rutscht von $(0\\,|\\,0)$ nach $(0\\,|\\,{-3})$.'},
     {f:'Welche Gleichung gehört zu diesem Graphen?', bild:[x=>-x*x,{ymin:-7,ymax:3,ylab:[-6,-4,-2,2]}],
      a:['$y=-x^2$','$y=x^2$','$y=x^2-1$','$y=0{,}5x^2$'],
+     tipp:'Zwei Fragen: Ist die Parabel nach oben oder nach unten geöffnet? Und liegt bei $x=1$ der Punkt auf Höhe $1$ (bzw. $-1$) – also so breit wie die Normalparabel?',
      e:'Die Parabel ist nach <b>unten</b> geöffnet und so breit wie die Normalparabel – das macht das Minus vor $x^2$.'},
-    {f:'Wie ist die Parabel $y=-2x^2$ geöffnet?', a:['nach unten','nach oben','gar nicht – das ist eine Gerade'],
+    {f:'<span class="fkt">$y=-2x^2$</span><br>Wie ist die Parabel geöffnet?', a:['nach unten','nach oben','gar nicht – das ist eine Gerade'],
+     tipp:'Setz ein paar Zahlen ein: $x=1$ ergibt $y=-2\\cdot1^2=-2$. Kommt jemals ein positiver $y$-Wert heraus?',
+     skizze:{fn:null, opt:{xmin:-3,xmax:3,ymin:-9,ymax:2,u:17,ylab:[-8,-6,-4,-2],marken:[{x:0,y:0},{x:1,y:-2,pl:'(1 | −2)',lage:'u'},{x:-1,y:-2},{x:2,y:-8,pl:'(2 | −8)',lage:'o'},{x:-2,y:-8}]},
+             fn2:x=>-2*x*x, opt2:{xmin:-3,xmax:3,ymin:-9,ymax:2,u:17,ylab:[-8,-6,-4,-2],marken:[{x:1,y:-2,pl:'(1 | −2)',lage:'u'},{x:2,y:-8,pl:'(2 | −8)',lage:'o'}]}},
      e:'Ein <b>Minus</b> vor dem $x^2$ heißt: Jeder $y$-Wert wird negativ – die Parabel ist nach unten geöffnet.'},
     {f:'Welche Parabel ist am <b>engsten</b>?', a:['$y=3x^2$','$y=x^2$','$y=0{,}5x^2$','$y=0{,}2x^2$'],
+     tipp:'Setz $x=1$ in jede Gleichung ein. Wo der $y$-Wert am größten ist, steigt die Parabel am steilsten – sie ist am engsten.',
      e:'Je größer der Faktor vor $x^2$, desto schneller wachsen die $y$-Werte – die Parabel wird enger. Bei $3x^2$ ist schon $x=1$ auf Höhe 3.'},
-    {f:'Welcher $y$-Wert gehört bei $y=x^2$ zu $x=-3$?', a:['$9$','$-9$','$6$','$-6$'],
+    {f:'<span class="fkt">Normalparabel $y=x^2$</span><br>Welcher $y$-Wert gehört zu $x=-3$?', a:['$9$','$-9$','$6$','$-6$'],
+     tipp:'Setz $-3$ für $x$ ein – <b>mit Klammer</b>: $y=(-3)^2=(-3)\\cdot(-3)$. Minus mal Minus ergibt …?',
+     skizze:{fn:NP, opt:{xmin:-4,xmax:4,ymin:-1,ymax:10,ylab:[2,4,6,8],xlab:[2],marken:[{x:-3,y:9,xl:'−3',yl:'?'}]},
+             opt2:{xmin:-4,xmax:4,ymin:-1,ymax:10,ylab:[2,4,6,8],xlab:[2],marken:[{x:-3,y:9,xl:'−3',yl:'9'}]}},
      e:'$(-3)^2=(-3)\\cdot(-3)=9$. Beim Quadrieren wird ein negatives $x$ positiv – deshalb die Klammer!'},
     {f:'Liegt der Punkt $P\\,(2\\,|\\,4)$ auf der Normalparabel?', a:['Ja','Nein'],
+     tipp:'Setz den $x$-Wert von $P$ in $y=x^2$ ein. Kommt genau der $y$-Wert von $P$ heraus?',
+     skizze:{fn:null, opt:{xmin:-3,xmax:3,ymin:-1,ymax:6,ylab:[2,4],marken:[{x:2,y:4,xl:'2',yl:'4',pl:'P'}]},
+             fn2:NP},
      e:'Einsetzen: $2^2=4$ – der $y$-Wert passt, also liegt $P$ auf der Normalparabel.'},
     {f:'Welcher Graph gehört zu $y=0{,}5x^2$?', graph:true,
      a:[[x=>0.5*x*x],[x=>2*x*x],[x=>x*x],[x=>-0.5*x*x]], opt:{ymin:-5,ymax:7,ylab:[-4,4],u:15,normal:true},
+     tipp:'Die gestrichelte Linie ist die Normalparabel. Der Faktor $0{,}5$ halbiert jeden $y$-Wert: Bei $x=2$ ist $y=0{,}5\\cdot4=2$ statt $4$.',
      e:'Der Faktor $0{,}5$ halbiert jeden $y$-Wert – die Parabel wird <b>weiter</b> als die Normalparabel (gestrichelt).'},
     {f:'Die Normalparabel wird um 2 nach unten verschoben. Wie heißt die neue Gleichung?', a:['$y=x^2-2$','$y=x^2+2$','$y=-2x^2$','$y=2x^2$'],
+     tipp:'Nach unten verschieben heißt: Jeder Punkt rutscht 2 Kästchen tiefer, jeder $y$-Wert wird um 2 <b>kleiner</b>.',
+     skizze:{fn:NP, opt:{xmin:-3,xmax:3,ymin:-3,ymax:6,ylab:[-2,2,4],pfeile:[[0,-0.2,0,-1.8],[2,3.8,2,2.2],[-2,3.8,-2,2.2],[1,0.8,1,-0.8],[-1,0.8,-1,-0.8]]},
+             fn2:x=>x*x-2, opt2:{xmin:-3,xmax:3,ymin:-3,ymax:6,ylab:[-2,2,4],normal:true}},
      e:'Verschieben nach unten heißt: von jedem $y$-Wert 2 abziehen → $y=x^2-2$.'},
-    {f:'Was ist der <b>kleinste</b> $y$-Wert von $y=x^2+1$?', a:['$1$','$0$','$-1$','Es gibt keinen kleinsten.'],
+    {f:'<span class="fkt">$y=x^2+1$</span><br>Was ist der <b>kleinste</b> $y$-Wert?', a:['$1$','$0$','$-1$','Es gibt keinen kleinsten.'],
+     tipp:'$x^2$ ist nie negativ. Was ist das Kleinste, was $x^2$ sein kann – und bei welchem $x$? Dann noch $+1$.',
+     skizze:{fn:null, opt:{xmin:-3,xmax:3,ymin:-2,ymax:6,ylab:[2,4],marken:[{x:-2,y:5},{x:-1,y:2},{x:0,y:1,yl:'?'},{x:1,y:2},{x:2,y:5}]},
+             fn2:x=>x*x+1, opt2:{xmin:-3,xmax:3,ymin:-2,ymax:6,ylab:[2,4],marken:[{x:0,y:1,yl:'1',pl:'S'}]}},
      e:'$x^2$ ist nie negativ, am kleinsten ist es bei $x=0$. Dann ist $y=0+1=1$ – das ist der Scheitelpunkt $S\\,(0\\,|\\,1)$.'},
-    {f:'Bei $y=x^2$ gehört zu $x=1{,}5$ der Wert $y=2{,}25$. Welcher $y$-Wert gehört zu $x=-1{,}5$?', a:['$2{,}25$','$-2{,}25$','$-1{,}5$','$0$'],
+    {f:'<span class="fkt">Normalparabel $y=x^2$</span><br>Zu $x=1{,}5$ gehört $y=2{,}25$.<br>Welcher $y$-Wert gehört zu $x=-1{,}5$?', a:['$2{,}25$','$-2{,}25$','$-1{,}5$','$0$'],
+     tipp:'Die Normalparabel ist an der $y$-Achse gespiegelt: links und rechts sieht sie gleich aus. Oder rechne: $(-1{,}5)^2=(-1{,}5)\\cdot(-1{,}5)$.',
+     skizze:{fn:NP, opt:{xmin:-3,xmax:3,ymin:-1,ymax:5,u:30,ylab:[4],xlab:[],marken:[{x:1.5,y:2.25,xl:'1,5',yl:'2,25'},{x:-1.5,y:2.25,xl:'−1,5',pl:'?'}]},
+             opt2:{xmin:-3,xmax:3,ymin:-1,ymax:5,u:30,ylab:[4],xlab:[],marken:[{x:1.5,y:2.25,xl:'1,5',yl:'2,25'},{x:-1.5,y:2.25,xl:'−1,5',yl:'2,25'}]}},
      e:'Die Normalparabel ist <b>symmetrisch zur $y$-Achse</b>: $x$ und $-x$ haben denselben $y$-Wert.'},
     {f:'Welche Aussage über die Normalparabel stimmt?', a:['Sie ist symmetrisch zur $y$-Achse.','Ihr Scheitelpunkt ist $S\\,(1\\,|\\,1)$.','Sie ist nach unten geöffnet.','Sie ist eine Gerade.'],
+     tipp:'Denk an die Wertetabelle von $y=x^2$ – die Punkte siehst du in der Skizze.',
+     skizze:{fn:null, opt:{xmin:-3,xmax:3,ymin:-1,ymax:6,ylab:[2,4],marken:[{x:-2,y:4},{x:-1,y:1},{x:0,y:0},{x:1,y:1},{x:2,y:4}]},
+             fn2:NP},
      e:'Normalparabel $y=x^2$: Scheitelpunkt $S\\,(0\\,|\\,0)$, nach oben geöffnet, symmetrisch zur $y$-Achse.'},
     {f:'Welcher Graph gehört zu $y=1{,}5x$?', graph:true,
      a:[[x=>1.5*x],[x=>1.5*x*x],[x=>x*x+1.5],[x=>-1.5*x]], opt:{ymin:-5,ymax:7,ylab:[-4,4],u:15},
+     tipp:'Schau genau auf die Gleichung: Kommt ein $x^2$ vor? Ohne $x^2$ gibt es keine Parabel.',
      e:'Kein $x^2$ → keine Parabel. $y=1{,}5x$ ist eine <b>Gerade</b> durch den Ursprung – wie Pias erste Idee.'}
   ];
 
@@ -129,6 +189,14 @@ svg text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:11px;fil
     let h=`<div class="leiste"><span>Frage <b>${nr+1}</b> von ${runde.length}</span><span class="balken"><i style="width:${nr/runde.length*100}%"></i></span><span><b>${punkte}</b> richtig</span></div>`;
     h+=`<div class="frage">${T(q.f)}</div>`;
     if(q.bild) h+=`<div class="bild">${mini(q.bild[0],Object.assign({id:'b'},q.bild[1]))}</div>`;
+    if(q.tipp||q.skizze){
+      h+=`<div class="hilfen">`;
+      if(q.skizze) h+=`<button type="button" data-h="hs" aria-expanded="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v14h14"/><path d="M5 5q5 15 10 0"/></svg>Skizze<i class="pf"></i></button>`;
+      if(q.tipp) h+=`<button type="button" data-h="ht" aria-expanded="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7.5 15h5M8 17.5h4M10 2.5a5 5 0 0 0-3 9c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a5 5 0 0 0-3-9z"/></svg>Tipp<i class="pf"></i></button>`;
+      h+=`</div>`;
+      if(q.skizze) h+=`<div class="hilfe" id="hs"><div class="bild">${skizze(q,false)}</div><span class="klein">Skizze</span></div>`;
+      if(q.tipp) h+=`<div class="hilfe" id="ht">${T(q.tipp)}</div>`;
+    }
     const reihen=q.a.map((x,i)=>({x,ok:i===0}));
     const gem=mischen(reihen);
     h+=`<div class="antworten${q.graph?' graphen':''}">`;
@@ -139,9 +207,17 @@ svg text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:11px;fil
     h+=`</div><div class="rueck" id="rueck"></div><button class="weiter" id="weiter" type="button">${nr+1<runde.length?'Nächste Frage':'Zum Ergebnis'}</button>`;
     box.innerHTML=h;
     box.querySelectorAll('.antworten button').forEach(b=>b.addEventListener('click',()=>antwort(b,q)));
+    box.querySelectorAll('.hilfen button').forEach(b=>b.addEventListener('click',()=>{
+      const ziel=document.getElementById(b.dataset.h), auf=!ziel.classList.contains('auf');
+      ziel.classList.toggle('auf',auf); b.setAttribute('aria-expanded',auf);
+    }));
     document.getElementById('weiter').onclick=()=>{ nr++; if(nr<runde.length) zeige(); else ende(); };
   }
 
+  function skizze(q,nach){
+    const k=q.skizze, fn=nach&&('fn2' in k)?k.fn2:k.fn, o=nach&&k.opt2?k.opt2:k.opt;
+    return mini(fn,Object.assign({id:'s'+(nach?1:0)},o));
+  }
   function antwort(b,q){
     const alle=box.querySelectorAll('.antworten button');
     const ok=b.dataset.ok==='1';
@@ -150,6 +226,10 @@ svg text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:11px;fil
     const r=document.getElementById('rueck');
     r.className='rueck '+(ok?'ok':'no');
     r.innerHTML=`<b class="t">${ok?'Richtig!':'Leider nicht.'}</b>${T(q.e)}`;
+    // Skizze nach der Antwort mit markiertem Wert zeigen (offen lassen, wenn sie schon offen war; bei Fehler immer öffnen)
+    const hs=document.getElementById('hs');
+    if(hs){ hs.querySelector('.bild').innerHTML=skizze(q,true); hs.querySelector('.klein').textContent='Skizze – Lösung markiert';
+      if(!ok||hs.classList.contains('auf')){ hs.classList.add('auf'); const kb=box.querySelector('[data-h="hs"]'); kb.setAttribute('aria-expanded','true'); } }
     document.getElementById('weiter').style.display='block';
     box.querySelector('.balken i').style.width=((nr+1)/runde.length*100)+'%';
     box.querySelector('.leiste span:last-child b').textContent=punkte;

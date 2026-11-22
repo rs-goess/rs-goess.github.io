@@ -45,8 +45,9 @@ main{max-width:860px;margin:0 auto;padding:4px 8px 8px}
 .bl-sizer{position:relative}
 .bl-blatt{position:absolute;left:0;top:0;transform-origin:0 0;background-color:#fff;background-repeat:no-repeat}
 .bl-bild{position:absolute;left:0;background-repeat:no-repeat}
-.bl-karo{position:absolute;border:1px solid #c9cfd4;background-color:#fff;
-         background-image:linear-gradient(#e9edf0 1px,transparent 1px),linear-gradient(90deg,#e9edf0 1px,transparent 1px);
+/* Kästchenfeld wie auf dem AB: 0,5 cm, hellgrau gestrichelt */
+.bl-karo{position:absolute;border:1px dashed #c4c4c4;background-color:#fff;
+         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Cpath d='M0 .5H26M.5 0V26' stroke='%23d4d4d4' stroke-width='1' stroke-dasharray='3.25 3.25' fill='none'/%3E%3C/svg%3E");
          background-size:26px 26px;background-position:-1px -1px}
 .bl-z{position:absolute;height:26px;display:block;white-space:nowrap;color:var(--tinte);
       font-family:"Caveat",cursive;font-size:25px;line-height:26px;opacity:0;transition:opacity .35s;pointer-events:none}
@@ -61,7 +62,11 @@ main{max-width:860px;margin:0 auto;padding:4px 8px 8px}
 .bl-lab{position:absolute;height:26px;line-height:26px;font-family:"Caveat",cursive;font-size:25px;color:var(--ges);
         opacity:0;transition:opacity .35s}
 .bl-lab.auf{opacity:1}
-.bl-strich{position:absolute;width:2.5px;background:var(--tinte);opacity:.85}
+/* Mittelstrich (geg. | Rechnung) mit kleinen Kreisen an den Enden – Lage je Aufgabe verschiebbar */
+.bl-strich{position:absolute;width:3px;margin-left:-1.5px;background:#4a4a4a;border-radius:2px}
+.bl-strich::before,.bl-strich::after{content:"";position:absolute;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;
+         background:#fff;border:1.8px solid #6b6b6b;box-sizing:border-box}
+.bl-strich::before{top:-4.5px} .bl-strich::after{bottom:-4.5px}
 .bl-oval{position:absolute;border:3px solid var(--rot);border-radius:999px;opacity:0;transition:opacity .35s;pointer-events:none}
 .bl-oval.auf{opacity:1}
 .bl-naechst{position:absolute;height:26px;border:2.5px dashed #e0a93c;border-radius:8px;background:rgba(255,236,170,.35);
@@ -165,3 +170,26 @@ dialog.dlg::backdrop{background:rgba(10,25,30,.55)}
 .fertig .punkte b{color:#1E9E4A}
 .fertig .leg svg{width:17px;height:15px;vertical-align:-2px;color:#1E9E4A}
 .mini-haken svg{width:18px;height:16px;vertical-align:-3px;color:#1E9E4A}
+
+/* ---------- Kommandostrich und Kürzen (erscheinen mit der nächsten Zeile) ---------- */
+.bl-z .cmd{display:inline-block;margin-left:18px;padding-left:7px;border-left:1.6px solid var(--tinte);line-height:22px;opacity:0;transition:opacity .35s}
+.bl-z.folge .cmd{opacity:1;animation:blink 1s ease}
+.bl-z .st svg{color:var(--rot);opacity:0;transition:opacity .35s}
+.bl-z.folge .st svg{opacity:1}
+.bl-z .st svg line{stroke-width:.085em}
+.dlg .st svg,.tippbox .st svg,.text .st svg{color:var(--rot)}
+
+/* ---------- Bewertung ein-/ausblenden ---------- */
+.bew-leiste{display:flex;justify-content:flex-end;margin:0 0 6px}
+.bew-k{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #9fd3b2;background:#fff;color:#1E7A3E;border-radius:999px;
+       padding:5px 12px;font-size:14px;font-weight:bold;cursor:pointer;min-height:36px}
+.bew-k svg{width:17px;height:15px;color:#1E9E4A}
+body.bewertung .bew-k{background:var(--gruen-hell);border-color:#1E9E4A}
+body:not(.bewertung) .bl-haken,body:not(.bewertung) .nur-bew{display:none!important}
+
+/* ---------- Mathe-Lösungen ---------- */
+.bl-lab.tl{color:var(--tinte);font-weight:700}
+.bl-skizze{white-space:normal;line-height:normal}
+.bl-skizze svg{width:100%;height:100%;display:block;overflow:visible}
+body.mathe{background:#3B77A8}
+body.mathe .chips button.an{background:var(--gelb)}
