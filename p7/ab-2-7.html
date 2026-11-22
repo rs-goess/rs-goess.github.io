@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.7 Masse und Ortsfaktor – Lernpfad</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/ab-pfad.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   Physik 7a · 2.7 Masse und Ortsfaktor – Lernpfad zu den Aufgaben (AB Seite 2)
+   Bilder: bilder/2-7/ab-*.webp · Maße in cm wie in der PowerPoint (21 × 29,7 cm)
+   7a rechnet ohne Taschenrechner: g ≈ 10 N/kg, Werte im Kopf rechenbar.
+   Bewertung wie im Leistungstest 7a: geg./ges. ½ · Formel bzw. Umstellen 1 · Einsetzen ½ · Ergebnis ½ + Einheit ½
+   ===================================================================== */
+var U = function (e) { return '\\,\\mathrm{' + e + '}'; };
+var NKG = '\\,\\dfrac{\\mathrm{N}}{\\mathrm{kg}}';
+var FG = 'F_{\\mathrm{G}}';
+function ZELLE(x, y, z, s, o) { return Object.assign({ x: x, y: y, z: z, s: s, mitte: true, p: 0.5 }, o || {}); }
+function SATZ(y, z, s, o) { return Object.assign({ x: 1.65, y: y, z: z, s: s, cls: 'satz' }, o || {}); }
+
+var E_MAL100 = { schritte: [
+  { k: 'Formel', f: '$' + FG + ' = m \\cdot g$' },
+  { k: 'Einsetzen', f: '$' + FG + ' = 100' + U('kg') + ' \\cdot 9{,}81' + NKG + '$' },
+  { k: 'Einheiten', t: 'kg kürzt sich weg – übrig bleibt N.' },
+  { k: 'Mal 100 im Kopf', t: 'Mal 100 heißt: Komma <b>2 Stellen nach rechts</b>.', f: '$9{,}81 \\cdot 100 = 981$' }] };
+var E_UMSTELLEN_M = { schritte: [
+  { k: 'Ziel', t: '$m$ soll allein stehen. Neben $m$ steht noch „$\\cdot g$“.' },
+  { k: 'Gegenteil von mal', t: 'Teile beide Seiten durch $g$:', f: '$' + FG + ' = m \\cdot g \\quad |:g \\qquad\\Rightarrow\\qquad m = \\dfrac{' + FG + '}{g}$' },
+  { k: 'Probe mit dem Verstand', t: 'Etwa 1 kg wird mit 10 N angezogen. 6 N sind also etwas mehr als ein halbes Kilogramm. ✓' }] };
+var E_EINHEIT_KG = { schritte: [
+  { k: 'Durch einen Bruch teilen', t: 'Durch $\\tfrac{\\mathrm{N}}{\\mathrm{kg}}$ teilen heißt: mit dem Kehrbruch $\\tfrac{\\mathrm{kg}}{\\mathrm{N}}$ malnehmen.' },
+  { k: 'Einheiten', f: '$\\mathrm{N} \\cdot \\dfrac{\\mathrm{kg}}{\\mathrm{N}} = \\mathrm{kg}$' },
+  { k: 'Zahlen', f: '$\\dfrac{6{,}0}{10} = 0{,}60$' }] };
+var E_GRAMM = { schritte: [
+  { k: 'Grundeinheit der Masse', t: 'In die Formel gehört die Masse in <b>kg</b>, weil der Ortsfaktor „pro kg“ angibt.' },
+  { k: 'g in kg', t: '$1\\,\\mathrm{kg} = 1000\\,\\mathrm{g}$ – also durch 1000 teilen (Komma 3 Stellen nach links):', f: '$200' + U('g') + ' = 0{,}2' + U('kg') + '$' }] };
+
+window.PFAD = {
+  fach: 'Physik 7a', titel: '2.7 Masse und Ortsfaktor', zurueck: 'material.html', breite: 21,
+  ueberschrift: 'Lernpfad zum Arbeitsblatt – Lösung Zeile für Zeile',
+  karten: [
+
+  /* ===================== Start ===================== */
+  { chip: 'Start', start: true, titel: '2.7 Masse und Ortsfaktor',
+    html:
+    '<p>Hier siehst du die Aufgaben von deinem Arbeitsblatt. Mit <span class="mini" style="background:var(--petrol2);color:#fff">Nächster Schritt</span> erscheint die Lösung <b>Zeile für Zeile</b> in Blau.</p>' +
+    '<ol class="start"><li>Erst <b>selbst</b> rechnen – ohne Taschenrechner, die Zahlen gehen im Kopf.</li><li>Ergebnis bei <b>Ergebnis prüfen</b> eingeben.</li>' +
+    '<li>Hängst du fest? <span class="mini" style="background:var(--gelb)">Tipp</span> hilft beim nächsten Schritt. Der gelbe Rahmen zeigt, wo die nächste Zeile hinkommt.</li>' +
+    '<li><span class="mini" style="background:var(--orange);color:#fff">Glühbirne</span> = Erklärung zu einer schwierigen Zeile.</li>' +
+    '<li>Mit <b>Bewertung einblenden</b> siehst du grüne Haken – so wird im Leistungstest korrigiert: <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = 1 Punkt, <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 12 L9 20 L17 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = ½ Punkt.</li></ol>' +
+    '<div class="box">📱 Am Handy: <b>quer halten</b> oder die <b>Lupe</b> nehmen. Zoomen mit zwei Fingern geht auch.</div>' +
+    '<div class="box"><b>Fahrplan:</b> geg. (Masse gleich in kg) → ges. → Formel → Umstellen → Einsetzen mit Einheiten → Ergebnis → Antwort.</div>' +
+    '<div class="merk"><b>Gewichtskraft und Ortsfaktor</b><br>$' + FG + ' = m \\cdot g$ &nbsp;und&nbsp; $g = \\dfrac{' + FG + '}{m}$<br>Auf der Erde: $g = 9{,}81' + NKG + ' \\approx 10' + NKG + '$ – ein Körper mit 1 kg wird mit etwa 10 N angezogen.</div>' },
+
+  /* ===================== Aufgabe 1 ===================== */
+  { chip: 'A1', name: 'Aufgabe 1',
+    check: { frage: 'Ergebnis prüfen: Gib die Gewichtskraft auf dem <b>Mars</b> ein.', einh: 'N', ok: [371], exakt: 371, bsp: '371',
+      fehler: [{ w: 3.71, t: 'Du hast den Ortsfaktor abgeschrieben. Die Astronautin hat aber <b>100 kg</b> – also mal 100.' },
+               { w: 37.1, t: '<b>Fast!</b> Mal 100 heißt: Komma <b>2</b> Stellen nach rechts.' },
+               { w: 981, t: 'Das ist die Gewichtskraft auf der <b>Erde</b>. Gefragt war der Mars.' }] },
+    bild: { src: 'bilder/2-7/ab-a1.webp', y0: 0.9, y1: 5.95 },
+    zeilen: [
+      ZELLE(8.05, 3.95, '$981' + U('N') + '$', 'Erde', { tipp: '$' + FG + ' = m \\cdot g = 100' + U('kg') + ' \\cdot 9{,}81' + NKG + '$', erkl: E_MAL100 }),
+      ZELLE(11.15, 3.95, '$162' + U('N') + '$', 'Mond', { tipp: 'Genauso: $1{,}62$ mal 100.' }),
+      ZELLE(14.25, 3.95, '$371' + U('N') + '$', 'Mars', { tipp: '$3{,}71$ mal 100.' }),
+      ZELLE(17.35, 3.95, '$2479' + U('N') + '$', 'Jupiter', { tipp: '$24{,}79$ mal 100.' }),
+      SATZ(5.08, 'Auf dem Mond – dort ist der Ortsfaktor und damit die Gewichtskraft am kleinsten.', 'Begründung', { p: 1,
+        tipp: 'Wo wird die Astronautin am schwächsten angezogen?',
+        erkl: { schritte: [
+          { k: 'Was macht Springen leicht?', t: 'Je kleiner die Gewichtskraft, desto weniger zieht dich der Himmelskörper nach unten – du springst höher.' },
+          { k: 'Vergleich', t: 'Die Masse ist überall 100 kg. Die Gewichtskraft hängt nur vom <b>Ortsfaktor</b> ab.' },
+          { k: 'Kleinster Ortsfaktor', t: 'Mond: $1{,}62' + NKG + '$ – also kleinste Gewichtskraft (162 N).' }] } })
+    ] },
+
+  /* ===================== Aufgabe 2 ===================== */
+  { chip: 'A2', name: 'Aufgabe 2',
+    check: { einh: 'kg', ok: [0.6], exakt: 0.6, bsp: '0,6',
+      fehler: [{ w: 60, t: '<b>Falsch umgestellt?</b> Du hast mal genommen. Gesucht ist $m$ – also durch $g$ teilen.' },
+               { w: 600, t: '600 <b>g</b> stimmt! Hier ist aber nach <b>kg</b> gefragt: $600' + U('g') + ' = 0{,}6' + U('kg') + '$.' },
+               { w: 1.667, rel: 0.01, t: '<b>Bruch falsch herum?</b> Oben steht die Gewichtskraft, unten der Ortsfaktor.' }] },
+    teile: [
+      { bild: 'bilder/2-7/ab-a2.webp', top: 6.25, y0: 6.25, y1: 7.7 },
+      { rechnung: { x0: 1.5, w: 18.0, strich: 8.03, lx: 1.75,
+        links: [
+          { z: '$' + FG + ' = 6{,}0' + U('N') + '$', tipp: 'Was zeigt der Kraftmesser an? Mit Formelzeichen aufschreiben.' },
+          { z: '$g = 10' + NKG + '$', tipp: 'Der Ortsfaktor steht in der Aufgabe.' }],
+        ges: { z: '$m$', p: 0.5, tipp: 'Gesucht ist die Masse der Flasche.' },
+        rechts: [
+          { z: '$' + FG + ' = m \\cdot g$', s: 'Formel', cmd: ':g', tipp: 'Welche Formel verbindet Gewichtskraft, Masse und Ortsfaktor?' },
+          { z: '$m = \\dfrac{' + FG + '}{g}$', s: 'Umstellen', p: 1, tipp: 'Beide Seiten durch $g$ teilen.', erkl: E_UMSTELLEN_M },
+          { z: '$m = \\dfrac{6{,}0' + U('N') + '}{10' + NKG + '}$', s: 'Einsetzen', p: 0.5, tipp: 'Zahlen <b>mit Einheiten</b> einsetzen.' },
+          { z: '$m = 0{,}60' + U('kg') + ' =$&nbsp;<span class="unter">$600' + U('g') + '$</span>', s: 'Ergebnis', p: 1,
+            tipp: '6 geteilt durch 10 – Komma 1 Stelle nach links.', erkl: E_EINHEIT_KG }],
+        antwort: { z: 'Die Flasche hat eine Masse von 600 g.', tipp: 'Ganzer Satz mit Ergebnis.' } } }
+    ] },
+
+  /* ===================== Aufgabe 3 ===================== */
+  { chip: 'A3', name: 'Aufgabe 3',
+    check: { frage: 'Ergebnis prüfen: Gib die Gewichtskraft auf dem <b>Mond</b> (b) ein.', einh: 'N', ok: [0.32], exakt: 0.32, bsp: '0,32',
+      fehler: [{ w: 320, t: '<b>Achtung, Einheit!</b> Die Masse muss in <b>kg</b> in die Formel: $200' + U('g') + ' = 0{,}2' + U('kg') + '$.' },
+               { w: 3.2, t: '<b>Fast!</b> Prüfe die Umrechnung: $200' + U('g') + ' = 0{,}2' + U('kg') + '$ (nicht 2 kg).' },
+               { w: 0.125, t: 'Du hast geteilt. Gesucht ist die Gewichtskraft: $' + FG + ' = m \\cdot g$ – also mal.' },
+               { w: 2, t: 'Das ist die Gewichtskraft auf der <b>Erde</b> (a). Für b) rechnest du mit $g = 1{,}6' + NKG + '$.' }] },
+    teile: [
+      { bild: 'bilder/2-7/ab-a3.webp', top: 12.25, y0: 12.25, y1: 14.25 },
+      { rechnung: { x0: 1.5, w: 18.0, strich: 8.03, lx: 1.75,
+        links: [
+          { z: '$m = 200' + U('g') + ' = 0{,}2' + U('kg') + '$', s: 'geg. (Umrechnen)', tipp: 'Masse gleich in kg umrechnen.', erkl: E_GRAMM },
+          { z: '$g_{\\mathrm{Erde}} = 10' + NKG + '$', tipp: 'Ortsfaktor der Erde.' },
+          { z: '$g_{\\mathrm{Mond}} = 1{,}6' + NKG + '$', tipp: 'Ortsfaktor des Mondes.' }],
+        ges: { z: '$' + FG + '$ auf Erde und Mond', p: 0.5, tipp: 'Gesucht sind zwei Gewichtskräfte.' },
+        rechts: [
+          { z: '$' + FG + ' = m \\cdot g$', s: 'Formel', p: 1, tipp: 'Hier musst du nicht umstellen – $' + FG + '$ steht schon allein.' },
+          { z: 'a) &nbsp;$' + FG + ' = 0{,}2' + U('kg') + ' \\cdot 10' + NKG + '$', s: 'a) Einsetzen', p: 0.5, tipp: 'Masse in kg und Ortsfaktor der Erde einsetzen.' },
+          { z: '$\\phantom{a)\\;\\;}' + FG + ' =$&nbsp;<span class="unter">$2' + U('N') + '$</span>', s: 'a) Ergebnis', p: 1, tipp: '$0{,}2 \\cdot 10$ – Komma 1 Stelle nach rechts.' },
+          { z: 'b) &nbsp;$' + FG + ' = 0{,}2' + U('kg') + ' \\cdot 1{,}6' + NKG + '$', s: 'b) Einsetzen', p: 0.5, tipp: 'Jetzt mit dem Ortsfaktor des Mondes.' },
+          { z: '$\\phantom{b)\\;\\;}' + FG + ' =$&nbsp;<span class="unter">$0{,}32' + U('N') + '$</span>', s: 'b) Ergebnis', p: 1, tipp: 'Rechne erst $2 \\cdot 16 = 32$ und setze dann das Komma.',
+            erkl: { schritte: [
+              { k: 'Ohne Komma rechnen', f: '$2 \\cdot 16 = 32$' },
+              { k: 'Kommastellen zählen', t: '$0{,}2$ hat 1 Stelle nach dem Komma, $1{,}6$ hat 1 Stelle – zusammen 2 Stellen.', f: '$0{,}2 \\cdot 1{,}6 = 0{,}32$' },
+              { k: 'Probe', t: 'Der Mond zieht etwa ein Sechstel so stark wie die Erde: 2 N geteilt durch 6 ist ungefähr 0,3 N. ✓' }] } }],
+        antwort: { z: 'Auf der Erde wirkt eine Gewichtskraft von 2 N, auf dem Mond nur 0,32 N.', tipp: 'Beide Ergebnisse in einen Satz.' } } }
+    ] },
+
+  /* ===================== Aufgabe 4 ===================== */
+  { chip: 'A4', name: 'Aufgabe 4',
+    bild: { src: 'bilder/2-7/ab-a4.webp', y0: 18.85, y1: 22.75 },
+    zeilen: [
+      SATZ(20.47, 'Tim hat nur teilweise recht: Seine Masse ist auf dem Mond genauso groß wie auf der Erde.', '1. Satz', { p: 1,
+        tipp: 'Ändert sich die Masse, wenn Tim auf den Mond fliegt?',
+        erkl: { schritte: [
+          { k: 'Masse', t: 'Die Masse sagt, wie viel Stoff in einem Körper steckt. Tim besteht auf dem Mond aus genauso viel Stoff wie auf der Erde.' },
+          { k: 'Gewichtskraft', t: 'Die Gewichtskraft sagt, wie stark der Himmelskörper an Tim zieht – und das hängt vom Ort ab.' }] } }),
+      SATZ(21.27, 'Kleiner ist seine Gewichtskraft, weil der Ortsfaktor auf dem Mond kleiner ist', '2. Satz', { p: 1, tipp: 'Was ist auf dem Mond wirklich kleiner?' }),
+      SATZ(22.08, '(1,62 N/kg statt 9,81 N/kg). Deshalb kann er höher springen.', '3. Satz', { tipp: 'Nenne die Ortsfaktoren als Beleg.' })
+    ] },
+
+  /* ===================== Aufgabe 5 ===================== */
+  { chip: 'A5', name: 'Aufgabe 5',
+    check: { frage: 'Ergebnis prüfen: Was zeigt die Waage auf dem Mond ungefähr an?', einh: 'kg', ok: [10, 9.9], exakt: 9.9, bsp: '10',
+      fehler: [{ w: 60, t: 'So viel <b>Masse</b> hat Max wirklich. Die Waage misst aber, wie stark die Feder zusammengedrückt wird.' },
+               { w: 97.2, rel: 0.02, t: 'Das ist die Gewichtskraft in <b>N</b> – die Waage zeigt aber kg an.' }] },
+    bild: { src: 'bilder/2-7/ab-a5.webp', y0: 23.25, y1: 27.45 },
+    zeilen: [
+      SATZ(25.17, 'Etwa 10 kg. Die Waage misst eigentlich die Gewichtskraft (die Feder wird zusammengedrückt)', 'Anzeige', { p: 1,
+        tipp: 'Wie stark drückt Max auf dem Mond auf die Feder – im Vergleich zur Erde?',
+        erkl: { schritte: [
+          { k: 'Was misst die Waage?', t: 'Die Feder wird von der <b>Gewichtskraft</b> zusammengedrückt. Die Waage misst also eine Kraft.' },
+          { k: 'Warum zeigt sie kg?', t: 'Sie rechnet die Kraft mit dem Ortsfaktor der <b>Erde</b> in kg um.' },
+          { k: 'Auf dem Mond', t: 'Der Ortsfaktor ist etwa 6-mal kleiner ($1{,}62$ statt $9{,}81' + NKG + '$). Die Feder wird nur ein Sechstel so stark gedrückt:', f: '$\\dfrac{60' + U('kg') + '}{6} = 10' + U('kg') + '$' },
+          { k: 'Aber', t: 'Max hat trotzdem 60 kg Masse – nur die Anzeige ist falsch.' }] } }),
+      SATZ(25.97, 'und rechnet mit dem Ortsfaktor der Erde in kg um. Auf dem Mond ist die Gewichtskraft nur etwa', 'Begründung 1', { tipp: 'Mit welchem Ortsfaktor rechnet die Waage?' }),
+      SATZ(26.77, 'ein Sechstel so groß → die Anzeige auch. Seine Masse bleibt trotzdem 60 kg.', 'Begründung 2', { p: 1, tipp: 'Was passiert mit der Anzeige – und was mit der Masse?' })
+    ] },
+
+  /* ===================== Ende ===================== */
+  { chip: 'Ende', start: true, titel: 'Geschafft! 🎉',
+    html: '<p>Checkliste für den Leistungstest:</p><ul><li>Ich unterscheide <b>Masse</b> (kg, überall gleich, Waage) und <b>Gewichtskraft</b> (N, hängt vom Ort ab, Kraftmesser).</li>' +
+      '<li>Ich rechne mit $' + FG + ' = m \\cdot g$ und stelle nach $m$ oder $g$ um.</li>' +
+      '<li>Ich rechne Gramm in <b>Kilogramm</b> um, bevor ich einsetze.</li><li>Ich setze <b>mit Einheiten</b> ein und schreibe einen <b>Antwortsatz</b>.</li></ul>' +
+      '<p><a href="uebung-2-7.html" style="color:var(--petrol2);font-weight:bold">Weiter zum Übungsblatt 2.7 →</a> &nbsp;·&nbsp; <a href="material.html" style="color:var(--petrol2);font-weight:bold">Zum Material</a></p>' }
+  ] };
+</script>
+<script src="../assets/ab-pfad.js"></script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
