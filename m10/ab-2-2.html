@@ -22,9 +22,8 @@ function TEIL(src, y0, y1, zeilen) { return { bild: src, top: 0, y0: y0, y1: y1,
 var M = '\\,\\mathrm{m}';
 
 /* ---------- Tinte in der Tabelle: eine Zeile = alle Zellen einer Tabellenzeile ---------- */
-var ZELLE = 1.55 * 52;   /* Zellenbreite in px */
-function reihe(werte) {
-  return werte.map(function (w) { return '<span style="display:inline-block;width:' + ZELLE + 'px;text-align:center">$' + w + '$</span>'; }).join('');
+function reihe(werte, breite) {   /* breite = Zellenbreite in cm */
+  return werte.map(function (w) { return '<span style="display:inline-block;width:' + (breite * 52) + 'px;text-align:center">$' + w + '$</span>'; }).join('');
 }
 
 /* ---------- Graphen im Koordinatensystem von Aufgabe 1 (Box 9 × 10 cm, Ursprung bei 4,5 | 5,5) ---------- */
@@ -108,42 +107,66 @@ window.PFAD = {
   /* ===================== Aufgabe 1 ===================== */
   { chip: 'A1', name: 'Aufgabe 1',
     teile: [
-      TEIL(S1, 2.55, 9.2, [
-        { x: 3.9, y: 6.7, p: 1, z: reihe(['4{,}5', '2', '0{,}5', '0', '0{,}5', '2', '4{,}5']), s: 'a) Tabelle für p',
+      TEIL(S1, 2.55, 10.25, [
+        { x: 4.867, y: 6.9, p: 1, birne: [4.4, 6.26], z: reihe(['4{,}5', '2', '0{,}5', '0', '0{,}5', '2', '4{,}5'], 2.126), s: 'a) Tabelle für p',
           tipp: 'Erst $x$ quadrieren, dann mal 2: $2 \\cdot (-1{,}5)^2 = 2 \\cdot 2{,}25$', erkl: E_KLAMMER },
-        { x: 3.9, y: 8.4, p: 1, z: reihe(['-4', '-2{,}25', '-1', '-0{,}25', '0', '-0{,}25', '-1', '-2{,}25', '-4']), s: 'a) Tabelle für q',
+        { x: 4.198, y: 9.02, p: 1, birne: [3.85, 8.32], z: reihe(['-4', '-2{,}25', '-1', '-0{,}25', '0', '-0{,}25', '-1', '-2{,}25', '-4'], 1.728), s: 'a) Tabelle für q',
           tipp: '$-0{,}25 \\cdot (-4)^2 = -0{,}25 \\cdot 16$. Das Minus vor der $0{,}25$ bleibt – alle Werte werden negativ.', erkl: E_SYM }]),
-      TEIL(S1, 9.2, 19.55, [
-        { typ: 'skizze', x: 1.0, y: 9.33, w: 9, h: 10, html: G_N, p: 0.5, haken: [1.2, 9.8], s: 'b) Normalparabel', tipp: 'Normalparabel: $(1 \\,|\\, 1)$, $(2 \\,|\\, 4)$ und gespiegelt – gestrichelt zeichnen.' },
-        { typ: 'skizze', x: 1.0, y: 9.33, w: 9, h: 10, html: G_P, p: 1, haken: [1.2, 10.45], birne: [2.35, 10.45], s: 'b) Graph von p', tipp: 'Punkte aus der ersten Tabelle eintragen und rund verbinden.', erkl: E_ZEICHNEN },
-        { typ: 'skizze', x: 1.0, y: 9.33, w: 9, h: 10, html: G_Q, p: 1, haken: [1.2, 11.1], s: 'b) Graph von q', tipp: 'Punkte aus der zweiten Tabelle – diese Parabel ist nach unten geöffnet.' },
-        { x: 15.28, y: 12.22, mitte: true, p: 0.5, z: 'oben', s: 'c) Öffnung von p', tipp: 'Ist $a = 2$ positiv oder negativ?' },
-        { x: 16.95, y: 12.92, mitte: true, p: 0.5, z: 'gestreckt (enger)', s: 'c) Form von p', tipp: 'Vergleiche in deiner Zeichnung: Ist $p$ enger oder weiter als die gestrichelte Normalparabel?' },
-        { x: 15.26, y: 14.27, mitte: true, p: 0.5, z: 'unten', s: 'c) Öffnung von q', tipp: 'Ist $a = -0{,}25$ positiv oder negativ?' },
-        { x: 17.05, y: 14.97, mitte: true, p: 0.5, z: 'gestaucht (weiter)', s: 'c) Form von q', tipp: '$0{,}25$ ist kleiner als 1.', erkl: E_FORM },
-        { x: 16.5, y: 16.32, mitte: true, p: 0.5, z: 'Normalparabel', s: 'c) a = 1', tipp: '$y = 1 \\cdot x^2 = x^2$ – wie heißt dieser Graph?' }])
+      TEIL(S1, 10.25, 21.05, [
+        { typ: 'skizze', x: 1.0, y: 10.69, w: 9, h: 10, html: G_N, p: 0.5, haken: [1.2, 11.15], s: 'b) Normalparabel', tipp: 'Normalparabel: $(1 \\,|\\, 1)$, $(2 \\,|\\, 4)$ und gespiegelt – gestrichelt zeichnen.' },
+        { typ: 'skizze', x: 1.0, y: 10.69, w: 9, h: 10, html: G_P, p: 1, haken: [1.2, 11.8], birne: [2.35, 11.8], s: 'b) Graph von p', tipp: 'Punkte aus der ersten Tabelle eintragen und rund verbinden.', erkl: E_ZEICHNEN },
+        { typ: 'skizze', x: 1.0, y: 10.69, w: 9, h: 10, html: G_Q, p: 1, haken: [1.2, 12.45], s: 'b) Graph von q', tipp: 'Punkte aus der zweiten Tabelle – diese Parabel ist nach unten geöffnet.' },
+        { x: 16.06, y: 12.1, mitte: true, p: 0.5, z: 'oben', s: 'c) Öffnung von p', tipp: 'Ist $a = 2$ positiv oder negativ?' },
+        { x: 14.9, y: 13.97, mitte: true, p: 0.5, z: 'gestreckt (enger)', s: 'c) Form von p', tipp: 'Vergleiche in deiner Zeichnung: Ist $p$ enger oder weiter als die gestrichelte Normalparabel?' },
+        { x: 16.03, y: 15.21, mitte: true, p: 0.5, z: 'unten', s: 'c) Öffnung von q', tipp: 'Ist $a = -0{,}25$ positiv oder negativ?' },
+        { x: 14.66, y: 17.07, mitte: true, p: 0.5, z: 'gestaucht (weiter)', s: 'c) Form von q', tipp: '$0{,}25$ ist kleiner als 1.', erkl: E_FORM },
+        { x: 17.27, y: 18.15, mitte: true, p: 0.5, z: 'Normalparabel', s: 'c) a = 1', tipp: '$y = 1 \\cdot x^2 = x^2$ – wie heißt dieser Graph?' }])
     ] },
 
   /* ===================== Aufgabe 2 ===================== */
   { chip: 'A2', name: 'Aufgabe 2',
     teile: [
-      TEIL(S1, 19.65, 27.0, [
-        { x: 4.5, y: 24.5, mitte: true, p: 0.5, z: 'D', birne: [12.3, 24.5], s: 'Graph p₁', tipp: 'Lies bei $x = 2$ ab: $y \\approx 3{,}2$. Welches $a$ ergibt $a \\cdot 4 = 3{,}2$?', erkl: E_ZUORDNEN },
-        { x: 6.1, y: 24.5, mitte: true, p: 0.5, z: 'A', s: 'Graph p₂', tipp: 'Der engste Graph nach oben: schon bei $x = 1$ ist $y = 3$.' },
-        { x: 7.7, y: 24.5, mitte: true, p: 0.5, z: 'E', s: 'Graph p₃', tipp: 'Nach unten geöffnet und weit: bei $x = 2$ ist $y = -2$. Also $a \\cdot 4 = -2$.' },
-        { x: 9.3, y: 24.5, mitte: true, p: 0.5, z: 'B', s: 'Graph p₄', tipp: 'Der flachste Graph: bei $x = 4$ erst $y \\approx 3{,}2$. $0{,}2 \\cdot 16 = 3{,}2$' },
-        { x: 10.9, y: 24.5, mitte: true, p: 0.5, z: 'C', s: 'Graph p₅', tipp: 'Nach unten und eng: bei $x = 1$ ist $y = -2$.' },
-        { x: 5.98, y: 25.5, mitte: true, p: 0.5, z: 'F', s: 'übrige Gleichung', tipp: 'Welchen Buchstaben hast du noch nicht benutzt? $y = -0{,}2x^2$ wäre eine sehr weite, nach unten geöffnete Parabel.' }])
+      TEIL(S1, 21.15, 29.2, [
+        { x: 4.5, y: 26.92, mitte: true, p: 0.5, z: 'D', birne: [12.3, 26.92], s: 'Graph p₁', tipp: 'Lies bei $x = 2$ ab: $y \\approx 3{,}2$. Welches $a$ ergibt $a \\cdot 4 = 3{,}2$?', erkl: E_ZUORDNEN },
+        { x: 6.1, y: 26.92, mitte: true, p: 0.5, z: 'A', s: 'Graph p₂', tipp: 'Der engste Graph nach oben: schon bei $x = 1$ ist $y = 3$.' },
+        { x: 7.7, y: 26.92, mitte: true, p: 0.5, z: 'E', s: 'Graph p₃', tipp: 'Nach unten geöffnet und weit: bei $x = 2$ ist $y = -2$. Also $a \\cdot 4 = -2$.' },
+        { x: 9.3, y: 26.92, mitte: true, p: 0.5, z: 'B', s: 'Graph p₄', tipp: 'Der flachste Graph: bei $x = 4$ erst $y \\approx 3{,}2$. $0{,}2 \\cdot 16 = 3{,}2$' },
+        { x: 10.9, y: 26.92, mitte: true, p: 0.5, z: 'C', s: 'Graph p₅', tipp: 'Nach unten und eng: bei $x = 1$ ist $y = -2$.' },
+        { x: 5.98, y: 28.52, mitte: true, p: 0.5, z: 'F', s: 'übrige Gleichung', tipp: 'Welchen Buchstaben hast du noch nicht benutzt? $y = -0{,}2x^2$ wäre eine sehr weite, nach unten geöffnete Parabel.' }])
     ] },
 
-  /* ===================== Aufgabe 3 ===================== */
+  /* ===================== Aufgabe 3: Fehlende Koordinate ===================== */
   { chip: 'A3', name: 'Aufgabe 3',
-    check: { frage: 'd) Ergebnis prüfen: Welchen Wert hat $a$ bei $P\\,(0{,}5 \\,|\\, 1)$?', einh: '', ok: [4], exakt: 4, bsp: '4',
-      fehler: [{ w: 0.25, rel: 0.001, t: 'Du hast <b>mal</b> $0{,}25$ gerechnet. Es heißt aber $1 = 0{,}25a \\;|\\; :0{,}25$.' },
-               { w: 2, rel: 0.001, t: 'Hast du das Quadrat vergessen? $0{,}5^2 = 0{,}5 \\cdot 0{,}5 = 0{,}25$ – nicht $0{,}5$.' },
-               { w: 1, rel: 0.001, t: 'Setze $x = 0{,}5$ und $y = 1$ in $y = ax^2$ ein und löse nach $a$ auf.' }] },
+    check: { frage: 'b) Ergebnis prüfen: Wie groß ist $x_E$?', einh: '', ok: [-3], exakt: -3, bsp: '−3',
+      fehler: [{ w: 3, rel: 0.001, t: '<b>Fast!</b> $x_E^2 = 9$ hat zwei Lösungen. Laut Angabe ist $x_E < 0$ – welche passt?' },
+               { w: 9, rel: 0.001, t: 'Das ist $x_E^2$. Zieh noch die Wurzel.' },
+               { w: -9, rel: 0.001, t: 'Das ist $x_E^2$ (mit falschem Vorzeichen). Teile durch $-1{,}2$ und zieh die Wurzel.' },
+               { w: 12.96, rel: 0.001, t: 'Du hast $-1{,}2 \\cdot (-10{,}8)$ gerechnet. Setze $-10{,}8$ für $y$ ein und teile durch $-1{,}2$.' }] },
     teile: [
-      TEIL(S2, 0.95, 3.1),
+      TEIL(S2, 0.1, 2.85),
+      { loesung: { spalten: [
+        { x: 1.4, zeilen: [
+          { tl: 'a)', z: '$y_A = 0{,}8 \\cdot (-2{,}5)^2 =$ <span class="unter">$5$</span>', s: 'a) Punkt A', p: 1, tipp: 'Den $x$-Wert $-2{,}5$ in $y = 0{,}8x^2$ einsetzen – mit Klammer: $(-2{,}5)^2 = 6{,}25$', erkl: E_KLAMMER },
+          { z: '$y_B = 0{,}8 \\cdot 1{,}5^2 =$ <span class="unter">$1{,}8$</span>', s: 'a) Punkt B', p: 1, tipp: '$1{,}5^2 = 2{,}25$, dann mal $0{,}8$.' },
+          { z: '$y_C = 0{,}8 \\cdot 3^2 =$ <span class="unter">$7{,}2$</span>', s: 'a) Punkt C', p: 1, tipp: '$3^2 = 9$, dann mal $0{,}8$.' }] },
+        { x: 10.9, zeilen: [
+          { tl: 'b)', z: '$-4{,}8 = -1{,}2 \\cdot x_D^2$', cmd: ':(-1{,}2)', s: 'b) Punkt D einsetzen', p: 1, tipp: 'Jetzt ist der $y$-Wert bekannt: $-4{,}8$ für $y$ einsetzen.' },
+          { z: '$x_D^2 = 4$', s: 'b) x_D²', tipp: 'Minus durch Minus ergibt Plus: $-4{,}8 : (-1{,}2) = 4$' },
+          { z: '$x_D = 2 \\;\\text{ oder }\\; x_D = -2$ → <span class="unter">$x_D = 2$</span>', s: 'b) Bedingung für D', p: 1, tipp: 'Welche Zahlen ergeben quadriert 4? Laut Angabe ist $x_D > 0$.', erkl: E_WURZEL },
+          { z: '$-10{,}8 = -1{,}2 \\cdot x_E^2$', cmd: ':(-1{,}2)', s: 'b) Punkt E einsetzen', p: 1, tipp: 'Genauso wie bei $D$: $-10{,}8$ für $y$ einsetzen.' },
+          { z: '$x_E^2 = 9$', s: 'b) x_E²', tipp: '$-10{,}8 : (-1{,}2) = 9$' },
+          { z: '$x_E = 3 \\;\\text{ oder }\\; x_E = -3$ → <span class="unter">$x_E = -3$</span>', s: 'b) Bedingung für E', p: 1, tipp: 'Diesmal ist $x_E < 0$ – der Punkt liegt links der $y$-Achse.' }] }] } }
+    ] },
+
+  /* ===================== Aufgabe 4: a bestimmen ===================== */
+  { chip: 'A4', name: 'Aufgabe 4',
+    check: { frage: 'c) Ergebnis prüfen: Welchen Wert hat $a$ bei $P\\,(4 \\,|\\, {-4})$?', einh: '', ok: [-0.25], exakt: -0.25, bsp: '−0,25',
+      fehler: [{ w: 0.25, rel: 0.001, t: 'Achte auf das Vorzeichen: $-4 : 16$ ist negativ.' },
+               { w: -1, rel: 0.001, t: 'Hast du das Quadrat vergessen? $4^2 = 16$, nicht $4$.' },
+               { w: -0.5, rel: 0.001, t: '$4^2$ ist $4 \\cdot 4 = 16$ – nicht $4 \\cdot 2 = 8$.' },
+               { w: -64, rel: 0.001, t: 'Du hast <b>mal</b> 16 gerechnet. Es heißt aber $-4 = 16a \\;|\\; :16$.' }] },
+    teile: [
+      TEIL(S2, 8.15, 10.3),
       { loesung: { spalten: [
         { x: 1.4, zeilen: [
           { tl: 'a)', z: '$6 = a \\cdot 2^2$', s: 'a) Einsetzen', p: 1, tipp: 'Setze $x = 2$ und $y = 6$ in $y = ax^2$ ein.', erkl: E_EINSETZEN },
@@ -155,48 +178,21 @@ window.PFAD = {
         { x: 10.9, zeilen: [
           { tl: 'c)', z: '$-4 = a \\cdot 4^2$', s: 'c) Einsetzen', p: 1, tipp: '$x = 4$, $y = -4$' },
           { z: '$-4 = 16a$', cmd: ':16', s: 'c) Zusammenfassen', tipp: '$4^2 = 16$' },
-          { z: '$a = -0{,}25 \\quad\\Rightarrow\\quad$ <span class="unter">$p\\colon y = -0{,}25x^2$</span>', s: 'c) Ergebnis', p: 1, tipp: '$\\dfrac{-4}{16} = -\\dfrac{1}{4}$' },
-          { tl: 'd)', z: '$1 = a \\cdot 0{,}5^2$', s: 'd) Einsetzen', p: 1, tipp: '$x = 0{,}5$, $y = 1$' },
-          { z: '$1 = 0{,}25a$', cmd: ':0{,}25', s: 'd) Zusammenfassen', tipp: '$0{,}5^2 = 0{,}5 \\cdot 0{,}5 = 0{,}25$' },
-          { z: '$a = 4 \\quad\\Rightarrow\\quad$ <span class="unter">$p\\colon y = 4x^2$</span>', s: 'd) Ergebnis', p: 1, tipp: 'Durch $0{,}25$ teilen ist dasselbe wie mal 4.' }] }] } }
-    ] },
-
-  /* ===================== Aufgabe 4 ===================== */
-  { chip: 'A4', name: 'Aufgabe 4',
-    check: { frage: 'a) Ergebnis prüfen: Wie groß ist $x_B$?', einh: '', ok: [-3], exakt: -3, bsp: '−3',
-      fehler: [{ w: 3, rel: 0.001, t: '<b>Fast!</b> $x_B^2 = 9$ hat zwei Lösungen. Laut Angabe ist $x_B < 0$ – welche passt?' },
-               { w: 9, rel: 0.001, t: 'Das ist $x_B^2$. Zieh noch die Wurzel.' },
-               { w: -9, rel: 0.001, t: 'Das ist $x_B^2$ (mit falschem Vorzeichen). Zieh die Wurzel und achte auf $x_B < 0$.' },
-               { w: 5.76, rel: 0.001, t: 'Du hast $0{,}8 \\cdot 7{,}2$ gerechnet. Setze $7{,}2$ für $y$ ein und teile durch $0{,}8$.' }] },
-    teile: [
-      TEIL(S2, 8.55, 11.2),
-      { loesung: { spalten: [
-        { x: 1.4, zeilen: [
-          { tl: 'a)', z: '$y_A = 0{,}8 \\cdot (-2{,}5)^2$', s: 'a) Punkt A einsetzen', p: 1, tipp: 'Den $x$-Wert $-2{,}5$ einsetzen – mit Klammer.' },
-          { z: '$y_A = 0{,}8 \\cdot 6{,}25 =$ <span class="unter">$5$</span>', s: 'a) y_A', p: 1, tipp: '$(-2{,}5)^2 = 6{,}25$' },
-          { z: '$7{,}2 = 0{,}8 \\cdot x_B^2$', cmd: ':0{,}8', s: 'a) Punkt B einsetzen', p: 1, tipp: 'Jetzt ist der $y$-Wert bekannt: $7{,}2$ für $y$ einsetzen.' },
-          { z: '$x_B^2 = 9$', s: 'a) x_B²', tipp: '$7{,}2 : 0{,}8 = 9$' },
-          { z: '$x_B = 3 \\;\\text{ oder }\\; x_B = -3$', s: 'a) zwei Lösungen', tipp: 'Welche Zahlen ergeben quadriert 9?', erkl: E_WURZEL },
-          { z: 'Wegen $x_B < 0$: <span class="unter">$x_B = -3$</span>', cls: 'satz', s: 'a) Bedingung', p: 1, tipp: 'Lies die Bedingung in der Angabe.' }] },
-        { x: 10.9, zeilen: [
-          { tl: 'b)', z: '$-4{,}8 = -1{,}2 \\cdot x_C^2$', cmd: ':(-1{,}2)', s: 'b) Punkt C einsetzen', p: 1, tipp: '$-4{,}8$ für $y$ einsetzen.' },
-          { z: '$x_C^2 = 4$', s: 'b) x_C²', tipp: 'Minus durch Minus ergibt Plus: $-4{,}8 : (-1{,}2) = 4$' },
-          { z: '$x_C = 2 \\;\\text{ oder }\\; x_C = -2$', s: 'b) zwei Lösungen', tipp: 'Wieder zwei Möglichkeiten.' },
-          { z: 'Wegen $x_C > 0$: <span class="unter">$x_C = 2$</span>', cls: 'satz', s: 'b) Bedingung', p: 1, tipp: '$x_C > 0$ heißt: rechts der $y$-Achse.' }] }] } }
+          { z: '$a = -0{,}25 \\quad\\Rightarrow\\quad$ <span class="unter">$p\\colon y = -0{,}25x^2$</span>', s: 'c) Ergebnis', p: 1, tipp: '$\\dfrac{-4}{16} = -\\dfrac{1}{4}$' }] }] } }
     ] },
 
   /* ===================== Aufgabe 5 ===================== */
   { chip: 'A5', name: 'Aufgabe 5',
     teile: [
-      TEIL(S2, 14.7, 21.25, [
-        { x: 11.05, y: 18.21, mitte: true, p: 0.5, z: '$(-2)^2 = 4$', s: 'P: Parabel bei x = −2', tipp: 'Setze $x = -2$ in $y = x^2$ ein – mit Klammer.', erkl: E_LAGE },
-        { x: 17.1, y: 18.21, mitte: true, p: 0.5, z: 'unterhalb – stimmt', s: 'P: Lage', tipp: '$P$ hat $y = 3$, die Parabel an derselben Stelle $y = 4$. Was liegt höher?' },
-        { x: 11.05, y: 19.06, mitte: true, p: 0.5, z: '$0{,}5 \\cdot 3^2 = 4{,}5$', s: 'Q: Parabel bei x = 3', tipp: '$0{,}5 \\cdot 9$' },
-        { x: 17.1, y: 19.06, mitte: true, p: 0.5, z: 'unterhalb', s: 'Q: Lage', tipp: 'Vergleiche $4$ (Punkt) mit $4{,}5$ (Parabel).' },
-        { x: 11.05, y: 19.91, mitte: true, p: 0.5, z: '$-1{,}2 \\cdot (-1{,}5)^2 = -2{,}7$', s: 'R: Parabel bei x = −1,5', tipp: '$(-1{,}5)^2 = 2{,}25$, dann mal $-1{,}2$.' },
-        { x: 17.1, y: 19.91, mitte: true, p: 0.5, z: 'auf', s: 'R: Lage', tipp: 'Beide $y$-Werte sind gleich.' },
-        { x: 11.05, y: 20.76, mitte: true, p: 0.5, z: '$-1{,}5 \\cdot 2^2 = -6$', s: 'S: Parabel bei x = 2', tipp: '$-1{,}5 \\cdot 4$' },
-        { x: 17.1, y: 20.76, mitte: true, p: 0.5, z: 'oberhalb', s: 'S: Lage', tipp: 'Welche Zahl ist größer: $-5$ oder $-6$?', erkl: E_NEGATIV }])
+      TEIL(S2, 15.2, 21.75, [
+        { x: 11.05, y: 18.71, mitte: true, p: 0.5, z: '$(-2)^2 = 4$', s: 'P: Parabel bei x = −2', tipp: 'Setze $x = -2$ in $y = x^2$ ein – mit Klammer.', erkl: E_LAGE },
+        { x: 17.1, y: 18.71, mitte: true, p: 0.5, z: 'unterhalb – stimmt', s: 'P: Lage', tipp: '$P$ hat $y = 3$, die Parabel an derselben Stelle $y = 4$. Was liegt höher?' },
+        { x: 11.05, y: 19.56, mitte: true, p: 0.5, z: '$0{,}5 \\cdot 3^2 = 4{,}5$', s: 'Q: Parabel bei x = 3', tipp: '$0{,}5 \\cdot 9$' },
+        { x: 17.1, y: 19.56, mitte: true, p: 0.5, z: 'unterhalb', s: 'Q: Lage', tipp: 'Vergleiche $4$ (Punkt) mit $4{,}5$ (Parabel).' },
+        { x: 11.05, y: 20.41, mitte: true, p: 0.5, z: '$-1{,}2 \\cdot (-1{,}5)^2 = -2{,}7$', s: 'R: Parabel bei x = −1,5', tipp: '$(-1{,}5)^2 = 2{,}25$, dann mal $-1{,}2$.' },
+        { x: 17.1, y: 20.41, mitte: true, p: 0.5, z: 'auf', s: 'R: Lage', tipp: 'Beide $y$-Werte sind gleich.' },
+        { x: 11.05, y: 21.26, mitte: true, p: 0.5, z: '$-1{,}5 \\cdot 2^2 = -6$', s: 'S: Parabel bei x = 2', tipp: '$-1{,}5 \\cdot 4$' },
+        { x: 17.1, y: 21.26, mitte: true, p: 0.5, z: 'oberhalb', s: 'S: Lage', tipp: 'Welche Zahl ist größer: $-5$ oder $-6$?', erkl: E_NEGATIV }])
     ] },
 
   /* ===================== Aufgabe 6 ===================== */
@@ -207,7 +203,7 @@ window.PFAD = {
                { w: 21.25, rel: 0.001, t: 'Der Bogen liegt <b>unter</b> dem Scheitel – also abziehen, nicht dazuzählen.' },
                { w: 2.5, rel: 0.001, t: 'Hast du $10^2$ als $10 \\cdot 2$ gerechnet? $10^2 = 100$.' }] },
     teile: [
-      TEIL(S2, 21.5, 25.65),
+      TEIL(S2, 22.0, 26.15),
       { loesung: { spalten: [{ x: 1.4, zeilen: [
         { tl: 'a)', z: '<span class="unter">$F\\,(40 \\,|\\, {-20})$</span>', s: 'a) Fußpunkt', p: 1, tipp: 'Der Scheitel liegt oben im Ursprung. Halbe Breite nach rechts, ganze Höhe nach unten.', erkl: E_FUSS },
         { tl: 'b)', z: '$-20 = a \\cdot 40^2$', s: 'b) F einsetzen', p: 1, tipp: '$F$ liegt auf der Parabel – einsetzen wie in Aufgabe 3.' },
@@ -222,7 +218,7 @@ window.PFAD = {
     html: '<p>Checkliste für den Leistungstest:</p><ul>' +
       '<li>Ich erkenne an $a$, ob die Parabel nach oben oder unten geöffnet und ob sie gestreckt oder gestaucht ist.</li>' +
       '<li>Ich setze negative Zahlen <b>mit Klammer</b> ein: $(-3)^2 = 9$.</li>' +
-      '<li>Liegt ein Punkt auf der Parabel, setze ich ihn ein und löse nach $a$ (oder nach der fehlenden Koordinate) auf.</li>' +
+      '<li>Liegt ein Punkt auf der Parabel, setze ich ihn ein und berechne die fehlende Koordinate oder $a$.</li>' +
       '<li>Bei $x^2 = 9$ denke ich an <b>zwei</b> Lösungen und wähle mit der Bedingung.</li>' +
       '<li>Oberhalb oder unterhalb: Ich vergleiche den $y$-Wert des Punkts mit dem $y$-Wert der Parabel an derselben Stelle.</li></ul>' +
       '<p><a href="parabel-quiz.html" style="color:#3B77A8;font-weight:bold">Zum Parabel-Quiz</a> · <a href="material.html" style="color:#3B77A8;font-weight:bold">Zum Material</a></p>' }
