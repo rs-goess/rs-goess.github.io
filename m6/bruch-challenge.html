@@ -213,6 +213,13 @@ body.playing #foehn,body.pausiert #foehn{display:block}
   padding:7px 12px;margin:10px 0 0;color:#3c4763;text-align:left}
 .foehn-info svg{width:30px;height:30px;flex:none;margin-right:10px;color:#1d2b4a}
 @media (prefers-reduced-motion:reduce){#foehn.aktiv svg,#foehn.neu{animation:none}}
+/* Ruhe-Modus: Tafeln schweben, Föhn läuft dauerhaft */
+body.ruhe #foehn,body.ruhe #foehnTipp{display:none!important}
+.seg.modus{grid-template-columns:repeat(2,1fr)}
+.seg.modus span{line-height:1.15}
+.seg.modus small{display:block;font-size:12.5px;font-weight:700;opacity:.72;margin-top:2px}
+.foehn-info.ruhe-info{background:#eaf7ef;border-color:#a8dcbb}
+body.playing footer.recht,body.pausiert footer.recht{visibility:hidden}
 
 /* ---------- Klassen-Bestenliste ---------- */
 .hstabs{display:flex;margin:-2px 0 6px;background:#e9e3d2;border-radius:12px;padding:3px}
@@ -274,7 +281,8 @@ body:not(.playing) #foehnTipp{display:none}
           <h1>Bruch-<i>Challenge</i><small>Schieß die Tafel mit dem richtigen Bruch ab</small></h1>
         </div>
         <p class="how">Rechne im Kopf und triff die Tafel mit dem richtigen Ergebnis – immer vollständig gekürzt. Falsche Tafel getroffen oder die richtige verpasst? Dann ist ein Leben weg.</p>
-        <p class="foehn-info"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(90 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(180 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(270 12 12)"/></g><circle cx="12" cy="12" r="2.3" fill="#ff8a3d" stroke="#1d2b4a" stroke-width="1.2"/></svg><span><b>Föhn-Booster:</b> Tipp unten links auf den Föhn (PC: Taste F) – er pustet die Tafeln kurz nach oben. Einen hast du am Start, für 5 Richtige in Folge gibt es einen neuen (höchstens 3).</span></p>
+        <p class="foehn-info" id="infoZeit"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(90 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(180 12 12)"/><path d="M12 12C11.2 8 12.4 3.6 15.6 3.4c2.3-.1 2.8 2.6 1 4.6C15.3 9.8 13.8 11.2 12 12z" transform="rotate(270 12 12)"/></g><circle cx="12" cy="12" r="2.3" fill="#ff8a3d" stroke="#1d2b4a" stroke-width="1.2"/></svg><span><b>Föhn-Booster:</b> Tipp unten links auf den Föhn (PC: Taste F) – er pustet die Tafeln kurz nach oben. Einen hast du am Start, für 5 Richtige in Folge gibt es einen neuen (höchstens 3).</span></p>
+        <p class="foehn-info ruhe-info" id="infoRuhe" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18.5h10.2a4.3 4.3 0 0 0 .5-8.57A5.6 5.6 0 0 0 6.9 9.1 4.7 4.7 0 0 0 7 18.5z" fill="#fff" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span><b>Ganz in Ruhe:</b> Der Föhn läuft die ganze Zeit – die Tafeln schweben, bis du triffst. Kein Zeitdruck, nur falsche Treffer kosten ein Leben. Es gibt eine eigene Bestenliste.</span></p>
 
         <h2>Was willst du üben?</h2>
         <div class="ops" id="ops">
@@ -287,6 +295,12 @@ body:not(.playing) #foehnTipp{display:none}
         </div>
         <p id="opsinfo"></p>
         <p class="warn" id="warn" hidden>Wähle mindestens einen Bereich aus.</p>
+
+        <h2>Wie willst du spielen?</h2>
+        <div class="seg modus" id="modus">
+          <label><input type="radio" name="modus" value="zeit"><span>Challenge<small>Tafeln fallen</small></span></label>
+          <label><input type="radio" name="modus" value="ruhe"><span>Ganz in Ruhe<small>Tafeln schweben</small></span></label>
+        </div>
 
         <h2>Wie schwer soll es losgehen?</h2>
         <div class="seg" id="seg">
@@ -941,7 +955,8 @@ var store = {
   get: function(k,d){ try{ var v=localStorage.getItem(k); if(v!==null) return JSON.parse(v); }catch(e){} return (k in mem)?mem[k]:d; },
   set: function(k,v){ mem[k]=v; try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 };
-var HS_KEY='bruchjagd.bestenliste.v1', SET_KEY='bruchjagd.einstellungen.v1';
+var HS_KEY='bruchjagd.bestenliste.v1', HS_KEY_RUHE='bruchjagd.bestenliste.ruhe.v1', SET_KEY='bruchjagd.einstellungen.v1';
+function hsKey(){ return S.modus==='ruhe'?HS_KEY_RUHE:HS_KEY; }
 
 var OPS = { kuerzen:{sym:'Kürzen',name:'Kürzen & Erweitern'}, bilder:{sym:'Bilder',name:'Bruchteile in Bildern'}, plus:{sym:'±',name:'Plus & Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'}, gemischt:{sym:'Gemischt',name:'Gemischte Zahlen umwandeln'} };
 var OP_ORDER = ['kuerzen','bilder','plus','mal','geteilt','gemischt'];
@@ -957,7 +972,8 @@ var CHALK = {line:'#fdfdf5', fill:'#ffd23f', empty:'rgba(255,255,255,.07)', lw:.
 var PAPER = {line:'#1d2b4a', fill:'#ff8a3d', empty:'#ffffff', lw:.022};
 
 /* ================= Einstellungen ================= */
-var S = store.get(SET_KEY, {ops:['kuerzen','bilder','plus','mal'], start:1, name:'', sound:false});
+var S = store.get(SET_KEY, {ops:['kuerzen','bilder','plus','mal'], start:1, name:'', sound:false, modus:'zeit'});
+if(S.modus!=='ruhe') S.modus='zeit';
 S.ops=(S.ops||[]).filter(function(o){ return OPS[o]; });
 if(!S.ops.length) S.ops = ['kuerzen','bilder','plus','mal'];
 (function(){ // Voreinstellung per Link, z. B. ?ops=bilder oder ?ops=kuerzen,plus
@@ -966,6 +982,10 @@ if(!S.ops.length) S.ops = ['kuerzen','bilder','plus','mal'];
   var alias={kuerzen:'kuerzen','kürzen':'kuerzen',erweitern:'kuerzen',bilder:'bilder',bild:'bilder',plus:'plus',minus:'plus',mal:'mal',geteilt:'geteilt',durch:'geteilt',gemischt:'gemischt',gemischte:'gemischt',umwandeln:'gemischt'};
   var list=[]; q.toLowerCase().split(/[,; ]+/).forEach(function(k){ var o=alias[k]; if(o&&list.indexOf(o)<0) list.push(o); });
   if(list.length) S.ops=list;
+})();
+(function(){ // Modus per Link: ?modus=ruhe bzw. ?modus=zeit
+  var m=''; try{ m=(new URLSearchParams(location.search).get('modus')||'').toLowerCase(); }catch(e){}
+  if(m==='ruhe'||m==='zeit') S.modus=m;
 })();
 function saveSettings(){ store.set(SET_KEY,S); }
 
@@ -1097,7 +1117,7 @@ function resize(){
   measureHud();
   buildBg();
   var n=G.boards.length;
-  G.boards.forEach(function(b){ b.y*=H/oH; sizeBoard(b,n); b.x=b.xf*W; b.vy=(groundLine-spawnTop)/G.fall; });
+  G.boards.forEach(function(b){ b.y*=H/oH; sizeBoard(b,n); b.x=b.xf*W; b.vy=b.hover?0:(groundLine-spawnTop)/G.fall; if(b.hover) hoverPos(b); });
   if(!G.clouds.length){ for(var i=0;i<6;i++) G.clouds.push({x:Math.random()*W,yf:.1+Math.random()*.42,s:.6+Math.random()*.8,v:5+Math.random()*9}); }
   if(!G.aim.x){ G.aim.x=W/2; G.aim.y=0; }
 }
@@ -1156,9 +1176,11 @@ function startGame(){
   G.state='play'; G.score=0; G.lives=LIVES; G.level=S.start||1; G.correct=0; G.streak=0; G.best=0;
   G.misses=[]; G.boards=[]; G.deco=[]; G.parts=[]; G.floats=[]; G.tracers=[]; G.lastQ=''; G.shake=0;
   $('#menu').hidden=true; $('#over').hidden=true; $('#pause').hidden=true; $('#hud').hidden=false;
+  G.ruhe=(S.modus==='ruhe'); document.body.classList.toggle('ruhe',G.ruhe);
   document.body.classList.add('playing');
   foehnReset();
   resize(); updateHud(); nextTask();
+  if(G.ruhe) toast('Ganz in Ruhe','Die Tafeln schweben – lass dir Zeit.');
 }
 function nextTask(){
   var L=G.level, t=null, tries=0;
@@ -1178,7 +1200,16 @@ function nextTask(){
     var b={disp:c.disp,correct:c===t.ans,partial:c.partial,hint:c.hint,xf:(i+.5)/nb+(Math.random()-.5)*.14/nb,ph:Math.random()*6.28,col:pick(CHUTES),alpha:0,fade:1};
     sizeBoard(b,nb); b.x=b.xf*W; b.y=spawnTop-b.bh*.5-stag[i]*H*.5; b.vy=(groundLine-spawnTop)/G.fall; return b;
   });
+  if(G.ruhe){ // Ruhe-Modus: Tafeln erscheinen direkt in der Luft, verteilt auf verschiedene Höhen
+    var us=shuffle(G.boards.map(function(b,i){ return nb>1?i/(nb-1):.5; }));
+    G.boards.forEach(function(b,i){ b.hover=true; b.vy=0; b.u=.1+.8*us[i]+(Math.random()-.5)*.08; hoverPos(b); b.y=b.yT+24; b.alpha=0; });
+  }
   G.phase='fall'; G.windUsed=false; G.wind=0; updateFoehn();
+}
+/* Schwebehöhe: unter der Aufgabenkarte (mit Fallschirm), über den Bodenlüftern */
+function hoverPos(b){
+  var top=spawnTop+10+b.bw*1.12+b.bh/2, bot=groundLine-fanR()*1.35-14-b.bh/2;
+  b.yT=bot>top?top+(bot-top)*clamp(b.u,0,1):Math.min(top,groundLine-b.bh/2-6);
 }
 function boardX(b){ return b.x+Math.sin(G.time*1.6+b.ph)*b.bw*.06; }
 function fail(t){ if(!t.failed){ t.failed=true; G.misses.push(chipHTML(t)); } }
@@ -1201,7 +1232,7 @@ function shoot(x,y,touch){
   G.boards.splice(G.boards.indexOf(hit),1);
   if(hit.correct){
     var prog=clamp((hit.y-spawnTop)/(groundLine-spawnTop),0,1);
-    var pts=10+2*(G.level-1)+(G.windUsed?0:Math.round(5*(1-prog)))+2*Math.min(G.streak,5);
+    var pts=10+2*(G.level-1)+((G.windUsed||G.ruhe)?0:Math.round(5*(1-prog)))+2*Math.min(G.streak,5);
     G.score+=pts; G.streak++; foehnSerie(); G.best=Math.max(G.best,G.streak); G.correct++;
     explode(hit,bx,true); G.floats.push({x:bx,y:hit.y,text:'+'+pts,col:'#fff3a8',life:1});
     endRound(t.mode?1.1:.75,'ok');
@@ -1220,7 +1251,12 @@ function missed(b){
 }
 function update(dt){
   var i,b; foehnTick(dt);
-  if(G.phase==='fall'){
+  if(G.phase==='fall' && G.ruhe){
+    for(i=0;i<G.boards.length;i++){
+      b=G.boards[i]; var bob=Math.sin(G.time*1.3+b.ph)*Math.min(8,b.bh*.08);
+      b.y+=(b.yT+bob-b.y)*Math.min(1,dt*5); b.alpha=Math.min(1,b.alpha+dt*4);
+    }
+  } else if(G.phase==='fall'){
     for(i=G.boards.length-1;i>=0;i--){
       b=G.boards[i]; b.y+=b.vy*dt*windF(b); b.alpha=Math.min(1,b.alpha+dt*4);
       if(b.y+b.bh/2>=groundLine){
@@ -1319,9 +1355,10 @@ function draw(){
   if(G.shake>0){ var m=G.shake*22; ctx.translate((Math.random()-.5)*m,(Math.random()-.5)*m); }
   ctx.drawImage(bg,0,0,W,H);
   G.clouds.forEach(drawCloud);
+  if(G.ruhe) drawFoehn();
   G.deco.forEach(drawBoard);
   G.boards.forEach(drawBoard);
-  drawFoehn();
+  if(!G.ruhe) drawFoehn();
   var c=cannonGeo();
   if(G.state==='play'||G.state==='pause'){
     var tx=c.cx+Math.cos(c.a)*c.len, ty=c.cy+Math.sin(c.a)*c.len;
@@ -1383,8 +1420,8 @@ function opsLabel(ops){ return ops.length===1?OPS[ops[0]].sym:OP_ORDER.filter(fu
 function gameOver(){
   G.state='over'; G.boards=[]; document.body.classList.remove('playing'); $('#hud').hidden=true; sfx.over();
   var entry={n:S.name||'Anonym',s:G.score,l:G.level,o:opsLabel(G.ops),t:Date.now()};
-  var list=store.get(HS_KEY,[]), rank=-1;
-  if(G.score>0){ list.push(entry); list.sort(function(a,b){ return b.s-a.s||a.t-b.t; }); rank=list.indexOf(entry); list=list.slice(0,10); store.set(HS_KEY,list); }
+  var list=store.get(hsKey(),[]), rank=-1;
+  if(G.score>0){ list.push(entry); list.sort(function(a,b){ return b.s-a.s||a.t-b.t; }); rank=list.indexOf(entry); list=list.slice(0,10); store.set(hsKey(),list); }
   $('#overTitle').textContent = rank===0 ? 'Neuer Rekord!' : (rank>0&&rank<3 ? 'Platz '+(rank+1)+' – stark!' : 'Spiel vorbei!');
   $('#overScore').textContent=G.score; $('#stLevel').textContent=G.level; $('#stCorrect').textContent=G.correct; $('#stStreak').textContent=G.best;
   var box=$('#misses'); box.textContent='';
@@ -1400,11 +1437,14 @@ function resume(){ if(G.state!=='pause') return; G.state='play'; document.body.c
 var opBoxes=$$('#ops input'), startBtn=$('#btnStart'), nameIn=$('#name');
 opBoxes.forEach(function(cb){ cb.checked=S.ops.indexOf(cb.value)>=0; cb.addEventListener('change',readMenu); });
 $$('#seg input').forEach(function(r){ r.checked=String(S.start)===r.value; r.addEventListener('change',readMenu); });
+$$('#modus input').forEach(function(r){ r.checked=S.modus===r.value; r.addEventListener('change',function(){ readMenu(); renderBoard('menu'); }); });
 if(!$('#seg input:checked')) $('#seg input').checked=true;
 nameIn.value=S.name||'';
 function readMenu(){
   S.ops=opBoxes.filter(function(c){return c.checked;}).map(function(c){return c.value;});
   var r=$('#seg input:checked'); S.start=r?parseInt(r.value,10):1;
+  var m=$('#modus input:checked'); S.modus=m&&m.value==='ruhe'?'ruhe':'zeit';
+  $('#infoZeit').hidden=S.modus==='ruhe'; $('#infoRuhe').hidden=S.modus!=='ruhe';
   S.name=nameIn.value.replace(/\s+/g,' ').trim().slice(0,14);
   startBtn.disabled=!S.ops.length; $('#warn').hidden=!!S.ops.length;
   $('#opsinfo').textContent=S.ops.length?OP_ORDER.filter(function(o){return S.ops.indexOf(o)>=0;}).map(function(o){return OPS[o].name;}).join(' · '):'';
@@ -1420,7 +1460,7 @@ $('#btnQuit').addEventListener('click',function(){ document.body.classList.remov
 $('#btnPause').addEventListener('click',pause);
 $('#btnSound').addEventListener('click',function(){ S.sound=!S.sound; saveSettings(); updateSound(); if(S.sound) sfx.hit(); });
 $('#btnClear').addEventListener('click',function(){
-  if(this.dataset.sure){ store.set(HS_KEY,[]); showMenu(); }
+  if(this.dataset.sure){ store.set(hsKey(),[]); showMenu(); }
   else { this.dataset.sure='1'; this.textContent='Wirklich löschen? Nochmal tippen.'; }
 });
 
@@ -1447,8 +1487,9 @@ window.addEventListener('orientationchange',function(){ setTimeout(resize,200); 
    Einsatz einmal pro Aufgabe: Lüfter fahren aus dem Boden und pusten die Tafeln
    ein paar Sekunden nach oben. Mit Föhn gibt es keinen Tempo-Bonus auf die Punkte. */
 var FOEHN={start:1,max:3,serie:5,dauer:6.5,ein:.5,aus:1.2,lift:1.4};
-function foehnReset(){ G.foehn=FOEHN.start; G.wind=0; G.windUsed=false; G.fanUp=0; G.fanRot=0; G.gusts=[]; G.gustT=0; updateFoehn(); if(typeof foehnTipp==='function') foehnTipp(); }
-function windEnv(){ if(!(G.wind>0)) return 0; var e=Math.min(1,(FOEHN.dauer-G.wind)/FOEHN.ein,G.wind/FOEHN.aus); return e*e*(3-2*e); }
+var RUHE_WIND=.45; // Ruhe-Modus: Föhn dauerhaft an (Stärke der Windstreifen)
+function foehnReset(){ G.foehn=FOEHN.start; G.wind=0; G.windUsed=false; G.fanUp=0; G.fanRot=0; G.gusts=[]; G.gustT=0; updateFoehn(); if(!G.ruhe && typeof foehnTipp==='function') foehnTipp(); }
+function windEnv(){ if(G.ruhe) return RUHE_WIND; if(!(G.wind>0)) return 0; var e=Math.min(1,(FOEHN.dauer-G.wind)/FOEHN.ein,G.wind/FOEHN.aus); return e*e*(3-2*e); }
 function windF(b){
   var env=windEnv(); if(!env) return 1;
   var top=(typeof spawnTop==='number'?spawnTop:hudH);
@@ -1467,14 +1508,14 @@ function updateFoehn(){
   el.classList.toggle('leer',!akt && !(G.foehn>0));
 }
 function foehnUse(){
-  if(G.state!=='play') return;
+  if(G.state!=='play' || G.ruhe) return;
   var el=document.getElementById('foehn');
   if(G.phase!=='fall' || G.windUsed || !(G.foehn>0)){ if(!(G.wind>0)){ el.classList.remove('neu'); void el.offsetWidth; } return; }
   G.foehn--; G.windUsed=true; G.wind=FOEHN.dauer; updateFoehn(); document.getElementById('foehnTipp').classList.remove('zeigen');
   tone(110,1.1,'sawtooth',.035,320); tone(240,1.3,'triangle',.05,700,.05);
 }
 function foehnSerie(){
-  if(G.streak>0 && G.streak%FOEHN.serie===0 && G.foehn<FOEHN.max){
+  if(!G.ruhe && G.streak>0 && G.streak%FOEHN.serie===0 && G.foehn<FOEHN.max){
     G.foehn++; updateFoehn();
     var el=document.getElementById('foehn'); el.classList.remove('neu'); void el.offsetWidth; el.classList.add('neu');
     G.floats.push({x:70,y:groundLine-95,text:'+1 Föhn',col:'#9ff0ff',life:1.5});
@@ -1487,7 +1528,7 @@ function foehnTick(dt){
     if(G.phase!=='fall' && G.wind>FOEHN.aus) G.wind=FOEHN.aus;
     if(G.wind===0) updateFoehn();
   }
-  var env=windEnv(), tgt=G.wind>0?1:0;
+  var env=windEnv(), tgt=(G.wind>0||G.ruhe)?1:0;
   G.fanUp+=(tgt-G.fanUp)*Math.min(1,dt*(tgt?8:3.5));
   G.fanRot+=dt*(3+28*env);
   if(env>.05){
@@ -1548,6 +1589,7 @@ function drawFoehn(){
    Je Spiel eine eigene Liste; Einträge nur mit Spitznamen. Die Datenbank prüft
    Namen (Wortfilter), Punkte (Plausibilität) und begrenzt die Einträge pro Minute. */
 var NET={url:'https://sliitqxickadcoghewli.supabase.co/rest/v1/',key:'sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7',game:'m6-bruch',klasse:'6c'};
+function netGame(){ return S.modus==='ruhe'?NET.game+'-ruhe':NET.game; } // Ruhe-Modus mit eigener Wertung
 var HSV=store.get('bestenliste.ansicht.'+NET.game,'woche'); if(['woche','gesamt','geraet'].indexOf(HSV)<0) HSV='woche';
 var netReq={menu:0,over:0};
 function wochenStart(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-((d.getDay()+6)%7)); return d; }
@@ -1558,12 +1600,12 @@ function netFetch(path,body,extra){
     .then(function(r){ clearTimeout(to); return r; },function(e){ clearTimeout(to); throw e; });
 }
 function netTop(view){
-  return netFetch('rpc/top_scores',{p_game:NET.game,p_since:view==='woche'?wochenStart().toISOString():null,p_limit:10})
+  return netFetch('rpc/top_scores',{p_game:netGame(),p_since:view==='woche'?wochenStart().toISOString():null,p_limit:10})
     .then(function(r){ if(!r.ok) throw new Error('http'); return r.json(); });
 }
 function nameOk(n){ return typeof n==='string' && n.length>=2 && n.length<=14 && /^[A-Za-z0-9ÄÖÜäöüß .\-_]+$/.test(n); }
 function netSend(e){
-  return netFetch('scores',{game:NET.game,name:e.n,score:e.s,level:e.l,ops:String(e.o||'').slice(0,24)},{Prefer:'return=minimal'})
+  return netFetch('scores',{game:netGame(),name:e.n,score:e.s,level:e.l,ops:String(e.o||'').slice(0,24)},{Prefer:'return=minimal'})
     .then(function(r){ if(r.ok) return 'ok'; return r.text().then(function(t){ return /nicht erlaubt/.test(t)?'name':(/Zu viele/.test(t)?'viele':'fehler'); }); },
           function(){ return 'offline'; });
 }
@@ -1571,10 +1613,10 @@ var HSCAP={woche:'Klasse '+NET.klasse+' – diese Woche (ab Montag)',gesamt:'Kla
 function renderBoard(where,me){
   var el=document.getElementById(where==='menu'?'menuHs':'overHs'), box=el.parentNode;
   $$('.hstabs button').forEach(function(b){ b.classList.toggle('an',b.getAttribute('data-v')===HSV); b.setAttribute('aria-selected',b.getAttribute('data-v')===HSV?'true':'false'); });
-  box.querySelector('.hscap').textContent=HSCAP[HSV];
+  box.querySelector('.hscap').textContent=HSCAP[HSV]+(S.modus==='ruhe'?' · Ganz in Ruhe':' · Challenge');
   var max=where==='menu'?8:10, bc=$('#btnClear');
-  if(where==='menu'){ bc.hidden=!(HSV==='geraet' && store.get(HS_KEY,[]).length); }
-  if(HSV==='geraet'){ renderHs(el,store.get(HS_KEY,[]),me&&me.t?me.t:0,max); return; }
+  if(where==='menu'){ bc.hidden=!(HSV==='geraet' && store.get(hsKey(),[]).length); }
+  if(HSV==='geraet'){ renderHs(el,store.get(hsKey(),[]),me&&me.t?me.t:0,max); return; }
   var id=++netReq[where];
   el.textContent=''; var p=document.createElement('p'); p.className='empty'; p.textContent='Lädt …'; el.appendChild(p);
   var myName=((me&&me.n)||S.name||'').toLowerCase();
