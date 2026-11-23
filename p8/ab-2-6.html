@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.6 Gewichtskraft, Masse und Ortsfaktor – Lernpfad</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/ab-pfad.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   Physik 8b · 2.6 Gewichtskraft, Masse und Ortsfaktor – Lernpfad zum Arbeitsblatt (Seite 1 und 2)
+   Bilder: bilder/2-6/ab-*.webp · Maße in cm wie in der PowerPoint (21 × 29,7 cm)
+   Auf dem AB wird mit g = 10 N/kg gerechnet (genau: 9,81 N/kg).
+   Bewertung wie in der Ex 8b: geg./ges. ½ · Formel + Umstellen 1 · Ergebnis mit Einheit 1
+   ===================================================================== */
+var U = function (e) { return '\\,\\mathrm{' + e + '}'; };
+var NKG = '\\,\\dfrac{\\mathrm{N}}{\\mathrm{kg}}';
+var NKGt = '\\,\\tfrac{\\mathrm{N}}{\\mathrm{kg}}';
+var FG = 'F_{\\mathrm{G}}';
+function ZELLE(x, y, z, s, o) { return Object.assign({ x: x, y: y, z: z, s: s, mitte: true }, o || {}); }
+function SATZ(x, y, z, s, o) { return Object.assign({ x: x, y: y, z: z, s: s, cls: 'satz' }, o || {}); }
+
+/* ---------- Zeichnungen in blauer Tinte (SVG, Einheiten = cm auf dem Blatt) ---------- */
+var TINTE = '#1F3FBF';
+function pfeil(x1, y1, x2, y2) {
+  var dx = x2 - x1, dy = y2 - y1, l = Math.sqrt(dx * dx + dy * dy), ux = dx / l, uy = dy / l, s = 0.28, b = 0.13;
+  var bx = x2 - ux * s, by = y2 - uy * s;
+  return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + bx + '" y2="' + by + '" stroke="' + TINTE + '" stroke-width="0.075" stroke-linecap="round"/>' +
+    '<polygon points="' + x2 + ',' + y2 + ' ' + (bx - uy * b) + ',' + (by + ux * b) + ' ' + (bx + uy * b) + ',' + (by - ux * b) + '" fill="' + TINTE + '"/>';
+}
+function punkt(x, y) { return '<circle cx="' + x + '" cy="' + y + '" r="0.1" fill="' + TINTE + '"/>'; }
+function schrift(x, y, t, gr) {
+  return '<text x="' + x + '" y="' + y + '" font-family="Caveat, cursive" font-size="' + (gr || 0.52) + '" fill="' + TINTE + '">' + t + '</text>';
+}
+var FGsvg = 'F<tspan font-size="0.34" dy="0.12">G</tspan>';
+/* Skizze: Bereich (x, y, w, h) auf dem Blatt; inhalt() zeichnet in Blatt-Koordinaten */
+function SK(x, y, w, h, inhalt, s, o) {
+  return Object.assign({ typ: 'skizze', x: x, y: y, w: w, h: h, s: s,
+    html: '<svg viewBox="' + x + ' ' + y + ' ' + w + ' ' + h + '" aria-hidden="true">' + inhalt + '</svg>' }, o || {});
+}
+
+/* ---------- Erklärungen ---------- */
+var E_UNTEN = { schritte: [
+  { k: 'Die Erde zieht', t: 'Die Erde zieht alle Körper zu ihrem <b>Mittelpunkt</b> hin – egal, wo sie auf der Erde stehen.' },
+  { k: '„Unten“', t: '„Unten“ ist deshalb nicht überall dieselbe Richtung im Weltall, sondern immer: <b>zur Erdmitte</b>.' },
+  { k: 'Australien', t: 'Die Menschen in Australien stehen von uns aus gesehen „kopfüber“ – für sie ist der Boden aber genauso unten wie für uns.' }] };
+var E_SCHWERPUNKT = { schritte: [
+  { k: 'Balancieren', t: 'Ein Gegenstand bleibt auf dem Finger liegen, wenn du ihn genau unter seinem <b>Schwerpunkt</b> stützt.' },
+  { k: 'Hammer', t: 'Beim Hammer liegt der Schwerpunkt nahe am schweren Kopf – nicht in der Mitte des Stiels.' },
+  { k: 'Deshalb', t: 'Die Gewichtskraft greift im Schwerpunkt an. Dort beginnt der Kraftpfeil.' }] };
+var E_QUOTIENT = { schritte: [
+  { k: 'Quotient', t: 'Quotient heißt: geteilt. Du rechnest Gewichtskraft geteilt durch Masse.', f: '$\\dfrac{' + FG + '}{m}$' },
+  { k: 'Beispiel', t: 'Ein Gegenstand mit $0{,}5' + U('kg') + '$ zieht den Kraftmesser auf $5' + U('N') + '$:', f: '$\\dfrac{5' + U('N') + '}{0{,}5' + U('kg') + '} = 10' + NKG + '$' },
+  { k: 'Bei allen gleich', t: 'Bei jedem Gegenstand kommt (fast) dasselbe heraus: etwa $10' + NKG + '$. Kleine Abweichungen sind Messungenauigkeiten.' }] };
+var E_MASSSTAB = function (g, n) { return { schritte: [
+  { k: 'Betrag', t: 'Auf der Erde wird $1' + U('kg') + '$ mit etwa $10' + U('N') + '$ angezogen, also $100' + U('g') + '$ mit etwa $1' + U('N') + '$.', f: '$' + g + U('g') + '\\;\\rightarrow\\;' + FG + ' = ' + n + U('N') + '$' },
+  { k: 'Maßstab', t: '$1' + U('cm') + ' \\mathrel{\\hat{=}} 1' + U('N') + '$ – also wird der Pfeil $' + n + U('cm') + '$ lang (' + (n * 2) + ' Kästchen).' },
+  { k: 'Pfeil zeichnen', t: 'Start im Schwerpunkt, <b>senkrecht nach unten</b>, Pfeilspitze und $' + FG + '$ dazuschreiben.' }] }; };
+var E_UMSTELLEN_M = { schritte: [
+  { k: 'Ziel', t: '$m$ soll allein stehen. Neben $m$ steht noch „$\\cdot g$“.' },
+  { k: 'Gegenteil von mal', t: 'Teile beide Seiten durch $g$:', f: '$' + FG + ' = m \\cdot g \\quad |:g \\qquad\\Rightarrow\\qquad m = \\dfrac{' + FG + '}{g}$' },
+  { k: 'Probe mit dem Verstand', t: '1 kg wird mit etwa 10 N angezogen. 6 N sind also etwas mehr als ein halbes Kilogramm. ✓' }] };
+var E_EINHEIT_KG = { schritte: [
+  { k: 'Durch einen Bruch teilen', t: 'Durch $\\tfrac{\\mathrm{N}}{\\mathrm{kg}}$ teilen heißt: mit dem Kehrbruch $\\tfrac{\\mathrm{kg}}{\\mathrm{N}}$ malnehmen.' },
+  { k: 'Einheiten', f: '$\\mathrm{N} \\cdot \\dfrac{\\mathrm{kg}}{\\mathrm{N}} = \\mathrm{kg}$' },
+  { k: 'Zahlen', f: '$\\dfrac{6{,}0}{10} = 0{,}60$' }] };
+
+window.PFAD = {
+  fach: 'Physik 8b', titel: '2.6 Gewichtskraft, Masse und Ortsfaktor', zurueck: 'material.html', breite: 21,
+  ueberschrift: 'Lernpfad zum Arbeitsblatt – Lösung Schritt für Schritt',
+  karten: [
+
+  /* ===================== Start ===================== */
+  { chip: 'Start', start: true, titel: '2.6 Gewichtskraft, Masse und Ortsfaktor',
+    html:
+    '<p>Hier siehst du dein Arbeitsblatt. Mit <span class="mini" style="background:var(--petrol2);color:#fff">Nächster Schritt</span> erscheint die Lösung <b>Schritt für Schritt</b> in Blau – so, wie du sie auf dein Blatt schreibst.</p>' +
+    '<ol class="start"><li>Überlege zuerst <b>selbst</b> und schreib auf dein Blatt.</li>' +
+    '<li>Hängst du fest? <span class="mini" style="background:var(--gelb)">Tipp</span> hilft beim nächsten Schritt. Der gelbe Rahmen zeigt, wo die nächste Zeile hinkommt.</li>' +
+    '<li><span class="mini" style="background:var(--orange);color:#fff">Glühbirne</span> = Erklärung zu einem schwierigen Schritt.</li>' +
+    '<li>Bei Aufgabe 1 und 2 zeigt <b>Bewertung einblenden</b> grüne Haken – so wird in der Ex korrigiert: <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = 1 Punkt, <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 12 L9 20 L17 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = ½ Punkt.</li></ol>' +
+    '<div class="box">📱 Am Handy: <b>quer halten</b> oder die <b>Lupe</b> nehmen. Zoomen mit zwei Fingern geht auch.</div>' +
+    '<div class="merk"><b>Das Wichtigste</b><br>$' + FG + ' = m \\cdot g$ &nbsp;und&nbsp; $g = \\dfrac{' + FG + '}{m}$<br>Auf der Erde: $g = 9{,}81' + NKG + ' \\approx 10' + NKG + '$</div>' },
+
+  /* ===================== Wohin zeigt die Gewichtskraft? ===================== */
+  { chip: 'Richtung', name: 'Wohin zeigt die Gewichtskraft?',
+    bild: { src: 'bilder/2-6/ab-richtung.webp', y0: 3.55, y1: 9.42 },
+    zeilen: [
+      SK(1.6, 4.4, 5.8, 5.0,
+        pfeil(4.09, 4.95, 4.09, 6.1) + pfeil(4.09, 8.5, 4.09, 7.35) + pfeil(5.85, 6.75, 4.7, 6.75) + pfeil(2.3, 6.75, 3.45, 6.75) + pfeil(5.52, 5.71, 4.59, 6.39),
+        'Pfeile zeichnen', { tipp: 'Wohin fällt ein Apfel, der der Person aus der Hand rutscht? Zeichne den Pfeil von der Person aus in diese Richtung.', erkl: E_UNTEN, birne: [7.3, 5.0] }),
+      SATZ(8.85, 6.04, 'Die Gewichtskraft zeigt überall zum Erdmittelpunkt.', 'Erklären 1', { tipp: 'Schau dir deine Pfeile an: Wohin zeigen alle?' }),
+      SATZ(8.85, 6.84, '„Unten“ ist für alle Menschen Richtung Erdmitte.', 'Erklären 2', { tipp: 'Was bedeutet „unten“ für einen Menschen in Australien?' }),
+      SATZ(8.85, 7.64, 'Auch in Australien werden die Menschen', 'Erklären 3', { tipp: 'Warum fallen sie also nicht herunter?' }),
+      SATZ(8.85, 8.44, 'zum Boden hin gezogen.', 'Erklären 4', { tipp: 'Die Erde zieht sie zu sich hin – also zum Boden.' })
+    ] },
+
+  /* ===================== Versuch 1 ===================== */
+  { chip: 'Versuch 1', name: 'Versuch 1: Gegenstände balancieren',
+    bild: { src: 'bilder/2-6/ab-v1.webp', y0: 9.35, y1: 12.95 },
+    zeilen: [
+      SATZ(3.85, 12.15, 'Die Gewichtskraft greift im Schwerpunkt an.', 'Ergebnis', { tipp: 'Wie heißt der Punkt, an dem der Gegenstand im Gleichgewicht ist?', erkl: E_SCHWERPUNKT })
+    ] },
+
+  /* ===================== Merke: Gewichtskraft ===================== */
+  { chip: 'Merke 1', name: 'Merke: Gewichtskraft',
+    bild: { src: 'bilder/2-6/ab-merke.webp', y0: 12.95, y1: 21.8 },
+    zeilen: [
+      SATZ(2.3, 14.18, 'Alle Körper ziehen sich gegenseitig an: Gravitation.', '1. Gravitation', { tipp: 'Wie heißt die Anziehung zwischen allen Körpern?' }),
+      SATZ(10.6, 15.09, 'stärker.', '1. Je – desto', { tipp: 'Große Masse, kleiner Abstand – wird die Anziehung stärker oder schwächer?' }),
+      SATZ(1.75, 15.98, 'Die Erde hat eine riesige Masse – deshalb zieht sie stark.', '1. Beispiel', { tipp: 'Warum spüren wir die Anziehung der Erde, aber nicht die des Tisches?' }),
+      SATZ(5.0, 16.89, 'die Erde einen Körper anzieht,', '2. Definition', { tipp: 'Wer zieht hier an wem?' }),
+      SATZ(1.75, 17.78, 'heißt Gewichtskraft $' + FG + '$.', '2. Name', { tipp: 'Wie heißt diese Kraft – und ihr Formelzeichen?' }),
+      SATZ(3.85, 18.68, 'senkrecht nach unten – zum Erdmittelpunkt', '3. Richtung', { tipp: 'Denk an die Pfeile bei der Erdkugel.' }),
+      SATZ(4.55, 19.59, 'im Schwerpunkt des Körpers', '4. Angriffspunkt', { tipp: 'Denk an Versuch 1.' }),
+      SATZ(7.7, 20.38, 'größer ist die Gewichtskraft.', '5. Betrag', { tipp: 'Schwerer Rucksack oder leichter Rucksack – welcher zieht stärker nach unten?' }),
+      SK(15.0, 14.3, 4.2, 4.0, punkt(16.9, 15.42) + pfeil(16.9, 15.42, 16.9, 17.82) + schrift(17.1, 17.3, FGsvg), 'Kraftpfeil an der Kiste',
+        { tipp: 'Wo beginnt der Pfeil, und in welche Richtung zeigt er?' })
+    ] },
+
+  /* ===================== Versuch 2 ===================== */
+  { chip: 'Versuch 2', name: 'Versuch 2: Gegenstände wiegen',
+    bild: { src: 'bilder/2-6/ab-v2.webp', y0: 21.9, y1: 29.5 },
+    zeilen: [
+      ZELLE(10.22, 25.35, '$\\approx 10$', 'Quotient 1', { tipp: 'Teile deine Gewichtskraft (in N) durch die Masse (in kg). Deine genauen Messwerte stehen auf deinem Blatt.', erkl: E_QUOTIENT, birne: [9.4, 25.38] }),
+      ZELLE(10.22, 25.97, '$\\approx 10$', 'Quotient 2', { tipp: 'Wieder: Kraft geteilt durch Masse.' }),
+      ZELLE(10.22, 26.58, '$\\approx 10$', 'Quotient 3', { tipp: 'Fällt dir schon etwas auf?' }),
+      ZELLE(10.22, 27.19, '$\\approx 10$', 'Quotient 4', { tipp: 'Bei allen Gegenständen ungefähr gleich?' }),
+      SATZ(11.95, 25.12, 'Der Quotient ist immer etwa $10' + NKGt + '$.', 'Auswertung 1', { tipp: 'Schau dir die letzte Spalte an.' }),
+      SATZ(11.95, 25.97, '$' + FG + '$ und $m$ sind direkt proportional.', 'Auswertung 2', { tipp: 'Doppelte Masse – doppelte Gewichtskraft. Wie heißt dieser Zusammenhang?' }),
+      SATZ(11.95, 26.82, 'Proportionalitätsfaktor: $g \\approx 10' + NKGt + '$', 'Auswertung 3', { tipp: 'Wie heißt der Faktor, der immer gleich bleibt? Er bekommt den Buchstaben g.' })
+    ] },
+
+  /* ===================== Definition: Ortsfaktor ===================== */
+  { chip: 'Ortsfaktor', name: 'Definition: Ortsfaktor',
+    bild: { src: 'bilder/2-6/ab-def.webp', y0: 0.9, y1: 5.4 },
+    zeilen: [
+      ZELLE(5.2, 3.3, '$g = \\dfrac{' + FG + '}{m}$', 'Formel', { tipp: 'Der Ortsfaktor ist der Quotient aus Versuch 2.' }),
+      ZELLE(11.4, 3.58, '$1' + NKGt + '$', 'Einheit', { tipp: 'Kraft in N geteilt durch Masse in kg – welche Einheit entsteht?' }),
+      ZELLE(17.05, 3.58, '$g = 9{,}81' + NKGt + ' \\approx 10' + NKGt + '$', 'Erde', { tipp: 'Genau gemessen ist der Ortsfaktor der Erde etwas kleiner als 10.' }),
+      ZELLE(10.4, 4.46, '$' + FG + ' = m \\cdot g$', 'Gewichtskraft', { tipp: 'Stelle $g = \\dfrac{' + FG + '}{m}$ nach $' + FG + '$ um: mal $m$.',
+        erkl: { schritte: [
+          { k: 'Start', f: '$g = \\dfrac{' + FG + '}{m}$' },
+          { k: 'Mal m', t: 'Nimm beide Seiten mal $m$ – dann steht $' + FG + '$ allein:', f: '$' + FG + ' = m \\cdot g$' },
+          { k: 'Bedeutung', t: 'Masse mal Ortsfaktor ergibt die Gewichtskraft – an jedem Ort.' }] } })
+    ] },
+
+  /* ===================== Merke: Masse und Gewichtskraft ===================== */
+  { chip: 'Merke 2', name: 'Merke: Masse und Gewichtskraft',
+    bild: { src: 'bilder/2-6/ab-merke2.webp', y0: 6.35, y1: 14.15 },
+    zeilen: [
+      ZELLE(10.1, 8.74, '$m$', 'Formelzeichen Masse', { tipp: 'm wie Masse.' }),
+      ZELLE(16.1, 8.74, '$' + FG + '$', 'Formelzeichen Gewichtskraft', { tipp: 'F wie force (Kraft), G wie Gewicht.' }),
+      ZELLE(10.1, 9.49, '$1' + U('kg') + '$', 'Einheit Masse', { tipp: 'Darin wird auch auf der Waage gemessen.' }),
+      ZELLE(16.1, 9.49, '$1' + U('N') + '$', 'Einheit Gewichtskraft', { tipp: 'Die Einheit aller Kräfte.' }),
+      ZELLE(10.1, 10.24, 'Waage', 'Messgerät Masse', { tipp: 'Womit bestimmt man in der Küche, wie viel Mehl man hat?' }),
+      ZELLE(16.1, 10.24, 'Kraftmesser', 'Messgerät Gewichtskraft', { tipp: 'Wie in Versuch 2.' }),
+      ZELLE(10.1, 10.99, 'ja – überall gleich', 'Masse überall gleich?', { tipp: 'Verliert ein Astronaut auf dem Weg zum Mond Stoff aus seinem Körper?' }),
+      ZELLE(16.1, 10.99, 'nein – hängt vom Ort ab', 'Gewichtskraft überall gleich?', { tipp: 'Denk an den Ortsfaktor.' }),
+      SATZ(1.75, 12.33, '… dieselbe Masse wie auf der Erde, aber eine viel kleinere Gewichtskraft ($g$ ist kleiner).', 'Beispiel 1',
+        { tipp: 'Was ändert sich auf dem Mond – die Masse oder die Gewichtskraft?',
+          erkl: { schritte: [
+            { k: 'Masse', t: 'Wie viel Stoff in einem Körper steckt – überall gleich, in kg.' },
+            { k: 'Gewichtskraft', t: 'Wie stark ein Himmelskörper am Körper zieht – hängt vom Ort ab, in N.' },
+            { k: 'Mond', t: 'Der Mond zieht schwächer ($g = 1{,}6' + NKGt + '$) – also ist nur die Gewichtskraft kleiner.' }] } }),
+      SATZ(1.75, 13.08, 'Deshalb kann er auf dem Mond so leicht hüpfen.', 'Beispiel 2', { tipp: 'Was merkt der Astronaut davon?' })
+    ] },
+
+  /* ===================== Aufgabe 1: Zeichnen ===================== */
+  { chip: 'A1', name: 'Aufgabe 1',
+    bild: { src: 'bilder/2-6/ab-a1.webp', y0: 14.35, y1: 22.45 },
+    zeilen: [
+      SK(3.4, 17.6, 1.4, 1.1, punkt(4.0, 18.14) + schrift(4.18, 18.0, 'S', 0.45), 'a) Schwerpunkt', { p: 0.5, haken: [5.0, 18.14],
+        tipp: 'Die Flasche ist gleichmäßig gefüllt. Wo ist ihre Mitte?' }),
+      SK(3.4, 18.0, 4.0, 4.3, pfeil(4.0, 18.14, 4.0, 22.14) + schrift(4.25, 20.5, FGsvg + ' = 4 N'), 'a) Kraftpfeil', { p: 1, haken: [5.9, 21.3],
+        tipp: '400 g – wie viel Newton? Und wie lang wird der Pfeil?', erkl: E_MASSSTAB(400, 4), birne: [6.6, 19.0] }),
+      SK(9.9, 17.7, 1.4, 1.2, punkt(10.5, 18.35) + schrift(10.68, 18.2, 'S', 0.45), 'b) Schwerpunkt', { p: 0.5, haken: [11.6, 17.5],
+        tipp: 'Die Mitte der Kiste – auch wenn sie schräg steht.' }),
+      SK(9.9, 18.2, 4.5, 3.4, pfeil(10.5, 18.35, 10.5, 21.35) + schrift(10.75, 21.05, FGsvg + ' = 3 N – senkrecht!'), 'b) Kraftpfeil', { p: 1, haken: [12.9, 20.3],
+        tipp: 'Achtung: Die Gewichtskraft zeigt nicht schräg die Rampe hinunter!',
+        erkl: { schritte: [
+          { k: 'Betrag', f: '$300' + U('g') + '\\;\\rightarrow\\;' + FG + ' = 3' + U('N') + '\\;\\rightarrow\\; 3' + U('cm') + '$' },
+          { k: 'Richtung', t: 'Die Gewichtskraft zeigt immer <b>senkrecht nach unten</b> zum Erdmittelpunkt – egal, wie schräg der Boden ist.' },
+          { k: 'Typischer Fehler', t: 'Viele zeichnen den Pfeil parallel zur Rampe oder senkrecht zur Rampe. Beides ist falsch.' }] }, birne: [14.0, 18.6] }),
+      SK(16.0, 18.0, 1.3, 1.1, punkt(16.5, 18.54) + schrift(16.68, 18.39, 'S', 0.45), 'c) Schwerpunkt', { p: 0.5, haken: [15.4, 20.4],
+        tipp: 'Die Mitte des Balls.' }),
+      SK(16.0, 18.4, 3.5, 2.4, pfeil(16.5, 18.54, 16.5, 20.54) + schrift(16.75, 20.0, FGsvg + ' = 2 N'), 'c) Kraftpfeil', { p: 1, haken: [18.9, 19.6],
+        tipp: 'Der Ball fliegt nach rechts oben – aber in welche Richtung zieht die Erde?',
+        erkl: { schritte: [
+          { k: 'Betrag', f: '$200' + U('g') + '\\;\\rightarrow\\;' + FG + ' = 2' + U('N') + '\\;\\rightarrow\\; 2' + U('cm') + '$' },
+          { k: 'Flugrichtung egal', t: 'Die Erde zieht den Ball immer senkrecht nach unten – auch wenn er gerade nach oben fliegt. Deshalb wird seine Flugbahn ein Bogen.' }] }, birne: [18.4, 21.0] })
+    ] },
+
+  /* ===================== Aufgabe 2: Rechnung ===================== */
+  { chip: 'A2', name: 'Aufgabe 2',
+    check: { einh: 'kg', ok: [0.6], exakt: 0.6, bsp: '0,60',
+      fehler: [{ w: 60, t: '<b>Mal statt geteilt?</b> Gesucht ist die Masse – also $m = \\dfrac{' + FG + '}{g}$.' },
+               { w: 600, t: 'Das sind <b>Gramm</b>. Gib das Ergebnis hier in kg ein: $600' + U('g') + ' = 0{,}6' + U('kg') + '$.' },
+               { w: 1.667, rel: 0.02, t: '<b>Bruch falsch herum?</b> Oben steht die Gewichtskraft, unten der Ortsfaktor.' }] },
+    teile: [
+      { bild: 'bilder/2-6/ab-a2.webp', top: 22.85, y0: 22.85, y1: 24.15 },
+      { rechnung: { x0: 1.5, w: 18.0, strich: 7.0, lx: 1.75,
+        links: [
+          { z: '$' + FG + ' = 6{,}0' + U('N') + '$', tipp: 'Was zeigt der Kraftmesser an? Mit Formelzeichen aufschreiben.' },
+          { z: '$g = 10' + NKGt + '$', tipp: 'Welcher Ortsfaktor steht in der Aufgabe?' }],
+        ges: { z: '$m$', p: 0.5, tipp: 'Gesucht ist die Masse der Flasche.' },
+        rechts: [
+          { z: '$' + FG + ' = m \\cdot g$', s: 'Formel', cmd: ':g', tipp: 'Welche Formel verbindet Gewichtskraft, Masse und Ortsfaktor?' },
+          { z: '$m = \\dfrac{' + FG + '}{g}$', s: 'Umstellen', p: 1, tipp: 'Beide Seiten durch $g$ teilen.', erkl: E_UMSTELLEN_M },
+          { z: '$m = \\dfrac{6{,}0' + U('N') + '}{10' + NKGt + '}$', s: 'Einsetzen', tipp: 'Zahlen mit Einheiten einsetzen.', erkl: E_EINHEIT_KG },
+          { z: '$m = 0{,}60' + U('kg') + ' =$&nbsp;<span class="unter">$600' + U('g') + '$</span>', s: 'Ergebnis', p: 1,
+            tipp: '6,0 geteilt durch 10. Die Einheit: N geteilt durch N/kg ergibt kg.' }],
+        antwort: { z: 'Die Trinkflasche hat eine Masse von 600 g.', tipp: 'Ganzer Satz mit dem Ergebnis.' } } }
+    ] },
+
+  /* ===================== Ende ===================== */
+  { chip: 'Ende', start: true, titel: 'Geschafft! 🎉',
+    html: '<p>Checkliste für die Ex:</p><ul><li>Die <b>Gewichtskraft</b> zeigt senkrecht nach unten zum Erdmittelpunkt und greift im <b>Schwerpunkt</b> an.</li>' +
+      '<li>Die <b>Masse</b> ist überall gleich (Waage, kg), die <b>Gewichtskraft</b> hängt vom Ort ab (Kraftmesser, N).</li>' +
+      '<li>Ich rechne mit $' + FG + ' = m \\cdot g$ und bestimme den Ortsfaktor mit $g = \\dfrac{' + FG + '}{m}$.</li>' +
+      '<li>Ich zeichne Kraftpfeile im richtigen Maßstab.</li></ul>' +
+      '<div class="merk">Weiter geht es mit dem <b>Übungsblatt 2.6</b>.</div>' +
+      '<p><a href="uebung-2-6.html" style="color:var(--petrol2);font-weight:bold">→ Zum Lernpfad Übungsblatt 2.6</a> &nbsp;·&nbsp; <a href="material.html" style="color:var(--petrol2);font-weight:bold">Zum Material</a></p>' }
+  ] };
+</script>
+<script src="../assets/ab-pfad.js"></script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
