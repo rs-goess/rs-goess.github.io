@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.3 Regel von Lenz – Simulation Kupferrohr</title>
+<style>
+  :root{--petrol:#0B3B47;--petrol2:#0E7490;--orange:#E8822A;--dunkel:#1f2f3d;--grau:#f2f4f5;--gelb:#ffd23f;--blau:#1F5FBF}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--petrol);color:var(--dunkel);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;
+       font-size:17px;line-height:1.45;padding-bottom:40px}
+  header{color:#fff;max-width:1000px;margin:0 auto;padding:12px 16px 6px}
+  header small{opacity:.85;display:block;font-size:13px}
+  header h1{margin:2px 0 10px;font-size:21px;line-height:1.25}
+  .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
+            font-size:14px;font-weight:bold;text-decoration:none}
+  .modi{display:inline-flex;background:rgba(255,255,255,.14);border-radius:999px;padding:4px;gap:4px}
+  .modi button{border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:15px;font-weight:bold;background:transparent;
+               color:#fff;cursor:pointer;min-height:42px}
+  .modi button.an{background:var(--gelb);color:#222}
+  main{max-width:1000px;margin:0 auto;padding:6px 12px}
+  .karte{background:#fff;border-radius:16px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.18);margin-bottom:12px;position:relative}
+  #stage{position:relative}
+  #stage svg{width:100%;height:auto;display:block;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+  body.dyn #stage svg{cursor:grab;touch-action:none}
+  body.dyn.zieht #stage svg{cursor:grabbing}
+  #fs{position:absolute;top:10px;right:10px;z-index:2;border:0;border-radius:10px;background:#f2f2f2;font:inherit;font-size:14px;
+      padding:6px 10px;opacity:.75;cursor:pointer}
+  .quer{display:none;font-size:13.5px;color:#6b7780;margin:2px 100px 4px 2px;line-height:1.3}
+  @media (orientation:portrait) and (max-width:600px){ body.dyn .quer{display:block} main{padding:6px 6px} .karte{padding:8px} }
+  .legende{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:#55606a;margin:4px 2px 8px}
+  .legende span{display:inline-flex;align-items:center;gap:6px}
+  .legende svg{flex:none}
+  /* Schritt-Modus */
+  .cap{background:var(--grau);border-radius:12px;padding:10px 12px;min-height:3.4em}
+  .standbild{margin-top:8px;font-size:14.5px;background:#FFF8DB;border:1.5px dashed #F2B705;border-radius:10px;padding:7px 10px;color:#5c4a00}
+  .standbild a{color:var(--petrol2);font-weight:bold;cursor:pointer;text-decoration:underline}
+  #bar{display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 0 2px}
+  #bar button{font:inherit;font-size:16px;border:none;background:#F2F2F2;color:#1A1A1A;border-radius:10px;padding:9px 16px;cursor:pointer;min-height:44px}
+  #bar button:hover{background:#e4e4e4}
+  #bar button:disabled{opacity:.35;cursor:default}
+  #dots{display:flex;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#d4d4d4}
+  .dot.on{background:#6C9EBC}
+  /* Dynamischer Modus */
+  .status{display:flex;align-items:center;gap:10px;background:var(--grau);border-radius:12px;padding:8px 12px;min-height:58px}
+  .status .punkt{width:14px;height:14px;border-radius:50%;flex:none;background:#b8c0c6;transition:background .2s}
+  .status .tx{flex:1;font-size:16px;line-height:1.3}
+  .meter{flex:none;display:block;width:110px;font-size:12.5px;color:#6b7780;text-align:center}
+  .meter .rohr{display:block;height:12px;border-radius:6px;background:#e1e6ea;overflow:hidden;margin-top:3px}
+  .meter .rohr i{display:block;height:100%;width:0;background:var(--orange);border-radius:6px}
+  .reihe{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:10px}
+  .gruppe{display:inline-flex;align-items:center;gap:8px;font-size:15px}
+  .seg{display:inline-flex;border:2px solid #d5dde3;border-radius:12px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:8px 12px;font:inherit;font-size:15px;min-height:42px;cursor:pointer;color:var(--dunkel)}
+  .seg button+button{border-left:2px solid #d5dde3}
+  .seg button.an{background:var(--petrol2);color:#fff;font-weight:bold}
+  .knopf{border:0;border-radius:12px;padding:9px 14px;font:inherit;font-weight:bold;font-size:15px;background:var(--orange);color:#fff;
+         min-height:44px;cursor:pointer}
+  .knopf.grau{background:#e1e6ea;color:var(--dunkel)}
+  label.check{display:inline-flex;gap:7px;align-items:center;font-size:15px;cursor:pointer;min-height:42px}
+  label.check input{width:20px;height:20px;accent-color:var(--orange)}
+  .fuss{font-size:13.5px;color:#6b7780;margin:10px 2px 0}
+  .nurS,.nurD{display:none}
+  body:not(.dyn) .nurS{display:block}
+  body.dyn .nurD{display:block}
+  .legende .nurDi{display:none}
+  body.dyn .legende .nurDi{display:inline-flex}
+  /* Beobachtungsaufträge */
+  .auftraege h2{margin:2px 0 8px;font-size:19px;color:var(--petrol2)}
+  .auftraege details{border:2px solid #e3e8ec;border-radius:12px;margin:8px 0;padding:0 12px;background:#fff}
+  .auftraege summary{cursor:pointer;padding:10px 0;font-weight:bold;list-style:none;display:flex;gap:10px;align-items:baseline}
+  .auftraege summary::-webkit-details-marker{display:none}
+  .auftraege summary .nr{flex:none;background:var(--petrol2);color:#fff;border-radius:999px;font-size:13px;padding:1px 9px}
+  .auftraege summary .mehr{margin-left:auto;flex:none;font-size:13px;color:var(--petrol2);font-weight:bold}
+  .auftraege details[open] summary .mehr{visibility:hidden}
+  .auftraege .erkl{border-top:1px dashed #d5dde3;padding:8px 0 12px;font-size:16px}
+  .auftraege .erkl ol{margin:4px 0 0;padding-left:22px}
+  /* Vollbild */
+  #karte:fullscreen{display:flex;flex-direction:column;border-radius:0;padding:14px;background:#fff;overflow:auto}
+  #karte:fullscreen #stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+  #karte:fullscreen #stage svg{width:auto;height:100%;max-width:100%}
+</style>
+<style>
+  .split{display:flex;gap:16px;align-items:flex-start}
+  #stage{flex:0 1 440px;min-width:0}
+  #stage svg{max-height:80vh;margin:0 auto}
+  .seite{flex:1 1 320px;min-width:0;padding-top:34px}
+  @media (max-width:760px){ .split{flex-direction:column;gap:6px} #stage{width:100%;flex:none} #stage svg{max-height:72vh} .seite{padding-top:0;width:100%} }
+  .legende{flex-direction:column;align-items:flex-start;gap:5px}
+  @media (max-width:760px){ .legende{flex-direction:row} .seite{display:flex;flex-direction:column} .seite .legende{order:9;margin-top:12px} }
+  #bar{flex-wrap:wrap}
+  .runs{margin-top:12px}
+  .runs h3{font-size:15px;margin:0 0 6px;color:var(--petrol2)}
+  .run{display:grid;grid-template-columns:8.5em 1fr 3.6em;gap:8px;align-items:center;font-size:14px;margin:4px 0}
+  .run .b{height:14px;border-radius:7px;background:#e1e6ea;overflow:hidden}
+  .run .b i{display:block;height:100%;border-radius:7px}
+  .run .z{text-align:right;font-weight:bold;font-variant-numeric:tabular-nums}
+  .runs .leer{font-size:13.5px;color:#6b7780}
+  .cap b.n{color:#D9363E} .cap b.s{color:#3F8A4E}
+  #fs{top:10px;right:10px}
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 10c · 2.3 Regel von Lenz · Simulation</small>
+  <h1>Magnet im Kupferrohr</h1>
+  <div class="modi" role="tablist">
+    <button type="button" data-m="schritt" class="an">Schritt für Schritt</button>
+    <button type="button" data-m="dyn">Selbst ausprobieren</button>
+  </div>
+</header>
+<main>
+<section class="karte" id="karte">
+  <button id="fs" type="button" title="Vollbild (F)">⛶ Vollbild</button>
+  <div class="split">
+  <div id="stage">
+  <svg id="svg" viewBox="0 0 460 610" preserveAspectRatio="xMidYMid meet" aria-label="Simulation Magnet im Kupferrohr">
+    <defs>
+      <clipPath id="clipStage"><rect x="0" y="0" width="460" height="610"/></clipPath>
+      <linearGradient id="cuInnen" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#7a3f20"/><stop offset=".5" stop-color="#b0683c"/><stop offset="1" stop-color="#7a3f20"/>
+      </linearGradient>
+      <linearGradient id="kuInnen" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#c9d1d7"/><stop offset=".5" stop-color="#eef2f5"/><stop offset="1" stop-color="#c9d1d7"/>
+      </linearGradient>
+    </defs>
+    <g clip-path="url(#clipStage)">
+      <g id="stativ"></g>
+      <g id="rohrHinten"></g>
+      <g id="magLines"></g>
+      <g id="ringeHinten"></g>
+      <g id="indFeld"></g>
+      <g id="ringeVorne"></g>
+      <g id="koerper"></g>
+      <g id="pfeile"></g>
+      <g id="rohrVorne"></g>
+      <g id="pole"></g>
+      <g id="labels"></g>
+      <g id="kraefte"></g>
+      <g id="anzeige"></g>
+      <g id="hint"></g>
+    </g>
+  </svg>
+  </div>
+  <div class="seite">
+    <div class="legende">
+      <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="20" y2="5" stroke="#6CC24A" stroke-width="2.4"/><path d="M18,1 L25,5 L18,9z" fill="#5DBB46"/></svg>Magnetfeld des Magneten</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12"><ellipse cx="13" cy="6" rx="11" ry="4" fill="none" stroke="#F39A3D" stroke-width="2.6"/></svg>Induktionsstrom in einem „Ring“ des Rohrs</span>
+      <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="19" y2="5" stroke="#E8822A" stroke-width="3"/><path d="M17,0.5 L25,5 L17,9.5z" fill="#D9701B"/></svg>Bewegungsrichtung der Elektronen</span>
+      <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="20" y2="5" stroke="#8E5BD6" stroke-width="2.4"/><path d="M18,1 L25,5 L18,9z" fill="#7B45C8"/></svg>Magnetfeld der Induktionsströme</span>
+      <span><svg width="34" height="16" viewBox="0 0 34 16"><circle cx="8" cy="8" r="7.5" fill="#D9363E"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">N</text><circle cx="25" cy="8" r="7.5" fill="#3F8A4E"/><text x="25" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">S</text></svg>Pol, den die Ringe dem Magneten zeigen</span>
+      <span><svg width="26" height="14" viewBox="0 0 26 14"><path d="M13,1 L20,8 L16,8 L16,13 L10,13 L10,8 L6,8z" fill="#E8822A" fill-opacity=".6" stroke="#C9661A"/></svg>Bremskraft · <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7,13 L14,6 L10,6 L10,1 L4,1 L4,6 L0,6z" fill="#8d969e"/></svg> Gewichtskraft</span>
+    </div>
+
+    <!-- Schritt für Schritt -->
+    <div class="nurS" style="margin-top:10px">
+      <div class="cap" id="cap"></div>
+      <div id="bar">
+        <button id="prev" type="button">◀ zurück</button>
+        <div id="dots"></div>
+        <button id="next" type="button">weiter ▶</button>
+        <button id="reset" type="button" title="Von vorn">↺</button>
+      </div>
+    </div>
+
+    <!-- Selbst ausprobieren -->
+    <div class="nurD" style="margin-top:10px">
+      <div class="status"><span class="punkt" id="punkt"></span><span class="tx" id="status"></span></div>
+      <div class="reihe">
+        <span class="gruppe">Körper:
+          <span class="seg" id="segK"><button type="button" data-v="magnet" class="an">Magnet</button><button type="button" data-v="eisen">Eisenstück</button></span></span>
+        <span class="gruppe">Rohr:
+          <span class="seg" id="segR"><button type="button" data-v="cu" class="an">Kupfer</button><button type="button" data-v="ku">Kunststoff</button></span></span>
+      </div>
+      <div class="reihe">
+        <button class="knopf" id="los" type="button">Fallen lassen ▼</button>
+        <button class="knopf grau" id="dreh" type="button">Magnet umdrehen</button>
+        <button class="knopf grau" id="resetD" type="button" title="Zurücksetzen">↺ Neu</button>
+      </div>
+      <div class="reihe">
+        <label class="check"><input type="checkbox" id="zLupe"> Zeitlupe (5× langsamer)</label>
+        <label class="check"><input type="checkbox" id="zMag" checked> Feldlinien</label>
+        <label class="check"><input type="checkbox" id="zStrom" checked> Induktionsströme</label>
+        <label class="check"><input type="checkbox" id="zInd" checked> Magnetfeld der Ströme</label>
+        <label class="check"><input type="checkbox" id="zPol" checked> Pole</label>
+        <label class="check"><input type="checkbox" id="zKraft" checked> Kräfte</label>
+      </div>
+      <div class="runs"><h3>Fallzeiten durch das Rohr</h3><div id="runs"><p class="leer">Noch kein Versuch – lass etwas fallen.</p></div></div>
+      <p class="fuss">Du kannst den Körper auch mit der Maus oder dem Finger greifen und selbst im Rohr bewegen. Rohrlänge im Modell: 50 cm (nicht maßstäblich gezeichnet).</p>
+    </div>
+  </div>
+  </div>
+</section>
+
+<section class="karte auftraege nurD">
+  <h2>Beobachte und erkläre</h2>
+  <details><summary><span class="nr">1</span><span>Lass erst das Eisenstück und dann den Magneten durch das Kupferrohr fallen. Vergleiche die Fallzeiten.</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Das Eisenstück fällt in etwa 0,3 s durch, der Magnet braucht über 3 s – mehr als zehnmal so lang. Kupfer ist nicht magnetisch: Der Magnet wird nicht angezogen und bleibt nicht haften.
+      Er wird gebremst, weil sich in den „Ringen“ des Rohrs die Magnetfeldstärke ändert und dort Induktionsströme fließen.</div></details>
+  <details><summary><span class="nr">2</span><span>Schau auf die orangefarbenen Ringe: Wo fließen Induktionsströme – und in welche Richtung?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Nur in der Nähe des Magneten. <b>Unter</b> dem Magneten wird das Magnetfeld in den Ringen stärker, <b>über</b> ihm wird es schwächer.
+      Deshalb fließen die Ströme unter und über dem Magneten in <b>entgegengesetzte</b> Richtungen. Weiter weg ändert sich fast nichts – dort fließt kein Strom.</div></details>
+  <details><summary><span class="nr">3</span><span>Welche Pole zeigen die Ringe dem Magneten – unter ihm und über ihm?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl"><ol>
+      <li><b>Unter</b> dem Magneten: ein <b>gleichnamiger</b> Pol → Abstoßung (wie beim Hineinbewegen in den Ring).</li>
+      <li><b>Über</b> dem Magneten: ein <b>ungleichnamiger</b> Pol → Anziehung (wie beim Herausziehen aus dem Ring).</li></ol>
+      Beide Kräfte zeigen nach <b>oben</b> – gegen die Fallbewegung. Das ist die Regel von Lenz.</div></details>
+  <details><summary><span class="nr">4</span><span>Dreh den Magneten um und lass ihn noch einmal fallen. Ändert sich die Fallzeit?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Nein. Die Ströme fließen jetzt andersherum und die Pole sind vertauscht – aber es gilt wieder: unten gleichnamig (Abstoßung), oben ungleichnamig (Anziehung).
+      Der Magnet wird genauso stark gebremst.</div></details>
+  <details><summary><span class="nr">5</span><span>Achte auf die Geschwindigkeit v. Warum wird der Magnet im Rohr nicht immer schneller?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Je schneller der Magnet fällt, desto schneller ändert sich das Magnetfeld in den Ringen → desto größer die Induktionsströme → desto größer die Bremskraft.
+      Schon nach kurzer Zeit ist die Bremskraft so groß wie die Gewichtskraft. Dann fällt der Magnet mit <b>gleichbleibender</b> Geschwindigkeit.</div></details>
+  <details><summary><span class="nr">6</span><span>Stell auf ein Kunststoffrohr um. Was passiert – und warum?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Der Magnet fällt so schnell wie das Eisenstück. Auch hier ändert sich das Magnetfeld, aber Kunststoff ist ein <b>Nichtleiter</b>:
+      Es können keine Induktionsströme fließen → kein Magnetfeld der Ströme → keine Bremskraft.</div></details>
+</section>
+</main>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const svg = $("svg");
+
+/* ---------- Geometrie (Bildpunkte) ---------- */
+const CX = 200, A = 42, WAND = 8, KP = 0.26;
+const Y_OBEN = 95, Y_UNTEN = 525, Y_TISCH = 594;
+const MW = 30, MHH = 25;              // Magnet: halbe Breite, halbe Höhe
+const QC = 0.42 * 2 * MHH;            // Lage der Pole im Modell
+const Y_START = 62;
+const PXM = (Y_UNTEN - Y_OBEN) / 0.5; // 430 px = 50 cm
+const G = 9.81 * PXM;                 // Fallbeschleunigung in px/s²
+const V_END = 0.147 * PXM;            // Endgeschwindigkeit des Magneten im Kupferrohr (≈ 0,15 m/s)
+
+/* ---------- Physik: Fluss durch einen Ring des Rohrs ---------- */
+function fp(x) { const r2 = x * x + A * A; return A * A / (r2 * Math.sqrt(r2)); }
+function gRaw(s) { return 0.5 * (fp(s + QC) - fp(s - QC)); }   // dΦ/ds, s = Ring über Magnetmitte (> 0: Ring oben)
+let GMAX = 0, S_PK = 0;
+for (let s = 0; s < 400; s += 0.25) { const g = Math.abs(gRaw(s)); if (g > GMAX) { GMAX = g; S_PK = s; } }
+const RINGE = []; for (let y = Y_OBEN + 1; y < Y_UNTEN; y += 2) RINGE.push(y);
+const BETA = new Float64Array(700);    // Summe g² über alle Ringe, je Magnetlage
+for (let i = 0; i < 700; i++) { let b = 0; for (const y of RINGE) { const g = gRaw(i - y) / GMAX; b += g * g; } BETA[i] = b; }
+const K_CU = G / (V_END * BETA[Math.round((Y_OBEN + Y_UNTEN) / 2)]);
+function beta(y) { const i = Math.max(0, Math.min(698, y)), i0 = Math.floor(i); return BETA[i0] + (BETA[i0 + 1] - BETA[i0]) * (i - i0); }
+
+/* ---------- Feldlinien ---------- */
+function Bmag(u, r) {
+  let bu = 0, br = 0;
+  for (const [c, q] of [[QC, 1], [-QC, -1]]) {
+    const du = u - c, d2 = du * du + r * r, d3 = d2 * Math.sqrt(d2) + 1e-9;
+    bu += q * du / d3; br += q * r / d3;
+  }
+  return [bu, br];
+}
+const LOOP = []; for (let i = 0; i < 64; i++) { const p = (i + 0.5) * 2 * Math.PI / 64; LOOP.push([A * Math.cos(p), A * Math.sin(p), -A * Math.sin(p), A * Math.cos(p)]); }
+function Bloop(u, r) {
+  let bu = 0, br = 0;
+  for (const [py, pz, dly, dlz] of LOOP) {
+    const ry = r - py, rz = -pz, d2 = u * u + ry * ry + rz * rz, d3 = d2 * Math.sqrt(d2) + 1e-9;
+    bu += (dly * rz - dlz * ry) / d3; br += (dlz * u) / d3;
+  }
+  return [bu, br];
+}
+function trace(u, r, B, h, n, stop, sign = 1) {
+  const pts = [[u, r]];
+  for (let i = 0; i < n; i++) {
+    let [a, b] = B(u, r); let m = Math.hypot(a, b) * sign; if (!m) break;
+    const um = u + 0.5 * h * a / m, rm = r + 0.5 * h * b / m;
+    [a, b] = B(um, rm); m = Math.hypot(a, b) * sign;
+    u += h * a / m; r += h * b / m; pts.push([u, r]);
+    if (stop(u, r, i)) break;
+  }
+  return pts;
+}
+// Bildschirm: x = rho, y = -u  (u zeigt nach oben)
+function pfad(pts, step = 2) {
+  let d = "";
+  for (let i = 0; i < pts.length; i += step) d += (i ? "L" : "M") + pts[i][1].toFixed(1) + "," + (-pts[i][0]).toFixed(1);
+  const l = pts[pts.length - 1]; d += "L" + l[1].toFixed(1) + "," + (-l[0]).toFixed(1);
+  return d;
+}
+function spitze(parent, pts, i, col, size = 6.5) {
+  const j = Math.min(pts.length - 1, i + 2), k = Math.max(0, i - 2);
+  const ang = Math.atan2(-(pts[j][0] - pts[k][0]), pts[j][1] - pts[k][1]) * 180 / Math.PI;
+  el("path", { d: `M${size},0 L${-size * .8},${-size * .75} L${-size * .8},${size * .75}z`, fill: col,
+    transform: `translate(${pts[i][1].toFixed(1)},${(-pts[i][0]).toFixed(1)}) rotate(${ang.toFixed(1)})` }, parent);
+}
+(function baueMagnetfeld() {
+  const g = $("magLines"), n = 5, linien = [];
+  for (let k = 0; k < n; k++) {
+    const th = Math.acos(1 - (2 * k + 1) / n);
+    for (const sg of [1, -1]) linien.push(trace(QC + 3 * Math.cos(th), sg * 3 * Math.sin(th), Bmag, 2.5, 1800,
+      (u, r) => Math.hypot(u + QC, r) < 4 || Math.abs(u) > 900 || Math.abs(r) > 600));
+  }
+  linien.push([[QC, 0], [900, 0]], [[-900, 0], [-QC, 0]]);
+  for (const pts of linien) {
+    el("path", { d: pfad(pts), fill: "none", stroke: "#6CC24A", "stroke-width": 2, "stroke-opacity": .85 }, g);
+    let len = 0, raus = -1, n2 = 0;
+    for (let i = 1; i < pts.length; i++) {
+      len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+      const drin = Math.abs(pts[i][0]) < MHH + 5 && Math.abs(pts[i][1]) < MW + 5;
+      if (raus < 0 && !drin) raus = len;
+      if (raus >= 0 && Math.abs(pts[i][0]) < 300 && ((n2 === 0 && len > raus + 40) || (n2 === 1 && len > raus + 200))) { spitze(g, pts, i, "#4FA736"); n2++; }
+      if (n2 >= 2) break;
+    }
+  }
+})();
+const INDFELD = [];
+(function baueInduktionsfeld() {
+  for (let z = 0; z < 2; z++) {
+    const g = el("g", { opacity: 0 }, $("indFeld"));
+    const inner = el("g", {}, g);
+    const stop = (u, r) => Math.abs(u) > 150 || Math.abs(r) > 170;
+    el("path", { d: "M0,90 L0,-90", fill: "none", stroke: "#8E5BD6", "stroke-width": 2.2 }, inner);
+    for (const f0 of [0.62, 0.88]) for (const sg of [1, -1]) {
+      const r0 = sg * f0 * A;
+      const vor = trace(0, r0, Bloop, 1.6, 2600, (u, r, i) => stop(u, r) || (i > 40 && Math.hypot(u, r - r0) < 1.8));
+      let pts = vor;
+      if (Math.hypot(vor[vor.length - 1][0], vor[vor.length - 1][1] - r0) > 3) pts = trace(0, r0, Bloop, 1.6, 2600, stop, -1).reverse().concat(vor.slice(1));
+      el("path", { d: pfad(pts, 1), fill: "none", stroke: "#8E5BD6", "stroke-width": 1.8, "stroke-opacity": .9 }, inner);
+      let i0 = 0, best = 1e9; pts.forEach((p, i) => { const d = Math.hypot(p[0], p[1] - r0); if (d < best) { best = d; i0 = i; } });
+      spitze(inner, pts, i0, "#7B45C8", 5.5);
+    }
+    INDFELD.push({ g, inner });
+  }
+})();
+
+/* ---------- Rohr, Ringe, Stativ ---------- */
+const stativ = $("stativ");
+el("rect", { x: 30, y: 40, width: 7, height: Y_TISCH - 40, rx: 3, fill: "#c3cbd1" }, stativ);
+el("rect", { x: 33, y: 300, width: CX - A - WAND - 33, height: 7, rx: 3, fill: "#c3cbd1" }, stativ);
+el("rect", { x: CX - A - WAND - 12, y: 292, width: 14, height: 23, rx: 3, fill: "#9aa5ae" }, stativ);
+el("rect", { x: 0, y: Y_TISCH, width: 460, height: 16, fill: "#d8cfc3" }, stativ);
+el("line", { x1: 0, y1: Y_TISCH, x2: 460, y2: Y_TISCH, stroke: "#b5a996", "stroke-width": 2 }, stativ);
+
+const rohrH = $("rohrHinten"), rohrV = $("rohrVorne");
+const innen = el("rect", { x: CX - A, y: Y_OBEN, width: 2 * A, height: Y_UNTEN - Y_OBEN }, rohrH);
+const randOben = el("ellipse", { cx: CX, cy: Y_OBEN, rx: A + WAND / 2, ry: KP * (A + WAND / 2), fill: "none", "stroke-width": WAND }, rohrH);
+const wandL = el("rect", { x: CX - A - WAND, y: Y_OBEN, width: WAND, height: Y_UNTEN - Y_OBEN }, rohrV);
+const wandR = el("rect", { x: CX + A, y: Y_OBEN, width: WAND, height: Y_UNTEN - Y_OBEN }, rohrV);
+const randUnten = el("path", { d: `M${CX - A - WAND / 2},${Y_UNTEN} A${A + WAND / 2},${KP * (A + WAND / 2)} 0 0 0 ${CX + A + WAND / 2},${Y_UNTEN}`, fill: "none", "stroke-width": WAND }, rohrV);
+
+function ellPfad(y, a0, a1, n = 24) {   // Punkte (CX + A cos φ, y + KP A sin φ); vorne: sin φ > 0
+  let d = "";
+  for (let i = 0; i <= n; i++) { const p = a0 + (a1 - a0) * i / n; d += (i ? "L" : "M") + (CX + A * Math.cos(p)).toFixed(1) + "," + (y + KP * A * Math.sin(p)).toFixed(1); }
+  return d;
+}
+const SLICES = [];
+for (let y = Y_OBEN + 10; y < Y_UNTEN - 4; y += 18) {
+  const s = { y };
+  s.bH = el("path", { d: ellPfad(y, Math.PI, 2 * Math.PI), fill: "none", stroke: "#5e2f15", "stroke-width": 1.3, opacity: .55 }, $("ringeHinten"));
+  s.oH = el("path", { d: ellPfad(y, Math.PI, 2 * Math.PI), fill: "none", stroke: "#F39A3D", "stroke-width": 3.2, opacity: 0 }, $("ringeHinten"));
+  s.bV = el("path", { d: ellPfad(y, 0, Math.PI), fill: "none", stroke: "#d38a5a", "stroke-width": 1.2, "stroke-dasharray": "3 3", opacity: .5 }, $("ringeVorne"));
+  s.oV = el("path", { d: ellPfad(y, 0, Math.PI), fill: "none", stroke: "#F39A3D", "stroke-width": 3, opacity: 0 }, $("ringeVorne"));
+  s.pf = el("path", { d: "M-9,-2.2 L3,-2.2 L3,-6 L10,0 L3,6 L3,2.2 L-9,2.2z", fill: "#E8822A", stroke: "#B8601A", "stroke-width": .8, opacity: 0 }, $("pfeile"));
+  SLICES.push(s);
+}
+function setRohr(cu) {
+  innen.setAttribute("fill", cu ? "url(#cuInnen)" : "url(#kuInnen)");
+  const w = cu ? "#c8794a" : "#dfe5ea", r = cu ? "#a35a30" : "#b7c1c9";
+  for (const e of [wandL, wandR]) { e.setAttribute("fill", w); e.setAttribute("stroke", r); e.setAttribute("stroke-width", 1); }
+  randOben.setAttribute("stroke", cu ? "#b86b3e" : "#cfd7dd"); randUnten.setAttribute("stroke", cu ? "#c8794a" : "#dfe5ea");
+  for (const s of SLICES) { s.bH.setAttribute("stroke", cu ? "#5e2f15" : "#8f9aa3"); s.bV.setAttribute("stroke", cu ? "#d38a5a" : "#a6b0b8"); }
+}
+
+/* ---------- Körper ---------- */
+const koerper = $("koerper");
+const magBody = el("g", {}, koerper);
+el("rect", { x: -MW + 3, y: -MHH + 3, width: 2 * MW, height: 2 * MHH, rx: 4, fill: "rgba(0,0,0,.2)" }, magBody);
+const hOben = el("rect", { x: -MW, y: -MHH, width: 2 * MW, height: MHH, rx: 4 }, magBody);
+const hUnten = el("rect", { x: -MW, y: 0, width: 2 * MW, height: MHH, rx: 4 }, magBody);
+const hObenF = el("rect", { x: -MW, y: -MHH + 6, width: 2 * MW, height: MHH - 6 }, magBody);
+const hUntenF = el("rect", { x: -MW, y: 0, width: 2 * MW, height: MHH - 6 }, magBody);
+const tOben = el("text", { y: -6, "text-anchor": "middle", "font-size": 18, "font-weight": "bold", fill: "#fff" }, magBody);
+const tUnten = el("text", { y: 19, "text-anchor": "middle", "font-size": 18, "font-weight": "bold", fill: "#fff" }, magBody);
+const eisen = el("g", {}, koerper);
+el("rect", { x: -MW + 3, y: -MHH + 3, width: 2 * MW, height: 2 * MHH, rx: 4, fill: "rgba(0,0,0,.2)" }, eisen);
+el("rect", { x: -MW, y: -MHH, width: 2 * MW, height: 2 * MHH, rx: 4, fill: "#8a8f94" }, eisen);
+el("rect", { x: -MW + 4, y: -MHH + 4, width: 2 * MW - 8, height: 6, rx: 3, fill: "#fff", opacity: .25 }, eisen);
+const fe = el("text", { y: 7, "text-anchor": "middle", "font-size": 19, "font-weight": "bold", fill: "#fff" }, eisen); fe.textContent = "Fe";
+
+/* Pole, Beschriftungen, Kräfte, Anzeige */
+function plakette(parent) {
+  const g = el("g", { opacity: 0 }, parent);
+  const c = el("circle", { r: 12, stroke: "#fff", "stroke-width": 2 }, g);
+  const t = el("text", { y: 5, "text-anchor": "middle", "font-size": 14, "font-weight": "bold", fill: "#fff" }, g);
+  return { g, set(p) { c.setAttribute("fill", p === "N" ? "#D9363E" : "#3F8A4E"); t.textContent = p; } };
+}
+const polO = plakette($("pole")), polU = plakette($("pole"));
+function label(parent) {
+  const t = el("text", { "text-anchor": "end", "font-size": 14.5, fill: "#1f2f3d", opacity: 0, stroke: "#fff", "stroke-width": 4, "stroke-linejoin": "round", "paint-order": "stroke" }, parent);
+  const t1 = el("tspan", { x: 0, dy: 0 }, t), t2 = el("tspan", { x: 0, dy: 17, "font-weight": "bold" }, t);
+  return { t, set(a, b, col) { t1.textContent = a; t2.textContent = b; t2.setAttribute("fill", col || "#1f2f3d"); } };
+}
+const labO = label($("labels")), labU = label($("labels"));
+const kraefte = $("kraefte");
+const fG = el("path", { fill: "#8d969e" }, kraefte), fB = el("path", { fill: "#E8822A", "fill-opacity": .6, stroke: "#C9661A", "stroke-width": 1.2 }, kraefte);
+const halo = { stroke: "#fff", "stroke-width": 4, "stroke-linejoin": "round", "paint-order": "stroke" };
+const fGt = el("text", { "font-size": 13, fill: "#55606a", ...halo }, kraefte), fBt = el("text", { "font-size": 13, fill: "#9a4f12", ...halo }, kraefte);
+fGt.textContent = "Gewichtskraft"; fBt.textContent = "Bremskraft";
+const anzeige = $("anzeige");
+const aT = el("text", { x: 448, y: 80, "text-anchor": "end", "font-size": 17, "font-weight": "bold", fill: "#1f2f3d" }, anzeige);
+const aV = el("text", { x: 448, y: 102, "text-anchor": "end", "font-size": 17, "font-weight": "bold", fill: "#1f2f3d" }, anzeige);
+const aL = el("text", { x: 448, y: 120, "text-anchor": "end", "font-size": 12.5, fill: "#6b7780" }, anzeige);
+const hintT = el("text", { x: CX, y: 22, "text-anchor": "middle", "font-size": 15, fill: "#55606a", opacity: 0 }, $("hint"));
+hintT.textContent = "Tippe auf „Fallen lassen“ – oder greif den Körper";
+function vPfeil(x, y0, y1, hw = 5, hl = 14, hh = 11) {
+  const L = Math.abs(y1 - y0); if (L < 6) return "";
+  const dir = Math.sign(y1 - y0), hlE = Math.min(hl, L * 0.6), yb = y1 - dir * hlE;
+  return `M${x - hw},${y0} L${x - hw},${yb} L${x - hh},${yb} L${x},${y1} L${x + hh},${yb} L${x + hw},${yb} L${x + hw},${y0}z`;
+}
+const zahl = (x, n) => x.toFixed(n).replace(".", ",");
+
+/* ---------- Zustand ---------- */
+const S = { y: Y_START, w: 0, d: 1, koerper: "magnet", cu: true, fallend: false, gelandet: false, t: 0, tEnde: null, Fb: 0, wVis: 0 };
+const SHOW = { mag: true, strom: true, ind: true, pol: true, kraft: true };
+function koerperZeigen() {
+  const m = S.koerper === "magnet";
+  magBody.style.display = m ? "" : "none"; eisen.style.display = m ? "none" : "";
+  const nOben = S.d > 0;
+  for (const [r, f, t, n] of [[hOben, hObenF, tOben, nOben], [hUnten, hUntenF, tUnten, !nOben]]) {
+    const c = n ? "#D9363E" : "#3F8A4E"; r.setAttribute("fill", c); f.setAttribute("fill", c); t.textContent = n ? "N" : "S";
+  }
+}
+function induziert() { return S.koerper === "magnet" && S.cu; }
+function kStark() { return induziert() ? K_CU : 0; }
+
+function physik(dt) {            // freier Fall mit Bremskraft (Regel von Lenz), dt in echter Zeit
+  const n = 24, h = dt / n;
+  for (let i = 0; i < n; i++) {
+    const b = kStark() * beta(S.y);
+    S.w = (S.w + G * h) / (1 + b * h);
+    S.y += S.w * h; S.t += h;
+    if (S.tEnde === null && S.y > Y_UNTEN) S.tEnde = S.t;
+    if (S.y >= Y_TISCH - MHH) { S.y = Y_TISCH - MHH; S.w = 0; S.gelandet = true; S.fallend = false; break; }
+  }
+  S.Fb = kStark() * beta(S.y) * S.w / G;     // Bremskraft in Vielfachen der Gewichtskraft
+}
+
+function zeichne(opt) {
+  koerper.setAttribute("transform", `translate(${CX},${S.y.toFixed(2)})`);
+  const mag = S.koerper === "magnet";
+  $("magLines").setAttribute("transform", `translate(${CX},${S.y.toFixed(2)}) scale(1,${S.d})`);
+  $("magLines").style.display = opt.mag && mag ? "" : "none";
+  // Ströme in den Ringen (normiert auf die Endgeschwindigkeit)
+  const ind = induziert() && !S.gelandet;
+  const I = y => ind ? -S.d * gRaw(S.y - y) / GMAX * S.w / V_END : 0;
+  for (const s of SLICES) {
+    const i = I(s.y), v = Math.pow(Math.min(1, Math.abs(i)), 0.65);
+    const o = opt.strom ? v : 0;
+    s.oH.setAttribute("opacity", (o * 0.7).toFixed(3)); s.oV.setAttribute("opacity", (o * 0.85).toFixed(3));
+    // Elektronen laufen bei I > 0 (Feld nach oben) vorne nach links
+    const frei = Math.abs(s.y + KP * A - S.y) > MHH + 6;     // Pfeil nicht über den Körper legen
+    s.pf.setAttribute("opacity", opt.strom && frei && v > 0.25 ? v.toFixed(3) : 0);
+    s.pf.setAttribute("transform", `translate(${CX},${(s.y + KP * A).toFixed(1)}) rotate(${i > 0 ? 180 : 0})`);
+  }
+  // Magnetfeld der Ströme und Pole: oben (Ring über dem Magneten) und unten
+  const iO = I(S.y - S_PK), iU = I(S.y + S_PK);
+  const vO = Math.pow(Math.min(1, Math.abs(iO)), 0.65), vU = Math.pow(Math.min(1, Math.abs(iU)), 0.65);
+  [[INDFELD[0], S.y - S_PK, iO, vO], [INDFELD[1], S.y + S_PK, iU, vU]].forEach(([f, y, i, v]) => {
+    f.g.setAttribute("transform", `translate(${CX},${y.toFixed(2)})`);
+    f.inner.setAttribute("transform", `scale(1,${i >= 0 ? 1 : -1})`);
+    f.g.setAttribute("opacity", opt.ind ? (v * 0.9).toFixed(3) : 0);
+  });
+  // Pole: oben zählt die Unterseite des oberen "Rings", unten die Oberseite des unteren
+  polO.set(iO > 0 ? "S" : "N"); polU.set(iU > 0 ? "N" : "S");
+  polO.g.setAttribute("transform", `translate(${CX},${(S.y - MHH - 16).toFixed(1)})`);
+  polU.g.setAttribute("transform", `translate(${CX},${(S.y + MHH + 16).toFixed(1)})`);
+  polO.g.setAttribute("opacity", opt.pol ? vO.toFixed(3) : 0); polU.g.setAttribute("opacity", opt.pol ? vU.toFixed(3) : 0);
+  // Beschriftungen links
+  const xl = CX - A - WAND - 14;
+  labO.t.setAttribute("transform", `translate(${xl},${(S.y - S_PK - 4).toFixed(1)})`);
+  labU.t.setAttribute("transform", `translate(${xl},${(S.y + S_PK - 4).toFixed(1)})`);
+  let lo = 0, lu = 0;
+  if (opt.lab === "feld" && mag && Math.abs(S.w) > 5 && S.y > Y_OBEN - 20 && S.y < Y_UNTEN + 10) {
+    labO.set("Magnetfeld", "wird schwächer", "#4FA736"); labU.set("Magnetfeld", "wird stärker", "#4FA736"); lo = lu = 1;
+  } else if (opt.lab === "kraft") {
+    labO.set("Anziehung", "zieht nach oben", "#9a4f12"); labU.set("Abstoßung", "drückt nach oben", "#9a4f12"); lo = vO; lu = vU;
+  }
+  labO.t.setAttribute("opacity", lo.toFixed(3)); labU.t.setAttribute("opacity", lu.toFixed(3));
+  // Kräfte rechts neben dem Rohr
+  const xk = CX + A + WAND + 30, Lg = 52;
+  if (opt.kraft && (S.fallend || S.gelandet || opt.immerKraft)) {
+    fG.setAttribute("d", vPfeil(xk, S.y + 3, S.y + 3 + Lg)); fGt.setAttribute("x", xk + 14); fGt.setAttribute("y", S.y + Lg - 4);
+    const Lb = Math.min(1.25, S.Fb) * Lg;
+    fB.setAttribute("d", vPfeil(xk, S.y - 3, S.y - 3 - Lb)); fBt.setAttribute("x", xk + 14); fBt.setAttribute("y", S.y - Lg + 14);
+    fBt.setAttribute("opacity", Lb > 8 ? 1 : 0); fGt.setAttribute("opacity", 1);
+    if (S.gelandet) { fG.setAttribute("d", ""); fGt.setAttribute("opacity", 0); }
+  } else { fG.setAttribute("d", ""); fB.setAttribute("d", ""); fGt.setAttribute("opacity", 0); fBt.setAttribute("opacity", 0); }
+  // Anzeige
+  if (opt.anzeige) {
+    const t = S.tEnde !== null ? S.tEnde : S.t;
+    aT.textContent = `t = ${zahl(t, 2)} s`;
+    aV.textContent = `v = ${zahl(S.gelandet ? 0 : S.w / PXM, 2)} m/s`;
+    aL.textContent = opt.lupe ? "Zeitlupe" : "";
+    anzeige.style.display = "";
+  } else anzeige.style.display = "none";
+}
+
+/* ---------- Schritt für Schritt ---------- */
+const STEPS = [
+  { cap: "<b>Einstieg:</b> Ein Kupferrohr kann man sich wie <b>viele Ringe übereinander</b> vorstellen (hier eingezeichnet, das Rohr ist vorne aufgeschnitten). Kupfer ist nicht magnetisch – der Magnet bleibt nicht haften.",
+    fall: false, show: { mag: 1 } },
+  { cap: "<b>1.</b> Der Magnet fällt. In den Ringen <b>unter</b> ihm wird die Magnetfeldstärke größer, in den Ringen <b>über</b> ihm kleiner: <b>Die Magnetfeldstärke in den Ringen ändert sich.</b>",
+    fall: true, lupe: 0.6, show: { mag: 1, lab: "feld" } },
+  { cap: "<b>2.</b> In jedem Ring entsteht eine Induktionsspannung – und weil jeder Ring geschlossen ist, fließt ein <b>Induktionsstrom</b>. Unter und über dem Magneten fließen die Ströme in <b>entgegengesetzte</b> Richtungen.",
+    fall: true, lupe: 0.6, show: { mag: 1, strom: 1 } },
+  { cap: "<b>3.</b> Die Induktionsströme erzeugen <b>eigene Magnetfelder</b> (lila). Unter dem Magneten zeigen die Ringe ihm einen <b>gleichnamigen</b> Pol (Abstoßung), über ihm einen <b>ungleichnamigen</b> Pol (Anziehung).",
+    fall: true, lupe: 0.6, show: { mag: 0, strom: 1, ind: 1, pol: 1, lab: "kraft" } },
+  { cap: "<b>4.</b> Beide Kräfte wirken nach <b>oben</b> – gegen die Fallbewegung: <b>Regel von Lenz</b>. Bremskraft und Gewichtskraft sind schnell gleich groß. Der Magnet fällt dann langsam mit gleichbleibender Geschwindigkeit.",
+    fall: true, lupe: 0.6, show: { mag: 0, strom: 1, pol: 1, kraft: 1, anzeige: 1 } },
+  { cap: "<b>Und das Eisenstück?</b> Es ist kein Magnet: Die Magnetfeldstärke in den Ringen ändert sich nicht → <b>keine Induktionsströme → keine Bremskraft</b>. Es fällt fast ungebremst in etwa 0,3 s durch (hier in Zeitlupe).",
+    fall: true, eisen: true, lupe: 0.15, show: { kraft: 1, anzeige: 1 } }
+];
+let mode = "schritt", step = 0, tCyc = 0;
+const dots = $("dots");
+STEPS.forEach(() => dots.appendChild(Object.assign(document.createElement("span"), { className: "dot" })));
+function uiStep() {
+  $("cap").innerHTML = STEPS[step].cap;
+  [...dots.children].forEach((d, i) => d.classList.toggle("on", i <= step));
+  $("prev").disabled = step === 0; $("next").disabled = step === STEPS.length - 1;
+}
+function startZyklus() {
+  const st = STEPS[step];
+  S.koerper = st.eisen ? "eisen" : "magnet"; S.cu = true; S.d = 1;
+  S.y = Y_START; S.w = 0; S.t = 0; S.tEnde = null; S.fallend = false; S.gelandet = false; S.Fb = 0; S.landZeit = 0; tCyc = 0;
+  koerperZeigen(); setRohr(true);
+}
+function go(n) { step = Math.max(0, Math.min(STEPS.length - 1, n)); uiStep(); startZyklus(); }
+$("prev").onclick = () => go(step - 1);
+$("next").onclick = () => go(step + 1);
+$("reset").onclick = () => go(0);
+function frameStep(dt) {
+  const st = STEPS[step];
+  tCyc += dt;
+  if (st.fall) {
+    if (!S.fallend && !S.gelandet && tCyc > 0.9) S.fallend = true;
+    if (S.fallend) physik(dt * st.lupe);
+    if (S.gelandet && (S.landZeit = (S.landZeit || 0) + dt) > 1.6) { S.landZeit = 0; startZyklus(); }
+  }
+  const sh = st.show;
+  zeichne({ mag: !!sh.mag, strom: !!sh.strom, ind: !!sh.ind, pol: !!sh.pol, kraft: !!sh.kraft, lab: sh.lab || "", anzeige: !!sh.anzeige, lupe: st.lupe < 1 });
+}
+
+/* ---------- Selbst ausprobieren ---------- */
+const D = { greift: false, off: 0, yAlt: 0, hint: true, runs: [] };
+function dynReset() {
+  S.y = Y_START; S.w = 0; S.t = 0; S.tEnde = null; S.fallend = false; S.gelandet = false; S.Fb = 0; S.landZeit = 0;
+  koerperZeigen(); setRohr(S.cu);
+}
+function svgY(e) { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse()); return p; }
+svg.addEventListener("pointerdown", e => {
+  if (mode !== "dyn") return;
+  const p = svgY(e);
+  if (Math.abs(p.x - CX) > MW + 40 || Math.abs(p.y - S.y) > MHH + 40) return;
+  D.greift = true; D.hint = false; D.off = S.y - p.y; D.yAlt = S.y;
+  S.fallend = false; S.gelandet = false; S.t = 0; S.tEnde = null;
+  try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+  document.body.classList.add("zieht");
+});
+svg.addEventListener("pointermove", e => { if (D.greift) D.ziel = svgY(e).y + D.off; });
+function loslassen() {
+  if (!D.greift) return;
+  D.greift = false; document.body.classList.remove("zieht");
+  S.fallend = true; S.t = 0; S.tEnde = null; D.messen = S.y < Y_OBEN - MHH + 2;   // Zeit nur messen, wenn von oben losgelassen
+}
+svg.addEventListener("pointerup", loslassen); svg.addEventListener("pointercancel", loslassen);
+$("los").onclick = () => { D.hint = false; dynReset(); S.fallend = true; D.messen = true; };
+$("dreh").onclick = () => { S.d = -S.d; koerperZeigen(); };
+$("resetD").onclick = () => { dynReset(); D.hint = true; };
+function seg(id, fn) {
+  document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => {
+    document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle("an", x === b)); fn(b.dataset.v);
+  });
+}
+seg("segK", v => { S.koerper = v; $("dreh").disabled = v !== "magnet"; dynReset(); });
+seg("segR", v => { S.cu = v === "cu"; dynReset(); });
+for (const [id, key] of [["zMag", "mag"], ["zStrom", "strom"], ["zInd", "ind"], ["zPol", "pol"], ["zKraft", "kraft"]])
+  $(id).onchange = e => SHOW[key] = e.target.checked;
+
+function runEintragen(t) {
+  const name = (S.koerper === "magnet" ? "Magnet" : "Eisenstück") + " · " + (S.cu ? "Kupfer" : "Kunststoff");
+  D.runs.unshift({ name, t, farbe: S.koerper === "magnet" && S.cu ? "#E8822A" : "#8d969e" });
+  D.runs = D.runs.slice(0, 5);
+  const max = Math.max(...D.runs.map(r => r.t));
+  $("runs").innerHTML = D.runs.map(r => `<div class="run"><span>${r.name}</span><span class="b"><i style="width:${(100 * r.t / max).toFixed(1)}%;background:${r.farbe}"></i></span><span class="z">${zahl(r.t, 2)} s</span></div>`).join("");
+}
+let statusKat = "";
+function setStatus(kat, html, farbe) { if (kat === statusKat) return; statusKat = kat; $("status").innerHTML = html; $("punkt").style.background = farbe; }
+function frameDyn(dt) {
+  const lupe = $("zLupe").checked ? 0.2 : 1;
+  if (D.greift) {
+    const ziel = Math.max(20, Math.min(Y_TISCH - MHH, D.ziel === undefined ? S.y : D.ziel));
+    const yNeu = S.y + (ziel - S.y) * (1 - Math.exp(-dt / 0.04));
+    const wRoh = (yNeu - S.y) / (dt * lupe);
+    S.w += (wRoh - S.w) * (1 - Math.exp(-dt / 0.05));
+    S.y = yNeu; S.Fb = kStark() * beta(S.y) * S.w / G;
+  } else if (S.fallend) {
+    const vorher = S.tEnde;
+    physik(dt * lupe);
+    if (vorher === null && S.tEnde !== null && D.messen) runEintragen(S.tEnde);
+  }
+  zeichne({ mag: SHOW.mag, strom: SHOW.strom, ind: SHOW.ind, pol: SHOW.pol, kraft: SHOW.kraft, lab: SHOW.pol ? "kraft" : "", anzeige: true, lupe: lupe < 1 });
+  if (!D.messen) aT.textContent = "";
+  hintT.setAttribute("opacity", D.hint ? .9 : 0);
+  // Status
+  if (D.greift && Math.abs(S.w) < 8) setStatus("halt", "<b>Körper ruht:</b> Das Magnetfeld in den Ringen ändert sich nicht → keine Induktionsströme.", "#b8c0c6");
+  else if (!S.fallend && !D.greift) setStatus(S.gelandet ? "unten" : "bereit", S.gelandet ? "<b>Unten angekommen.</b> Vergleiche die Fallzeiten – oder probiere etwas anderes aus." : "Bereit. Tippe auf <b>„Fallen lassen“</b>.", "#b8c0c6");
+  else if (S.koerper === "eisen") setStatus("eisen", "<b>Eisenstück:</b> Es ist kein Magnet → das Magnetfeld in den Ringen ändert sich nicht → keine Induktionsströme → <b>fast freier Fall</b>.", "#8d969e");
+  else if (!S.cu) setStatus("kunst", "<b>Kunststoffrohr:</b> Das Magnetfeld ändert sich, aber Kunststoff leitet nicht → <b>keine Induktionsströme</b> → keine Bremskraft.", "#8d969e");
+  else if (S.y < Y_OBEN - 30 || S.y > Y_UNTEN + 30) setStatus("aussen", "Außerhalb des Rohrs: keine Ringe in der Nähe → keine Bremsung.", "#b8c0c6");
+  else setStatus("cu", "<b>Magnet im Kupferrohr:</b> Das Magnetfeld in den Ringen ändert sich → Induktionsströme → ihre Magnetfelder <b>bremsen</b> den Magneten (Regel von Lenz).", "#E8822A");
+}
+
+/* ---------- Modus, Tastatur, Vollbild ---------- */
+function setMode(m) {
+  mode = m;
+  document.body.classList.toggle("dyn", m === "dyn");
+  document.querySelectorAll(".modi button").forEach(b => b.classList.toggle("an", b.dataset.m === m));
+  statusKat = ""; hintT.setAttribute("opacity", 0);
+  if (m === "schritt") go(step);
+  else {
+    S.koerper = document.querySelector("#segK .an").dataset.v; S.cu = document.querySelector("#segR .an").dataset.v === "cu";
+    S.d = 1; dynReset(); D.hint = true;
+  }
+}
+document.querySelectorAll(".modi button").forEach(b => b.onclick = () => { if (b.dataset.m !== mode) setMode(b.dataset.m); });
+document.addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("summary,input,button")) { if (e.key !== "f" && e.key !== "F") return; }
+  if (mode === "schritt") {
+    if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); go(step + 1); }
+    if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); go(step - 1); }
+  } else if (e.key === " " || e.key === "ArrowDown") { e.preventDefault(); $("los").click(); }
+  if (e.key === "f" || e.key === "F") toggleFS();
+});
+function toggleFS() { try { document.fullscreenElement ? document.exitFullscreen() : $("karte").requestFullscreen(); } catch (_) {} }
+$("fs").onclick = e => { e.stopPropagation(); toggleFS(); };
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
+  if (mode === "schritt") frameStep(dt); else frameDyn(dt);
+  requestAnimationFrame(loop);
+}
+setMode("schritt");
+requestAnimationFrame(loop);
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.3 Regel von Lenz – Simulation Ring</title>
+<style>
+  :root{--petrol:#0B3B47;--petrol2:#0E7490;--orange:#E8822A;--dunkel:#1f2f3d;--grau:#f2f4f5;--gelb:#ffd23f;--blau:#1F5FBF}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--petrol);color:var(--dunkel);font-family:Calibri,"Segoe UI",Roboto,Arial,sans-serif;
+       font-size:17px;line-height:1.45;padding-bottom:40px}
+  header{color:#fff;max-width:1000px;margin:0 auto;padding:12px 16px 6px}
+  header small{opacity:.85;display:block;font-size:13px}
+  header h1{margin:2px 0 10px;font-size:21px;line-height:1.25}
+  .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
+            font-size:14px;font-weight:bold;text-decoration:none}
+  .modi{display:inline-flex;background:rgba(255,255,255,.14);border-radius:999px;padding:4px;gap:4px}
+  .modi button{border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:15px;font-weight:bold;background:transparent;
+               color:#fff;cursor:pointer;min-height:42px}
+  .modi button.an{background:var(--gelb);color:#222}
+  main{max-width:1000px;margin:0 auto;padding:6px 12px}
+  .karte{background:#fff;border-radius:16px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.18);margin-bottom:12px;position:relative}
+  #stage{position:relative}
+  #stage svg{width:100%;height:auto;display:block;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+  body.dyn #stage svg{cursor:grab;touch-action:none}
+  body.dyn.zieht #stage svg{cursor:grabbing}
+  #fs{position:absolute;top:10px;right:10px;z-index:2;border:0;border-radius:10px;background:#f2f2f2;font:inherit;font-size:14px;
+      padding:6px 10px;opacity:.75;cursor:pointer}
+  .quer{display:none;font-size:13.5px;color:#6b7780;margin:2px 100px 4px 2px;line-height:1.3}
+  @media (orientation:portrait) and (max-width:600px){ body.dyn .quer{display:block} main{padding:6px 6px} .karte{padding:8px} }
+  .legende{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:#55606a;margin:4px 2px 8px}
+  .legende span{display:inline-flex;align-items:center;gap:6px}
+  .legende svg{flex:none}
+  /* Schritt-Modus */
+  .cap{background:var(--grau);border-radius:12px;padding:10px 12px;min-height:3.4em}
+  .standbild{margin-top:8px;font-size:14.5px;background:#FFF8DB;border:1.5px dashed #F2B705;border-radius:10px;padding:7px 10px;color:#5c4a00}
+  .standbild a{color:var(--petrol2);font-weight:bold;cursor:pointer;text-decoration:underline}
+  #bar{display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 0 2px}
+  #bar button{font:inherit;font-size:16px;border:none;background:#F2F2F2;color:#1A1A1A;border-radius:10px;padding:9px 16px;cursor:pointer;min-height:44px}
+  #bar button:hover{background:#e4e4e4}
+  #bar button:disabled{opacity:.35;cursor:default}
+  #dots{display:flex;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#d4d4d4}
+  .dot.on{background:#6C9EBC}
+  /* Dynamischer Modus */
+  .status{display:flex;align-items:center;gap:10px;background:var(--grau);border-radius:12px;padding:8px 12px;min-height:58px}
+  .status .punkt{width:14px;height:14px;border-radius:50%;flex:none;background:#b8c0c6;transition:background .2s}
+  .status .tx{flex:1;font-size:16px;line-height:1.3}
+  .meter{flex:none;display:block;width:110px;font-size:12.5px;color:#6b7780;text-align:center}
+  .meter .rohr{display:block;height:12px;border-radius:6px;background:#e1e6ea;overflow:hidden;margin-top:3px}
+  .meter .rohr i{display:block;height:100%;width:0;background:var(--orange);border-radius:6px}
+  .reihe{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:10px}
+  .gruppe{display:inline-flex;align-items:center;gap:8px;font-size:15px}
+  .seg{display:inline-flex;border:2px solid #d5dde3;border-radius:12px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:8px 12px;font:inherit;font-size:15px;min-height:42px;cursor:pointer;color:var(--dunkel)}
+  .seg button+button{border-left:2px solid #d5dde3}
+  .seg button.an{background:var(--petrol2);color:#fff;font-weight:bold}
+  .knopf{border:0;border-radius:12px;padding:9px 14px;font:inherit;font-weight:bold;font-size:15px;background:var(--orange);color:#fff;
+         min-height:44px;cursor:pointer}
+  .knopf.grau{background:#e1e6ea;color:var(--dunkel)}
+  label.check{display:inline-flex;gap:7px;align-items:center;font-size:15px;cursor:pointer;min-height:42px}
+  label.check input{width:20px;height:20px;accent-color:var(--orange)}
+  .fuss{font-size:13.5px;color:#6b7780;margin:10px 2px 0}
+  .nurS,.nurD{display:none}
+  body:not(.dyn) .nurS{display:block}
+  body.dyn .nurD{display:block}
+  .legende .nurDi{display:none}
+  body.dyn .legende .nurDi{display:inline-flex}
+  /* Beobachtungsaufträge */
+  .auftraege h2{margin:2px 0 8px;font-size:19px;color:var(--petrol2)}
+  .auftraege details{border:2px solid #e3e8ec;border-radius:12px;margin:8px 0;padding:0 12px;background:#fff}
+  .auftraege summary{cursor:pointer;padding:10px 0;font-weight:bold;list-style:none;display:flex;gap:10px;align-items:baseline}
+  .auftraege summary::-webkit-details-marker{display:none}
+  .auftraege summary .nr{flex:none;background:var(--petrol2);color:#fff;border-radius:999px;font-size:13px;padding:1px 9px}
+  .auftraege summary .mehr{margin-left:auto;flex:none;font-size:13px;color:var(--petrol2);font-weight:bold}
+  .auftraege details[open] summary .mehr{visibility:hidden}
+  .auftraege .erkl{border-top:1px dashed #d5dde3;padding:8px 0 12px;font-size:16px}
+  .auftraege .erkl ol{margin:4px 0 0;padding-left:22px}
+  /* Vollbild */
+  #karte:fullscreen{display:flex;flex-direction:column;border-radius:0;padding:14px;background:#fff;overflow:auto}
+  #karte:fullscreen #stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+  #karte:fullscreen #stage svg{width:auto;height:100%;max-width:100%}
+</style>
+<style>
+  .meterrow{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:2px 2px 8px;font-size:13.5px;color:#55606a}
+  .meterrow .m{display:inline-flex;align-items:center;gap:8px}
+  .meterrow .rohr{display:block;width:120px;height:12px;border-radius:6px;background:#e1e6ea;overflow:hidden}
+  .meterrow .rohr i{display:block;height:100%;width:0;border-radius:6px}
+  #mPhi{background:#5DBB46} #mI{background:var(--orange)}
+  .meterrow .tend{font-weight:bold;color:var(--dunkel);min-width:7.5em}
+  .zeitlupe{font-size:12.5px;color:#6b7780;margin-left:auto}
+  .cap b.n{color:#D9363E} body.dyn .zeitlupe{display:none}
+  @media (orientation:portrait) and (max-width:600px){ .quer{display:block} } .cap b.s{color:#3F8A4E}
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 10c · 2.3 Regel von Lenz · Simulation</small>
+  <h1>Magnet und Aluminiumring</h1>
+  <div class="modi" role="tablist">
+    <button type="button" data-m="schritt" class="an">Schritt für Schritt</button>
+    <button type="button" data-m="dyn">Selbst ausprobieren</button>
+  </div>
+</header>
+<main>
+<section class="karte" id="karte">
+  <button id="fs" type="button" title="Vollbild (F)">⛶ Vollbild</button>
+  <p class="quer">Tipp: Halte dein Handy quer – dann ist alles größer.</p>
+  <div id="stage">
+  <svg id="svg" viewBox="20 30 860 380" preserveAspectRatio="xMidYMid meet" aria-label="Simulation Magnet und Aluminiumring">
+    <defs>
+      <clipPath id="clipStage"><rect x="20" y="30" width="860" height="380"/></clipPath>
+      <linearGradient id="alu" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#d7dde2"/><stop offset=".5" stop-color="#aab4bd"/><stop offset="1" stop-color="#8d98a2"/>
+      </linearGradient>
+    </defs>
+    <g clip-path="url(#clipStage)">
+      <g id="halter"></g>
+      <g id="magLines"></g>
+      <g id="ringField" opacity="0"></g>
+      <g id="ringBack"></g>
+      <g id="magnet"></g>
+      <g id="ringFront"></g>
+      <g id="pole"></g>
+      <g id="kraft"></g>
+      <g id="motion"></g>
+      <g id="hint"></g>
+    </g>
+  </svg>
+  </div>
+  <div class="meterrow">
+    <span class="m">Magnetfeld im Ring <span class="rohr"><i id="mPhi"></i></span></span>
+    <span class="m">Induktionsstrom <span class="rohr"><i id="mI"></i></span></span>
+    <span class="m tend" id="tend"></span>
+    <span class="zeitlupe">Zeitlupe</span>
+  </div>
+  <div class="legende">
+    <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="20" y2="5" stroke="#6CC24A" stroke-width="2.4"/><path d="M18,1 L25,5 L18,9z" fill="#5DBB46"/></svg>Magnetfeld des Stabmagneten</span>
+    <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="20" y2="5" stroke="#8E5BD6" stroke-width="2.4"/><path d="M18,1 L25,5 L18,9z" fill="#7B45C8"/></svg>Magnetfeld des Induktionsstroms</span>
+    <span><svg width="16" height="16" viewBox="-9 -9 18 18"><circle r="8" fill="#1F5FBF"/><line x1="-4" x2="4" stroke="#fff" stroke-width="2"/></svg>Elektron</span>
+    <span><svg width="26" height="10" viewBox="0 0 26 10"><line x1="1" y1="5" x2="19" y2="5" stroke="#E8822A" stroke-width="3"/><path d="M17,0.5 L25,5 L17,9.5z" fill="#D9701B"/></svg>Bewegungsrichtung der Elektronen</span>
+    <span><svg width="34" height="16" viewBox="0 0 34 16"><circle cx="8" cy="8" r="7.5" fill="#D9363E"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">N</text><circle cx="25" cy="8" r="7.5" fill="#3F8A4E"/><text x="25" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">S</text></svg>Pole des Rings</span>
+    <span><svg width="26" height="14" viewBox="0 0 26 14"><path d="M25,7 L14,0 L14,3.5 L1,3.5 L1,10.5 L14,10.5 L14,14z" fill="#E8822A" fill-opacity=".55" stroke="#C9661A"/></svg>Kraft auf den Ring</span>
+  </div>
+
+  <!-- Schritt für Schritt -->
+  <div class="nurS">
+    <div class="cap" id="cap"></div>
+    <div id="bar">
+      <button id="prev" type="button">◀ zurück</button>
+      <div id="dots"></div>
+      <button id="next" type="button">weiter ▶</button>
+      <button id="reset" type="button" title="Von vorn">↺</button>
+    </div>
+  </div>
+
+  <!-- Selbst ausprobieren -->
+  <div class="nurD">
+    <div class="status"><span class="punkt" id="punkt"></span><span class="tx" id="status"></span></div>
+    <div class="reihe">
+      <button class="knopf" id="rein" type="button">Hinein ▶</button>
+      <button class="knopf" id="raus" type="button">◀ Heraus</button>
+      <span class="gruppe">Ring:
+        <span class="seg" id="segRing"><button type="button" data-v="zu" class="an">geschlossen</button><button type="button" data-v="offen">offen</button></span></span>
+      <button class="knopf grau" id="dreh" type="button">Magnet umdrehen</button>
+      <button class="knopf grau" id="resetD" type="button" title="Zurücksetzen">↺ Neu</button>
+    </div>
+    <div class="reihe">
+      <label class="check"><input type="checkbox" id="zMag" checked> Feldlinien des Magneten</label>
+      <label class="check"><input type="checkbox" id="zRing" checked> Magnetfeld des Rings</label>
+      <label class="check"><input type="checkbox" id="zEl" checked> Elektronen</label>
+      <label class="check"><input type="checkbox" id="zPol" checked> Pole des Rings</label>
+      <label class="check"><input type="checkbox" id="zKraft" checked> Kraft</label>
+    </div>
+    <p class="fuss">Zieh den Magneten mit der Maus oder dem Finger zum Ring hin und wieder weg – oder nimm die Knöpfe „Hinein“ und „Heraus“.
+      Die Ströme und Felder sind sichtbar gemacht – in Wirklichkeit sieht man nur, wie sich der Ring bewegt.</p>
+  </div>
+</section>
+
+<section class="karte auftraege nurD">
+  <h2>Beobachte und erkläre</h2>
+  <details><summary><span class="nr">1</span><span>Schieb den Magneten in den Ring und halte ihn dann still. Wann fließt ein Induktionsstrom?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Nur, <b>solange sich der Magnet bewegt</b>. Dann ändert sich die Magnetfeldstärke im Ring → es entsteht eine Induktionsspannung → im geschlossenen Ring fließt ein Induktionsstrom.
+      Steht der Magnet still, ändert sich nichts mehr – auch wenn er mitten im Ring steckt. Dann fließt kein Strom, und der Ring pendelt nur noch aus.</div></details>
+  <details><summary><span class="nr">2</span><span>Schieb den Magneten hinein und zieh ihn wieder heraus. Welchen Pol zeigt der Ring jeweils dem Magneten?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl"><ol>
+      <li><b>Hineinbewegen:</b> Das Magnetfeld im Ring wird stärker. Der Ring zeigt dem Magneten einen <b>gleichnamigen</b> Pol (N vor N) → <b>Abstoßung</b>.</li>
+      <li><b>Herausziehen:</b> Das Magnetfeld im Ring wird schwächer. Der Strom fließt andersherum, der Ring zeigt einen <b>ungleichnamigen</b> Pol (S vor N) → <b>Anziehung</b>.</li></ol>
+      In beiden Fällen wirkt der Induktionsstrom seiner Ursache – der Bewegung des Magneten – entgegen: <b>Regel von Lenz</b>.</div></details>
+  <details><summary><span class="nr">3</span><span>Dreh den Magneten um (Südpol voran) und schieb ihn wieder hinein. Was ändert sich – und was bleibt gleich?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Die Elektronen laufen jetzt <b>andersherum</b>, und der Ring zeigt dem Magneten einen <b>Südpol</b>. Gleich bleibt: Süd vor Süd – gleichnamige Pole –
+      also wird der Ring wieder <b>abgestoßen</b>. Beim Herausziehen wird er wieder angezogen. Es kommt also nicht auf den Pol an, sondern auf die Bewegung.</div></details>
+  <details><summary><span class="nr">4</span><span>Beweg den Magneten einmal langsam und einmal schnell. Was ändert sich?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Je schneller sich der Magnet bewegt, desto schneller ändert sich die Magnetfeldstärke im Ring → desto größer sind Induktionsspannung und Induktionsstrom
+      → desto stärker ist das Magnetfeld des Rings → der Ring wird <b>stärker</b> abgestoßen bzw. angezogen.</div></details>
+  <details><summary><span class="nr">5</span><span>Stell auf den offenen Ring um. Warum bewegt er sich nicht?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Auch im offenen Ring entsteht eine <b>Induktionsspannung</b> – an den Enden sammeln sich + und −. Aber der Stromkreis ist <b>nicht geschlossen</b>:
+      Es fließt kein Strom → kein eigenes Magnetfeld → keine Kraft. Der offene Ring bleibt hängen.</div></details>
+  <details><summary><span class="nr">6</span><span>Für Profis: Wenn der Ring weggedrückt wird – merkt dann auch der Magnet etwas?</span><span class="mehr">Lösung</span></summary>
+    <div class="erkl">Ja. Kräfte treten immer paarweise auf: Der Ring drückt den Magneten genauso stark zurück. Wer den Magneten bewegt, muss also gegen diese Kraft
+      arbeiten. Genau diese Arbeit steckt danach in der Energie des Induktionsstroms und in der Bewegung des Rings – Energie entsteht nicht aus dem Nichts.</div></details>
+</section>
+</main>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const svg = $("svg");
+
+/* ---------- Geometrie ---------- */
+const CY = 250;            // Achse
+const A = 80;              // Ringradius
+const KP = 0.3;            // Perspektive (Breite der Ellipse)
+const U0 = 620;            // Ruhelage des Rings
+const ML = 210, MH = 26;   // Magnet: Länge, halbe Dicke
+const QC = 0.42 * ML;      // Lage der "Pole" im Magneten (Modell)
+const S_MIN = ML / 2 - 22; // kleinster Abstand Magnetmitte – Ring (Magnet steckt etwas im Ring)
+const UM_FERN = 200, UM_MIN = 110;
+const GAP = 0.2;           // halbe Lücke des offenen Rings (rad)
+
+/* ---------- Physik: Fluss durch den Ring ---------- */
+function f(x) { return x / Math.sqrt(x * x + A * A); }
+function fp(x) { const r2 = x * x + A * A; return A * A / (r2 * Math.sqrt(r2)); }
+function phiRaw(s) { return 0.5 * (f(s + QC) - f(s - QC)); }
+function gRaw(s) { return 0.5 * (fp(s + QC) - fp(s - QC)); }
+let GMAX = 0; for (let s = S_MIN; s < 900; s += 1) GMAX = Math.max(GMAX, Math.abs(gRaw(s)));
+const PHIMAX = phiRaw(S_MIN);
+
+/* ---------- Feldlinien ---------- */
+function Bmag(u, r) {
+  let bu = 0, br = 0;
+  for (const [c, q] of [[QC, 1], [-QC, -1]]) {
+    const du = u - c, d2 = du * du + r * r, d3 = d2 * Math.sqrt(d2) + 1e-9;
+    bu += q * du / d3; br += q * r / d3;
+  }
+  return [bu, br];
+}
+const NL = 64, LOOP = [];
+for (let i = 0; i < NL; i++) { const p = (i + 0.5) * 2 * Math.PI / NL; LOOP.push([A * Math.cos(p), A * Math.sin(p), -A * Math.sin(p), A * Math.cos(p)]); }
+function Bloop(u, r) {             // Kreisstrom (Radius A) in der Ebene u = 0, Feld in +u
+  let bu = 0, br = 0;
+  for (const [py, pz, dly, dlz] of LOOP) {
+    const ry = r - py, rz = -pz, d2 = u * u + ry * ry + rz * rz, d3 = d2 * Math.sqrt(d2) + 1e-9;
+    bu += (dly * rz - dlz * ry) / d3; br += (dlz * u) / d3;
+  }
+  return [bu, br];
+}
+function trace(u, r, B, h, n, stop, sign = 1) {
+  const pts = [[u, r]];
+  for (let i = 0; i < n; i++) {
+    let [a, b] = B(u, r); let m = Math.hypot(a, b) * sign; if (!m) break;
+    const um = u + 0.5 * h * a / m, rm = r + 0.5 * h * b / m;
+    [a, b] = B(um, rm); m = Math.hypot(a, b) * sign;
+    u += h * a / m; r += h * b / m; pts.push([u, r]);
+    if (stop(u, r, i)) break;
+  }
+  return pts;
+}
+function pfad(pts, step = 2) {
+  let d = "";
+  for (let i = 0; i < pts.length; i += step) d += (i ? "L" : "M") + pts[i][0].toFixed(1) + "," + (-pts[i][1]).toFixed(1);
+  const l = pts[pts.length - 1]; d += "L" + l[0].toFixed(1) + "," + (-l[1]).toFixed(1);
+  return d;
+}
+function spitze(parent, pts, i, col, size = 7) {
+  const j = Math.min(pts.length - 1, i + 2), k = Math.max(0, i - 2);
+  const ang = Math.atan2(-(pts[j][1] - pts[k][1]), pts[j][0] - pts[k][0]) * 180 / Math.PI;
+  el("path", { d: `M${size},0 L${-size * .8},${-size * .75} L${-size * .8},${size * .75}z`, fill: col,
+    transform: `translate(${pts[i][0].toFixed(1)},${(-pts[i][1]).toFixed(1)}) rotate(${ang.toFixed(1)})` }, parent);
+}
+function imMagnet(u, r) { return Math.abs(u) < ML / 2 + 6 && Math.abs(r) < MH + 6; }
+
+(function baueMagnetfeld() {
+  const g = $("magLines");
+  const linien = [];
+  const n = 6;
+  for (let k = 0; k < n; k++) {
+    const c = 1 - (2 * k + 1) / n, th = Math.acos(c);
+    for (const sg of [1, -1]) {
+      const pts = trace(QC + 4 * Math.cos(th), sg * 4 * Math.sin(th), Bmag, 3, 1600,
+        (u, r) => Math.hypot(u + QC, r) < 5 || Math.abs(u) > 1100 || Math.abs(r) > 700);
+      linien.push(pts);
+    }
+  }
+  linien.push([[QC, 0], [1200, 0]]);
+  linien.push([[-1200, 0], [-QC, 0]]);
+  for (const pts of linien) {
+    el("path", { d: pfad(pts), fill: "none", stroke: "#6CC24A", "stroke-width": 2.2, "stroke-opacity": .85 }, g);
+    // Pfeilspitzen außerhalb des Magneten
+    let len = 0, raus = -1, gesetzt = 0;
+    for (let i = 1; i < pts.length; i++) {
+      len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+      if (raus < 0 && !imMagnet(pts[i][0], pts[i][1])) raus = len;
+      if (raus >= 0 && Math.abs(pts[i][0]) < 700 && Math.abs(pts[i][1]) < 320 &&
+          ((gesetzt === 0 && len > raus + 55) || (gesetzt === 1 && len > raus + 260))) { spitze(g, pts, i, "#4FA736"); gesetzt++; }
+      if (gesetzt >= 2) break;
+    }
+  }
+})();
+
+(function baueRingfeld() {
+  const g = $("ringField");
+  const stop0 = (u, r, i) => Math.abs(u) > 300 || Math.abs(r) > 230;
+  el("path", { d: "M-260,0 L260,0", fill: "none", stroke: "#8E5BD6", "stroke-width": 2.4 }, g);
+  for (const x of [-150, 150]) el("path", { d: `M${x + 7},0 L${x - 5},-6 L${x - 5},6z`, fill: "#7B45C8" }, g);
+  for (const f0 of [0.55, 0.86]) {
+    for (const sg of [1, -1]) {
+      const r0 = sg * f0 * A;
+      const vor = trace(0, r0, Bloop, 2, 2400, (u, r, i) => stop0(u, r) || (i > 40 && Math.hypot(u, r - r0) < 2.2));
+      const geschlossen = Math.hypot(vor[vor.length - 1][0], vor[vor.length - 1][1] - r0) < 3;
+      let pts = vor;
+      if (!geschlossen) { const rueck = trace(0, r0, Bloop, 2, 2400, stop0, -1); pts = rueck.reverse().concat(vor.slice(1)); }
+      el("path", { d: pfad(pts, 1), fill: "none", stroke: "#8E5BD6", "stroke-width": 2, "stroke-opacity": .9 }, g);
+      // Spitze innen (bei u = 0) und außen (größter Abstand)
+      let i0 = 0, iA = 0, best = 1e9, far = -1;
+      pts.forEach((p, i) => { const d = Math.hypot(p[0], p[1] - r0); if (d < best) { best = d; i0 = i; } if (Math.abs(p[1]) > far) { far = Math.abs(p[1]); iA = i; } });
+      spitze(g, pts, i0, "#7B45C8", 6);
+      if (Math.abs(i0 - iA) > 10) spitze(g, pts, iA, "#7B45C8", 6);
+    }
+  }
+})();
+
+/* ---------- Halterung, Ring, Magnet ---------- */
+const halter = $("halter");
+el("rect", { x: U0 - 120, y: 40, width: 240, height: 10, rx: 4, fill: "#7d8a94" }, halter);
+const faden1 = el("line", { stroke: "#5b6670", "stroke-width": 1.6 }, halter);
+const faden2 = el("line", { stroke: "#5b6670", "stroke-width": 1.6 }, halter);
+
+function ringPt(ph) { return [-KP * A * Math.sin(ph), -A * Math.cos(ph)]; }   // lokal (Ring-Mitte = 0,CY)
+function bogen(p0, p1) {
+  let d = ""; const n = Math.max(8, Math.round((p1 - p0) * 28));
+  for (let i = 0; i <= n; i++) { const [x, y] = ringPt(p0 + (p1 - p0) * i / n); d += (i ? "L" : "M") + x.toFixed(1) + "," + (y + CY).toFixed(1); }
+  return d;
+}
+const ringBack = $("ringBack"), ringFront = $("ringFront");
+const RB = el("g", {}, ringBack), RF = el("g", {}, ringFront);
+const teile = {};
+function zeichneRing(offen) {
+  RB.innerHTML = ""; RF.innerHTML = "";
+  // vorne: 0 < phi < pi (links), hinten: pi < phi < 2pi (rechts)
+  const vorne = offen ? [[0, Math.PI - GAP]] : [[0, Math.PI]];
+  const hinten = offen ? [[Math.PI + GAP, 2 * Math.PI]] : [[Math.PI, 2 * Math.PI]];
+  for (const [a, b] of hinten) {
+    el("path", { d: bogen(a, b), fill: "none", stroke: "#7f8a94", "stroke-width": 10, "stroke-linecap": "butt" }, RB);
+  }
+  teile.glowB = hinten.map(([a, b]) => el("path", { d: bogen(a, b), fill: "none", stroke: "#F39A3D", "stroke-width": 4, opacity: 0 }, RB));
+  teile.elB = el("g", {}, RB);
+  for (const [a, b] of vorne) {
+    el("path", { d: bogen(a, b), fill: "none", stroke: "#9aa5ae", "stroke-width": 11, "stroke-linecap": "butt" }, RF);
+    el("path", { d: bogen(a, b), fill: "none", stroke: "#d9dfe4", "stroke-width": 3.5, transform: "translate(-1.5,-1.5)" }, RF);
+  }
+  teile.glowF = vorne.map(([a, b]) => el("path", { d: bogen(a, b), fill: "none", stroke: "#F39A3D", "stroke-width": 4, opacity: 0 }, RF));
+  teile.elF = el("g", {}, RF);
+  teile.pfeile = el("g", {}, RF);
+  teile.plus = null; teile.minus = null;
+  if (offen) {
+    const [x1, y1] = ringPt(Math.PI - GAP), [x2, y2] = ringPt(Math.PI + GAP);
+    teile.endeV = el("text", { x: x1 - 16, y: y1 + CY + 22, "font-size": 28, "font-weight": "bold", "text-anchor": "middle", opacity: 0 }, RF);
+    teile.endeH = el("text", { x: x2 + 16, y: y2 + CY + 22, "font-size": 28, "font-weight": "bold", "text-anchor": "middle", opacity: 0 }, RF);
+    teile.uText = el("text", { x: 0, y: CY + A + 46, "font-size": 15, "text-anchor": "middle", fill: "#5c4a00", opacity: 0 }, RF);
+    teile.uText.textContent = "Spannung – aber kein Strom";
+  }
+  // Elektronen
+  teile.el = [];
+  for (let i = 0; i < 22; i++) {
+    const e = el("g", {}, null);
+    el("circle", { r: 6.2, fill: "#1F5FBF", stroke: "#fff", "stroke-width": 1.2 }, e);
+    el("line", { x1: -3, x2: 3, stroke: "#fff", "stroke-width": 1.8 }, e);
+    teile.el.push({ g: e, ph0: (i + 0.5) * 2 * Math.PI / 22 });
+  }
+  // Richtungspfeile (vorne oben/unten, hinten oben/unten)
+  teile.rp = [0.6, Math.PI - 0.62, Math.PI + 0.62, 2 * Math.PI - 0.6].map((ph, i) => ({
+    ph, g: el("path", { d: "M-11,-2.5 L4,-2.5 L4,-7 L13,0 L4,7 L4,2.5 L-11,2.5z", fill: "#E8822A", stroke: "#B8601A", "stroke-width": 1, opacity: 0 }, i < 2 ? teile.pfeile : RB)
+  }));
+}
+// Pole des Rings
+const poleG = $("pole");
+function plakette(parent) {
+  const g = el("g", { opacity: 0 }, parent);
+  const c = el("circle", { r: 14, stroke: "#fff", "stroke-width": 2 }, g);
+  const t = el("text", { y: 5.5, "text-anchor": "middle", "font-size": 16, "font-weight": "bold", fill: "#fff" }, g);
+  return { g, c, t, set(p) { c.setAttribute("fill", p === "N" ? "#D9363E" : "#3F8A4E"); t.textContent = p; } };
+}
+const polL = plakette(poleG), polR = plakette(poleG);
+
+// Magnet
+const magG = $("magnet");
+const magBody = el("g", {}, magG);
+el("rect", { x: -ML / 2 + 3, y: -MH + 4, width: ML, height: 2 * MH, rx: 5, fill: "rgba(0,0,0,.18)" }, magBody);
+el("rect", { x: -ML / 2, y: -MH, width: ML / 2, height: 2 * MH, rx: 5, fill: "#3F8A4E" }, magBody);
+el("rect", { x: 0, y: -MH, width: ML / 2, height: 2 * MH, rx: 5, fill: "#D9363E" }, magBody);
+el("rect", { x: -ML / 2 + 8, y: -MH, width: ML / 2 - 8, height: 2 * MH, fill: "#3F8A4E" }, magBody);
+el("rect", { x: 0, y: -MH, width: ML / 2 - 8, height: 2 * MH, fill: "#D9363E" }, magBody);
+el("rect", { x: -ML / 2 + 4, y: -MH + 4, width: ML - 8, height: 7, rx: 3.5, fill: "#fff", opacity: .22 }, magBody);
+const magTxtS = el("text", { y: 9, "text-anchor": "middle", "font-size": 26, "font-weight": "bold", fill: "#fff" }, magG);
+const magTxtN = el("text", { y: 9, "text-anchor": "middle", "font-size": 26, "font-weight": "bold", fill: "#fff" }, magG);
+magTxtS.textContent = "S"; magTxtN.textContent = "N";
+
+const kraftG = $("kraft");
+const kraftPfeil = el("path", { fill: "#E8822A", "fill-opacity": .55, stroke: "#C9661A", "stroke-width": 1.5 }, kraftG);
+const motionG = $("motion");
+const motionPfeil = el("path", { fill: "#9A9A9A", opacity: 0 }, motionG);
+const hintG = $("hint");
+const hintT = el("text", { "text-anchor": "middle", "font-size": 17, fill: "#55606a", opacity: 0 }, hintG);
+hintT.textContent = "◀ Magnet ziehen ▶";
+
+function blockPfeil(x0, x1, y, hw, hl, hh) {
+  const dir = Math.sign(x1 - x0) || 1, L = Math.abs(x1 - x0);
+  if (L < 3) return "";
+  const hlE = Math.min(hl, L * 0.6), xb = x1 - dir * hlE;
+  return `M${x0},${y - hw} L${xb},${y - hw} L${xb},${y - hh} L${x1},${y} L${xb},${y + hh} L${xb},${y + hw} L${x0},${y + hw}z`;
+}
+
+/* ---------- Zustand ---------- */
+const S = { um: UM_FERN, umAlt: UM_FERN, vm: 0, ur: U0, vr: 0, d: 1, offen: false, frei: true,
+            phase: 0, Ivis: 0, Evis: 0, Fvis: 0, phi: 0, dphi: 0, verschiebung: 0 };
+const K = { kopplung: 2.2, feder: 14, daempf: 0.9, iref: 200 };   // werden je Modus angepasst
+const SHOW = { mag: true, ring: true, el: true, pol: true, kraft: true };
+
+function umMax() { return U0 - S_MIN; }
+
+function physik(dt, umNeu) {
+  const n = 10, h = dt / n, vm = (umNeu - S.um) / dt;
+  let I = 0, E = 0, F = 0;
+  for (let i = 1; i <= n; i++) {
+    const um = S.um + (umNeu - S.um) * i / n;
+    const s = S.ur - um, G = S.d * gRaw(s) / GMAX, sdot = S.vr - vm;
+    E = -G * sdot;
+    I = S.offen ? 0 : E;
+    F = K.kopplung * I * G;
+    if (S.frei) {
+      const a = -K.feder * (S.ur - U0) - K.daempf * S.vr + F;
+      S.vr += a * h; S.ur += S.vr * h;
+      if (S.ur < um + S_MIN) { S.ur = um + S_MIN; S.vr = Math.max(S.vr, vm); }
+      if (S.ur > U0 + 170) { S.ur = U0 + 170; S.vr = Math.min(0, S.vr); }
+    }
+  }
+  const phiNeu = S.d * phiRaw(S.ur - umNeu) / PHIMAX;
+  S.dphi = (Math.abs(phiNeu) - Math.abs(S.phi)) / dt;
+  S.phi = phiNeu;
+  S.um = umNeu; S.vm = vm;
+  const k = 1 - Math.exp(-dt / 0.07);
+  S.Ivis += (I / K.iref - S.Ivis) * k;
+  S.Evis += (E / K.iref - S.Evis) * k;
+  S.Fvis += (F - S.Fvis) * k;
+  S.dphiVis = (S.dphiVis || 0) + (S.dphi - (S.dphiVis || 0)) * k;
+  // Elektronen: Umlauf (geschlossen) bzw. kleine Verschiebung (offen)
+  if (!S.offen) S.phase += -Math.max(-7, Math.min(7, S.Ivis * 5.5)) * dt;
+  const ziel = S.offen ? Math.max(-1, Math.min(1, S.Evis)) * 0.5 : 0;   // > 0: Elektronen drängen zum Ende phi = pi + GAP
+  S.verschiebung += (ziel - S.verschiebung) * k;
+}
+
+let offenGezeichnet = null;
+function zeichne(opt) {
+  if (offenGezeichnet !== S.offen) { zeichneRing(S.offen); offenGezeichnet = S.offen; }
+  const ur = S.ur;
+  // Fäden
+  faden1.setAttribute("x1", U0 - 34); faden1.setAttribute("y1", 50); faden1.setAttribute("x2", ur - 3); faden1.setAttribute("y2", CY - A - 4);
+  faden2.setAttribute("x1", U0 + 34); faden2.setAttribute("y1", 50); faden2.setAttribute("x2", ur + 3); faden2.setAttribute("y2", CY - A - 4);
+  RB.setAttribute("transform", `translate(${ur.toFixed(2)},0)`);
+  RF.setAttribute("transform", `translate(${ur.toFixed(2)},0)`);
+  // Magnet
+  magG.setAttribute("transform", `translate(${S.um.toFixed(2)},${CY})`);
+  magBody.setAttribute("transform", `scale(${S.d},1)`);
+  magTxtS.setAttribute("x", -S.d * ML / 4); magTxtN.setAttribute("x", S.d * ML / 4);
+  $("magLines").setAttribute("transform", `translate(${S.um.toFixed(2)},${CY}) scale(${S.d},1)`);
+  $("magLines").style.display = opt.mag ? "" : "none";
+  // Stromstärke für die Anzeige
+  const Iabs = Math.min(1, Math.abs(S.Ivis)), vis = Math.pow(Iabs, 0.6);
+  const sI = Math.sign(S.Ivis) || 1;
+  // Ringfeld
+  const rf = $("ringField");
+  rf.setAttribute("transform", `translate(${ur.toFixed(2)},${CY}) scale(${sI},1)`);
+  rf.setAttribute("opacity", opt.ring ? (vis * 0.95).toFixed(3) : 0);
+  // Leuchten und Elektronen
+  for (const p of [...teile.glowB, ...teile.glowF]) p.setAttribute("opacity", opt.el ? (vis * 0.75).toFixed(3) : 0);
+  teile.elB.innerHTML = ""; teile.elF.innerHTML = "";
+  if (opt.el) {
+    for (const e of teile.el) {
+      let ph = ((e.ph0 + (S.offen ? 0 : S.phase)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+      if (S.offen) {                     // Lücke frei lassen, Elektronen leicht verschieben
+        const span = 2 * Math.PI - 2 * GAP - 0.18, t = e.ph0 / (2 * Math.PI);
+        ph = Math.PI + GAP + 0.09 + span * Math.pow(t, Math.exp(S.verschiebung));
+      }
+      const [x, y] = ringPt(ph);
+      e.g.setAttribute("transform", `translate(${x.toFixed(1)},${(y + CY).toFixed(1)})`);
+      (Math.sin(ph) > 0 ? teile.elF : teile.elB).appendChild(e.g);
+    }
+    // Richtungspfeile der Elektronen: Elektronen laufen bei I > 0 mit fallendem phi
+    for (const p of teile.rp) {
+      const [x, y] = ringPt(p.ph);
+      const tx = -KP * A * Math.cos(p.ph), ty = A * Math.sin(p.ph);   // d/dphi
+      const ang = Math.atan2(-sI * ty, -sI * tx) * 180 / Math.PI;
+      const off = 16;
+      const nx = x * (1 + off / Math.hypot(x, y)), ny = y * (1 + off / Math.hypot(x, y));
+      p.g.setAttribute("transform", `translate(${nx.toFixed(1)},${(ny + CY).toFixed(1)}) rotate(${ang.toFixed(1)})`);
+      p.g.setAttribute("opacity", S.offen ? 0 : (vis * (p.ph < Math.PI ? 1 : 0.55)).toFixed(3));
+    }
+  } else for (const p of teile.rp) p.g.setAttribute("opacity", 0);
+  // offener Ring: + und − an den Enden
+  if (S.offen && teile.endeV) {
+    const Eabs = Math.min(1, Math.abs(S.Evis)), ev = Math.pow(Eabs, 0.6);
+    // Elektronen werden bei E > 0 in Richtung fallendes phi geschoben -> sammeln sich am Ende phi = pi + GAP (hinten)
+    const minusHinten = S.Evis > 0;
+    teile.endeV.textContent = minusHinten ? "+" : "−"; teile.endeV.setAttribute("fill", minusHinten ? "#C62828" : "#1F5FBF");
+    teile.endeH.textContent = minusHinten ? "−" : "+"; teile.endeH.setAttribute("fill", minusHinten ? "#1F5FBF" : "#C62828");
+    for (const t of [teile.endeV, teile.endeH]) t.setAttribute("opacity", opt.el ? ev.toFixed(3) : 0);
+    teile.uText.setAttribute("opacity", opt.el ? Math.min(1, ev * 1.4).toFixed(3) : 0);
+  }
+  // Pole: Feld des Rings zeigt bei I > 0 nach rechts -> rechts N
+  const polVis = opt.pol && !S.offen ? vis : 0;
+  polL.set(sI > 0 ? "S" : "N"); polR.set(sI > 0 ? "N" : "S");
+  polL.g.setAttribute("transform", `translate(${(ur - 50).toFixed(1)},${CY + 60})`);
+  polR.g.setAttribute("transform", `translate(${(ur + 50).toFixed(1)},${CY + 60})`);
+  polL.g.setAttribute("opacity", polVis.toFixed(3)); polR.g.setAttribute("opacity", polVis.toFixed(3));
+  // Kraft
+  const Fd = Math.max(-150, Math.min(150, S.Fvis * opt.fskala));
+  kraftPfeil.setAttribute("d", opt.kraft && Math.abs(Fd) > 14 ? blockPfeil(ur, ur + Fd, CY + A + 34, 7, 22, 15) : "");
+  // Anzeigen
+  $("mPhi").style.width = (Math.min(1, Math.abs(S.phi)) * 100).toFixed(1) + "%";
+  $("mI").style.width = (S.offen ? 0 : Iabs * 100).toFixed(1) + "%";
+  const dp = S.dphiVis || 0;
+  $("tend").textContent = Math.abs(dp) < 0.12 ? "" : dp > 0 ? "wird stärker ↑" : "wird schwächer ↓";
+}
+
+/* ---------- Schritt für Schritt ---------- */
+const UM_NAH = U0 - S_MIN;
+const STEPS = [
+  { cap: "Ein <b>geschlossener Aluminiumring</b> hängt an Fäden. Der Stabmagnet zeigt mit dem <b class='n'>Nordpol</b> zum Ring. Die grünen Linien zeigen sein Magnetfeld. Solange sich nichts bewegt, passiert nichts.",
+    fahrt: null, frei: false, show: { mag: 1 } },
+  { cap: "<b>1.</b> Der Magnet wird in den Ring hineinbewegt. Dabei gehen immer mehr Feldlinien durch den Ring: <b>Die Magnetfeldstärke im Ring ändert sich</b> – sie wird größer (siehe Anzeige unter dem Bild).",
+    fahrt: "rein", frei: false, show: { mag: 1, motion: 1 } },
+  { cap: "<b>2.</b> Dadurch entsteht im Ring eine <b>Induktionsspannung</b>. Weil der Ring geschlossen ist, bewegen sich die Elektronen im Kreis: Es fließt ein <b>Induktionsstrom</b> – aber nur, solange sich der Magnet bewegt.",
+    fahrt: "rein", frei: false, show: { mag: 1, el: 1, motion: 1 } },
+  { cap: "<b>3.</b> Der Induktionsstrom erzeugt ein <b>eigenes Magnetfeld</b> (lila) – der Ring wird zum Magneten. Dem Stabmagneten zeigt er einen <b class='n'>Nordpol</b>.",
+    fahrt: "rein", frei: false, show: { mag: 1, el: 1, ring: 1, pol: 1, motion: 1 } },
+  { cap: "<b>4.</b> <b class='n'>Nordpol</b> vor <b class='n'>Nordpol</b>: Gleichnamige Pole stoßen sich ab → der Ring wird <b>weggedrückt</b>. Der Induktionsstrom wirkt also seiner Ursache – dem Hineinbewegen – entgegen: <b>Regel von Lenz</b>.",
+    fahrt: "rein", frei: true, show: { mag: 1, el: 1, ring: 1, pol: 1, kraft: 1, motion: 1 } },
+  { cap: "<b>Herausziehen:</b> Jetzt wird das Magnetfeld im Ring <b>schwächer</b>. Der Strom fließt andersherum, der Ring zeigt einen <b class='s'>Südpol</b>. Ungleichnamige Pole ziehen sich an → der Ring wird <b>mitgezogen</b>. Auch das wirkt der Ursache (dem Herausziehen) entgegen.",
+    fahrt: "raus", frei: true, show: { mag: 1, el: 1, ring: 1, pol: 1, kraft: 1, motion: 1 } },
+  { cap: "<b>Offener Ring:</b> Auch hier ändert sich das Magnetfeld, und es entsteht eine Induktionsspannung (+ und − an den Enden). Aber der Stromkreis ist nicht geschlossen: <b>kein Strom → kein Magnetfeld → keine Kraft</b>. Der Ring bleibt hängen.",
+    fahrt: "rein", frei: true, offen: true, show: { mag: 1, el: 1, ring: 1, pol: 1, kraft: 1, motion: 1 } }
+];
+let mode = "schritt", step = 0, tCyc = 0;
+const dots = $("dots");
+STEPS.forEach(() => dots.appendChild(Object.assign(document.createElement("span"), { className: "dot" })));
+function uiStep() {
+  $("cap").innerHTML = STEPS[step].cap;
+  [...dots.children].forEach((d, i) => d.classList.toggle("on", i <= step));
+  $("prev").disabled = step === 0; $("next").disabled = step === STEPS.length - 1;
+}
+function startZyklus() {
+  const st = STEPS[step];
+  tCyc = 0; S.offen = !!st.offen; S.frei = st.frei; S.d = 1;
+  S.ur = U0; S.vr = 0; S.Ivis = 0; S.Evis = 0; S.Fvis = 0; S.dphiVis = 0;
+  S.um = st.fahrt === "raus" ? UM_NAH : UM_FERN; S.phi = S.d * phiRaw(S.ur - S.um) / PHIMAX;
+  K.kopplung = 9; K.feder = 9; K.daempf = 2.4; K.iref = 48;
+}
+function go(n) { step = Math.max(0, Math.min(STEPS.length - 1, n)); uiStep(); startZyklus(); }
+$("prev").onclick = () => go(step - 1);
+$("next").onclick = () => go(step + 1);
+$("reset").onclick = () => go(0);
+function eased(t) { return t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t); }
+const T_START = 0.7, T_FAHRT = 3.0, T_HALT = 2.2;
+function frameStep(dt) {
+  const st = STEPS[step];
+  tCyc += dt;
+  let um = S.um;
+  if (st.fahrt) {
+    const von = st.fahrt === "rein" ? UM_FERN : UM_NAH, nach = st.fahrt === "rein" ? UM_NAH : UM_FERN;
+    // Rampe: kurze Anfahr- und Bremsphase, dazwischen gleichmäßig
+    const t = (tCyc - T_START) / T_FAHRT, r = 0.12;
+    let p;
+    if (t <= 0) p = 0; else if (t >= 1) p = 1;
+    else if (t < r) p = t * t / (2 * r * (1 - r)); else if (t > 1 - r) p = 1 - (1 - t) * (1 - t) / (2 * r * (1 - r));
+    else p = (t - r / 2) / (1 - r);
+    um = von + (nach - von) * p;
+    if (tCyc > T_START + T_FAHRT + T_HALT) startZyklus(), um = S.um;
+    const bewegt = t > 0 && t < 1;
+    motionPfeil.setAttribute("opacity", st.show.motion && bewegt ? .85 : 0);
+    const x0 = um - 40 * Math.sign(nach - von), x1 = um + 40 * Math.sign(nach - von);
+    motionPfeil.setAttribute("d", blockPfeil(x0, x1, CY - MH - 26, 6, 20, 13));
+  } else motionPfeil.setAttribute("opacity", 0);
+  physik(dt, um);
+  const sh = st.show;
+  zeichne({ mag: !!sh.mag, ring: !!sh.ring, el: !!sh.el, pol: !!sh.pol, kraft: !!sh.kraft, fskala: 0.55 });
+}
+
+/* ---------- Selbst ausprobieren ---------- */
+const D = { ziel: UM_FERN, zieht: false, off: 0, auto: null, hint: true };
+function dynReset() {
+  S.ur = U0; S.vr = 0; S.um = UM_FERN; S.Ivis = 0; S.Evis = 0; S.Fvis = 0; S.dphiVis = 0; S.frei = true;
+  S.phi = S.d * phiRaw(S.ur - S.um) / PHIMAX;
+  D.ziel = UM_FERN; D.auto = null;
+  K.kopplung = 4; K.feder = 9; K.daempf = 1.1; K.iref = 220;
+}
+function svgX(e) { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()).x; }
+svg.addEventListener("pointerdown", e => {
+  if (mode !== "dyn") return;
+  D.zieht = true; D.auto = null; D.hint = false; D.off = S.um - svgX(e);
+  if (Math.abs(D.off) > ML / 2 + 30) D.off = 0;   // irgendwo getippt: Magnet springt nicht, sondern folgt
+  try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+  document.body.classList.add("zieht");
+});
+svg.addEventListener("pointermove", e => { if (D.zieht) D.ziel = svgX(e) + D.off; });
+function loslassen() { D.zieht = false; document.body.classList.remove("zieht"); }
+svg.addEventListener("pointerup", loslassen); svg.addEventListener("pointercancel", loslassen);
+$("rein").onclick = () => { D.hint = false; D.auto = { nach: umMax(), v: 560 }; };
+$("raus").onclick = () => { D.hint = false; D.auto = { nach: UM_FERN, v: 560 }; };
+$("dreh").onclick = () => { S.d = -S.d; S.phi = S.d * phiRaw(S.ur - S.um) / PHIMAX; S.Ivis = 0; S.Evis = 0; };
+$("resetD").onclick = () => { dynReset(); D.hint = true; };
+document.querySelectorAll("#segRing button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#segRing button").forEach(x => x.classList.toggle("an", x === b));
+  S.offen = b.dataset.v === "offen"; S.Ivis = 0; S.Evis = 0;
+});
+for (const [id, key] of [["zMag", "mag"], ["zRing", "ring"], ["zEl", "el"], ["zPol", "pol"], ["zKraft", "kraft"]])
+  $(id).onchange = e => SHOW[key] = e.target.checked;
+
+let statusKat = "", statusSeit = 0;
+function setStatus(kat, html, farbe) {
+  const jetzt = performance.now();
+  if (kat === statusKat || jetzt - statusSeit < 450) return;
+  statusKat = kat; statusSeit = jetzt;
+  $("status").innerHTML = html; $("punkt").style.background = farbe;
+}
+function frameDyn(dt) {
+  let um = S.um;
+  if (D.auto) {
+    const dx = D.auto.nach - um, st = D.auto.v * dt;
+    if (Math.abs(dx) <= st) { um = D.auto.nach; D.auto = null; } else um += Math.sign(dx) * st;
+    D.ziel = um;
+  } else {
+    um += (D.ziel - um) * (1 - Math.exp(-dt / 0.035));
+  }
+  um = Math.max(UM_MIN, Math.min(umMax(), um));
+  if (!D.auto) D.ziel = Math.max(UM_MIN, Math.min(umMax(), D.ziel));
+  physik(dt, um);
+  zeichne({ mag: SHOW.mag, ring: SHOW.ring, el: SHOW.el, pol: SHOW.pol, kraft: SHOW.kraft, fskala: 0.16 });
+  hintT.setAttribute("x", S.um); hintT.setAttribute("y", CY - MH - 16); hintT.setAttribute("opacity", D.hint ? .9 : 0);
+  // Status
+  const dp = S.dphiVis || 0;
+  const vor = S.d > 0 ? "N" : "S";
+  if (Math.abs(dp) < 0.12) {
+    const drin = Math.abs(S.phi) > 0.5;
+    setStatus("ruhe" + drin, `<b>Keine Änderung:</b> Das Magnetfeld im Ring bleibt gleich → keine Induktion${drin ? " – auch wenn der Magnet im Ring steckt" : ""}.`, "#b8c0c6");
+  } else if (S.offen) {
+    setStatus("offen", `<b>Magnetfeld im Ring ändert sich</b> → Induktionsspannung. Aber der Ring ist offen: <b>kein Strom → kein Magnetfeld → keine Kraft</b>.`, "#F2B705");
+  } else {
+    const rein = dp > 0;
+    const ringPol = rein ? vor : (vor === "N" ? "S" : "N");
+    const pc = p => `<b style="color:${p === "N" ? "#D9363E" : "#3F8A4E"}">${p === "N" ? "Nordpol" : "Südpol"}</b>`;
+    setStatus("strom" + rein + vor,
+      `<b>Magnetfeld im Ring wird ${rein ? "stärker" : "schwächer"}</b> → Induktionsstrom → der Ring zeigt dem Magneten einen ${pc(ringPol)} → ` +
+      (rein ? "<b>gleichnamige Pole: Abstoßung</b>" : "<b>ungleichnamige Pole: Anziehung</b>"), "#E8822A");
+  }
+}
+
+/* ---------- Modus, Tastatur, Vollbild ---------- */
+function setMode(m) {
+  mode = m;
+  document.body.classList.toggle("dyn", m === "dyn");
+  document.querySelectorAll(".modi button").forEach(b => b.classList.toggle("an", b.dataset.m === m));
+  motionPfeil.setAttribute("opacity", 0); hintT.setAttribute("opacity", 0);
+  statusKat = ""; statusSeit = 0;
+  if (m === "schritt") go(step);
+  else {
+    S.d = 1; S.offen = document.querySelector("#segRing .an").dataset.v === "offen";
+    dynReset(); D.hint = true;
+  }
+}
+document.querySelectorAll(".modi button").forEach(b => b.onclick = () => { if (b.dataset.m !== mode) setMode(b.dataset.m); });
+document.addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("summary,input,button")) { if (e.key !== "f" && e.key !== "F") return; }
+  if (mode === "schritt") {
+    if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); go(step + 1); }
+    if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); go(step - 1); }
+  } else {
+    if (e.key === "ArrowRight") { e.preventDefault(); $("rein").click(); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); $("raus").click(); }
+  }
+  if (e.key === "f" || e.key === "F") toggleFS();
+});
+function toggleFS() { try { document.fullscreenElement ? document.exitFullscreen() : $("karte").requestFullscreen(); } catch (_) {} }
+$("fs").onclick = e => { e.stopPropagation(); toggleFS(); };
+
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
+  if (mode === "schritt") frameStep(dt); else frameDyn(dt);
+  requestAnimationFrame(loop);
+}
+setMode("schritt");
+requestAnimationFrame(loop);
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
