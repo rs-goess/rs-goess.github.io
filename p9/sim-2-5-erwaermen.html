@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.5 Das Erwärmungsgesetz – Wärme-Labor</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<style>
+  :root{--petrol:#0B3B47;--petrol2:#0E7490;--orange:#E8822A;--dunkel:#1f2f3d;--grau:#f2f4f5;--gelb:#ffd23f;
+        --blau:#1565C0;--lila:#6A2C9E;--gruen:#1E8449;--rot:#C62828;--mint:#BFEBD3}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--petrol);color:var(--dunkel);font-family:Nunito,Calibri,"Segoe UI",Roboto,Arial,sans-serif;
+       font-size:17px;line-height:1.45;padding-bottom:30px}
+  header{color:#fff;max-width:1040px;margin:0 auto;padding:12px 16px 6px}
+  header small{opacity:.85;display:block;font-size:13px}
+  header h1{margin:2px 0 6px;font-size:22px;line-height:1.25}
+  header p{margin:0 0 6px;font-size:15px;opacity:.92}
+  .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
+            font-size:14px;font-weight:bold;text-decoration:none}
+  main{max-width:1040px;margin:0 auto;padding:6px 12px}
+  .karte{background:#fff;border-radius:16px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.18);margin-bottom:12px;position:relative}
+  h2{margin:2px 0 8px;font-size:19px;color:var(--petrol2)}
+  /* Steuerleiste */
+  .leiste{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--grau);border-radius:12px;padding:8px 10px}
+  .knopf{border:0;border-radius:12px;padding:9px 16px;font:inherit;font-weight:800;font-size:16px;background:var(--orange);color:#fff;
+         min-height:46px;cursor:pointer}
+  .knopf:disabled{opacity:.4;cursor:default}
+  .knopf.grau{background:#dfe5e9;color:var(--dunkel)}
+  .knopf.petrol{background:var(--petrol2)}
+  .uhr{margin-left:auto;font-weight:800;font-size:18px;background:#fff;border:2px solid #d5dde3;border-radius:12px;padding:6px 12px;
+       font-variant-numeric:tabular-nums;white-space:nowrap}
+  .gruppe{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
+  .seg{display:inline-flex;border:2px solid #d5dde3;border-radius:12px;overflow:hidden;background:#fff}
+  .seg button{border:0;background:#fff;padding:7px 11px;font:inherit;font-size:15px;min-height:42px;min-width:44px;cursor:pointer;color:var(--dunkel)}
+  .seg button+button{border-left:2px solid #d5dde3}
+  .seg button.an{background:var(--petrol2);color:#fff;font-weight:800}
+  .seg button:disabled{cursor:not-allowed;opacity:.55}
+  /* Stationen */
+  .stationen{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:760px){ .stationen{grid-template-columns:1fr} }
+  .station{border:2px solid #e3e8ec;border-radius:14px;padding:8px}
+  .station svg{width:100%;height:auto;display:block}
+  .einst{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;margin-top:4px;font-size:15px}
+  .einst .lab{font-weight:800;color:#55606a}
+  .einst .seg button{padding:6px 9px;white-space:nowrap}
+  @media (max-width:430px){ .einst{grid-template-columns:1fr;gap:2px 0} .einst .lab{margin-top:4px} .einst .seg{width:100%} .einst .seg button{flex:1;padding:6px 4px} }
+  .hinweis{font-size:14px;color:#6b7780;margin:8px 2px 0}
+  .sperre{display:none;font-size:14px;background:#FFF8DB;border:1.5px dashed #F2B705;border-radius:10px;padding:6px 10px;margin-top:8px;color:#5c4a00}
+  body.laeuft .sperre{display:block}
+  /* Messtabelle */
+  table.mt{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+  table.mt th,table.mt td{border:1.5px solid #d5dde3;padding:5px 7px;text-align:center}
+  table.mt th{background:#EAF2FC;color:var(--blau)}
+  table.mt tr.neu td{animation:blink 1.2s ease-out}
+  @keyframes blink{from{background:#FFF1D6}to{background:#fff}}
+  .tabwrap{overflow-x:auto}
+  .leer{color:#8a949c;font-style:italic}
+  .klein{font-size:13.5px;color:#6b7780}
+  .linkknopf{border:0;background:none;color:var(--petrol2);font:inherit;font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px}
+  /* Aufträge */
+  .fortschritt{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
+  .fortschritt span{border-radius:999px;padding:3px 12px;font-size:14px;font-weight:800;background:#e1e6ea;color:#55606a}
+  .fortschritt span.jetzt{background:var(--gelb);color:#222}
+  .fortschritt span.fertig{background:var(--gruen);color:#fff}
+  .auftrag{border:2px solid #e3e8ec;border-radius:14px;padding:10px 12px;margin:10px 0;background:#fff}
+  .auftrag.zu{opacity:.55}
+  .auftrag.zu .inhalt{display:none}
+  .auftrag h3{margin:0 0 6px;font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .auftrag h3 .nr{background:var(--lila);color:#fff;border-radius:999px;font-size:14px;padding:2px 11px}
+  .auftrag h3 .ok{margin-left:auto;font-size:14px;color:var(--gruen)}
+  .setup{background:#EAF2FC;border-left:5px solid var(--blau);border-radius:10px;padding:8px 10px;margin:6px 0 8px}
+  .setup ul{margin:4px 0 6px;padding-left:20px}
+  .mess{font-size:14.5px;margin:4px 0 0;padding:0;list-style:none}
+  .mess li::before{content:"○ ";color:#8a949c}
+  .mess li.da::before{content:"✓ ";color:var(--gruen);font-weight:900}
+  .frage{border-top:1px dashed #d5dde3;padding:9px 0 8px}
+  .frage .q{font-weight:700;margin-bottom:6px}
+  .frage.gesperrt{opacity:.45;pointer-events:none}
+  .wahl{display:flex;flex-wrap:wrap;gap:8px}
+  .wahl button{border:2px solid #cfd8de;background:#fff;border-radius:12px;padding:8px 12px;font:inherit;font-size:16px;min-height:44px;cursor:pointer}
+  .wahl button.falsch{border-color:var(--rot);background:#fdecec;animation:wackel .3s}
+  .wahl button.richtig{border-color:var(--gruen);background:#e7f6ec;font-weight:800}
+  .wahl button:disabled{cursor:default;color:#7b8790}
+  .wahl button.richtig:disabled{color:#0F5132}
+  .satz select:disabled,.zahl input:disabled{color:#0F5132;opacity:1}
+  @keyframes wackel{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .zahl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .zahl input{width:110px;font:inherit;font-size:17px;padding:8px 10px;border:2px solid #cfd8de;border-radius:10px;min-height:44px;text-align:right}
+  .zahl input.richtig{border-color:var(--gruen);background:#e7f6ec}
+  .zahl input.falsch{border-color:var(--rot);background:#fdecec}
+  .satz{line-height:2.4}
+  .satz select{font:inherit;font-size:16px;padding:5px 6px;border:2px solid #cfd8de;border-radius:10px;min-height:42px;background:#fff;max-width:100%}
+  .satz select.richtig{border-color:var(--gruen);background:#e7f6ec}
+  .satz select.falsch{border-color:var(--rot);background:#fdecec}
+  .pruef{border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:800;font-size:15px;background:var(--petrol2);color:#fff;min-height:44px;cursor:pointer}
+  .rm{font-size:15px;margin-top:6px;min-height:1px}
+  .rm.gut{color:var(--gruen);font-weight:700}
+  .rm.schlecht{color:var(--rot)}
+  .belohnung{display:none;margin-top:8px;background:var(--mint);color:#0F5132;border-radius:12px;padding:8px 12px;font-weight:800}
+  .auftrag.erledigt .belohnung{display:block}
+  .kachel{display:inline-block;border:2px solid #cfd8de;border-radius:10px;padding:6px 12px;margin:3px;font-weight:800;font-size:17px;cursor:pointer;background:#fff;min-width:44px;text-align:center;font-family:"Cambria Math",Cambria,serif}
+  .kachel.weg{visibility:hidden}
+  .formelzeile{font-family:"Cambria Math",Cambria,serif;font-size:22px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}
+  .slot{display:inline-block;min-width:52px;min-height:42px;border:2px dashed #9fb0bb;border-radius:10px;text-align:center;line-height:38px;cursor:pointer;background:#fafcfd}
+  .slot.voll{border-style:solid;border-color:var(--lila);background:#F4ECFB}
+  .slot.richtig{border-color:var(--gruen);background:#e7f6ec}
+  /* Lösungswort */
+  .wort{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  .wort span{width:42px;height:50px;border-radius:10px;border:2px solid #cfd8de;display:inline-flex;align-items:center;justify-content:center;
+             font-size:26px;font-weight:900;background:#fafcfd;color:var(--petrol)}
+  .wort span.da{background:var(--gelb);border-color:#e0b400}
+  .fertigbox{display:none;margin-top:8px;font-size:17px}
+  .fertigbox.an{display:block}
+  details.info{border:2px solid #e3e8ec;border-radius:12px;padding:0 12px;margin-top:10px}
+  details.info summary{cursor:pointer;padding:10px 0;font-weight:800;color:var(--petrol2)}
+  sub{font-size:.7em}
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 9b · 2.5 Das Erwärmungsgesetz · Experimente online</small>
+  <h1>Wärme-Labor: Wie viel Energie braucht das Erwärmen?</h1>
+  <p>Arbeitet zu zweit. Erledigt die Aufträge 1 bis 4 unten – jeder geschaffte Auftrag verrät ein Stück vom Lösungswort.</p>
+</header>
+<main>
+
+<section class="karte" id="labor">
+  <div class="leiste">
+    <button class="knopf" id="start" type="button">▶ Start</button>
+    <button class="knopf grau" id="reset" type="button">↺ Zurücksetzen</button>
+    <span class="gruppe">Tempo <span class="seg" id="tempo">
+      <button type="button" data-v="1" class="an">1×</button><button type="button" data-v="2">2×</button><button type="button" data-v="5">5×</button><button type="button" data-v="10">10×</button>
+    </span></span>
+    <span class="uhr" id="uhr">⏱ t = 0,0 s</span>
+  </div>
+  <p class="sperre">Die Messung läuft oder ist pausiert. Zum Umstellen erst „↺ Zurücksetzen“ drücken.</p>
+  <div class="stationen">
+    <div class="station" id="stA"></div>
+    <div class="station" id="stB"></div>
+  </div>
+  <p class="hinweis">Beide Tauchsieder sind gleich: Jeder gibt in jeder Sekunde 1&nbsp;kJ Energie an die Flüssigkeit ab.
+    Das Energiemessgerät zählt mit. Sobald die Flüssigkeit um Δϑ wärmer ist, schaltet der Tauchsieder ab. Start: immer 20&nbsp;°C.</p>
+</section>
+
+<section class="karte">
+  <h2>Messtabelle</h2>
+  <div class="tabwrap">
+  <table class="mt" id="tab">
+    <thead><tr><th>Becher</th><th>Stoff</th><th>Masse m</th><th>Temperatur&shy;unterschied Δϑ</th><th>Zeit t</th><th>Energie W<sub>th</sub></th></tr></thead>
+    <tbody></tbody>
+  </table>
+  </div>
+  <p class="klein">Jede fertige Messung wird automatisch eingetragen. <button class="linkknopf" id="tabLeer" type="button">Tabelle leeren</button></p>
+</section>
+
+<section class="karte" id="auftraege">
+  <h2>Aufträge</h2>
+  <div class="fortschritt" id="fort"></div>
+  <div id="liste"></div>
+  <div class="auftrag" id="schluss">
+    <h3><span class="nr">Ziel</span> Euer Lösungswort</h3>
+    <div class="wort" id="wort"></div>
+    <div class="fertigbox" id="fertig">
+      <p><b>Geschafft!</b> Schreibt das Lösungswort auf euer Arbeitsblatt (Kasten „Experimente online“).
+        Dann füllt ihr den Merkkasten aus – zurück zum Whirlpool!</p>
+    </div>
+  </div>
+  <p class="klein"><button class="linkknopf" id="neuStart" type="button">Alle Aufträge zurücksetzen</button></p>
+</section>
+
+<section class="karte">
+  <details class="info">
+    <summary>So rechnet das Wärme-Labor</summary>
+    <p>Das Labor ist ein Modell ohne Wärmeverluste: Die ganze Energie des Tauchsieders bleibt in der Flüssigkeit.
+       Jeder Tauchsieder gibt 1&nbsp;kJ pro Sekunde ab (Leistung 1000&nbsp;W).</p>
+    <p>Spezifische Wärmekapazität: Wasser c = 4,19&nbsp;kJ/(kg&nbsp;·&nbsp;°C), Speiseöl c = 2,0&nbsp;kJ/(kg&nbsp;·&nbsp;°C).
+       Speiseöl ist etwas leichter als Wasser (0,92&nbsp;kg pro Liter) – darum steht es bei gleicher Masse etwas höher im Becherglas.</p>
+    <p>Echte Messungen liefern etwas mehr Energie, weil immer ein Teil der Wärme an Becherglas und Luft verloren geht.</p>
+  </details>
+</section>
+</main>
+
+<script>
+(function(){
+'use strict';
+var STOFFE = {
+  wasser: {name:'Wasser',   c:4.19, rho:1.00, farbe:[120,180,235], warm:[236,120,96]},
+  oel:    {name:'Speiseöl', c:2.0,  rho:0.92, farbe:[236,196,70],  warm:[226,128,40]}
+};
+var MASSEN = [0.5, 1, 1.5, 2];
+var ZIELE = [10, 20, 30];
+var P = 1.0;           // kJ pro s
+var T0 = 20;
+var SPEICHER = 'p9-labor-2-5';
+
+function k(x, d){ return x.toFixed(d).replace('.', ','); }
+function mtxt(m){ return k(m, m % 1 ? 1 : 0).replace(',0','') + ' kg'; }
+function laden(){ try{ return JSON.parse(localStorage.getItem(SPEICHER)) || {}; }catch(e){ return {}; } }
+function sichern(){ try{ localStorage.setItem(SPEICHER, JSON.stringify(zustand)); }catch(e){} }
+var zustand = laden();
+zustand.zeilen = zustand.zeilen || [];
+zustand.erledigt = zustand.erledigt || {};
+
+// ---------------------------------------------------------------- Stationen
+var NS = 'http://www.w3.org/2000/svg';
+function el(tag, attr, eltern){ var e = document.createElementNS(NS, tag); for (var a in attr) e.setAttribute(a, attr[a]); if (eltern) eltern.appendChild(e); return e; }
+
+var BK = {x:190, y:108, w:190, h:252};   // Becherglas
+var PXL = 92;                             // Pixel pro Liter
+
+function Station(id, name, start){
+  var s = this;
+  s.id = id; s.name = name;
+  s.stoff = start.stoff; s.m = start.m; s.ziel = start.ziel;
+  s.W = 0; s.t = 0; s.an = false; s.fertig = false;
+  var box = document.getElementById(id);
+  var svg = el('svg', {viewBox:'0 0 450 384', role:'img', 'aria-label':'Becher ' + name}, box);
+  el('rect', {x:0, y:0, width:450, height:384, rx:12, fill:'#F7FAFB'}, svg);
+  // Tisch
+  el('rect', {x:6, y:362, width:438, height:12, rx:3, fill:'#C8A27A'}, svg);
+  // Name
+  el('rect', {x:14, y:14, width:112, height:34, rx:17, fill:'#1565C0'}, svg);
+  var tn = el('text', {x:70, y:37, 'text-anchor':'middle', 'font-size':19, 'font-weight':800, fill:'#fff'}, svg); tn.textContent = 'Becher ' + name;
+  // Energiemessgerät
+  el('rect', {x:14, y:150, width:132, height:184, rx:12, fill:'#37474F'}, svg);
+  var t1 = el('text', {x:80, y:173, 'text-anchor':'middle', 'font-size':14, 'font-weight':700, fill:'#CFD8DC'}, svg); t1.textContent = 'Energie W';
+  var t1s = el('tspan', {'font-size':10, dy:3}, t1); t1s.textContent = 'th';
+  el('rect', {x:24, y:180, width:112, height:48, rx:6, fill:'#C9E7C3'}, svg);
+  s.lcdW = el('text', {x:110, y:213, 'text-anchor':'end', 'font-size':24, 'font-weight':800, fill:'#1B3B1B', 'font-family':'Consolas,monospace'}, svg);
+  var u1 = el('text', {x:113, y:213, 'font-size':14, 'font-weight':800, fill:'#1B3B1B'}, svg); u1.textContent = 'kJ';
+  var t2 = el('text', {x:80, y:247, 'text-anchor':'middle', 'font-size':14, 'font-weight':700, fill:'#CFD8DC'}, svg); t2.textContent = 'Zeit t';
+  el('rect', {x:24, y:254, width:112, height:36, rx:6, fill:'#C9E7C3'}, svg);
+  s.lcdT = el('text', {x:110, y:279, 'text-anchor':'end', 'font-size':20, 'font-weight':800, fill:'#1B3B1B', 'font-family':'Consolas,monospace'}, svg);
+  var u2 = el('text', {x:116, y:279, 'font-size':14, 'font-weight':800, fill:'#1B3B1B'}, svg); u2.textContent = 's';
+  s.led = el('circle', {cx:36, cy:311, r:8, fill:'#78909C'}, svg);
+  s.ledT = el('text', {x:52, y:316, 'font-size':14, 'font-weight':800, fill:'#ECEFF1'}, svg);
+  // Kabel
+  el('path', {d:'M246 62 C 246 20, 80 20, 80 150', fill:'none', stroke:'#263238', 'stroke-width':4, 'stroke-linecap':'round'}, svg);
+  // Flüssigkeit (unter dem Glas)
+  s.fl = el('rect', {x:BK.x + 6, width:BK.w - 12, rx:4}, svg);
+  s.blasen = el('g', {}, svg);
+  // Becherglas
+  el('path', {d:'M'+BK.x+' '+BK.y+' L'+BK.x+' '+(BK.y+BK.h-8)+' Q'+BK.x+' '+(BK.y+BK.h)+' '+(BK.x+8)+' '+(BK.y+BK.h)+
+                ' L'+(BK.x+BK.w-8)+' '+(BK.y+BK.h)+' Q'+(BK.x+BK.w)+' '+(BK.y+BK.h)+' '+(BK.x+BK.w)+' '+(BK.y+BK.h-8)+' L'+(BK.x+BK.w)+' '+BK.y,
+            fill:'rgba(200,225,240,.18)', stroke:'#7FA7BF', 'stroke-width':4, 'stroke-linejoin':'round'}, svg);
+  for (var l = 0.5; l <= 2.5; l += 0.5){
+    var yy = BK.y + BK.h - 6 - l * PXL;
+    el('line', {x1:BK.x+4, y1:yy, x2:BK.x+22, y2:yy, stroke:'#7FA7BF', 'stroke-width':2}, svg);
+    var lt = el('text', {x:BK.x+26, y:yy+5, 'font-size':12, fill:'#5F8299'}, svg); lt.textContent = k(l, 1).replace(',0','') + ' l';
+  }
+  // Tauchsieder
+  el('rect', {x:232, y:62, width:28, height:50, rx:7, fill:'#455A64'}, svg);
+  el('line', {x1:240, y1:112, x2:240, y2:318, stroke:'#90A4AE', 'stroke-width':5}, svg);
+  el('line', {x1:252, y1:112, x2:252, y2:318, stroke:'#90A4AE', 'stroke-width':5}, svg);
+  var sp = 'M240 318'; for (var i = 0; i < 4; i++){ sp += ' C 205 '+(322+i*8)+', 205 '+(330+i*8)+', 246 '+(330+i*8)+' C 288 '+(330+i*8)+', 288 '+(322+i*8)+', 252 '+(318+i*8 + 8); }
+  s.spirale = el('path', {d:sp, fill:'none', stroke:'#90A4AE', 'stroke-width':6, 'stroke-linecap':'round'}, svg);
+  // Thermometer
+  el('line', {x1:362, y1:98, x2:362, y2:344, stroke:'#B0BEC5', 'stroke-width':5, 'stroke-linecap':'round'}, svg);
+  el('rect', {x:290, y:12, width:150, height:86, rx:10, fill:'#fff', stroke:'#C62828', 'stroke-width':3}, svg);
+  s.thT = el('text', {x:430, y:38, 'text-anchor':'end', 'font-size':20, 'font-weight':800, fill:'#1f2f3d'}, svg);
+  s.thD = el('text', {x:430, y:63, 'text-anchor':'end', 'font-size':17, 'font-weight':800, fill:'#C62828'}, svg);
+  s.zielT = el('text', {x:430, y:87, 'text-anchor':'end', 'font-size':13.5, 'font-weight':700, fill:'#55606a'}, svg);
+
+  // Einstellungen
+  var einst = document.createElement('div'); einst.className = 'einst';
+  function zeile(lab, werte, schluessel, txt){
+    var a = document.createElement('span'); a.className = 'lab'; a.textContent = lab; einst.appendChild(a);
+    var g = document.createElement('span'); g.className = 'seg';
+    werte.forEach(function(w){
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = txt(w); b.dataset.v = w;
+      b.addEventListener('click', function(){ if (labor.gesperrt()) return; s[schluessel] = w; labor.neu(); });
+      g.appendChild(b);
+    });
+    einst.appendChild(g); s['seg_' + schluessel] = g;
+  }
+  zeile('Stoff', ['wasser', 'oel'], 'stoff', function(w){ return STOFFE[w].name; });
+  zeile('Masse m', MASSEN, 'm', mtxt);
+  zeile('Erwärmen um', ZIELE, 'ziel', function(w){ return 'Δϑ = ' + w + ' °C'; });
+  box.appendChild(einst);
+  s.blasenListe = [];
+}
+Station.prototype.Wziel = function(){ return this.m * STOFFE[this.stoff].c * this.ziel; };
+Station.prototype.temp = function(){ return T0 + this.W / (this.m * STOFFE[this.stoff].c); };
+Station.prototype.zuruecksetzen = function(){ this.W = 0; this.t = 0; this.an = false; this.fertig = false; this.blasenListe = []; while (this.blasen.firstChild) this.blasen.removeChild(this.blasen.firstChild); };
+Station.prototype.schritt = function(dt){
+  if (!this.an) return false;
+  var rest = this.Wziel() - this.W;
+  var dW = P * dt;
+  if (dW >= rest){ this.W = this.Wziel(); this.t += rest / P; this.an = false; this.fertig = true; return true; }
+  this.W += dW; this.t += dt; return false;
+};
+Station.prototype.zeichnen = function(dtEcht){
+  var st = STOFFE[this.stoff];
+  var vol = this.m / st.rho;
+  var h = vol * PXL, y = BK.y + BK.h - 6 - h;
+  this.fl.setAttribute('y', y); this.fl.setAttribute('height', h);
+  var f = Math.min(1, (this.temp() - T0) / 30);
+  var c = st.farbe.map(function(v, i){ return Math.round(v + (st.warm[i] - v) * f * 0.55); });
+  this.fl.setAttribute('fill', 'rgb(' + c.join(',') + ')');
+  this.fl.setAttribute('fill-opacity', '0.78');
+  this.lcdW.textContent = k(this.W, 1);
+  this.lcdT.textContent = k(this.t, 1);
+  this.thT.textContent = 'ϑ = ' + k(this.temp(), 1) + ' °C';
+  this.thD.textContent = 'Δϑ = ' + k(this.temp() - T0, 1) + ' °C';
+  this.zielT.textContent = 'Aus bei Δϑ = ' + this.ziel + ' °C';
+  var heiz = this.an && labor.laeuft;
+  this.led.setAttribute('fill', this.an ? '#FF9800' : (this.fertig ? '#43A047' : '#78909C'));
+  this.ledT.textContent = this.an ? 'Heizt' : (this.fertig ? 'Fertig' : 'Aus');
+  this.spirale.setAttribute('stroke', this.an ? '#FF7043' : '#90A4AE');
+  // Blasen
+  if (heiz && dtEcht > 0 && Math.random() < 0.5 * labor.tempo * dtEcht * 8){
+    var b = el('circle', {cx:215 + Math.random() * 62, cy:345, r:2 + Math.random() * 3, fill:'#fff', 'fill-opacity':.75}, this.blasen);
+    this.blasenListe.push({e:b, y:345, v:40 + Math.random() * 40});
+  }
+  var oben = y + 4;
+  for (var i = this.blasenListe.length - 1; i >= 0; i--){
+    var bl = this.blasenListe[i];
+    if (labor.laeuft) bl.y -= bl.v * dtEcht * Math.min(3, labor.tempo);
+    if (bl.y < oben){ this.blasen.removeChild(bl.e); this.blasenListe.splice(i, 1); }
+    else bl.e.setAttribute('cy', bl.y);
+  }
+  var gesperrt = labor.gesperrt(), s = this;
+  ['stoff', 'm', 'ziel'].forEach(function(key){
+    Array.prototype.forEach.call(s['seg_' + key].children, function(b){
+      b.classList.toggle('an', String(s[key]) === b.dataset.v); b.disabled = gesperrt;
+    });
+  });
+};
+
+// ---------------------------------------------------------------- Labor
+var labor = {
+  laeuft:false, tempo:1, t:0,
+  gesperrt: function(){ return this.laeuft || (this.t > 0 && !this.allesFertig()); },
+  allesFertig: function(){ return !A.an && !B.an && (A.fertig || B.fertig); },
+  neu: function(){ this.laeuft = false; this.t = 0; A.zuruecksetzen(); B.zuruecksetzen(); this.knoepfe(); },
+  knoepfe: function(){
+    var bt = document.getElementById('start');
+    if (this.laeuft) bt.textContent = '❚❚ Pause';
+    else if (this.t > 0 && !this.allesFertig()) bt.textContent = '▶ Weiter';
+    else if (this.allesFertig()) bt.textContent = '▶ Neue Messung';
+    else bt.textContent = '▶ Start';
+    document.body.classList.toggle('laeuft', this.gesperrt());
+    document.getElementById('uhr').textContent = '⏱ t = ' + k(this.t, 1) + ' s';
+  }
+};
+var A = new Station('stA', 'A', {stoff:'wasser', m:1, ziel:10});
+var B = new Station('stB', 'B', {stoff:'wasser', m:1, ziel:20});
+
+document.getElementById('start').addEventListener('click', function(){
+  if (labor.laeuft){ labor.laeuft = false; }
+  else {
+    if (labor.allesFertig()){ labor.t = 0; A.zuruecksetzen(); B.zuruecksetzen(); }
+    if (labor.t === 0){ A.an = true; B.an = true; }
+    labor.laeuft = true;
+  }
+  labor.knoepfe();
+});
+document.getElementById('reset').addEventListener('click', function(){ labor.neu(); });
+Array.prototype.forEach.call(document.querySelectorAll('#tempo button'), function(b){
+  b.addEventListener('click', function(){
+    labor.tempo = +b.dataset.v;
+    Array.prototype.forEach.call(document.querySelectorAll('#tempo button'), function(x){ x.classList.toggle('an', x === b); });
+  });
+});
+
+function eintragen(s){
+  zustand.zeilen.push({b:s.name, stoff:s.stoff, m:s.m, ziel:s.ziel, t:Math.round(s.t * 10) / 10, W:Math.round(s.W * 10) / 10});
+  if (zustand.zeilen.length > 14) zustand.zeilen.shift();
+  sichern(); tabelle(true); auftraegeAktualisieren();
+}
+function tabelle(neu){
+  var tb = document.querySelector('#tab tbody'); tb.innerHTML = '';
+  if (!zustand.zeilen.length){ tb.innerHTML = '<tr><td colspan="6" class="leer">Noch keine Messung – stellt die Becher ein und drückt „▶ Start“.</td></tr>'; return; }
+  zustand.zeilen.forEach(function(z, i){
+    var tr = document.createElement('tr');
+    if (neu && i >= zustand.zeilen.length - 2) tr.className = 'neu';
+    tr.innerHTML = '<td>' + z.b + '</td><td>' + STOFFE[z.stoff].name + '</td><td>' + mtxt(z.m) + '</td><td>' + z.ziel + ' °C</td><td>' +
+                   k(z.t, 1) + ' s</td><td><b>' + k(z.W, 1) + ' kJ</b></td>';
+    tb.appendChild(tr);
+  });
+}
+document.getElementById('tabLeer').addEventListener('click', function(){ zustand.zeilen = []; sichern(); tabelle(); auftraegeAktualisieren(); });
+
+var letzt = null;
+function takt(ts){
+  var dtE = letzt === null ? 0 : Math.min(0.1, (ts - letzt) / 1000); letzt = ts;
+  if (labor.laeuft){
+    var dt = dtE * labor.tempo;
+    var aFertig = A.schritt(dt), bFertig = B.schritt(dt);
+    labor.t += dt;
+    if (aFertig) eintragen(A);
+    if (bFertig) eintragen(B);
+    if (!A.an && !B.an){ labor.laeuft = false; labor.t = Math.max(A.t, B.t); }
+    labor.knoepfe();
+  }
+  A.zeichnen(dtE); B.zeichnen(dtE);
+  requestAnimationFrame(takt);
+}
+
+// ---------------------------------------------------------------- Aufträge
+function gemessen(stoff, m, ziel){ return zustand.zeilen.some(function(z){ return z.stoff === stoff && z.m === m && z.ziel === ziel; }); }
+function Wvon(stoff, m, ziel){ return m * STOFFE[stoff].c * ziel; }
+
+var AUFTRAEGE = [
+  { titel:'Doppelter Temperaturunterschied', code:'HE',
+    setup:{A:['wasser', 1, 10], B:['wasser', 1, 20]},
+    text:'Beide Becher: 1 kg Wasser. Becher A wird um 10 °C erwärmt, Becher B um 20 °C.',
+    fragen:[
+      {typ:'zahl', q:'Lies ab: Wie viel Energie hat Becher A gebraucht?', soll:Wvon('wasser', 1, 10), tol:0.3, einh:'kJ'},
+      {typ:'zahl', q:'Lies ab: Wie viel Energie hat Becher B gebraucht?', soll:Wvon('wasser', 1, 20), tol:0.3, einh:'kJ'},
+      {typ:'wahl', q:'Becher B wurde doppelt so stark erwärmt. Er brauchte …', opt:['halb so viel Energie', 'gleich viel Energie', 'doppelt so viel Energie', 'viermal so viel Energie'], ok:2,
+       tipp:'Vergleiche die beiden Werte in der Messtabelle: Wie oft passt A in B?'},
+      {typ:'wahl', q:'Vorhersage: Wie viel Energie braucht 1 kg Wasser, um 30 °C wärmer zu werden?', opt:['etwa 63 kJ', 'etwa 126 kJ', 'etwa 168 kJ'], ok:1,
+       tipp:'Dreifacher Temperaturunterschied … Tipp: Ihr könnt es im Labor ausprobieren!'},
+      {typ:'wahl', q:'Und die Zeit? Becher B war … eingeschaltet wie Becher A.', opt:['halb so lange', 'genauso lange', 'doppelt so lange'], ok:2,
+       tipp:'Schaut auf die Zeit t in der Messtabelle. Der Tauchsieder gibt jede Sekunde gleich viel Energie ab.'},
+      {typ:'satz', teile:['Je größer der Temperaturunterschied Δϑ, desto ', ['mehr', 'weniger'], ' Energie braucht man. Doppelter Temperaturunterschied bedeutet ', ['halbe', 'gleiche', 'doppelte'], ' Energie.'],
+       ok:[0, 2]}
+    ]},
+  { titel:'Doppelte Masse', code:'IZ',
+    setup:{A:['wasser', 1, 10], B:['wasser', 2, 10]},
+    text:'Beide Becher werden um 10 °C erwärmt. Becher A: 1 kg Wasser, Becher B: 2 kg Wasser.',
+    fragen:[
+      {typ:'zahl', q:'Lies ab: Wie viel Energie hat Becher B (2 kg) gebraucht?', soll:Wvon('wasser', 2, 10), tol:0.3, einh:'kJ'},
+      {typ:'wahl', q:'Doppelte Masse bedeutet …', opt:['halbe Energie', 'gleiche Energie', 'doppelte Energie'], ok:2,
+       tipp:'Vergleicht Becher A (1 kg) und Becher B (2 kg) in der Messtabelle.'},
+      {typ:'wahl', q:'Vorhersage: Wie viel Energie brauchen 1,5 kg Wasser, um 10 °C wärmer zu werden?', opt:['etwa 21 kJ', 'etwa 42 kJ', 'etwa 63 kJ', 'etwa 84 kJ'], ok:2,
+       tipp:'1,5 kg sind anderthalbmal so viel wie 1 kg.'},
+      {typ:'satz', teile:['Je größer die Masse m, desto ', ['mehr', 'weniger'], ' Energie braucht man für dieselbe Erwärmung. Die Energie ist ', ['direkt proportional', 'umgekehrt proportional'], ' zur Masse.'],
+       ok:[0, 0]}
+    ]},
+  { titel:'Anderer Stoff', code:'ST',
+    setup:{A:['wasser', 1, 10], B:['oel', 1, 10]},
+    text:'Beide Becher: 1 kg, beide werden um 10 °C erwärmt. Becher A: Wasser, Becher B: Speiseöl.',
+    fragen:[
+      {typ:'zahl', q:'Lies ab: Wie viel Energie hat das Speiseöl gebraucht?', soll:Wvon('oel', 1, 10), tol:0.3, einh:'kJ'},
+      {typ:'wahl', q:'Welcher Stoff braucht für dieselbe Erwärmung mehr Energie?', opt:['Wasser – etwa doppelt so viel', 'Speiseöl – etwa doppelt so viel', 'beide gleich viel'], ok:0},
+      {typ:'zahl', q:'Wie viel Energie braucht 1 kg Wasser, um nur 1 °C wärmer zu werden? (Tipp: Teile die Energie für 10 °C durch 10.)', soll:4.19, tol:0.02, einh:'kJ', d:2},
+      {typ:'zahl', q:'Und 1 kg Speiseöl für 1 °C?', soll:2.0, tol:0.05, einh:'kJ'},
+      {typ:'satz', teile:['Die Energie, die man braucht, um 1 kg eines Stoffes um 1 °C zu erwärmen, heißt ', ['Temperaturunterschied', 'spezifische Wärmekapazität c', 'Wärmeleitung'], '. Wasser hat eine ', ['große', 'kleine'], ' spezifische Wärmekapazität.'],
+       ok:[1, 0]}
+    ]},
+  { titel:'Alles zusammen: das Erwärmungsgesetz', code:'AB',
+    setup:{A:['oel', 1.5, 20], B:['wasser', 0.5, 30]},
+    text:'Fasst zusammen. Die Energie hängt von der Masse m, vom Temperaturunterschied Δϑ und vom Stoff (c) ab.',
+    fragen:[
+      {typ:'formel', q:'Baue das Erwärmungsgesetz: Tippe nacheinander auf die drei passenden Größen.', kacheln:['m', 'Δϑ', 't', 'c', 'V', 'p'], ok:['m', 'c', 'Δϑ']},
+      {typ:'zahl', q:'Rechne mit dem Gesetz: 1,5 kg Speiseöl sollen um 20 °C wärmer werden. Wie viel Energie braucht man?', soll:Wvon('oel', 1.5, 20), tol:0.5, einh:'kJ',
+       tipp:'W = m · c · Δϑ = 1,5 kg · 2,0 kJ/(kg · °C) · 20 °C'},
+      {typ:'wahl', q:'Prüft im Labor (Knopf „Labor einstellen“, Becher A). Stimmt eure Rechnung?', opt:['Ja, das Labor zeigt denselben Wert.', 'Nein, das Labor zeigt etwas ganz anderes.'], ok:0,
+       braucht:['oel', 1.5, 20], tipp:'Messt erst Becher A (1,5 kg Speiseöl, Δϑ = 20 °C).'}
+    ]}
+];
+var CODE = AUFTRAEGE.map(function(a){ return a.code; }).join('');
+
+function stellen(a){
+  labor.neu();
+  A.stoff = a.setup.A[0]; A.m = a.setup.A[1]; A.ziel = a.setup.A[2];
+  B.stoff = a.setup.B[0]; B.m = a.setup.B[1]; B.ziel = a.setup.B[2];
+  document.getElementById('labor').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function messliste(a){
+  var l = [a.setup.A, a.setup.B];
+  return l.filter(function(x, i){ return !(i === 1 && x[0] === l[0][0] && x[1] === l[0][1] && x[2] === l[0][2]); });
+}
+function zahlLesen(s){ s = String(s).trim().replace(/\s/g, '').replace(',', '.'); return s === '' ? NaN : Number(s); }
+
+var ui = [];
+function bauen(){
+  var liste = document.getElementById('liste'); liste.innerHTML = '';
+  ui = [];
+  AUFTRAEGE.forEach(function(a, ai){
+    var d = document.createElement('div'); d.className = 'auftrag'; liste.appendChild(d);
+    d.innerHTML = '<h3><span class="nr">Auftrag ' + (ai + 1) + '</span> ' + a.titel + '<span class="ok"></span></h3><div class="inhalt"></div>';
+    var inh = d.querySelector('.inhalt');
+    var mess = (ai < 3) ? messliste(a) : [];
+    var su = document.createElement('div'); su.className = 'setup';
+    su.innerHTML = '<div>' + a.text + '</div>' + (mess.length ? '<ul class="mess"></ul>' : '');
+    var bt = document.createElement('button'); bt.className = 'knopf petrol'; bt.type = 'button';
+    bt.textContent = ai < 3 ? '⚙ Labor einstellen' : '⚙ Labor einstellen (zum Prüfen)';
+    bt.addEventListener('click', function(){ stellen(a); });
+    su.appendChild(bt);
+    if (ai < 3){ var hw = document.createElement('div'); hw.className = 'klein'; hw.textContent = 'Dann „▶ Start“ drücken. Die Fragen öffnen sich, sobald die Messungen in der Tabelle stehen.'; su.appendChild(hw); }
+    inh.appendChild(su);
+    var fu = {d:d, a:a, mess:mess, ml:su.querySelector('.mess'), fragen:[]};
+    a.fragen.forEach(function(f, fi){ fu.fragen.push(frageBauen(f, inh, ai, fi)); });
+    var bel = document.createElement('div'); bel.className = 'belohnung';
+    bel.textContent = '★ Geschafft! Euer Teil vom Lösungswort: ' + a.code.split('').join(' ');
+    inh.appendChild(bel);
+    ui.push(fu);
+  });
+  var w = document.getElementById('wort'); w.innerHTML = '';
+  CODE.split('').forEach(function(){ var s = document.createElement('span'); w.appendChild(s); });
+}
+
+function frageBauen(f, eltern, ai, fi){
+  var key = ai + '-' + fi;
+  var d = document.createElement('div'); d.className = 'frage'; eltern.appendChild(d);
+  var q = document.createElement('div'); q.className = 'q'; d.appendChild(q);
+  var rm = document.createElement('div'); rm.className = 'rm';
+  var o = {d:d, f:f, key:key};
+  function richtig(text){ zustand.erledigt[key] = true; sichern(); rm.className = 'rm gut'; rm.textContent = text || '✓ Richtig!'; auftraegeAktualisieren(); }
+  function falsch(text){ rm.className = 'rm schlecht'; rm.textContent = text; }
+  if (f.typ === 'zahl'){
+    q.textContent = f.q;
+    var z = document.createElement('div'); z.className = 'zahl';
+    var inp = document.createElement('input'); inp.inputMode = 'decimal'; inp.placeholder = '…';
+    var e = document.createElement('span'); e.textContent = f.einh;
+    var b = document.createElement('button'); b.className = 'pruef'; b.type = 'button'; b.textContent = 'Prüfen';
+    z.appendChild(inp); z.appendChild(e); z.appendChild(b); d.appendChild(z);
+    function pr(){
+      var v = zahlLesen(inp.value);
+      if (isNaN(v)){ falsch('Gib eine Zahl ein (mit Komma, z. B. 12,5).'); return; }
+      if (Math.abs(v - f.soll) <= f.tol){ inp.className = 'richtig'; inp.disabled = true; b.disabled = true; richtig('✓ Richtig: ' + k(f.soll, f.d || 1) + ' ' + f.einh); }
+      else { inp.className = 'falsch'; falsch('Noch nicht. ' + (f.tipp || 'Schaut genau in die Messtabelle (letzte Spalte).')); }
+    }
+    b.addEventListener('click', pr);
+    inp.addEventListener('keydown', function(ev){ if (ev.key === 'Enter') pr(); });
+    o.fertigZeigen = function(){ inp.value = k(f.soll, f.d || 1); inp.className = 'richtig'; inp.disabled = true; b.disabled = true; rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+  } else if (f.typ === 'wahl'){
+    q.textContent = f.q;
+    var w = document.createElement('div'); w.className = 'wahl'; d.appendChild(w);
+    var knoepfe = f.opt.map(function(t, i){
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = t; w.appendChild(b);
+      b.addEventListener('click', function(){
+        if (zustand.erledigt[key]) return;
+        if (i === f.ok){ b.classList.add('richtig'); knoepfe.forEach(function(x){ x.disabled = true; }); richtig(); }
+        else { b.classList.remove('falsch'); void b.offsetWidth; b.classList.add('falsch'); falsch('Noch nicht. ' + (f.tipp || 'Überlegt noch einmal.')); }
+      });
+      return b;
+    });
+    o.fertigZeigen = function(){ knoepfe[f.ok].classList.add('richtig'); knoepfe.forEach(function(x){ x.disabled = true; }); rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+  } else if (f.typ === 'satz'){
+    q.textContent = 'Vervollständige den Satz.';
+    var s = document.createElement('div'); s.className = 'satz'; d.appendChild(s);
+    var sel = [];
+    f.teile.forEach(function(t){
+      if (typeof t === 'string'){ s.appendChild(document.createTextNode(t)); return; }
+      var se = document.createElement('select');
+      var o0 = document.createElement('option'); o0.textContent = '… wähle …'; o0.value = ''; se.appendChild(o0);
+      t.forEach(function(x, i){ var op = document.createElement('option'); op.textContent = x; op.value = i; se.appendChild(op); });
+      s.appendChild(se); sel.push({se:se, wahl:t});
+    });
+    var b = document.createElement('button'); b.className = 'pruef'; b.type = 'button'; b.textContent = 'Prüfen';
+    var bw = document.createElement('div'); bw.appendChild(b); d.appendChild(bw);
+    b.addEventListener('click', function(){
+      var alle = true;
+      sel.forEach(function(x, i){ var ok = x.se.value !== '' && +x.se.value === f.ok[i]; x.se.className = ok ? 'richtig' : 'falsch'; if (!ok) alle = false; });
+      if (alle){ sel.forEach(function(x){ x.se.disabled = true; }); b.disabled = true; richtig(); }
+      else falsch('Rot markierte Lücken stimmen noch nicht. Schaut auf eure Antworten oben.');
+    });
+    o.fertigZeigen = function(){ sel.forEach(function(x, i){ x.se.value = f.ok[i]; x.se.className = 'richtig'; x.se.disabled = true; }); b.disabled = true; rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+  } else if (f.typ === 'formel'){
+    q.textContent = f.q;
+    var zl = document.createElement('div'); zl.className = 'formelzeile';
+    zl.innerHTML = '<span>W<sub>th</sub> =</span>';
+    var slots = [];
+    for (var i = 0; i < 3; i++){
+      if (i) { var m = document.createElement('span'); m.textContent = '·'; zl.appendChild(m); }
+      var sl = document.createElement('span'); sl.className = 'slot'; zl.appendChild(sl); slots.push(sl);
+    }
+    d.appendChild(zl);
+    var ka = document.createElement('div'); d.appendChild(ka);
+    var inhalt = [];
+    var kach = f.kacheln.map(function(t){
+      var c = document.createElement('span'); c.className = 'kachel'; c.textContent = t; c.setAttribute('role', 'button'); c.tabIndex = 0; ka.appendChild(c);
+      c.addEventListener('click', function(){
+        if (zustand.erledigt[key] || c.classList.contains('weg') || inhalt.length >= 3) return;
+        inhalt.push(t); c.classList.add('weg'); malen();
+        if (inhalt.length === 3) pruefen();
+      });
+      return c;
+    });
+    slots.forEach(function(sl, i){ sl.addEventListener('click', function(){
+      if (zustand.erledigt[key] || i >= inhalt.length) return;
+      var t = inhalt.splice(i, 1)[0]; kach.forEach(function(c){ if (c.textContent === t) c.classList.remove('weg'); }); malen(); rm.textContent = '';
+    }); });
+    function malen(){ slots.forEach(function(sl, i){ sl.textContent = inhalt[i] || ''; sl.className = 'slot' + (inhalt[i] ? ' voll' : ''); }); }
+    function pruefen(){
+      var ok = f.ok.every(function(x){ return inhalt.indexOf(x) >= 0; });
+      if (ok){ slots.forEach(function(sl){ sl.classList.add('richtig'); }); richtig('✓ Richtig! Das Erwärmungsgesetz: Wₜₕ = m · c · Δϑ (die Reihenfolge beim Malnehmen ist egal).'); }
+      else falsch('Noch nicht. Welche drei Größen habt ihr in den Aufträgen 1 bis 3 untersucht? Tippt auf ein Feld, um es zu leeren.');
+    }
+    o.fertigZeigen = function(){ inhalt = f.ok.slice(); malen(); slots.forEach(function(sl){ sl.classList.add('richtig'); }); kach.forEach(function(c){ if (f.ok.indexOf(c.textContent) >= 0) c.classList.add('weg'); }); rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+  }
+  d.appendChild(rm);
+  if (zustand.erledigt[key]) o.fertigZeigen();
+  return o;
+}
+
+function auftragFertig(ai){ return AUFTRAEGE[ai].fragen.every(function(f, fi){ return zustand.erledigt[ai + '-' + fi]; }); }
+function auftraegeAktualisieren(){
+  var fort = document.getElementById('fort'); fort.innerHTML = '';
+  var offen = true;
+  ui.forEach(function(u, ai){
+    var fertig = auftragFertig(ai);
+    var zu = !offen;
+    u.d.classList.toggle('zu', zu);
+    u.d.classList.toggle('erledigt', fertig);
+    u.d.querySelector('.ok').textContent = fertig ? '✓ erledigt' : (zu ? '🔒 erst Auftrag ' + ai : '');
+    var chip = document.createElement('span'); chip.textContent = 'Auftrag ' + (ai + 1);
+    chip.className = fertig ? 'fertig' : (zu ? '' : 'jetzt'); fort.appendChild(chip);
+    // Messungen
+    var alleDa = true;
+    if (u.ml){
+      u.ml.innerHTML = '';
+      u.mess.forEach(function(m){
+        var da = gemessen(m[0], m[1], m[2]); if (!da) alleDa = false;
+        var li = document.createElement('li'); li.className = da ? 'da' : '';
+        li.textContent = 'Messung: ' + STOFFE[m[0]].name + ', ' + mtxt(m[1]) + ', Δϑ = ' + m[2] + ' °C';
+        u.ml.appendChild(li);
+      });
+    }
+    var vorher = true;
+    u.fragen.forEach(function(fr){
+      var gesp = !alleDa || !vorher;
+      if (fr.f.braucht && !gemessen(fr.f.braucht[0], fr.f.braucht[1], fr.f.braucht[2])) gesp = true;
+      if (zustand.erledigt[fr.key]) gesp = false;
+      fr.d.classList.toggle('gesperrt', gesp);
+      if (!zustand.erledigt[fr.key]) vorher = false;
+    });
+    if (!fertig) offen = false;
+  });
+  var spans = document.querySelectorAll('#wort span'), pos = 0, alle = true;
+  AUFTRAEGE.forEach(function(a, ai){
+    var f = auftragFertig(ai); if (!f) alle = false;
+    a.code.split('').forEach(function(ch){ var s = spans[pos++]; s.textContent = f ? ch : ''; s.className = f ? 'da' : ''; });
+  });
+  document.getElementById('fertig').classList.toggle('an', alle);
+}
+document.getElementById('neuStart').addEventListener('click', function(){
+  if (!confirmFrei()) return;
+  zustand.erledigt = {}; sichern(); bauen(); auftraegeAktualisieren();
+});
+// Bestätigung ohne Browser-Dialog: zweimal tippen
+var zweit = 0;
+function confirmFrei(){
+  var b = document.getElementById('neuStart'), jetzt = Date.now();
+  if (jetzt - zweit < 4000){ b.textContent = 'Alle Aufträge zurücksetzen'; zweit = 0; return true; }
+  zweit = jetzt; b.textContent = 'Wirklich? Zum Bestätigen noch einmal tippen';
+  setTimeout(function(){ if (zweit && Date.now() - zweit >= 4000){ b.textContent = 'Alle Aufträge zurücksetzen'; } }, 4100);
+  return false;
+}
+
+bauen(); tabelle(); auftraegeAktualisieren(); labor.knoepfe();
+requestAnimationFrame(takt);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
