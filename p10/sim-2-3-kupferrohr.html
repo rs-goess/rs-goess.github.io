@@ -511,7 +511,9 @@ function zeichne(opt) {
 const STEPS = [
   { cap: "<b>Einstieg:</b> Ein Kupferrohr kann man sich wie <b>viele Ringe übereinander</b> vorstellen (hier eingezeichnet, das Rohr ist vorne aufgeschnitten). Kupfer ist nicht magnetisch – der Magnet bleibt nicht haften.",
     fall: false, show: { mag: 1 } },
-  { cap: "<b>1.</b> Der Magnet fällt. In den Ringen <b>unter</b> ihm wird die Magnetfeldstärke größer, in den Ringen <b>über</b> ihm kleiner: <b>Die Magnetfeldstärke in den Ringen ändert sich.</b>",
+  { cap: "<b>0.</b> <b>Der Magnet fällt</b> – er bewegt sich durch das Rohr. Das ist die <b>Ursache</b>.",
+    fall: true, lupe: 0.6, show: { mag: 1 } },
+  { cap: "<b>1.</b> In den Ringen <b>unter</b> ihm wird die Magnetfeldstärke größer, in den Ringen <b>über</b> ihm kleiner: <b>Die Magnetfeldstärke in den Ringen ändert sich.</b>",
     fall: true, lupe: 0.6, show: { mag: 1, lab: "feld" } },
   { cap: "<b>2.</b> In jedem Ring entsteht eine Induktionsspannung – und weil jeder Ring geschlossen ist, fließt ein <b>Induktionsstrom</b>. Unter und über dem Magneten fließen die Ströme in <b>entgegengesetzte</b> Richtungen.",
     fall: true, lupe: 0.6, show: { mag: 1, strom: 1 } },
