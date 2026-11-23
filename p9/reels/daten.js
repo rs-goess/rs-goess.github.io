@@ -14,13 +14,13 @@ var REELS_THEMEN = [
   { id: "auftrieb", titel: "Auftrieb & Dichte", text: "Schwimmen, Schweben, Sinken", icon: "auftrieb", farbe: "f-gruen",
     reels: ["R281", "R265", "R030", "R290"] },
   { id: "temperatur", titel: "Temperatur & Wärme", text: "Teilchen, Wärme, Ausdehnung", icon: "thermo", farbe: "f-orange",
-    reels: ["R223", "R176", "R279", "R097", "R095"] },
+    reels: ["R223", "R176", "R320", "R336", "R325", "R279", "R097", "R095"] },
   { id: "aggregat", titel: "Aggregatzustände", text: "Schmelzen, Sieden, Verdampfen", icon: "aggregat", farbe: "f-blau",
     reels: ["R088", "R029", "R006"] },
   { id: "maschinen", titel: "Wärmekraftmaschinen", text: "Motoren und Wärmepumpe", icon: "motor", farbe: "f-gelb",
-    reels: ["R092", "R094", "R070", "R302"] },
+    reels: ["R092", "R094", "R311", "R346", "R070", "R302"] },
   { id: "elektromagnetismus", titel: "Elektromotor & Elektromagnet", text: "Kraft auf stromdurchflossene Leiter", icon: "magnet", farbe: "f-lila",
-    reels: ["R013", "R208", "R234", "R109", "R213", "R077"] },
+    reels: ["R013", "R312", "R344", "R208", "R234", "R109", "R213", "R077"] },
   { id: "strom", titel: "Strom & Halbleiter", text: "Widerstand, Diode, Solarzelle", icon: "strom", farbe: "f-petrol",
     reels: ["R008", "R154", "R012", "R163"] }
 ];
