@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#3B77A8">
+<title>2.3 Verschiebung von Parabeln – Lernpfad</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/ab-pfad.css">
+</head>
+<body>
+<script>
+/* =====================================================================
+   Mathe 10c · 2.3 AB Verschiebung von Parabeln – Lernpfad auf dem Blatt
+   Bilder: bilder/2-3/s1.webp und s2.webp = Seite 1 und 2 des Arbeitsblatts (21 cm breit, ganze Seite)
+   Alle Werte nachgerechnet (Python), Notation wie auf dem AB.
+   ===================================================================== */
+var S1 = 'bilder/2-3/s1.webp', S2 = 'bilder/2-3/s2.webp';
+function TEIL(src, y0, y1, zeilen) { return { bild: src, top: 0, y0: y0, y1: y1, zeilen: zeilen || [] }; }
+var TINTE = '#1F3FBF';
+
+/* ---------- Tinte in Tabellen und Klammern ---------- */
+function feld(breite, inhalt) { return '<span style="display:inline-block;width:' + (breite * 52) + 'px;text-align:center">' + inhalt + '</span>'; }
+function reihe(werte, breite) { return werte.map(function (w) { return feld(breite, '$' + w + '$'); }).join(''); }
+/* Koordinaten in „( __ | __ )“: Breite der beiden Lücken und des Trennstrichs in cm */
+function koord(a, b) { return feld(0.87, '$' + a + '$') + feld(0.18, '') + feld(0.88, '$' + b + '$'); }
+/* Zeile der Tabelle in Aufgabe 2: Scheitelpunkt | geöffnet nach | Wertemenge */
+function zeile2(s, o, w) { return feld(2.4, '$' + s + '$') + feld(1.85, o) + feld(3.15, '$' + w + '$'); }
+
+/* ---------- Graphen als Tinte im Koordinatensystem ----------
+   ox, oy = Lage des Ursprungs in der Box (cm), w × h = Größe der Box (cm) */
+function graph(w, h, ox, oy, f, x0, x1, inhalt, gestrichelt) {
+  var d = '', n = 140;
+  for (var i = 0; i <= n; i++) {
+    var x = x0 + (x1 - x0) * i / n;
+    d += (i ? 'L' : 'M') + (ox + x).toFixed(3) + ' ' + (oy - f(x)).toFixed(3);
+  }
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="100%" overflow="hidden">' +
+    '<path d="' + d + '" fill="none" stroke="' + TINTE + '" stroke-width="0.07" stroke-linecap="round"' +
+    (gestrichelt ? ' stroke-dasharray="0.25 0.18"' : '') + '/>' + (inhalt || '') + '</svg>';
+}
+function punkte(ox, oy, f, xs) {
+  return xs.map(function (x) { return '<circle cx="' + (ox + x) + '" cy="' + (oy - f(x)) + '" r="0.09" fill="' + TINTE + '"/>'; }).join('');
+}
+function txt(x, y, t, gr) { return '<text x="' + x + '" y="' + y + '" font-family="Caveat, cursive" font-size="' + (gr || 0.62) + '" fill="' + TINTE + '">' + t + '</text>'; }
+
+/* Aufgabe 1: Box 12 × 13 cm, Ursprung bei (4,5 | 9,5) */
+var fP1 = function (x) { return x * x - 3; }, fP2 = function (x) { return (x - 3) * (x - 3); };
+var G_P1 = graph(12, 13, 4.5, 9.5, fP1, -3.5, 3.5, punkte(4.5, 9.5, fP1, [-3, -2, -1, 0, 1, 2, 3]) + txt(8.15, 2.95, 'p₁') + txt(4.7, 12.95, 'S₁'));
+var G_P2 = graph(12, 13, 4.5, 9.5, fP2, -0.05, 6.05, punkte(4.5, 9.5, fP2, [0, 1, 2, 3, 4, 5, 6]) + txt(10.75, 1.5, 'p₂') + txt(7.3, 9.15, 'S₂'));
+/* Aufgabe 2: Box 7 × 6 cm, Ursprung bei (1,5 | 5,5) */
+var fA = function (x) { return (x - 2) * (x - 2) + 1; }, fC = function (x) { return -(x - 1) * (x - 1) + 5; };
+var G_A = graph(7, 6, 1.5, 5.5, fA, -0.1, 4.1, punkte(1.5, 5.5, fA, [0, 1, 2, 3, 4]) + txt(5.7, 1.1, 'p₁'));
+var G_C = graph(7, 6, 1.5, 5.5, fC, -1.3, 3.3, punkte(1.5, 5.5, fC, [-1, 0, 1, 2, 3]) + txt(4.75, 4.7, 'p₃'));
+/* Aufgabe 5: Skizze (nicht maßstabsgetreu nötig, hier aber passend): 1 Einheit = 0,5 cm */
+var G_5 = (function () {
+  var e = 0.5, ox = 0.8, oy = 3.6, d = '';
+  for (var i = 0; i <= 80; i++) { var x = 1.6 + 4.8 * i / 80; d += (i ? 'L' : 'M') + (ox + x * e).toFixed(3) + ' ' + (oy - (-(x - 4) * (x - 4) + 5) * e).toFixed(3); }
+  function P(x, y) { return '<circle cx="' + (ox + x * e) + '" cy="' + (oy - y * e) + '" r="0.08" fill="' + TINTE + '"/>'; }
+  return '<svg viewBox="0 0 6 4.2">' +
+    '<path d="M0.3 ' + oy + 'H5.6M' + ox + ' 4.1V0.3" stroke="' + TINTE + '" stroke-width="0.04" fill="none"/>' +
+    '<path d="M0.5 ' + (oy - e) + 'H5.4" stroke="' + TINTE + '" stroke-width="0.04" stroke-dasharray="0.16 0.12" fill="none"/>' +
+    '<path d="' + d + '" fill="none" stroke="' + TINTE + '" stroke-width="0.06" stroke-linecap="round"/>' +
+    P(4, 5) + P(2, 1) + P(6, 1) +
+    txt(ox + 4 * e - 0.1, oy - 5 * e - 0.2, 'S (4|5)', 0.5) + txt(ox + 2 * e - 0.95, oy - e - 0.15, 'P₁', 0.5) + txt(ox + 6 * e + 0.15, oy - e - 0.15, 'P₂', 0.5) +
+    txt(5.0, oy - e - 0.1, 'y = 1', 0.42) + txt(5.45, oy + 0.45, 'x', 0.45) + txt(ox + 0.12, 0.55, 'y', 0.45) +
+    txt(ox + 2 * e - 0.1, oy + 0.5, '2', 0.42) + txt(ox + 4 * e - 0.1, oy + 0.5, '4', 0.42) + txt(ox + 6 * e - 0.1, oy + 0.5, '6', 0.42) + '</svg>';
+})();
+
+/* ---------- Erklärungen (Glühbirnen) ---------- */
+var E_TAB1 = { schritte: [
+  { k: 'Reihenfolge', t: 'Bei $y = x^2 - 3$ gilt: <b>erst quadrieren, dann 3 abziehen</b>.' },
+  { k: 'Zeile x²', t: 'Das sind die Werte der Normalparabel: $(-3)^2 = 9$, $(-2)^2 = 4$, $(-1)^2 = 1$ …' },
+  { k: 'Zeile y', t: 'Von jedem Wert der Zeile darüber 3 abziehen.', f: '$9 - 3 = 6 \\qquad 4 - 3 = 1 \\qquad 1 - 3 = -2$' },
+  { k: 'Am TR', t: 'Negative Zahlen immer mit Klammer: <b>(−3)² − 3</b>.' }] };
+var E_TAB2 = { schritte: [
+  { k: 'Reihenfolge', t: 'Bei $y = (x - 3)^2$ gilt: <b>erst 3 abziehen, dann quadrieren</b> (Klammer zuerst).' },
+  { k: 'Zeile x − 3', t: 'Von jedem $x$-Wert 3 abziehen.', f: '$0 - 3 = -3 \\qquad 1 - 3 = -2 \\qquad 2 - 3 = -1$' },
+  { k: 'Fällt dir etwas auf?', t: 'In dieser Zeile stehen genau die $x$-Werte der Normalparabel: $-3$ bis $3$.' },
+  { k: 'Zeile y', t: 'Die Zeile darüber quadrieren: $(-3)^2 = 9$, $(-2)^2 = 4$ … – dieselben $y$-Werte wie bei der Normalparabel.' }] };
+var E_ZEICHNEN = { schritte: [
+  { k: '1 Einheit = 2 Kästchen', t: 'Im Koordinatensystem ist 1 Einheit = 1 cm. $-3$ heißt also 6 Kästchen nach unten.' },
+  { k: 'Punkte eintragen', t: 'Jede Spalte der Tabelle ist ein Punkt $(x \\,|\\, y)$, z. B. $(-2 \\,|\\, 1)$.' },
+  { k: 'Freihand verbinden', t: 'Eine Parabel hat <b>keine Ecken</b> – am Scheitel ist sie rund. Kein Lineal!' }] };
+var E_UNTEN = { schritte: [
+  { k: 'Tabelle vergleichen', t: 'Die Zeile $y$ ist überall um 3 kleiner als die Zeile $x^2$.' },
+  { k: 'Im Bild', t: 'Jeder Punkt der Normalparabel rutscht 3 Einheiten nach unten – die Form bleibt gleich.' },
+  { k: 'Scheitelpunkt', t: 'Aus $S\\,(0 \\,|\\, 0)$ wird $S_1\\,(0 \\,|\\, {-3})$.' }] };
+var E_RECHTS = { schritte: [
+  { k: 'Was überrascht', t: 'In der Klammer steht <b>minus</b> 3 – trotzdem wandert die Parabel nach <b>rechts</b>.' },
+  { k: 'Warum?', t: 'Wir ziehen <b>vorher</b> 3 ab. Bei $x = 5$ rechnet $p_2$ mit $5 - 3 = 2$.', f: '$(5 - 3)^2 = 2^2 = 4$' },
+  { k: 'Vergleich', t: 'Den $y$-Wert 4 hat die Normalparabel schon bei $x = 2$ – also <b>3 weiter links</b>.' },
+  { k: 'Also', t: 'Jeder Punkt der Normalparabel taucht bei $p_2$ 3 Einheiten weiter rechts wieder auf.' },
+  { k: 'Schnell geprüft', t: 'Der Scheitel liegt dort, wo die Klammer 0 wird: $x - 3 = 0$ für $x = 3$.' }] };
+var E_BEIDES = { schritte: [
+  { k: 'Zwei Verschiebungen', t: '$y = (x - 3)^2 - 3$ enthält beide Zahlen.' },
+  { k: 'In der Klammer', t: '$(x - 3)$ → 3 nach <b>rechts</b>: $x_S = 3$' },
+  { k: 'Hinter dem Quadrat', t: '$-3$ → 3 nach <b>unten</b>: $y_S = -3$' },
+  { k: 'Ausprobieren', t: 'Im <a href="scheitel-regler.html">Scheitelpunkt-Regler</a> kannst du beide Zahlen verschieben und zusehen.' }] };
+var E_PLUS = { schritte: [
+  { k: 'Gleiche Idee', t: 'Bei $(x + 3)^2$ wird die Klammer 0 für $x = -3$.' },
+  { k: 'Also', t: 'Der Scheitel liegt bei $x_S = -3$ – die Parabel wandert nach <b>links</b>.' },
+  { k: 'Merksatz', t: 'In der Klammer ist das Vorzeichen „verdreht“: $-$ → rechts, $+$ → links.' }] };
+var E_ABLESEN = { schritte: [
+  { k: 'Scheitelpunktsform', f: '$y = a \\cdot (x - x_S)^2 + y_S$' },
+  { k: 'x-Koordinate', t: 'Zahl in der Klammer mit <b>umgedrehtem</b> Vorzeichen: $(x - 2)$ → $x_S = 2$, $(x + 4)$ → $x_S = -4$.' },
+  { k: 'y-Koordinate', t: 'Zahl hinter dem Quadrat <b>direkt</b> ablesen: $+1$ → $y_S = 1$, $-2$ → $y_S = -2$.' },
+  { k: 'Öffnung', t: 'Vor der Klammer steht $a$. Kein Minus → nach oben. Minus → nach unten.' }] };
+var E_WERTE = { schritte: [
+  { k: 'Was ist die Wertemenge?', t: 'Alle $y$-Werte, die bei der Parabel vorkommen.' },
+  { k: 'Nach oben geöffnet', t: 'Der Scheitel ist der <b>tiefste</b> Punkt. Alle $y$-Werte sind mindestens $y_S$.', f: '$W = \\{y \\,|\\, y \\geq y_S\\}$' },
+  { k: 'Nach unten geöffnet', t: 'Der Scheitel ist der <b>höchste</b> Punkt. Alle $y$-Werte sind höchstens $y_S$.', f: '$W = \\{y \\,|\\, y \\leq y_S\\}$' }] };
+var E_FEHLT = { schritte: [
+  { k: 'Nichts hinter dem Quadrat', t: 'Bei $y = 0{,}5 \\cdot (x + 3)^2$ steht hinten keine Zahl. Dann ist $y_S = 0$ – der Scheitel liegt auf der $x$-Achse.' },
+  { k: 'Keine Klammer', t: 'Bei $y = -2x^2 + 4$ gibt es keine Klammer. Dann ist $x_S = 0$ – der Scheitel liegt auf der $y$-Achse.' }] };
+var E_P6 = { schritte: [
+  { k: 'Ungewohnte Reihenfolge', t: 'Bei $y = 3 - (x + 2)^2$ steht die Zahl vorne.' },
+  { k: 'Umstellen', t: 'Die beiden Teile vertauschen – das Minus bleibt bei der Klammer.', f: '$y = -(x + 2)^2 + 3$' },
+  { k: 'Jetzt ablesen', t: '$a = -1$ → nach unten geöffnet, $x_S = -2$, $y_S = 3$.' }] };
+var E_SKIZZE = { schritte: [
+  { k: 'Start am Scheitel', t: 'Trage zuerst den Scheitelpunkt ein, z. B. $S_1\\,(2 \\,|\\, 1)$.' },
+  { k: 'Form der Normalparabel', t: 'Vom Scheitel aus: 1 zur Seite → 1 hoch, 2 zur Seite → 4 hoch. Nach links und rechts gleich.' },
+  { k: 'Nach unten geöffnet', t: 'Bei $p_3$ steht ein Minus vor der Klammer: 1 zur Seite → 1 <b>runter</b>, 2 zur Seite → 4 runter.' }] };
+var E_AUF = { schritte: [
+  { k: 'Bauplan', f: '$y = a \\cdot (x - x_S)^2 + y_S$' },
+  { k: 'Einsetzen', t: '$S\\,(2 \\,|\\, 3)$ und $a = 1$:', f: '$y = 1 \\cdot (x - 2)^2 + 3$' },
+  { k: 'Aufräumen', t: 'Den Faktor 1 schreibt man nicht.', f: '$y = (x - 2)^2 + 3$' }] };
+var E_MINUS = { schritte: [
+  { k: 'Negatives x_S', t: 'Bei $S\\,(-4 \\,|\\, {-1{,}5})$ ist $x_S = -4$.' },
+  { k: 'Einsetzen mit Klammer', f: '$(x - (-4))^2 = (x + 4)^2$' },
+  { k: 'Merke', t: 'Minus mal Minus ergibt Plus – darum steht in der Klammer $+4$.' },
+  { k: 'y_S', t: '$y_S = -1{,}5$ wird einfach angehängt: $-1{,}5$.' }] };
+var E_ZUORDNEN = { schritte: [
+  { k: '1. Scheitelpunkt ablesen', t: 'Suche den tiefsten oder höchsten Punkt des Graphen, z. B. bei $p_1$: $S\\,(-4 \\,|\\, {-2})$.' },
+  { k: '2. Öffnung', t: 'Nach unten geöffnet → vor der Klammer steht ein Minus (C und E).' },
+  { k: '3. Gleichung bauen', t: '$x_S$ mit umgedrehtem Vorzeichen in die Klammer, $y_S$ dahinter.', f: '$S\\,(-4 \\,|\\, {-2})$ → $y = (x + 4)^2 - 2$' }] };
+var E_WURZEL = { schritte: [
+  { k: 'Zwei Lösungen', t: '$(x - 4)^2 = 4$ heißt: Die Klammer ist eine Zahl, die quadriert 4 ergibt.' },
+  { k: 'Welche Zahlen?', t: '$2^2 = 4$ und $(-2)^2 = 4$. Also $x - 4 = 2$ <b>oder</b> $x - 4 = -2$.' },
+  { k: 'Auflösen', f: '$x = 6 \\quad\\text{oder}\\quad x = 2$' }] };
+var E_SYMM = { schritte: [
+  { k: 'Ohne Rechnung', t: 'Die Parabel hat die Form der Normalparabel – nur nach unten geöffnet.' },
+  { k: 'Vom Scheitel aus', t: 'Von $S\\,(4 \\,|\\, 5)$ aus: 2 zur Seite → 4 runter. $5 - 4 = 1$ ✓' },
+  { k: 'Also', t: 'Die Punkte liegen 2 links und 2 rechts von $x_S = 4$: $x = 2$ und $x = 6$.' }] };
+
+window.PFAD = {
+  fach: 'Mathe 10c', titel: '2.3 Verschiebung von Parabeln', zurueck: 'material.html', thema: 'mathe', breite: 21,
+  ueberschrift: 'Arbeitsblatt – Lösung Zeile für Zeile',
+  karten: [
+
+  { chip: 'Start', start: true, titel: '2.3 Verschiebung von Parabeln',
+    html:
+    '<p>Hier siehst du das Arbeitsblatt. Mit <span class="mini" style="background:var(--petrol2);color:#fff">Nächster Schritt</span> erscheint die Lösung <b>Zeile für Zeile</b> in Blau – direkt auf dem Blatt.</p>' +
+    '<ol class="start"><li>Erst <b>selbst</b> rechnen und zeichnen – auf deinem Blatt.</li>' +
+    '<li>Hängst du fest? <span class="mini" style="background:var(--gelb)">Tipp</span> hilft beim nächsten Schritt. Der gelbe Rahmen zeigt, wo die nächste Zeile hinkommt.</li>' +
+    '<li><span class="mini" style="background:var(--orange);color:#fff">Glühbirne</span> = Erklärung zu einer schwierigen Stelle.</li>' +
+    '<li>Mit <b>Bewertung einblenden</b> siehst du grüne Haken – so würde im Leistungstest korrigiert.</li></ol>' +
+    '<div class="box">📱 Am Handy: <b>quer halten</b> oder die <b>Lupe</b> nehmen. Zoomen mit zwei Fingern geht auch.</div>' +
+    '<div class="box"><b>Zum Ausprobieren:</b> Im <a href="scheitel-regler.html" style="color:#3B77A8;font-weight:bold">Scheitelpunkt-Regler</a> verschiebst du die Parabel mit drei Reglern und siehst sofort Gleichung und Scheitelpunkt.</div>' },
+
+  /* ===================== Aufgabe 1 ===================== */
+  { chip: 'A1', name: 'Aufgabe 1',
+    teile: [
+      TEIL(S1, 2.5, 8.75, [
+        { x: 3.55, y: 7.27, p: 0.5, birne: [1.55, 7.52], z: reihe(['9', '4', '1', '0', '1', '4', '9'], 0.95), s: 'a) p₁: Zeile x²',
+          tipp: 'Das sind die Werte der Normalparabel: $(-3)^2 = 9$, $(-2)^2 = 4$ …', erkl: E_TAB1 },
+        { x: 3.55, y: 7.97, p: 1, z: reihe(['6', '1', '-2', '-3', '-2', '1', '6'], 0.95), s: 'a) p₁: Zeile y',
+          tipp: 'Von jedem Wert der Zeile darüber 3 abziehen: $9 - 3$, $4 - 3$, $1 - 3$ …' },
+        { x: 13.35, y: 7.27, p: 0.5, birne: [11.3, 7.52], z: reihe(['-3', '-2', '-1', '0', '1', '2', '3'], 0.95), s: 'a) p₂: Zeile x − 3',
+          tipp: 'Von jedem $x$-Wert 3 abziehen: $0 - 3$, $1 - 3$, $2 - 3$ …', erkl: E_TAB2 },
+        { x: 13.35, y: 7.97, p: 1, z: reihe(['9', '4', '1', '0', '1', '4', '9'], 0.95), s: 'a) p₂: Zeile y',
+          tipp: 'Die Zeile darüber quadrieren: $(-3)^2 = 9$, $(-2)^2 = 4$ …' }]),
+      TEIL(S1, 8.75, 21.95, [
+        { typ: 'skizze', x: 1.0, y: 8.87, w: 12, h: 13, html: G_P1, p: 1, haken: [1.25, 9.4], birne: [1.5, 11.0], s: 'b) Graph von p₁',
+          tipp: 'Punkte aus der linken Tabelle eintragen: $(-3 \\,|\\, 6)$, $(-2 \\,|\\, 1)$, $(-1 \\,|\\, {-2})$ … und rund verbinden.', erkl: E_ZEICHNEN },
+        { typ: 'skizze', x: 1.0, y: 8.87, w: 12, h: 13, html: G_P2, p: 1, haken: [1.25, 10.1], s: 'b) Graph von p₂',
+          tipp: 'Punkte aus der rechten Tabelle: $(0 \\,|\\, 9)$, $(1 \\,|\\, 4)$, $(2 \\,|\\, 1)$, $(3 \\,|\\, 0)$ … – andere Farbe nehmen.' },
+        { x: 15.08, y: 10.73, mitte: true, p: 0.5, z: '$3$', s: 'c) p₁: wie weit?', tipp: 'Vergleiche die Scheitelpunkte: von $(0 \\,|\\, 0)$ nach $(0 \\,|\\, {-3})$.' },
+        { x: 15.42, y: 11.54, mitte: true, p: 0.5, z: 'unten', birne: [19.0, 11.58], s: 'c) p₁: Richtung', tipp: 'Liegt $p_1$ höher oder tiefer als die gestrichelte Normalparabel?', erkl: E_UNTEN },
+        { x: 16.62, y: 12.15, p: 0.5, z: koord('0', '-3'), s: 'c) Scheitelpunkt S₁', tipp: 'Der tiefste Punkt von $p_1$ – lies ihn in deiner Zeichnung ab.' },
+        { x: 15.08, y: 15.41, mitte: true, p: 0.5, z: '$3$', s: 'c) p₂: wie weit?', tipp: 'Vergleiche die Scheitelpunkte: von $(0 \\,|\\, 0)$ nach $(3 \\,|\\, 0)$.' },
+        { x: 15.51, y: 16.23, mitte: true, p: 0.5, z: 'rechts', birne: [19.0, 16.27], s: 'c) p₂: Richtung', tipp: 'Schau in deine Zeichnung – nicht auf das Minus in der Klammer!', erkl: E_RECHTS },
+        { x: 16.62, y: 16.83, p: 0.5, z: koord('3', '0'), s: 'c) Scheitelpunkt S₂', tipp: 'Wo wird die Klammer $(x - 3)$ null?' },
+        { x: 14.27, y: 20.7, p: 1, z: koord('3', '-3'), birne: [17.0, 20.95], s: 'Vermutung: S₃', tipp: 'Beide Verschiebungen zusammen: 3 nach rechts <b>und</b> 3 nach unten.', erkl: E_BEIDES }])
+    ] },
+
+  /* ===================== Merkkasten ===================== */
+  { chip: 'Merke', name: 'Merkkasten',
+    teile: [
+      TEIL(S1, 21.95, 28.75, [
+        { x: 10.62, y: 23.6, mitte: true, z: 'unten', s: '1. Zahl hinter dem Quadrat (−)', tipp: '$y = x^2 - 3$ war die Parabel $p_1$ aus Aufgabe 1.' },
+        { x: 15.85, y: 23.6, mitte: true, z: 'oben', s: '1. Zahl hinter dem Quadrat (+)', tipp: 'Wird 3 dazugezählt, wird jeder $y$-Wert um 3 größer.' },
+        { x: 10.35, y: 24.3, mitte: true, z: 'rechts', s: '2. Zahl in der Klammer (−)', tipp: '$y = (x - 3)^2$ war die Parabel $p_2$ aus Aufgabe 1.' },
+        { x: 15.9, y: 24.3, mitte: true, z: 'links', birne: [17.5, 24.33], s: '2. Zahl in der Klammer (+)', tipp: 'Wo wird die Klammer $(x + 3)$ null?', erkl: E_PLUS },
+        { x: 11.0, y: 25.03, mitte: true, z: 'Scheitelpunktsform', s: '3. Name der Form', tipp: 'Man kann an dieser Form den Scheitelpunkt direkt ablesen.' },
+        { x: 11.6, y: 25.82, mitte: true, z: 'umdrehen', birne: [16.6, 25.86], s: '4. Vorzeichen', tipp: '$(x - 3)$ → $x_S = +3$. Was passiert mit dem Vorzeichen?', erkl: E_ABLESEN },
+        { x: 7.01, y: 27.17, z: koord('1', '-3'), s: 'Beispiel: Scheitelpunkt', tipp: '$(x - 1)$ → $x_S = 1$; hinten steht $-3$ → $y_S = -3$.' },
+        { x: 11.4, y: 27.42, mitte: true, z: '$\\geq -3$', birne: [12.6, 27.45], s: 'Beispiel: Wertemenge', tipp: '$a = 2$ ist positiv → nach oben geöffnet → der Scheitel ist der tiefste Punkt.', erkl: E_WERTE }])
+    ] },
+
+  /* ===================== Aufgabe 2 ===================== */
+  { chip: 'A2', name: 'Aufgabe 2',
+    check: { frage: 'Ergebnis prüfen: Welche $y$-Koordinate hat der Scheitelpunkt von $p_6$?', einh: '', ok: [3], exakt: 3, bsp: '3',
+      fehler: [{ w: -2, rel: 0.001, t: 'Das ist die $x$-Koordinate. Gefragt ist $y_S$ – die Zahl, die <b>nicht</b> in der Klammer steht.' },
+               { w: 2, rel: 0.001, t: 'Das ist die Zahl aus der Klammer (und dort wäre das Vorzeichen umzudrehen). $y_S$ steht außerhalb der Klammer.' },
+               { w: -3, rel: 0.001, t: 'Stelle um: $y = -(x + 2)^2 + 3$. Hinten steht $+3$.' }] },
+    teile: [
+      TEIL(S2, 0.85, 10.05, [
+        { x: 5.4, y: 5.03, p: 1, birne: [1.55, 5.28], z: zeile2('S\\,(2 \\,|\\, 1)', 'oben', 'W = \\{y \\,|\\, y \\geq 1\\}'), s: 'a) Parabel p₁',
+          tipp: '$(x - 2)$ → $x_S = 2$; hinten $+1$ → $y_S = 1$. Vor der Klammer steht kein Minus.', erkl: E_ABLESEN },
+        { x: 5.4, y: 5.83, p: 1, z: zeile2('S\\,(-4 \\,|\\, {-2})', 'oben', 'W = \\{y \\,|\\, y \\geq -2\\}'), s: 'a) Parabel p₂',
+          tipp: '$(x + 4)$ → Vorzeichen umdrehen: $x_S = -4$. Hinten $-2$ → $y_S = -2$.' },
+        { x: 5.4, y: 6.63, p: 1, birne: [1.55, 6.88], z: zeile2('S\\,(1 \\,|\\, 5)', 'unten', 'W = \\{y \\,|\\, y \\leq 5\\}'), s: 'a) Parabel p₃',
+          tipp: 'Minus vor der Klammer → nach unten geöffnet. Dann ist der Scheitel der höchste Punkt.', erkl: E_WERTE },
+        { x: 5.4, y: 7.43, p: 1, birne: [1.55, 7.68], z: zeile2('S\\,(-3 \\,|\\, 0)', 'oben', 'W = \\{y \\,|\\, y \\geq 0\\}'), s: 'a) Parabel p₄',
+          tipp: 'Hinter dem Quadrat steht nichts → $y_S = 0$. $a = 0{,}5$ ist positiv.', erkl: E_FEHLT },
+        { x: 5.4, y: 8.23, p: 1, z: zeile2('S\\,(0 \\,|\\, 4)', 'unten', 'W = \\{y \\,|\\, y \\leq 4\\}'), s: 'a) Parabel p₅',
+          tipp: 'Keine Klammer → $x_S = 0$. $a = -2$ ist negativ.' },
+        { x: 5.4, y: 9.03, p: 1, birne: [1.55, 9.28], z: zeile2('S\\,(-2 \\,|\\, 3)', 'unten', 'W = \\{y \\,|\\, y \\leq 3\\}'), s: 'a) Parabel p₆',
+          tipp: 'Stelle zuerst um: $y = -(x + 2)^2 + 3$.', erkl: E_P6 },
+        { typ: 'skizze', x: 13.0, y: 3.82, w: 7, h: 6, html: G_A, p: 1, haken: [19.3, 7.2], birne: [19.55, 6.3], s: 'b) Graph von p₁',
+          tipp: 'Scheitel $S_1\\,(2 \\,|\\, 1)$ eintragen. Dann 1 zur Seite → 1 hoch, 2 zur Seite → 4 hoch.', erkl: E_SKIZZE },
+        { typ: 'skizze', x: 13.0, y: 3.82, w: 7, h: 6, html: G_C, p: 1, haken: [19.3, 7.9], s: 'b) Graph von p₃',
+          tipp: 'Scheitel $S_3\\,(1 \\,|\\, 5)$ eintragen. Nach unten geöffnet: 1 zur Seite → 1 runter, 2 zur Seite → 4 runter.' }])
+    ] },
+
+  /* ===================== Aufgabe 3 ===================== */
+  { chip: 'A3', name: 'Aufgabe 3',
+    teile: [
+      TEIL(S2, 10.15, 15.3, [
+        { x: 1.65, y: 12.86, p: 1, birne: [6.6, 12.57], z: '$y = (x - 2)^2 + 3$', s: 'a)', tipp: 'Setze in $y = a \\cdot (x - x_S)^2 + y_S$ ein. Den Faktor 1 schreibt man nicht.', erkl: E_AUF },
+        { x: 7.88, y: 12.86, p: 1, z: '$y = -(x + 1)^2 + 4$', s: 'b)', tipp: '$x_S = -1$ → in der Klammer steht $+1$. $a = -1$ → nur ein Minus vor der Klammer.' },
+        { x: 14.12, y: 12.86, p: 1, z: '$y = 0{,}5 \\cdot (x - 3)^2 - 2$', s: 'c)', tipp: '$x_S = 3$ → $(x - 3)$; $y_S = -2$ → hinten $-2$.' },
+        { x: 1.65, y: 14.46, p: 1, birne: [6.6, 14.17], z: '$y = -2 \\cdot (x + 4)^2 - 1{,}5$', s: 'd)', tipp: '$x_S = -4$: $(x - (-4)) = (x + 4)$', erkl: E_MINUS },
+        { x: 7.88, y: 14.46, p: 1, z: '$y = 3x^2 + 5$', s: 'e)', tipp: '$x_S = 0$: $(x - 0)^2 = x^2$ – die Klammer fällt weg.' },
+        { x: 14.12, y: 14.46, p: 1, z: '$y = -0{,}25 \\cdot (x + 2{,}5)^2$', s: 'f)', tipp: '$y_S = 0$ → hinter dem Quadrat steht nichts.' }])
+    ] },
+
+  /* ===================== Aufgabe 4 ===================== */
+  { chip: 'A4', name: 'Aufgabe 4',
+    teile: [
+      TEIL(S2, 15.35, 23.0, [
+        { x: 12.74, y: 20.58, mitte: true, p: 1, z: 'A', birne: [19.4, 17.4], s: 'Graph p₁', tipp: 'Scheitel von $p_1$ ablesen: $S\\,(-4 \\,|\\, {-2})$, nach oben geöffnet.', erkl: E_ZUORDNEN },
+        { x: 14.81, y: 20.58, mitte: true, p: 1, z: 'C', s: 'Graph p₂', tipp: 'Scheitel $S\\,(1 \\,|\\, 4)$, nach unten geöffnet → Minus vor der Klammer.' },
+        { x: 16.89, y: 20.58, mitte: true, p: 1, z: 'D', s: 'Graph p₃', tipp: 'Scheitel $S\\,(4 \\,|\\, 1)$, nach oben geöffnet.' },
+        { x: 18.96, y: 20.58, mitte: true, p: 1, z: 'E', s: 'Graph p₄', tipp: 'Scheitel $S\\,(1 \\,|\\, {-1})$, nach unten geöffnet – gleiche Klammer wie bei $p_2$.' },
+        { x: 14.0, y: 21.64, mitte: true, p: 0.5, z: 'B', s: 'übrige Gleichung', tipp: 'Welchen Buchstaben hast du noch nicht benutzt?' },
+        { x: 12.97, y: 22.13, p: 0.5, z: koord('4', '-2'), s: 'Scheitelpunkt zu B', tipp: '$y = (x - 4)^2 - 2$: Vorzeichen in der Klammer umdrehen. Diese Parabel wäre $p_1$ mit falschem Vorzeichen.' }])
+    ] },
+
+  /* ===================== Aufgabe 5 ===================== */
+  { chip: 'A5', name: 'Aufgabe 5',
+    check: { frage: 'Ergebnis prüfen: Wie groß ist die größere der beiden $x$-Koordinaten?', einh: '', ok: [6], exakt: 6, bsp: '6',
+      fehler: [{ w: 2, rel: 0.001, t: '<b>Fast!</b> Das ist die kleinere der beiden. $(x - 4)^2 = 4$ hat zwei Lösungen.' },
+               { w: 4, rel: 0.001, t: 'Das ist $x_S$. Gesucht sind die Stellen mit $y = 1$ – links und rechts vom Scheitel.' },
+               { w: 8, rel: 0.001, t: 'Du hast $x - 4 = 4$ gerechnet. Aus $(x - 4)^2 = 4$ folgt aber $x - 4 = 2$ oder $x - 4 = -2$.' },
+               { w: -4, rel: 0.001, t: 'Setze für $y$ die Zahl 1 ein und löse nach $x$ auf.' }] },
+    teile: [
+      TEIL(S2, 23.05, 25.35),
+      { loesung: { spalten: [
+        { x: 1.4, zeilen: [
+          { z: '$p\\colon y = -(x - 4)^2 + 5$', s: 'Gleichung aufstellen', p: 1, tipp: 'Nach unten geöffnete Normalparabel: $a = -1$. Scheitel $S\\,(4 \\,|\\, 5)$ einsetzen.' },
+          { z: '$1 = -(x - 4)^2 + 5$', cmd: '-\\,5', s: 'y = 1 einsetzen', p: 1, tipp: 'Die Punkte haben die $y$-Koordinate 1 – setze 1 für $y$ ein.' },
+          { z: '$-4 = -(x - 4)^2$', cmd: '\\cdot\\,(-1)', s: 'Umformen (1)', tipp: 'Auf beiden Seiten 5 abziehen: $1 - 5 = -4$' },
+          { z: '$4 = (x - 4)^2$', s: 'Umformen (2)', p: 1, tipp: 'Mal $(-1)$: Auf beiden Seiten dreht sich das Vorzeichen um.' },
+          { z: '$x - 4 = -2 \\;\\text{ oder }\\; x - 4 = 2$', s: 'Zwei Lösungen', p: 1, tipp: 'Welche Zahlen ergeben quadriert 4?', erkl: E_WURZEL },
+          { z: '<span class="unter">$x_1 = 2$</span>;&nbsp; <span class="unter">$x_2 = 6$</span>', s: 'Ergebnis', p: 1, tipp: 'Jeweils 4 dazuzählen.' }] },
+        { x: 12.6, zeilen: [
+          { typ: 'skizze', html: G_5, w: 6, h: 4.5, s: 'Skizze zur Kontrolle', tipp: 'Von $S\\,(4 \\,|\\, 5)$ aus: 2 zur Seite → 4 runter.', erkl: E_SYMM }] }] } }
+    ] },
+
+  { chip: 'Ende', start: true, titel: 'Geschafft! 🎉',
+    html: '<p>Checkliste für den Leistungstest:</p><ul>' +
+      '<li>Ich weiß: Die Zahl <b>hinter</b> dem Quadrat verschiebt nach oben oder unten, die Zahl <b>in der Klammer</b> nach rechts oder links.</li>' +
+      '<li>Ich lese aus $y = a \\cdot (x - x_S)^2 + y_S$ den Scheitelpunkt ab – in der Klammer mit <b>umgedrehtem</b> Vorzeichen.</li>' +
+      '<li>Ich gebe die Wertemenge an: nach oben geöffnet $y \\geq y_S$, nach unten geöffnet $y \\leq y_S$.</li>' +
+      '<li>Ich stelle aus $S$ und $a$ die Gleichung in Scheitelpunktsform auf.</li>' +
+      '<li>Ich zeichne eine verschobene Normalparabel vom Scheitel aus: 1 zur Seite → 1 hoch, 2 zur Seite → 4 hoch.</li></ul>' +
+      '<p><a href="scheitel-regler.html" style="color:#3B77A8;font-weight:bold">Zum Scheitelpunkt-Regler</a> · <a href="parabel-sprung.html" style="color:#3B77A8;font-weight:bold">Spiel: Parabel-Sprung</a> · <a href="material.html" style="color:#3B77A8;font-weight:bold">Zum Material</a></p>' }
+  ] };
+</script>
+<script src="../assets/ab-pfad.js"></script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>

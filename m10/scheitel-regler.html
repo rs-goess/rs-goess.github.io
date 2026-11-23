@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Scheitelpunkt-Regler – Mathe 10c</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/portal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233B77A8'/%3E%3Cpath d='M20 12 Q38 78 56 12' fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='38' cy='45' r='5' fill='%23FFD23F'/%3E%3C/svg%3E">
+<style>
+:root{--fa:#8E3BA6;--fx:#2E8B57;--fy:#3B77A8;--graph:#D33A2C;--gitter:#E3E8EE;--achse:#1B1F2A;--normal:#9AA3AE;--ziel:#E08A00}
+@media (prefers-color-scheme:dark){:root{--fa:#D7A2E8;--fx:#7FD3A2;--fy:#8DC0EC;--graph:#FF7A6B;--gitter:#2B3240;--achse:#E7EAF0;--normal:#7F899B;--ziel:#FFC04D}}
+.seite{max-width:1000px}
+.buehne{display:grid;gap:16px}
+@media (min-width:860px){.buehne{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:22px;padding:14px;box-shadow:var(--schatten)}
+.formel{font-size:27px;text-align:center;padding:10px 4px 2px;min-height:60px;overflow-x:auto}
+.formel .katex{font-size:1.05em}
+.bauplan{text-align:center;font-size:15px;color:var(--text2);margin:0 0 8px}
+.bauplan .katex{font-size:1.05em}
+svg.kos{display:block;width:100%;height:auto;touch-action:manipulation;user-select:none}
+svg.kos text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:12px;fill:var(--text2)}
+.regler{display:grid;gap:14px}
+.regel{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.regel label{font-weight:800;font-size:16px}
+.regel .wert{font-weight:800;font-size:18px;min-width:3.6em;text-align:right;font-variant-numeric:tabular-nums}
+.regel small{grid-column:1/-1;color:var(--text2);font-size:13.5px;margin-top:-2px}
+.regel input[type=range]{grid-column:1/-1;width:100%;height:34px;margin:0}
+.r-a label,.r-a .wert{color:var(--fa)} .r-a input{accent-color:var(--fa)}
+.r-x label,.r-x .wert{color:var(--fx)} .r-x input{accent-color:var(--fx)}
+.r-y label,.r-y .wert{color:var(--fy)} .r-y input{accent-color:var(--fy)}
+.schalter{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:15px;color:var(--text2)}
+.schalter label{display:inline-flex;align-items:center;gap:7px;min-height:36px;cursor:pointer}
+.schalter input{width:20px;height:20px;accent-color:var(--blau)}
+.vorgaben{display:flex;flex-wrap:wrap;gap:8px}
+.vorgaben button,.knopf{font:inherit;font-weight:700;font-size:15px;border:1px solid var(--linie);background:var(--bg);color:var(--text);
+  border-radius:12px;padding:8px 12px;min-height:42px;cursor:pointer}
+.vorgaben button:active,.knopf:active{transform:translateY(1px)}
+.vorgaben button.weg{background:var(--blau-hell);color:var(--blau-text);border-color:transparent}
+h3{margin:2px 0 8px;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text2)}
+.ablesen{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:15.5px;margin:0;align-items:baseline}
+.ablesen dt{color:var(--text2);font-weight:700}
+.ablesen dd{margin:0;font-weight:700}
+.ablesen .katex{font-size:1.02em}
+.hinweis{margin:10px 0 0;padding:9px 12px;border-radius:12px;background:var(--blau-hell);color:var(--blau-text);font-size:14.5px;line-height:1.4;min-height:40px}
+.ziel-text{font-size:15.5px;margin:0 0 10px;color:var(--text2);line-height:1.4}
+.ziel-text b{color:var(--text)}
+.ziel-ok{color:#1E8449;font-weight:800}
+@media (prefers-color-scheme:dark){.ziel-ok{color:#7FD3A2}}
+.knopf.ziel{background:var(--ziel);border-color:transparent;color:#1B1F2A}
+/* Handy: Bild bleibt oben stehen, während man an den Reglern schiebt */
+@media (max-width:859px){.buehne>.karte:first-child{position:sticky;top:6px;z-index:5;padding:8px 10px}
+  .formel{font-size:23px;min-height:46px;padding:4px 4px 0}.bauplan{margin:0 0 2px;font-size:13.5px}
+  svg.kos{max-height:42vh}}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" href="material.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Material</a>
+<header class="kopf">
+  <div class="ober">Mathe 10c · 2.3 Verschiebung von Parabeln</div>
+  <h1>Scheitelpunkt-Regler</h1>
+  <p>Drei Regler, eine Gleichung: Schieb an <b>a</b>, <b>x<sub>S</sub></b> und <b>y<sub>S</sub></b> und beobachte, wie sich Parabel und Gleichung verändern.</p>
+</header>
+
+<div class="buehne">
+  <div class="karte">
+    <div class="formel" id="formel"></div>
+    <p class="bauplan" id="bauplan"></p>
+    <svg class="kos" id="kos" viewBox="0 0 420 454" role="img" aria-label="Koordinatensystem mit Parabel"></svg>
+  </div>
+  <div class="regler">
+    <div class="karte regler">
+      <div class="regel r-a"><label for="a">a · Formvariable</label><span class="wert" id="wa"></span>
+        <input type="range" id="a" min="-3" max="3" step="0.25" value="1"><small>Öffnung und Form: oben/unten, gestreckt/gestaucht</small></div>
+      <div class="regel r-x"><label for="xs">x<sub>S</sub> · Zahl in der Klammer</label><span class="wert" id="wx"></span>
+        <input type="range" id="xs" min="-5" max="5" step="0.5" value="0"><small>verschiebt nach links oder rechts</small></div>
+      <div class="regel r-y"><label for="ys">y<sub>S</sub> · Zahl hinter dem Quadrat</label><span class="wert" id="wy"></span>
+        <input type="range" id="ys" min="-5" max="5" step="0.5" value="0"><small>verschiebt nach oben oder unten</small></div>
+      <div class="schalter">
+        <label><input type="checkbox" id="sNormal" checked>Normalparabel</label>
+        <label><input type="checkbox" id="sHilfe" checked>Hilfslinien zum Scheitel</label>
+      </div>
+    </div>
+    <div class="karte">
+      <h3>Das liest du ab</h3>
+      <dl class="ablesen">
+        <dt>Scheitelpunkt</dt><dd id="iS"></dd>
+        <dt>geöffnet nach</dt><dd id="iO"></dd>
+        <dt>Wertemenge</dt><dd id="iW"></dd>
+      </dl>
+      <p class="hinweis" id="hinweis"></p>
+    </div>
+    <div class="karte">
+      <h3>Triff die Parabel</h3>
+      <p class="ziel-text" id="zielText">Lass dir eine gestrichelte Ziel-Parabel zeigen und stell die Regler so ein, dass deine Parabel genau darauf liegt.</p>
+      <button type="button" class="knopf ziel" id="zielKnopf">Neue Ziel-Parabel</button>
+    </div>
+    <div class="karte">
+      <h3>Vom Arbeitsblatt</h3>
+      <div class="vorgaben" id="vorgaben"></div>
+    </div>
+  </div>
+</div>
+<p class="fuss">Tipp: In der Klammer ist das Vorzeichen „verdreht“ – bei (x − 3)² liegt der Scheitel bei x<sub>S</sub> = 3.</p>
+</div>
+
+<script>
+(function(){
+  const XMIN=-6, XMAX=6, YMIN=-6, YMAX=7;
+  const W=420, H=454, PAD=18;
+  const U=Math.min((W-2*PAD)/(XMAX-XMIN),(H-2*PAD)/(YMAX-YMIN));   // quadratisch
+  const OX=(W-(XMAX-XMIN)*U)/2, OY=(H-(YMAX-YMIN)*U)/2;
+  const X=x=>OX+(x-XMIN)*U, Y=y=>OY+(YMAX-y)*U;
+  const svg=document.getElementById('kos');
+  const NS='http://www.w3.org/2000/svg';
+  function el(n,attr,parent){const e=document.createElementNS(NS,n);for(const k in attr)e.setAttribute(k,attr[k]);(parent||svg).appendChild(e);return e}
+  // Gitter (alle 0,5) und Achsen
+  const g=el('g',{});
+  for(let v=XMIN;v<=XMAX+1e-9;v+=0.5) el('line',{x1:X(v),y1:Y(YMIN),x2:X(v),y2:Y(YMAX),stroke:'var(--gitter)','stroke-width':Number.isInteger(v)?1.2:.6},g);
+  for(let v=YMIN;v<=YMAX+1e-9;v+=0.5) el('line',{x1:X(XMIN),y1:Y(v),x2:X(XMAX),y2:Y(v),stroke:'var(--gitter)','stroke-width':Number.isInteger(v)?1.2:.6},g);
+  el('defs',{}).innerHTML='<marker id="pf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--achse)"/></marker>';
+  el('line',{x1:X(XMIN),y1:Y(0),x2:X(XMAX)+2,y2:Y(0),stroke:'var(--achse)','stroke-width':1.8,'marker-end':'url(#pf)'});
+  el('line',{x1:X(0),y1:Y(YMIN),x2:X(0),y2:Y(YMAX)-2,stroke:'var(--achse)','stroke-width':1.8,'marker-end':'url(#pf)'});
+  for(let v=XMIN+1;v<=XMAX-1;v++){ if(!v) continue; const t=el('text',{x:X(v),y:Y(0)+16,'text-anchor':'middle'}); t.textContent=String(v).replace('-','−'); }
+  for(let v=YMIN+1;v<=YMAX-1;v++){ if(!v) continue; const t=el('text',{x:X(0)-7,y:Y(v)+4,'text-anchor':'end'}); t.textContent=String(v).replace('-','−'); }
+  const tx=el('text',{x:X(XMAX)-4,y:Y(0)-8,'text-anchor':'end','font-style':'italic'}); tx.textContent='x';
+  const ty=el('text',{x:X(0)+9,y:Y(YMAX)+12,'font-style':'italic'}); ty.textContent='y';
+  el('clipPath',{id:'clip'}).innerHTML=`<rect x="${X(XMIN)}" y="${Y(YMAX)}" width="${(XMAX-XMIN)*U}" height="${(YMAX-YMIN)*U}"/>`;
+  const normal=el('path',{fill:'none',stroke:'var(--normal)','stroke-width':2,'stroke-dasharray':'6 5','clip-path':'url(#clip)'});
+  const zielKurve=el('path',{fill:'none',stroke:'var(--ziel)','stroke-width':4,'stroke-dasharray':'3 7','stroke-linecap':'round','clip-path':'url(#clip)'});
+  // Hilfslinien vom Scheitel zu den Achsen
+  const hx=el('line',{stroke:'var(--fx)','stroke-width':2,'stroke-dasharray':'4 4'});
+  const hy=el('line',{stroke:'var(--fy)','stroke-width':2,'stroke-dasharray':'4 4'});
+  const mx=el('circle',{r:4.5,fill:'var(--fx)'}), my=el('circle',{r:4.5,fill:'var(--fy)'});
+  const kurve=el('path',{fill:'none',stroke:'var(--graph)','stroke-width':3.4,'stroke-linecap':'round','clip-path':'url(#clip)'});
+  const scheitel=el('circle',{r:5.5,fill:'var(--karte)',stroke:'var(--graph)','stroke-width':2.6});
+  const sLabel=el('text',{'font-weight':'800',style:'font-size:14px;fill:var(--text)'});
+
+  function pfad(f){let d='';const n=480;for(let i=0;i<=n;i++){const x=XMIN+(XMAX-XMIN)*i/n;let y=f(x);
+    y=Math.max(YMIN-3,Math.min(YMAX+3,y)); d+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1);}return d}
+  normal.setAttribute('d',pfad(x=>x*x));
+
+  const $=id=>document.getElementById(id);
+  const ra=$('a'), rx=$('xs'), ry=$('ys');
+  let zust={a:1,d:0,e:0}, anim=null, ziel=null, treffer=0;
+
+  function z(v,st=2){ const f=Math.pow(10,st); let s=(Math.round(v*f)/f).toString(); if(s==='-0')s='0'; return s.replace('.',',').replace('-','−'); }
+  function zl(v){ return z(v).replace('−','-').replace(',','{,}'); }
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim()||'#000'; }
+  const rund=(v,s)=>Math.round(v/s)*s;
+
+  function formelTex(a,d,e,farbig){
+    const A=rund(a,0.25), D=rund(d,0.5), E=rund(e,0.5);
+    const c=(v,t)=>farbig?`\\textcolor{${css(v)}}{${t}}`:t;
+    if(A===0) return `y=${c('--fy',zl(E))}\\quad\\text{(keine Parabel)}`;
+    const xt = D===0 ? 'x^2' : `(x${D>0?'-':'+'}${c('--fx',zl(Math.abs(D)))})^2`;
+    let s;
+    if(A===1) s=`y=${xt}`;
+    else if(A===-1) s=`y=${c('--fa','-')}${xt}`;
+    else s=`y=${c('--fa',zl(A))}\\cdot ${xt}`;
+    if(E!==0) s+=(E>0?'+':'-')+c('--fy',zl(Math.abs(E)));
+    return s;
+  }
+  function tex(t,ziel,gross){ if(window.katex){ try{ katex.render(t,ziel,{throwOnError:false,trust:true,strict:false,displayMode:false}); return; }catch(err){} } ziel.textContent=t; }
+
+  function hinweis(A,D,E){
+    if(A===0) return 'Mit a = 0 fällt das Quadrat weg – es bleibt eine waagrechte Gerade.';
+    if(D>0) return `In der Klammer steht <b>− ${z(D)}</b>. Der Scheitel liegt trotzdem bei x<sub>S</sub> = <b>+${z(D)}</b>: Dort wird die Klammer null.`;
+    if(D<0) return `In der Klammer steht <b>+ ${z(-D)}</b>, denn x − (${z(D)}) = x + ${z(-D)}. Der Scheitel liegt bei x<sub>S</sub> = <b>${z(D)}</b>.`;
+    if(E!==0) return 'Ohne Klammer ist x<sub>S</sub> = 0: Der Scheitel liegt auf der y-Achse.';
+    return 'Scheitel im Ursprung. Verschieb ihn mit x<sub>S</sub> und y<sub>S</sub>!';
+  }
+
+  function zeichne(){
+    const {a,d,e}=zust;
+    const A=rund(a,0.25), D=rund(d,0.5), E=rund(e,0.5);
+    const f=x=>a*(x-d)*(x-d)+e;
+    kurve.setAttribute('d',pfad(f));
+    const sx=X(d), sy=Y(e);
+    const drin = e>=YMIN && e<=YMAX && d>=XMIN && d<=XMAX;
+    scheitel.style.display=drin?'':'none'; sLabel.style.display=drin?'':'none';
+    scheitel.setAttribute('cx',sx); scheitel.setAttribute('cy',sy);
+    sLabel.setAttribute('x',sx+9); sLabel.setAttribute('y',a>=0?sy+19:sy-10); sLabel.textContent='S';
+    const hilfe=$('sHilfe').checked && drin;
+    [hx,hy,mx,my].forEach(o=>o.style.display=hilfe?'':'none');
+    hx.setAttribute('x1',sx); hx.setAttribute('y1',sy); hx.setAttribute('x2',sx); hx.setAttribute('y2',Y(0));
+    hy.setAttribute('x1',sx); hy.setAttribute('y1',sy); hy.setAttribute('x2',X(0)); hy.setAttribute('y2',sy);
+    mx.setAttribute('cx',sx); mx.setAttribute('cy',Y(0)); my.setAttribute('cx',X(0)); my.setAttribute('cy',sy);
+    normal.style.display=$('sNormal').checked?'':'none';
+    tex(formelTex(a,d,e,true),$('formel'));
+    $('wa').textContent=z(A); $('wx').textContent=z(D); $('wy').textContent=z(E);
+    // Ablesen
+    if(A===0){ $('iS').textContent='–'; $('iO').textContent='–'; $('iW').textContent='–'; }
+    else{
+      tex(`S\\,(\\textcolor{${css('--fx')}}{${zl(D)}}\\,|\\,\\textcolor{${css('--fy')}}{${zl(E)}})`,$('iS'));
+      const b=Math.abs(A);
+      $('iO').textContent=(A>0?'oben':'unten')+' · '+(b>1?'gestreckt (enger)':b<1?'gestaucht (weiter)':'Form der Normalparabel');
+      tex(`W=\\{y\\,|\\,y${A>0?'\\geq':'\\leq'}\\textcolor{${css('--fy')}}{${zl(E)}}\\}`,$('iW'));
+    }
+    $('hinweis').innerHTML=hinweis(A,D,E);
+    pruefeZiel(A,D,E);
+  }
+  function ausReglern(){ zust={a:+ra.value,d:+rx.value,e:+ry.value}; zeichne(); }
+  [ra,rx,ry].forEach(r=>r.addEventListener('input',()=>{ if(anim){clearTimeout(anim);anim=null;} ausReglern(); }));
+  ['sNormal','sHilfe'].forEach(id=>$(id).addEventListener('change',zeichne));
+
+  // sanft zu einer Vorgabe gleiten
+  function gleite(a,d,e){
+    ra.value=a; rx.value=d; ry.value=e;
+    const start={...zust}, t0=performance.now(), dauer=650;
+    if(anim) clearTimeout(anim);
+    const naechst=f=>setTimeout(()=>f(performance.now()),16);
+    const schritt=t=>{ let p=Math.min(1,(t-t0)/dauer); p=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      zust={a:start.a+(a-start.a)*p,d:start.d+(d-start.d)*p,e:start.e+(e-start.e)*p}; zeichne();
+      if(p<1) anim=naechst(schritt); else {anim=null; zust={a,d,e}; zeichne();} };
+    anim=naechst(schritt);
+  }
+  // [Beschriftung, a, x_S, y_S]
+  const VOR=[['x² − 3',1,0,-3],['(x − 3)²',1,3,0],['(x − 3)² − 3',1,3,-3],['2 · (x − 1)² − 3',2,1,-3],['−(x − 1)² + 5',-1,1,5],['0,5 · (x + 3)²',0.5,-3,0]];
+  const box=$('vorgaben');
+  VOR.forEach(([t,a,d,e])=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=()=>gleite(a,d,e);box.appendChild(b);});
+  const r=document.createElement('button'); r.type='button'; r.className='weg'; r.textContent='Zurück zur Normalparabel';
+  r.onclick=()=>gleite(1,0,0); box.appendChild(r);
+
+  // ---------- Triff die Parabel ----------
+  function neuesZiel(){
+    const as=[1,1,-1,-1,2,-2,0.5,-0.5];
+    let neu;
+    do{
+      const a=as[Math.floor(Math.random()*as.length)];
+      const d=Math.floor(Math.random()*9)-4;                 // −4 … 4
+      const e=a>0?Math.floor(Math.random()*7)-4:Math.floor(Math.random()*7)-1;   // Scheitel im Bild, Parabel gut sichtbar
+      neu={a,d,e};
+    }while((neu.a===rund(zust.a,0.25)&&neu.d===rund(zust.d,0.5)&&neu.e===rund(zust.e,0.5)) || (ziel&&neu.a===ziel.a&&neu.d===ziel.d&&neu.e===ziel.e) || (neu.d===0&&neu.e===0));
+    ziel=Object.assign(neu,{geschafft:false});
+    zielKurve.setAttribute('d',pfad(x=>ziel.a*(x-ziel.d)*(x-ziel.d)+ziel.e));
+    zielKurve.style.display='';
+    $('zielKnopf').textContent='Andere Ziel-Parabel';
+    zeichne();
+  }
+  function pruefeZiel(A,D,E){
+    const t=$('zielText');
+    if(!ziel) return;
+    if(anim) return;
+    if(A===ziel.a&&D===ziel.d&&E===ziel.e){
+      if(!ziel.geschafft){ ziel.geschafft=true; treffer++; }
+      t.innerHTML='<span class="ziel-ok">Getroffen! ✓</span> Die Gleichung steht oben – schreib sie dir ab. <b>Treffer: '+treffer+'</b>';
+      $('zielKnopf').textContent='Nächste Ziel-Parabel';
+    } else if(!ziel.geschafft){
+      const tipp = D!==ziel.d||E!==ziel.e ? 'Lies zuerst den <b>Scheitelpunkt</b> der gestrichelten Parabel ab und stell x<sub>S</sub> und y<sub>S</sub> ein.'
+                                         : 'Der Scheitel passt! Jetzt noch <b>a</b>: nach oben oder unten? Enger oder weiter?';
+      t.innerHTML='Bring deine rote Parabel genau auf die <b>gestrichelte orange</b> Parabel. '+tipp;
+    }
+  }
+  zielKurve.style.display='none';
+  $('zielKnopf').addEventListener('click',neuesZiel);
+
+  function start(){
+    tex(`y=\\textcolor{${css('--fa')}}{a}\\cdot(x-\\textcolor{${css('--fx')}}{x_S})^2+\\textcolor{${css('--fy')}}{y_S}`,$('bauplan'));
+    ausReglern();
+  }
+  if(window.katex) start(); else window.addEventListener('load',start);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',start);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
