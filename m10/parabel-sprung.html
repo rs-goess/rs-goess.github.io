@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Parabel-Sprung – Mathe 10c</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/portal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233B4BA8'/%3E%3Cpath d='M10 52 Q32 -8 54 52' fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round' stroke-dasharray='2 8'/%3E%3Ccircle cx='32' cy='22' r='7' fill='%23FFD23F'/%3E%3C/svg%3E">
+<style>
+:root{--gitter:#E3E8EE;--achse:#1B1F2A;--bahn:#1F5FC4;--ball:#F47B3E;--muenze:#F5B700;--muenze-rand:#B98500;--rot:#C0392B;--rot-hell:#FBE7E4}
+@media (prefers-color-scheme:dark){:root{--gitter:#2B3240;--achse:#E7EAF0;--bahn:#8DB8FF;--ball:#FF9A5C;--muenze:#FFD23F;--muenze-rand:#C99A00;--rot:#FF8A7A;--rot-hell:#3A1F1C}}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:22px;padding:14px;box-shadow:var(--schatten);margin-bottom:14px}
+.levelwahl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.levelwahl button{font:inherit;border:2px solid var(--linie);background:var(--bg);color:var(--text);border-radius:16px;padding:10px 6px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;min-height:76px;-webkit-tap-highlight-color:transparent}
+.levelwahl button b{font-size:22px;font-weight:800}
+.levelwahl button small{font-size:12px;color:var(--text2);line-height:1.2;text-align:center}
+.levelwahl button .st{font-size:15px;letter-spacing:1px;color:var(--muenze-rand)}
+.levelwahl button.zu{opacity:.45;cursor:not-allowed}
+.gruppe{font-size:13px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin:14px 2px 8px}
+.gruppe:first-child{margin-top:0}
+.kopfzeile{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.kopfzeile h2{font-size:19px;margin:0}
+.kopfzeile .vers{font-size:14px;color:var(--text2);white-space:nowrap}
+.auftrag{font-size:16px;line-height:1.45;margin:0 0 10px}
+svg.feld{display:block;width:100%;height:auto;touch-action:manipulation;border-radius:14px;background:var(--bg)}
+svg text{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:11px;fill:var(--text2)}
+.gleichung{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 6px;font-size:21px;margin:12px 0 6px}
+.gleichung .katex{font-size:1.05em}
+.gleichung input{font:inherit;font-weight:700;font-size:18px;width:3.6em;text-align:center;border:2px solid var(--linie);border-radius:12px;
+  padding:6px 4px;background:var(--bg);color:var(--text)}
+.gleichung input:focus{outline:none;border-color:var(--bahn)}
+.gleichung input.fest{border-style:dashed;color:var(--text2)}
+.gleichung .lab{display:flex;flex-direction:column;align-items:center;gap:2px}
+.gleichung .lab small{font-size:12px;color:var(--text2)}
+@media (max-width:420px){.gleichung{font-size:16px;gap:2px 3px;flex-wrap:nowrap}.gleichung .katex{font-size:1em}.gleichung input{width:2.8em;font-size:16px;padding:6px 1px}}
+.knoepfe{display:flex;gap:8px;margin-top:10px}
+.knoepfe button{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:16px;padding:13px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.los{flex:1;color:#fff;background:linear-gradient(135deg,#3B4BA8,#1F5FC4)}
+.los:disabled{opacity:.6}
+.tippk{background:var(--blau-hell);color:var(--blau-text)}
+.tipp{display:none;border-radius:14px;background:var(--blau-hell);padding:11px 13px;margin-top:10px;font-size:15.5px;line-height:1.45}
+.tipp.auf{display:block}
+.rueck{border-radius:14px;padding:11px 13px;margin-top:10px;font-size:16px;line-height:1.45;display:none}
+.rueck.ok{display:block;background:var(--gruen-hell);border:2px solid var(--gruen)}
+.rueck.no{display:block;background:var(--rot-hell);border:2px solid var(--rot)}
+.rueck b{display:block;margin-bottom:2px}
+.weiter{display:none;width:100%;margin-top:10px;font:inherit;font-weight:800;font-size:17px;border:0;border-radius:16px;padding:13px;color:#fff;
+  background:linear-gradient(135deg,#1E8449,#27AE60);cursor:pointer}
+.zur{font:inherit;font-size:15px;font-weight:700;border:0;background:none;color:var(--blau-text);cursor:pointer;padding:4px 0}
+.regeln{font-size:15px;line-height:1.5;color:var(--text2);margin:0}
+.regeln b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" href="spiele.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Spiele</a>
+<header class="kopf">
+  <div class="ober">Mathe 10c · Quadratische Funktionen</div>
+  <h1>Parabel-Sprung</h1>
+  <p>Stell die Gleichung so ein, dass der Ball auf seiner Flugbahn alle Münzen einsammelt.</p>
+</header>
+
+<div id="menue">
+  <div class="karte">
+    <p class="regeln"><b>So geht's:</b> Wähle ein Level (1–3 Scheitel verschieben, 4–6 Gleichung aufstellen, 7–9 Parabel durch zwei Punkte), trage die fehlenden Zahlen ein und tippe auf <b>Los!</b>
+    Der Ball fliegt dann genau auf deiner Parabel. Triffst du alle Münzen im ersten Versuch, gibt es ★★★.</p>
+  </div>
+  <div class="karte" id="liste"></div>
+</div>
+
+<div id="spiel" hidden>
+  <div class="karte">
+    <div class="kopfzeile"><h2 id="ltitel"></h2><span class="vers" id="vers"></span></div>
+    <p class="auftrag" id="auftrag"></p>
+    <svg class="feld" id="feld" xmlns="http://www.w3.org/2000/svg" aria-label="Spielfeld"></svg>
+    <div class="gleichung" id="gleichung"></div>
+    <div class="knoepfe"><button class="tippk" id="btnTipp">Tipp</button><button class="los" id="btnLos">Los!</button></div>
+    <div class="tipp" id="tipp"></div>
+    <div class="rueck" id="rueck"></div>
+    <button class="weiter" id="btnWeiter">Nächstes Level</button>
+  </div>
+  <button class="zur" id="btnMenue">← Alle Level</button>
+</div>
+</div>
+
+<script>
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const tex=t=>{try{return katex.renderToString(t,{throwOnError:false})}catch(e){return t}};
+  const fmt=v=>{const r=Math.round(v*1000)/1000; return String(r).replace('.',',').replace('-','−')};
+  const zahl=s=>{if(s===undefined||s===null) return NaN; s=String(s).trim().replace(/\s/g,'').replace('−','-').replace(',','.');
+    if(/^[-+]?\d+\/\d+$/.test(s)){const [p,q]=s.split('/'); return +p/+q;} if(s===''||s==='-'||s==='+') return NaN; return Number(s)};
+
+  // ---------- Level ----------
+  // typ 's': Scheitelpunktsform y = a(x−xs)²+ys, fest = Liste fester Werte; typ 'a': allgemeine Form y = ax²+bx+c
+  const L=[
+    {g:'Scheitel verschieben', titel:'Level 1', typ:'s', fest:{a:-1}, m:[[3,4],[2,3],[4,3]],
+     auftrag:'Die Form ist vorgegeben ($a=-1$). Verschiebe die Parabel so, dass der Ball alle Münzen trifft.',
+     tipp:'Die oberste Münze ist der Scheitelpunkt $S$. Lies seine Koordinaten ab: $x_S$ und $y_S$.'},
+    {g:'Scheitel verschieben', titel:'Level 2', typ:'s', fest:{a:-0.5}, m:[[5,6],[3,4],[7,4]],
+     auftrag:'Jetzt ist die Parabel weiter ($a=-0{,}5$). Wo muss der Scheitel liegen?',
+     tipp:'Höchster Punkt = Scheitelpunkt. Die Münzen links und rechts liegen symmetrisch dazu.'},
+    {g:'Scheitel verschieben', titel:'Level 3', typ:'s', fest:{a:-2}, m:[[6,7],[5,5],[7,5]],
+     auftrag:'Eine schmale Parabel ($a=-2$). Bring den Ball ganz nach oben rechts.',
+     tipp:'Probe: Vom Scheitel 1 nach rechts geht es bei $a=-2$ genau 2 nach unten.'},
+    {g:'Gleichung aufstellen', titel:'Level 4', typ:'s', fest:{}, m:[[4,6],[2,4],[6,4]],
+     auftrag:'Jetzt fehlt auch $a$. Stelle die Gleichung in Scheitelpunktsform auf.',
+     tipp:'$S(4\\,|\\,6)$ einsetzen, dann $P(6\\,|\\,4)$: $4=a\\cdot(6-4)^2+6$, also $-2=4a$.'},
+    {g:'Gleichung aufstellen', titel:'Level 5', typ:'s', fest:{}, m:[[5,7],[1,3],[9,3]],
+     auftrag:'Ein weiter Sprung über das ganze Feld.',
+     tipp:'$S(5\\,|\\,7)$ und $P(9\\,|\\,3)$: $3=a\\cdot 4^2+7$.'},
+    {g:'Gleichung aufstellen', titel:'Level 6', typ:'s', fest:{}, m:[[5,1],[3,3],[7,3]],
+     auftrag:'Achtung, Tal statt Berg: Der Ball rollt durch eine Mulde.',
+     tipp:'Die tiefste Münze ist jetzt der Scheitelpunkt – die Parabel ist nach oben geöffnet, also $a>0$.'},
+    {g:'Parabel durch zwei Punkte', titel:'Level 7', typ:'a', fest:{a:-0.5}, m:[[0,2],[4,6]],
+     auftrag:'Allgemeine Form mit $a=-0{,}5$. Bestimme $b$ und $c$ so, dass beide Münzen getroffen werden.',
+     tipp:'Die Münze $(0\\,|\\,2)$ liegt auf der $y$-Achse – dann ist $c$ sofort klar. Danach $(4\\,|\\,6)$ einsetzen.'},
+    {g:'Parabel durch zwei Punkte', titel:'Level 8', typ:'a', fest:{a:-1}, m:[[1,3],[4,6]],
+     auftrag:'Allgemeine Form mit $a=-1$. Zwei Münzen, zwei Unbekannte.',
+     tipp:'(I) $3=-1+b+c$, (II) $6=-16+4b+c$. Rechne (II) − (I), dann fällt $c$ weg.'},
+    {g:'Parabel durch zwei Punkte', titel:'Level 9', typ:'a', fest:{a:0.5}, m:[[2,1],[6,5]],
+     auftrag:'Allgemeine Form mit $a=0{,}5$ – diesmal ein Tal.',
+     tipp:'(I) $1=2+2b+c$, (II) $5=18+6b+c$. Rechne (II) − (I).'}
+  ];
+  const XMIN=-1, XMAX=10, YMIN=-1, YMAX=8, U=30, PAD=14;
+  const W=(XMAX-XMIN)*U+2*PAD, H=(YMAX-YMIN)*U+2*PAD;
+  const X=x=>PAD+(x-XMIN)*U, Y=y=>PAD+(YMAX-y)*U;
+
+  // ---------- Fortschritt ----------
+  const KEY='m10-parabel-sprung';
+  let sterne={};
+  try{ sterne=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ sterne={}; }
+  const speichern=()=>{try{localStorage.setItem(KEY,JSON.stringify(sterne))}catch(e){}};
+
+  const $=id=>document.getElementById(id);
+  const T=s=>s.replace(/\$([^$]+)\$/g,(m,t)=>tex(t));
+
+  function liste(){
+    let h='', grp='';
+    L.forEach((l,i)=>{
+      if(l.g!==grp){ if(grp) h+='</div>'; grp=l.g; h+=`<div class="gruppe">${grp}</div><div class="levelwahl">`; }
+      const s=sterne[i]||0, offen=true;
+      h+=`<button data-i="${i}" class="${offen?'':'zu'}" ${offen?'':'aria-disabled="true"'}><b>${i+1}</b><span class="st">${'★'.repeat(s)}${'☆'.repeat(3-s)}</span><small>${s?'geschafft':'offen'}</small></button>`;
+    });
+    $('liste').innerHTML=h+'</div>';
+    $('liste').querySelectorAll('button').forEach(b=>b.onclick=()=>{ if(!b.classList.contains('zu')) starte(+b.dataset.i); });
+  }
+
+  let akt=0, versuche=0, laeuft=false;
+  function feld(fn, ballX){
+    const l=L[akt];
+    let s='';
+    for(let v=XMIN;v<=XMAX;v++) s+=`<line x1="${X(v)}" y1="${Y(YMIN)}" x2="${X(v)}" y2="${Y(YMAX)}" stroke="var(--gitter)"/>`;
+    for(let v=YMIN;v<=YMAX;v++) s+=`<line x1="${X(XMIN)}" y1="${Y(v)}" x2="${X(XMAX)}" y2="${Y(v)}" stroke="var(--gitter)"/>`;
+    s+=`<line x1="${X(XMIN)}" y1="${Y(0)}" x2="${X(XMAX)+6}" y2="${Y(0)}" stroke="var(--achse)" stroke-width="1.6"/>`;
+    s+=`<line x1="${X(0)}" y1="${Y(YMIN)}" x2="${X(0)}" y2="${Y(YMAX)-6}" stroke="var(--achse)" stroke-width="1.6"/>`;
+    for(let v=1;v<=XMAX;v++) s+=`<text x="${X(v)}" y="${Y(0)+13}" text-anchor="middle">${v}</text>`;
+    for(let v=1;v<=YMAX;v++) s+=`<text x="${X(0)-5}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+    s+=`<text x="${X(XMAX)+4}" y="${Y(0)-5}" text-anchor="end" font-style="italic">x</text><text x="${X(0)+6}" y="${Y(YMAX)+4}" font-style="italic">y</text>`;
+    s+=`<clipPath id="clip"><rect x="${X(XMIN)}" y="${Y(YMAX)}" width="${(XMAX-XMIN)*U}" height="${(YMAX-YMIN)*U}"/></clipPath>`;
+    if(fn){
+      let d='', bis=ballX??XMAX;
+      for(let i=0;i<=400;i++){ const x=XMIN+(bis-XMIN)*i/400, y=Math.max(YMIN-3,Math.min(YMAX+3,fn(x))); d+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1); }
+      s+=`<path d="${d}" fill="none" stroke="var(--bahn)" stroke-width="2.6" stroke-dasharray="6 5" stroke-linecap="round" clip-path="url(#clip)"/>`;
+    }
+    l.m.forEach(([mx,my],k)=>{
+      const hat=fn&&ballX!==undefined&&ballX>=mx&&Math.abs(fn(mx)-my)<0.05;
+      s+= hat ? `<circle cx="${X(mx)}" cy="${Y(my)}" r="8" fill="none" stroke="var(--gruen)" stroke-width="2.5"/>`
+              : `<circle cx="${X(mx)}" cy="${Y(my)}" r="8" fill="var(--muenze)" stroke="var(--muenze-rand)" stroke-width="2"/><text x="${X(mx)}" y="${Y(my)+4}" text-anchor="middle" style="font-weight:800;fill:#7A5600;font-size:10px">€</text>`;
+    });
+    if(fn&&ballX!==undefined){ const by=fn(ballX); if(by>YMIN-1&&by<YMAX+1) s+=`<circle cx="${X(ballX)}" cy="${Y(by)}" r="9" fill="var(--ball)" stroke="#fff" stroke-width="2"/>`; }
+    const f=$('feld'); f.setAttribute('viewBox',`0 0 ${W} ${H}`); f.innerHTML=s;
+  }
+
+  function eingabe(){
+    const l=L[akt], fx=l.fest;
+    const inp=(n,lab)=> n in fx ? `<span class="lab"><input class="fest" id="i_${n}" value="${fmt(fx[n])}" disabled><small>${tex(lab)}</small></span>`
+                                 : `<span class="lab"><input id="i_${n}" inputmode="decimal" autocomplete="off" placeholder="?" aria-label="${lab}"><small>${tex(lab)}</small></span>`;
+    let h='';
+    if(l.typ==='s') h=`${tex('y=')} ${inp('a','a')} ${tex('\\cdot\\,(x\\;-')} ${inp('d','x_S')} ${tex(')^2\\;+')} ${inp('e','y_S')}`;
+    else h=`${tex('y=')} ${inp('a','a')} ${tex('x^2\\;+')} ${inp('b','b')} ${tex('x\\;+')} ${inp('c','c')}`;
+    $('gleichung').innerHTML=h;
+    $('gleichung').querySelectorAll('input:not(.fest)').forEach(e=>e.addEventListener('keydown',ev=>{if(ev.key==='Enter') los();}));
+  }
+
+  function starte(i){
+    akt=i; versuche=0; laeuft=false;
+    const l=L[i];
+    $('menue').hidden=true; $('spiel').hidden=false;
+    $('ltitel').textContent=l.titel+' · '+l.g; $('auftrag').innerHTML=T(l.auftrag);
+    $('tipp').innerHTML=T(l.tipp); $('tipp').classList.remove('auf');
+    $('rueck').className='rueck'; $('btnWeiter').style.display='none'; $('btnLos').disabled=false;
+    $('vers').textContent='';
+    eingabe(); feld(null);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function werte(){
+    const l=L[akt], v={};
+    for(const n of (l.typ==='s'?['a','d','e']:['a','b','c'])){ v[n]= n in l.fest ? l.fest[n] : zahl($('i_'+n).value); if(!isFinite(v[n])) return null; }
+    return v;
+  }
+
+  function los(){
+    if(laeuft) return;
+    const l=L[akt], v=werte();
+    if(!v){ $('rueck').className='rueck no'; $('rueck').innerHTML='<b>Da fehlt noch etwas.</b>Trage in jedes Feld eine Zahl ein (Komma oder Punkt).'; return; }
+    if(v.a===0){ $('rueck').className='rueck no'; $('rueck').innerHTML='<b>Mit a = 0 gibt es keine Parabel.</b>Dann wäre es eine Gerade.'; return; }
+    const fn = l.typ==='s' ? (x=>v.a*(x-v.d)**2+v.e) : (x=>v.a*x*x+v.b*x+v.c);
+    versuche++; $('vers').textContent=`Versuch ${versuche}`;
+    laeuft=true; $('btnLos').disabled=true; $('rueck').className='rueck';
+    const t0=performance.now(), dauer=1900;
+    const schritt=now=>{
+      const p=Math.min(1,(now-t0)/dauer), x=XMIN+(XMAX-XMIN)*p;
+      feld(fn,x);
+      if(p<1) requestAnimationFrame(schritt); else ende(fn,v);
+    };
+    requestAnimationFrame(schritt);
+  }
+
+  function gleichungTex(v){
+    const l=L[akt], z=n=>fmt(n).replace('−','-').replace(',','{,}');
+    const k=a=>a===1?'':a===-1?'-':z(a)+'\\cdot ';
+    if(l.typ==='s'){ const d=v.d===0?'x':(v.d>0?`(x-${z(v.d)})`:`(x+${z(-v.d)})`); const e=v.e===0?'':(v.e>0?`+${z(v.e)}`:`-${z(-v.e)}`);
+      return `y=${k(v.a)}${d}^2${e}`; }
+    const b=v.b===0?'':(v.b>0?`+${v.b===1?'':z(v.b)}x`:`-${v.b===-1?'':z(-v.b)}x`), c=v.c===0?'':(v.c>0?`+${z(v.c)}`:`-${z(-v.c)}`);
+    return `y=${v.a===1?'':v.a===-1?'-':z(v.a)}x^2${b}${c}`;
+  }
+
+  function ende(fn,v){
+    laeuft=false; $('btnLos').disabled=false;
+    const l=L[akt];
+    const fehl=l.m.filter(([mx,my])=>Math.abs(fn(mx)-my)>=0.05);
+    const gl=tex(gleichungTex(v));
+    if(!fehl.length){
+      const s=versuche===1?3:versuche<=3?2:1;
+      sterne[akt]=Math.max(sterne[akt]||0,s); speichern();
+      $('rueck').className='rueck ok';
+      $('rueck').innerHTML=`<b>Alle Münzen! ${'★'.repeat(s)}${'☆'.repeat(3-s)}</b>${gl}`;
+      $('btnWeiter').style.display= akt<L.length-1 ? 'block' : 'none';
+      if(akt===L.length-1) $('rueck').innerHTML+='<br>Du hast alle Level geschafft – stark!';
+    } else {
+      const m=fehl[0], y=fn(m[0]);
+      $('rueck').className='rueck no';
+      $('rueck').innerHTML=`<b>${fehl.length===1?'Eine Münze fehlt.':fehl.length+' Münzen fehlen.'}</b>${gl}<br>`+
+        `Bei ${tex('x='+fmt(m[0]).replace(',','{,}'))} ist der Ball auf Höhe ${tex(fmt(y).replace('−','-').replace(',','{,}'))} – die Münze liegt bei ${tex(fmt(m[1]).replace(',','{,}'))}.`+
+        (versuche>=2&&!$('tipp').classList.contains('auf')?'<br>Schau dir den Tipp an!':'');
+    }
+  }
+
+  $('btnLos').onclick=los;
+  $('btnTipp').onclick=()=>$('tipp').classList.toggle('auf');
+  $('btnWeiter').onclick=()=>starte(akt+1);
+  $('btnMenue').onclick=()=>{ $('spiel').hidden=true; $('menue').hidden=false; liste(); };
+  liste();
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
