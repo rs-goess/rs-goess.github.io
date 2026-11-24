@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.3 Quiz: Induktion und Regel von Lenz</title>
+<style>
+  :root{--petrol:#0B3B47;--petrol2:#0E7490;--lila:#7A2E8E;--orange:#E97132;--orange-hell:#FDEEE5;--grau:#F2F2F2;
+        --gelb:#FFD23F;--gelb-hell:#FFF6D6;--gruen:#2E8B57;--gruen-hell:#E6F4EC;--rot:#C0392B;--rot-hell:#FDE8E8;
+        --dunkel:#1F2F3D;--text2:#4b5963;--nord:#D9363E;--sued:#3F8A4E;--feld:#5DBB46;--ifeld:#7B45C8;--blau:#1565C0}
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html{background:var(--petrol)}
+  body{margin:0;background:var(--petrol);color:var(--dunkel);font-family:Calibri,Carlito,"Segoe UI",Roboto,Arial,sans-serif;
+       font-size:17px;line-height:1.42;padding-bottom:30px;-webkit-tap-highlight-color:transparent}
+  button{font:inherit;color:inherit;cursor:pointer}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--gelb);outline-offset:2px}
+
+  /* ---------- Kopf ---------- */
+  header{color:#fff;max-width:680px;margin:0 auto;padding:12px 14px 4px}
+  header small{opacity:.85;display:block;font-size:13px}
+  header h1{margin:2px 0 8px;font-size:21px;line-height:1.22}
+  .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
+            font-size:14px;font-weight:bold;text-decoration:none}
+  .teile{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 8px}
+  .teile button{border:0;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:bold;background:rgba(255,255,255,.14);color:#fff;min-height:36px}
+  .teile button.an{background:var(--gelb);color:#222}
+  .fort{display:flex;align-items:center;gap:10px;font-size:14px}
+  .balken{flex:1;height:10px;border-radius:6px;background:rgba(255,255,255,.18);overflow:hidden}
+  .balken i{display:block;height:100%;width:0;background:var(--gelb);border-radius:6px;transition:width .3s}
+  .fort .pkt{white-space:nowrap;opacity:.95}
+
+  main{max-width:680px;margin:0 auto;padding:8px 12px}
+  .karte{background:#fff;border-radius:16px;padding:14px 14px 16px;box-shadow:0 4px 14px rgba(0,0,0,.22);animation:rein .28s ease-out}
+  @keyframes rein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .kopfzeile{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .kopfzeile .nr{color:var(--lila);text-decoration:underline;text-underline-offset:3px;font-size:19px}
+  .tag{font-size:12.5px;font-weight:bold;border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .t-em{background:#E3EEFB;color:var(--blau)} .t-ind{background:#DFF1F5;color:var(--petrol2)}
+  .t-strom{background:#FCEBDD;color:#A4500F} .t-lenz{background:#F4E8F8;color:var(--lila)} .t-pole{background:#FBE5EC;color:#AD1457}
+  .aufgabe{background:var(--grau);border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:17px}
+  .aufgabe .klein,.klein{font-size:14.5px;color:var(--text2)}
+  h2.titel{margin:0 0 8px;font-size:21px;color:var(--petrol)}
+  p{margin:8px 0}
+
+  /* Merkkasten (wie auf dem AB: orange) */
+  .merke{border:2.5px solid var(--orange);background:var(--orange-hell);border-radius:14px;padding:10px 14px;margin:8px 0}
+  .merke h3{margin:0 0 6px;color:var(--orange);font-size:18px}
+  .merke ol{margin:4px 0;padding-left:22px} .merke li{margin:3px 0}
+  .merke .regel{background:#fff;border-radius:10px;padding:8px 10px;margin:8px 0 4px;font-weight:bold}
+
+  /* Ursache-Wirkungs-Kette (immer 0. = Ursache) */
+  ol.kette{list-style:none;margin:8px 0 4px;padding:0}
+  ol.kette li{display:flex;gap:8px;align-items:flex-start;margin:0 0 6px;opacity:0;animation:kette .35s ease-out forwards}
+  ol.kette .n{flex:none;width:26px;height:26px;border-radius:50%;background:#dfe6ea;color:var(--dunkel);font-weight:bold;
+              display:inline-flex;align-items:center;justify-content:center;font-size:14.5px}
+  ol.kette li.u .n{background:var(--orange);color:#fff}
+  ol.kette li.w .n{background:var(--petrol2);color:#fff}
+  ol.kette .lab{font-weight:bold} ol.kette li.u .lab{color:#B4521A} ol.kette li.w .lab{color:var(--petrol2)}
+  ol.kette li + li::before{content:"";}
+  @keyframes kette{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+  .pn{color:var(--nord);font-weight:bold} .ps{color:var(--sued);font-weight:bold}
+
+  /* Auswahl */
+  .mc{list-style:none;margin:8px 0;padding:0}
+  .mc li{margin:7px 0}
+  .mc button{width:100%;text-align:left;display:flex;gap:10px;align-items:flex-start;border:2px solid #d5dde3;background:#fff;
+    border-radius:12px;padding:10px 12px;font-size:16.5px;min-height:46px}
+  .mc .kx{flex:none;width:22px;height:22px;border:2px solid #9aa8b2;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px}
+  .mc.einzel .kx{border-radius:50%} .mc.mehr .kx{border-radius:5px}
+  .mc button.an{border-color:var(--petrol2);background:#eef7fa}
+  .mc button.an .kx{background:var(--petrol2);border-color:var(--petrol2);color:#fff}
+  .mc button.r{border-color:var(--gruen);background:var(--gruen-hell)} .mc button.r .kx{background:var(--gruen);border-color:var(--gruen);color:#fff}
+  .mc button.f{border-color:var(--rot);background:var(--rot-hell)} .mc button.f .kx{background:var(--rot);border-color:var(--rot);color:#fff}
+  .mc button.fehlt{border-style:dashed;border-color:var(--gruen)}
+  .mc button:disabled{cursor:default;color:inherit}
+  .mc .fb{font-size:14.5px;margin:3px 4px 0 34px;color:#444}
+
+  /* Knöpfe und Rückmeldung */
+  .qknopf{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .qknopf button{border:0;border-radius:10px;padding:10px 14px;font-size:15.5px;font-weight:bold;min-height:44px}
+  .qknopf .pr{background:var(--petrol2);color:#fff}
+  .qknopf .zeig,.qknopf .noch{background:#e1e6ea;color:var(--dunkel)}
+  .qknopf .zeig.warn{background:var(--gelb-hell);outline:2px solid #e0a93c}
+  .qknopf button:disabled{opacity:.35;cursor:default}
+  .rueck{margin-top:10px;border-radius:10px;padding:9px 12px;font-size:16px}
+  .rueck:empty{display:none}
+  .rueck.gut{background:var(--gruen-hell);border-left:5px solid var(--gruen)}
+  .rueck.falsch{background:var(--rot-hell);border-left:5px solid var(--rot)}
+  .rueck.fast{background:var(--gelb-hell);border-left:5px solid #e0a93c}
+  .rueck .warum{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(0,0,0,.15);color:#273540}
+
+  /* Lücken */
+  .speicher{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 10px;padding:9px;background:#fff;border:2px dashed #c7d1d8;border-radius:12px}
+  .speicher .ws{width:100%;font-size:13px;font-weight:bold;color:var(--text2);letter-spacing:.04em;text-transform:uppercase}
+  .speicher button{border:2px solid #b9c6cf;background:#fff;border-radius:999px;padding:6px 13px;font-size:16px;min-height:40px}
+  .speicher button.weg{visibility:hidden}
+  .lt p{margin:6px 0;line-height:2.25}
+  .luecke{display:inline-block;min-width:96px;min-height:34px;vertical-align:middle;border:0;border-bottom:2.5px solid #8a99a6;background:#f3f6f8;
+    border-radius:6px 6px 0 0;font-size:16.5px;padding:2px 8px;color:var(--blau);font-weight:bold;line-height:1.5}
+  .luecke.ziel{background:var(--gelb-hell);border-bottom-color:#e0a93c}
+  .luecke.r{background:var(--gruen-hell);border-bottom-color:var(--gruen);color:var(--gruen)}
+  .luecke.f{background:var(--rot-hell);border-bottom-color:var(--rot);color:var(--rot)}
+
+  /* Fehlertext */
+  .fehlertext{font-size:18px;line-height:2.1;background:#fff;border:2px solid #e1e6ea;border-radius:12px;padding:8px 12px}
+  .fehlertext .w{border-radius:6px;padding:2px 1px;cursor:pointer}
+  .fehlertext .w:hover{background:#f1f4f6}
+  .fehlertext .w.zu{background:var(--gelb-hell)}
+  .fehlertext .w.falschtipp{background:var(--rot-hell);transition:background .6s}
+  .fehlertext .w.gefunden{text-decoration:line-through;text-decoration-color:var(--rot);text-decoration-thickness:2.5px;color:#8b1e1e;cursor:default;background:none}
+  .fehlertext .neu{color:var(--gruen);font-weight:bold;margin-left:4px}
+  .ersatz{margin:8px 0;padding:8px 10px;background:var(--gelb-hell);border-radius:12px}
+  .ersatz .ws{font-size:14px;font-weight:bold;color:#6b5400;margin-bottom:4px}
+  .ersatz button{border:2px solid #e0c46c;background:#fff;border-radius:999px;padding:6px 13px;font-size:16px;min-height:40px;margin:3px 6px 3px 0}
+  .ersatz button.f{border-color:var(--rot);background:var(--rot-hell);text-decoration:line-through}
+
+  /* Ordnen */
+  .ord-ziel{list-style:none;margin:6px 0;padding:0;min-height:52px;border:2px dashed #c7d1d8;border-radius:12px;padding:6px}
+  .ord-ziel:empty::before{content:"Tippe unten die Sätze in der richtigen Reihenfolge an.";display:block;color:#8a97a0;font-size:14.5px;padding:8px}
+  .ord-ziel li,.ord-pool button{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;border:2px solid #d5dde3;background:#fff;border-radius:12px;padding:8px 10px;font-size:16px;margin:5px 0;min-height:44px}
+  .ord-ziel li{cursor:pointer}
+  .ord-ziel li .n{flex:none;width:26px;height:26px;border-radius:50%;background:#dfe6ea;font-weight:bold;display:inline-flex;align-items:center;justify-content:center;font-size:14.5px}
+  .ord-ziel li.r{border-color:var(--gruen);background:var(--gruen-hell)} .ord-ziel li.f{border-color:var(--rot);background:var(--rot-hell)}
+  .ord-pool{margin-top:8px}
+  .ord-pool .ws{font-size:13px;font-weight:bold;color:var(--text2);letter-spacing:.04em;text-transform:uppercase}
+
+  /* Tabelle / Zuordnen */
+  .zeile{border:2px solid #e1e6ea;border-radius:12px;padding:8px 10px;margin:7px 0}
+  .zeile .tx{margin-bottom:6px}
+  .zeile .spalten{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+  .zeile .sp{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;color:var(--text2)}
+  .seg{display:inline-flex;border:2px solid #d5dde3;border-radius:10px;overflow:hidden;background:#fff}
+  .seg button{border:0;background:#fff;padding:7px 12px;font-size:15.5px;min-height:40px;color:var(--dunkel)}
+  .seg button+button{border-left:2px solid #d5dde3}
+  .seg button.an{background:var(--petrol2);color:#fff;font-weight:bold}
+  .seg button.r{background:var(--gruen);color:#fff;font-weight:bold}
+  .seg button.f{background:var(--rot);color:#fff;font-weight:bold}
+  .seg button.soll{box-shadow:inset 0 0 0 3px var(--gruen)}
+  .zeile.r{border-color:var(--gruen)} .zeile.f{border-color:var(--rot)}
+
+  /* Szenen (Pole eintragen) */
+  .szene{background:#fbfcfd;border:2px solid #e1e6ea;border-radius:12px;padding:4px;margin:6px 0}
+  .szene svg{display:block;width:100%;height:auto;max-height:340px;user-select:none;-webkit-user-select:none}
+  .szene .box{cursor:pointer}
+  .szene .box rect{fill:#fff;stroke:#7b8a95;stroke-width:2;stroke-dasharray:4 3}
+  .szene .box.N rect{fill:var(--nord);stroke:var(--nord);stroke-dasharray:none}
+  .szene .box.S rect{fill:var(--sued);stroke:var(--sued);stroke-dasharray:none}
+  .szene .box.r rect{stroke:var(--gruen);stroke-width:4;stroke-dasharray:none}
+  .szene .box.f rect{stroke:#111;stroke-width:4;stroke-dasharray:3 2}
+  .szene .box text{font-weight:bold;font-size:17px;fill:#fff;pointer-events:none}
+  .szene .box .frag{fill:#7b8a95;font-size:15px}
+  .tipphinweis{font-size:14px;color:var(--text2);margin:2px 2px 6px}
+  .f2{margin-top:8px} .f2 .seg button{font-size:16px}
+
+  /* Erkunden (Mini-Simulationen) */
+  .sim{background:#fbfcfd;border:2px solid #e1e6ea;border-radius:12px;padding:6px;margin:8px 0}
+  .sim svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+  .sim .regler{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:6px 2px}
+  .sim .knopf{border:0;border-radius:10px;padding:8px 13px;font-size:15px;font-weight:bold;background:var(--orange);color:#fff;min-height:42px}
+  .sim .knopf.grau{background:#e1e6ea;color:var(--dunkel)}
+  .sim .knopf:disabled{opacity:.35;cursor:default}
+  .sim input[type=range]{flex:1;min-width:160px;accent-color:var(--orange);height:32px}
+  .status{background:var(--grau);border-radius:10px;padding:8px 11px;font-size:15.5px;min-height:3.2em;margin-top:6px}
+  .messer{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:center;font-size:14px;margin:6px 2px}
+  .messer .rohr{position:relative;height:14px;border-radius:7px;background:#e1e6ea;overflow:hidden}
+  .messer .rohr i{position:absolute;top:0;bottom:0;left:0;width:0;background:var(--feld);border-radius:7px}
+  .messer .rohr.mitte::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:#7b8a95}
+  .messer .rohr.mitte i{border-radius:0}
+  .auftrag{background:#EEF6F8;border:1.5px solid #9cc9d4;border-radius:12px;padding:8px 12px;margin:6px 0 4px;font-size:16px}
+  .groß{display:inline-block;margin-top:6px;font-weight:bold;color:var(--petrol2)}
+  .frage-nach{margin-top:14px;border-top:2px solid #eef1f3;padding-top:10px}
+
+  /* Navigation unten */
+  .nav{display:flex;justify-content:space-between;gap:10px;max-width:680px;margin:10px auto 0;padding:0 12px}
+  .nav button{border:0;border-radius:12px;padding:10px 18px;font-size:16.5px;font-weight:bold;min-height:48px;background:rgba(255,255,255,.18);color:#fff}
+  .nav button.vor{background:#fff;color:var(--petrol)}
+  .nav button.vor.jetzt{background:var(--gelb);color:#222;box-shadow:0 0 0 4px rgba(255,210,63,.35)}
+  .nav button:disabled{opacity:.3;cursor:default}
+
+  /* Start und Ende */
+  .fahrplan{list-style:none;padding:0;margin:10px 0}
+  .fahrplan li{display:flex;gap:10px;align-items:flex-start;margin:9px 0}
+  .fahrplan .tag{flex:none;min-width:78px;text-align:center}
+  .los{display:block;width:100%;border:0;border-radius:999px;min-height:52px;font-size:18px;font-weight:bold;color:#fff;margin-top:10px;
+       background:linear-gradient(135deg,#8E3BA6,#5B3FC4)}
+  .los.zweit{background:#e1e6ea;color:var(--dunkel)}
+  table.erg{border-collapse:collapse;width:100%;font-size:15.5px;margin:6px 0}
+  table.erg td{padding:5px 6px;border-bottom:1px solid #e5e9ec}
+  table.erg td:last-child{text-align:right;font-weight:bold;white-space:nowrap}
+  .sterne{font-size:30px;letter-spacing:4px;text-align:center;margin:4px 0}
+  .springe{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .springe button{border:2px solid #d5dde3;background:#fff;border-radius:999px;padding:5px 12px;font-size:14.5px;min-height:38px}
+
+  @media (prefers-reduced-motion:reduce){ .karte,ol.kette li{animation:none;opacity:1} .balken i{transition:none} }
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 10c · 2.3 Regel von Lenz · Quiz zum Üben</small>
+  <h1>Quiz: Induktion und Regel von Lenz</h1>
+  <div class="teile" id="teile"></div>
+  <div class="fort"><div class="balken"><i id="balken"></i></div><span class="pkt" id="zaehler"></span></div>
+</header>
+<main><section class="karte" id="karte"></section></main>
+<div class="nav"><button type="button" id="zur">‹ Zurück</button><button type="button" class="vor" id="vor">Weiter ›</button></div>
+
+<script>
+/* =====================================================================
+   Physik 10c · 2.3 Quiz: Induktion und Regel von Lenz (Stand 24.11.2026)
+   Ziel: Grundlagen „reinhämmern“ – dieselbe Information in vielen Formen:
+     Elektromagnetismus (Strom → Magnetfeld) · Induktion (Magnetfeldstärke ändert sich → Induktionsspannung)
+     · Induktionsstrom (nur bei geschlossenem Stromkreis) · Regel von Lenz (Pole am Ring/an der Spule)
+   Erklärungen immer als Kette: 0. Ursache → … → Wirkung (Benennungsregel der Einheit).
+   Richtung nur über Pole (Abstoßung/Anziehung), ohne Linke-Hand-Regel (Zweig II).
+   Kartentypen: merke · einzel · mehr · luecke · fehler · ordnen · tabelle · pole · erkunden
+   ===================================================================== */
+
+/* ---------- kleine Helfer ---------- */
+var NP = '<span class="pn">Nordpol</span>', SP = '<span class="ps">Südpol</span>';
+function polName(p) { return p === 'N' ? NP : SP; }
+function anders(p) { return p === 'N' ? 'S' : 'N'; }
+/* Kette: Schritte ab 0; Schritt 0 = Ursache, Schritt w = Wirkung */
+function K(schritte, w) {
+  if (w === undefined) w = 2;
+  return '<ol class="kette">' + schritte.map(function (s, i) {
+    var cls = i === 0 ? 'u' : (i === w ? 'w' : ''), lab = i === 0 ? '<span class="lab">Ursache:</span> ' : (i === w ? '<span class="lab">Wirkung:</span> ' : '');
+    return '<li class="' + cls + '" style="animation-delay:' + (i * 0.32).toFixed(2) + 's"><span class="n">' + i + '</span><span>' + lab + s + '</span></li>';
+  }).join('') + '</ol>';
+}
+var TAGS = { em: ['t-em', 'Strom → Magnetfeld'], ind: ['t-ind', 'Induktion'], strom: ['t-strom', 'Induktionsstrom'],
+             lenz: ['t-lenz', 'Regel von Lenz'], pole: ['t-pole', 'Pole bestimmen'] };
+var TEILE = { A: 'A · Grundlagen', B: 'B · Regel von Lenz', C: 'C · Endspurt' };
+
+/* Ketten, die oft vorkommen */
+var K_EM = function (ursache, folge) {
+  return K([ursache || 'Es fließt ein elektrischer Strom.', 'Um den Leiter entsteht ein Magnetfeld.'].concat(folge ? [folge] : []), 1) +
+    'Diese Erscheinung heißt <b>Elektromagnetismus</b>: Immer wenn ein Strom fließt, entsteht ein Magnetfeld.';
+};
+var K_RING = function (pol, hin) {
+  return K([ 'Der Magnet wird mit dem ' + polName(pol) + (hin ? ' zum Ring hinbewegt.' : ' vom Ring weggezogen.'),
+    'Die Magnetfeldstärke im Ring ändert sich.',
+    'Es entsteht eine Induktionsspannung; im geschlossenen Ring fließt ein Induktionsstrom.',
+    'Der Induktionsstrom erzeugt ein eigenes Magnetfeld – der Ring wird zum Magneten.',
+    hin ? 'Der Ring zeigt dem Magneten einen ' + polName(pol) + ': gleichnamige Pole → <b>Abstoßung</b>.'
+        : 'Der Ring zeigt dem Magneten einen ' + polName(anders(pol)) + ': ungleichnamige Pole → <b>Anziehung</b>.' ]);
+};
+var MERKE_INDUKTION = '<div class="merke"><h3>Merke: Elektromagnetische Induktion</h3><ol>' +
+  '<li>Ändert sich die <b>Magnetfeldstärke</b> in einer Spule (z. B. durch Bewegung eines Magneten oder der Spule), …</li>' +
+  '<li>… entsteht zwischen den Enden der Spule eine <b>Induktionsspannung</b> U<sub>ind</sub>.</li>' +
+  '<li>Ist der Stromkreis <b>geschlossen</b>, fließt ein <b>Induktionsstrom</b> I<sub>ind</sub>.</li></ol></div>';
+var MERKE_EM = '<div class="merke"><h3>Merke: Elektromagnetismus</h3>Immer wenn ein elektrischer <b>Strom</b> fließt, entsteht um den Leiter ein <b>Magnetfeld</b>. ' +
+  'Eine Spule, durch die Strom fließt, wird so zum Magneten (Elektromagnet).</div>';
+
+/* =====================================================================
+   DIE KARTEN
+   ===================================================================== */
+var KARTEN = [
+  { typ: 'start' },
+
+  /* ---------------- Teil A: Grundlagen ---------------- */
+  { teil: 'A', tag: 'em', typ: 'einzel', frage: 'Durch ein Kabel fließt ein elektrischer Strom. Was entsteht dabei <b>immer</b> um das Kabel herum?',
+    a: [ { t: 'Ein Magnetfeld.', ok: true },
+         { t: 'Nichts – dafür braucht man einen Magneten.', fb: 'Auch ohne Magnet: Jeder Strom erzeugt ein Magnetfeld.' },
+         { t: 'Eine Induktionsspannung.', fb: 'Dafür müsste sich die Magnetfeldstärke in einer Spule ändern. Hier fließt einfach ein Strom.' },
+         { t: 'Nur Wärme.', fb: 'Warm wird das Kabel auch – aber es entsteht immer auch ein Magnetfeld.' } ],
+    warum: K_EM('Durch das Kabel fließt ein Strom.') },
+
+  { teil: 'A', tag: 'ind', typ: 'einzel', frage: 'Wann entsteht in einer Spule eine <b>Induktionsspannung</b>?',
+    a: [ { t: 'Wenn sich die Magnetfeldstärke in der Spule ändert.', ok: true },
+         { t: 'Wenn ein Magnet ruhig in der Spule liegt.', fb: 'Dann bleibt die Magnetfeldstärke gleich – keine Spannung.' },
+         { t: 'Immer wenn ein Magnet in der Nähe ist.', fb: 'In der Nähe reicht nicht. Es muss sich etwas <b>ändern</b>.' },
+         { t: 'Wenn durch die Spule ein Strom fließt.', fb: 'Das ist Elektromagnetismus: Strom → Magnetfeld. Bei der Induktion ändert sich die Magnetfeldstärke → Spannung.' } ],
+    warum: K(['Ein Magnet wird in die Spule hinein- oder herausbewegt.', 'Die Magnetfeldstärke in der Spule ändert sich.',
+              'Zwischen den Enden der Spule entsteht eine Induktionsspannung.']) },
+
+  { teil: 'A', typ: 'merke', titel: 'Die beiden Grundlagen', html: MERKE_EM + MERKE_INDUKTION +
+    '<p class="klein">Unterschied: Beim <b>Elektromagnetismus</b> macht ein Strom ein Magnetfeld. Bei der <b>Induktion</b> macht ein Magnetfeld, das sich ändert, eine Spannung.</p>' },
+
+  { teil: 'A', tag: 'em', typ: 'luecke', frage: 'Ergänze den Merksatz zum Elektromagnetismus mit dem Wortspeicher.',
+    saetze: [ 'Immer wenn ein elektrischer [Strom] fließt, entsteht um den Leiter ein [Magnetfeld].', 'Diese Erscheinung heißt [Elektromagnetismus].' ],
+    extra: [ 'elektromagnetische Induktion', 'Induktionsspannung', 'Magneten' ],
+    warum: K_EM() },
+
+  { teil: 'A', tag: 'em', typ: 'erkunden', sim: 'strom', titel: 'Ausprobieren: Strom macht ein Magnetfeld',
+    auftrag: 'Schließe den Schalter (Knopf oder auf den Schalter tippen) und beobachte die Kompassnadel. Öffne ihn wieder. Pole dann die Batterie um.',
+    q: { typ: 'einzel', frage: 'Warum dreht sich die Kompassnadel, sobald der Schalter geschlossen ist?',
+      a: [ { t: 'Es fließt ein Strom – und jeder Strom erzeugt ein Magnetfeld. Das lenkt die Nadel ab.', ok: true },
+           { t: 'Die Batterie ist ein Magnet.', fb: 'Die Nadel bewegt sich nur, wenn Strom fließt – die Batterie liegt auch bei offenem Schalter da.' },
+           { t: 'Die Spule zieht die Nadel immer an, weil sie aus Metall ist.', fb: 'Bei offenem Schalter passiert gar nichts. Also liegt es am Strom.' },
+           { t: 'In der Spule entsteht eine Induktionsspannung.', fb: 'Hier fließt ein Strom und erzeugt ein Magnetfeld – das ist Elektromagnetismus.' } ],
+      warum: K_EM('Du schließt den Schalter – es fließt ein Strom durch die Spule.', 'Die Spule wird zum Magneten und lenkt die Kompassnadel ab.') } },
+
+  { teil: 'A', tag: 'ind', typ: 'luecke', frage: 'Ergänze die drei Sätze zur elektromagnetischen Induktion.',
+    saetze: [ '1. Ändert sich die [Magnetfeldstärke] in einer Spule, …', '2. … entsteht zwischen den Enden der Spule eine [Induktionsspannung].',
+              '3. Ist der Stromkreis [geschlossen], fließt ein [Induktionsstrom].' ],
+    extra: [ 'offen', 'Elektromagnetismus', 'Batterie' ], warum: MERKE_INDUKTION },
+
+  { teil: 'A', tag: 'ind', typ: 'tabelle', frage: 'Entsteht in der Spule eine <b>Induktionsspannung</b>? Entscheide für jede Situation.',
+    spalten: [ { titel: '', opt: [ 'ja', 'nein' ] } ],
+    zeilen: [ { t: 'Ein Magnet wird in die Spule hineingeschoben.', a: [0] },
+              { t: 'Ein Magnet liegt ruhig in der Spule.', a: [1] },
+              { t: 'Ein Magnet wird aus der Spule herausgezogen.', a: [0] },
+              { t: 'Die Spule wird über einen ruhenden Magneten geschoben.', a: [0] },
+              { t: 'Ein Magnet liegt ruhig neben der Spule.', a: [1] },
+              { t: 'Ein Holzstab wird in die Spule geschoben.', a: [1] } ],
+    warum: 'Es kommt nicht darauf an, <i>ob</i> ein Magnet da ist, sondern ob sich die Magnetfeldstärke in der Spule <b>ändert</b>.' +
+      K(['Magnet oder Spule bewegen sich.', 'Die Magnetfeldstärke in der Spule ändert sich.', 'Es entsteht eine Induktionsspannung.']) +
+      'Ruht alles, bleibt die Magnetfeldstärke gleich → keine Spannung. Holz ist nicht magnetisch → nichts ändert sich.' },
+
+  { teil: 'A', tag: 'em', typ: 'einzel', frage: 'Auf dem Schrottplatz hebt ein Kran mit einem großen <b>Elektromagneten</b> ein Autowrack hoch. Der Kranführer schaltet den Strom aus – das Auto fällt herunter. Warum?',
+    a: [ { t: 'Ohne Strom gibt es kein Magnetfeld mehr – der Elektromagnet hält nicht mehr.', ok: true },
+         { t: 'Das Auto ist plötzlich zu schwer geworden.', fb: 'Die Masse ändert sich nicht. Entscheidend ist der Strom.' },
+         { t: 'Der Magnet ist kaputt gegangen.', fb: 'Er funktioniert sofort wieder, sobald Strom fließt.' },
+         { t: 'Das Auto ist aus Kupfer.', fb: 'Dann hätte der Kran es gar nicht erst hochheben können.' } ],
+    warum: K(['Der Kranführer schaltet den Strom aus.', 'Es fließt kein Strom mehr – also gibt es kein Magnetfeld mehr.', 'Das Auto wird nicht mehr festgehalten und fällt.'], 1) +
+      'Ein Elektromagnet ist nur ein Magnet, <b>solange ein Strom fließt</b>.' },
+
+  { teil: 'A', tag: 'strom', typ: 'mehr', frage: 'Bei einer Spule sind die beiden Enden <b>nicht</b> miteinander verbunden – der Stromkreis ist offen. Tom schiebt einen Magneten schnell hinein. Was stimmt?',
+    a: [ { t: 'Es entsteht eine Induktionsspannung.', ok: true },
+         { t: 'Es fließt kein Induktionsstrom.', ok: true },
+         { t: 'Es fließt ein Induktionsstrom.', fb: 'Dafür muss der Stromkreis geschlossen sein.' },
+         { t: 'Es entsteht keine Induktionsspannung.', fb: 'Doch: Die Magnetfeldstärke ändert sich – die Spannung entsteht auch bei offenem Stromkreis.' } ],
+    warum: K(['Tom schiebt den Magneten hinein.', 'Die Magnetfeldstärke in der Spule ändert sich.',
+              'Es entsteht eine Induktionsspannung. Aber: Der Stromkreis ist <b>offen</b> → <b>kein</b> Induktionsstrom.']) },
+
+  { teil: 'A', tag: 'ind', typ: 'erkunden', sim: 'spule', titel: 'Ausprobieren: Magnet und Spule',
+    auftrag: 'Schiebe den Magneten mit dem Finger oder dem Regler in die Spule und wieder heraus. Probiere: schnell, langsam, Magnet still in der Spule – und mit offenem Schalter.',
+    q: { typ: 'mehr', frage: 'Was hast du beobachtet?',
+      a: [ { t: 'Liegt der Magnet still in der Spule, ist die Induktionsspannung 0.', ok: true },
+           { t: 'Ist der Schalter offen, leuchtet die Lampe nicht – obwohl eine Induktionsspannung entsteht.', ok: true },
+           { t: 'Je schneller ich den Magneten bewege, desto größer ist die Induktionsspannung.', ok: true },
+           { t: 'Die Spannung ist am größten, wenn der Magnet ruhig in der Mitte der Spule liegt.', fb: 'Dort ist die Magnetfeldstärke zwar groß – aber sie ändert sich nicht. Also: 0.' } ],
+      warum: K(['Der Magnet wird bewegt.', 'Die Magnetfeldstärke in der Spule ändert sich – je schneller, desto größer die Spannung.',
+                'Es entsteht eine Induktionsspannung; nur bei geschlossenem Schalter fließt ein Induktionsstrom und die Lampe leuchtet.']) } },
+
+  { teil: 'A', tag: 'ind', typ: 'fehler', frage: 'In diesem Merksatz steckt <b>ein</b> Fehler. Tippe auf die falsche Stelle und verbessere sie.',
+    text: 'Immer wenn die Magnetfeldstärke in einer Spule [[gleich bleibt|sich ändert|groß ist|klein ist]], entsteht eine Induktionsspannung.',
+    warum: 'Richtig: Immer wenn sich die Magnetfeldstärke in einer Spule <b>ändert</b>, entsteht eine Induktionsspannung. Eine große, aber gleichbleibende Magnetfeldstärke reicht nicht.' },
+
+  { teil: 'A', tag: 'em', typ: 'tabelle', frage: '<b>Elektromagnetismus</b> oder <b>Induktion</b>? Ordne zu.<br><span class="klein">Elektromagnetismus: Strom → Magnetfeld. Induktion: Magnetfeldstärke ändert sich → Spannung.</span>',
+    spalten: [ { titel: '', opt: [ 'Elektromagnetismus', 'Induktion' ] } ],
+    zeilen: [ { t: 'Ein Elektromagnet hält die Brandschutztür offen, solange Strom fließt.', a: [0] },
+              { t: 'Im Fahrraddynamo dreht sich ein Magnet vor einer Spule – das Licht leuchtet.', a: [1] },
+              { t: 'Eine Kompassnadel neben einem Kabel dreht sich, sobald das Licht eingeschaltet wird.', a: [0] },
+              { t: 'Beim Schütteln der Taschenlampe gleitet ein Magnet durch eine Spule.', a: [1] },
+              { t: 'Im Lautsprecher fließt Strom durch eine Spule – sie wird zum Magneten und bewegt die Membran.', a: [0] },
+              { t: 'Unter der E-Gitarren-Saite sitzt eine Spule; die schwingende Saite ändert die Magnetfeldstärke darin.', a: [1] } ],
+    warum: '<b>Strom fließt → Magnetfeld entsteht</b>: Elektromagnetismus (Brandschutztür, Kompass, Lautsprecher).<br>' +
+      '<b>Magnetfeldstärke ändert sich → Spannung entsteht</b>: Induktion (Dynamo, Schütteltaschenlampe, E-Gitarre).' },
+
+  { teil: 'A', tag: 'strom', typ: 'fehler', frage: 'Auch hier steckt <b>ein</b> Fehler. Finde und verbessere ihn.',
+    text: 'Ist der Stromkreis [[offen|geschlossen|unterbrochen|ausgeschaltet]], fließt ein Induktionsstrom.',
+    warum: 'Richtig: Ist der Stromkreis <b>geschlossen</b>, fließt ein Induktionsstrom. Bei offenem Stromkreis gibt es nur die Induktionsspannung.' },
+
+  { teil: 'A', tag: 'ind', typ: 'ordnen', frage: 'Die Schütteltaschenlampe: Bringe die Erklärung in die richtige Reihenfolge. Fang mit der <b>Ursache</b> an.',
+    items: [ 'Beim Schütteln bewegt sich der Magnet durch die Spule.', 'Die Magnetfeldstärke in der Spule ändert sich.',
+             'Zwischen den Enden der Spule entsteht eine Induktionsspannung.', 'Der Stromkreis ist geschlossen – es fließt ein Induktionsstrom.',
+             'Der Kondensator wird geladen, die Lampe leuchtet.' ], w: 2 },
+
+  { teil: 'A', tag: 'em', typ: 'fehler', frage: 'Finde den Fehler und verbessere ihn.',
+    text: 'Um einen Draht entsteht nur dann ein Magnetfeld, wenn [[er aus Eisen ist|ein Strom durch ihn fließt|er sehr lang ist|er aus Kupfer ist]].',
+    warum: K_EM('Durch den Draht fließt ein Strom.') + ' Ob Kupfer, Aluminium oder Eisen ist egal.' },
+
+  { teil: 'A', tag: 'ind', typ: 'einzel', frage: 'Lena hält mit dem Fahrrad an der Ampel. Ihr Licht hängt nur am Dynamo (kein Akku) und geht aus. Warum?',
+    a: [ { t: 'Das Rad dreht sich nicht mehr – die Magnetfeldstärke in der Spule ändert sich nicht mehr.', ok: true },
+         { t: 'Der Magnet im Dynamo hat seine Kraft verloren.', fb: 'Der Magnet ist noch genauso stark – er bewegt sich nur nicht mehr.' },
+         { t: 'Der Stromkreis ist jetzt offen.', fb: 'An den Kabeln hat Lena nichts verändert.' },
+         { t: 'Die Spule ist zu warm geworden.', fb: 'Damit hat es nichts zu tun.' } ],
+    warum: K(['Das Rad – und damit der Magnet – steht still.', 'Die Magnetfeldstärke in der Spule bleibt gleich.',
+              'Es entsteht <b>keine</b> Induktionsspannung → kein Induktionsstrom → kein Licht.']) },
+
+  { teil: 'A', tag: 'ind', typ: 'einzel', frage: 'Beim kabellosen Laden liegt das Handy ruhig auf der Ladeschale. Nichts bewegt sich – trotzdem wird der Akku geladen. Wie geht das?',
+    a: [ { t: 'In der Ladeschale fließt ein Strom, der sich ständig ändert. Dadurch ändert sich auch die Magnetfeldstärke in der Spule im Handy.', ok: true },
+         { t: 'Die Ladeschale ist ein Dauermagnet.', fb: 'Ein ruhender Dauermagnet ändert nichts – keine Induktion.' },
+         { t: 'Der Strom fließt durch die Luft ins Handy.', fb: 'Strom braucht einen Leiter. Übertragen wird ein Magnetfeld, das sich ändert.' },
+         { t: 'Das Handy lädt sich durch die Wärme der Ladeschale.', fb: 'Wärme lädt keinen Akku.' } ],
+    warum: K(['In der Spule der Ladeschale fließt ein Strom, dessen Stärke sich ständig ändert.',
+              'Jeder Strom erzeugt ein Magnetfeld (Elektromagnetismus) → die Magnetfeldstärke in der Spule im Handy ändert sich ständig.',
+              'Im Handy entsteht eine Induktionsspannung; der Stromkreis ist geschlossen → ein Induktionsstrom lädt den Akku.']) },
+
+  /* ---------------- Teil B: Regel von Lenz ---------------- */
+  { teil: 'B', typ: 'merke', titel: 'Die Regel von Lenz', html:
+    '<div class="merke"><h3>Merke: Magnet und Ring</h3>' +
+    K(['Der Magnet bewegt sich.', 'Die Magnetfeldstärke im Ring ändert sich.', 'Es entsteht eine Induktionsspannung; im geschlossenen Ring fließt ein Induktionsstrom.',
+       'Der Induktionsstrom erzeugt ein eigenes Magnetfeld – der Ring wird zum Magneten.',
+       '<b>Hineinbewegen:</b> gleichnamige Pole → Abstoßung. <b>Herausziehen:</b> ungleichnamige Pole → Anziehung.']) +
+    '<div class="regel">Regel von Lenz: Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld der Ursache seiner Entstehung entgegenwirkt.</div>' +
+    '<span class="klein">Kurz gesagt: Der Ring „wehrt sich“ immer gegen die Bewegung des Magneten.</span></div>' +
+    '<p class="klein">Schritt 3 ist wieder Elektromagnetismus: Der Induktionsstrom ist ein Strom – und jeder Strom erzeugt ein Magnetfeld.</p>' },
+
+  { teil: 'B', tag: 'em', typ: 'einzel', frage: 'Aluminium ist <b>nicht</b> magnetisch. Warum wird ein geschlossener Aluminiumring trotzdem zum Magneten, wenn man einen Magneten hineinschiebt?',
+    a: [ { t: 'Im Ring fließt ein Induktionsstrom – und jeder Strom erzeugt ein Magnetfeld.', ok: true },
+         { t: 'Der Magnet magnetisiert das Aluminium wie ein Eisenstück.', fb: 'Dann müsste der Ring auch an einem ruhenden Magneten hängen bleiben.' },
+         { t: 'Die Induktionsspannung allein macht das Magnetfeld.', fb: 'Beim offenen Ring gibt es auch eine Spannung – aber kein Magnetfeld. Erst der <b>Strom</b> erzeugt eins.' },
+         { t: 'Die Reibung an der Luft macht den Ring magnetisch.', fb: 'Damit hat es nichts zu tun.' } ],
+    warum: K(['Der Magnet wird in den Ring hineingeschoben.', 'Die Magnetfeldstärke im Ring ändert sich.',
+              'Es entsteht eine Induktionsspannung; im geschlossenen Ring fließt ein Induktionsstrom.',
+              'Der Induktionsstrom erzeugt ein eigenes Magnetfeld (Elektromagnetismus!) – der Ring wird zum Magneten.']) },
+
+  { teil: 'B', tag: 'lenz', typ: 'luecke', frage: 'Ergänze die Regel von Lenz mit dem Wortspeicher.',
+    saetze: [ 'Der [Induktionsstrom] ist immer so gerichtet, dass sein [Magnetfeld] der [Ursache] seiner Entstehung [entgegenwirkt].' ],
+    extra: [ 'unterstützt', 'Wirkung', 'Spannung' ],
+    warum: 'Beim Ring heißt das: Der Ring „wehrt sich“ gegen die Bewegung des Magneten. Hinbewegen → er stößt ab. Wegziehen → er hält fest (zieht an).' },
+
+  { teil: 'B', tag: 'lenz', typ: 'ordnen', frage: 'Der Nordpol eines Magneten wird zum geschlossenen Ring hinbewegt. Bringe die Erklärung in die richtige Reihenfolge – beginne mit der <b>Ursache</b>.',
+    items: [ 'Der Magnet wird mit dem Nordpol zum Ring hinbewegt.', 'Die Magnetfeldstärke im Ring ändert sich.',
+             'Es entsteht eine Induktionsspannung; im geschlossenen Ring fließt ein Induktionsstrom.',
+             'Der Induktionsstrom erzeugt ein eigenes Magnetfeld – der Ring wird zum Magneten.',
+             'Der Ring zeigt dem Magneten einen Nordpol: gleichnamige Pole → Abstoßung.' ], w: 2 },
+
+  { teil: 'B', tag: 'lenz', typ: 'erkunden', sim: 'ring', titel: 'Ausprobieren: Magnet und Ring',
+    auftrag: 'Wähle, welcher Pol zum Ring zeigt, und bewege den Magneten hinein und wieder heraus. Achte auf die Pole am Ring. Probiere auch den offenen Ring.' +
+      '<br><a class="groß" href="sim-2-3-ring.html">Zur großen Simulation mit Feldlinien ›</a>',
+    q: { typ: 'einzel', frage: 'Was passiert beim <b>offenen</b> Ring?',
+      a: [ { t: 'Er bleibt ruhig hängen: Es entsteht nur eine Induktionsspannung, aber kein Strom – also kein Magnetfeld.', ok: true },
+           { t: 'Er wird noch stärker abgestoßen.', fb: 'Ohne Strom hat der offene Ring gar keine Pole.' },
+           { t: 'Er wird immer angezogen.', fb: 'Aluminium wird von einem Magneten nicht angezogen – nur ein Ring mit Induktionsstrom reagiert.' },
+           { t: 'Er reagiert genauso wie der geschlossene Ring.', fb: 'Schau nochmal hin: Der offene Ring bewegt sich nicht.' } ],
+      warum: K(['Der Magnet wird bewegt.', 'Die Magnetfeldstärke im Ring ändert sich.',
+                'Es entsteht eine Induktionsspannung – aber der Ring ist offen: <b>kein</b> Induktionsstrom.',
+                'Kein Strom → kein Magnetfeld → keine Pole → keine Kraft. Der Ring bleibt ruhig.']) } },
+
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der <b>Nordpol</b> eines Magneten wird schnell zum geschlossenen Ring <b>hin</b>bewegt. Trage die Pole des Rings ein.',
+    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'N', bew: 'hin' } },
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Jetzt zeigt der <b>Südpol</b> zum Ring. Der Magnet wird zum Ring <b>hin</b>bewegt.',
+    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'S', bew: 'hin' } },
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet steckt mit dem <b>Nordpol</b> im Ring und wird schnell <b>herausgezogen</b>.',
+    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'N', bew: 'weg' } },
+
+  { teil: 'B', tag: 'lenz', typ: 'fehler', frage: 'In dieser Regel von Lenz steckt <b>ein</b> Fehler. Finde und verbessere ihn.',
+    text: 'Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld [[die Ursache seiner Entstehung unterstützt|der Ursache seiner Entstehung entgegenwirkt|die Ursache seiner Entstehung verstärkt|der Wirkung seiner Entstehung entgegenwirkt]].',
+    warum: 'Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld der <b>Ursache</b> seiner Entstehung <b>entgegenwirkt</b>. Die Ursache ist hier die Bewegung des Magneten – sie wird gebremst.' },
+
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Diesmal steht der Magnet <b>rechts</b>. Er zeigt mit dem <b>Südpol</b> zum Ring und wird zum Ring <b>hin</b>bewegt.',
+    s: { lage: 'h', obj: 'ring', mag: 'R', pol: 'S', bew: 'hin' } },
+
+  { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Der Magnet steckt im Ring und wird <b>nicht</b> bewegt. Was passiert mit dem Ring?',
+    a: [ { t: 'Nichts – die Magnetfeldstärke im Ring ändert sich nicht, also fließt kein Strom.', ok: true },
+         { t: 'Er wird abgestoßen, weil gleichnamige Pole gegenüberliegen.', fb: 'Ohne Induktionsstrom hat der Ring gar keine Pole.' },
+         { t: 'Er wird angezogen, weil der Magnet so nah ist.', fb: 'Aluminium wird von einem ruhenden Magneten nicht angezogen.' } ],
+    warum: K(['Der Magnet ruht.', 'Die Magnetfeldstärke im Ring bleibt gleich.', '<b>Keine</b> Induktionsspannung → kein Induktionsstrom → kein Magnetfeld → keine Kraft.']) },
+
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet rechts zeigt mit dem <b>Nordpol</b> zum Ring und wird <b>weg</b>gezogen.',
+    s: { lage: 'h', obj: 'ring', mag: 'R', pol: 'N', bew: 'weg' } },
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der <b>Südpol</b> steckt im Ring und wird schnell <b>herausgezogen</b>.',
+    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'S', bew: 'weg' } },
+
+  { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Tom bewegt einen Magneten. Der geschlossene Ring wird <b>angezogen</b> – er folgt dem Magneten. Was hat Tom gemacht?',
+    a: [ { t: 'Er hat den Magneten vom Ring weggezogen.', ok: true },
+         { t: 'Er hat den Magneten zum Ring hinbewegt.', fb: 'Dann würde der Ring abgestoßen.' },
+         { t: 'Er hat den Magneten ruhig gehalten.', fb: 'Ohne Bewegung: kein Strom → keine Kraft.' } ],
+    warum: 'Regel von Lenz: Der Ring „wehrt sich“ gegen die Bewegung. Wird der Magnet weggezogen, will der Ring ihn festhalten → ungleichnamige Pole → <b>Anziehung</b>.' },
+
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Ein Magnet wird mit dem <b>Nordpol</b> nach unten von oben auf einen waagrecht hängenden Ring <b>zu</b>bewegt. Trage die Pole an der Ober- und Unterseite des Rings ein.',
+    s: { lage: 'v', obj: 'ring', mag: 'O', pol: 'N', bew: 'hin' } },
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet liegt <b>unter</b> dem Ring, sein <b>Südpol</b> zeigt nach oben. Er wird nach unten <b>weg</b>gezogen.',
+    s: { lage: 'v', obj: 'ring', mag: 'U', pol: 'S', bew: 'weg' } },
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet hängt <b>über</b> dem Ring, <b>Südpol</b> unten. Er wird nach oben <b>weg</b>gezogen.',
+    s: { lage: 'v', obj: 'ring', mag: 'O', pol: 'S', bew: 'weg' } },
+
+  { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Ein Magnet zeigt mit dem <b>Südpol</b> zum Ring. Auf der Seite zum Magneten entsteht am Ring ein <b>Nordpol</b>. Was macht der Magnet gerade?',
+    a: [ { t: 'Er wird weggezogen – der Ring wird angezogen.', ok: true },
+         { t: 'Er wird hinbewegt – der Ring wird abgestoßen.', fb: 'Beim Hinbewegen zeigt der Ring einen <b>gleichnamigen</b> Pol – hier also einen Südpol.' },
+         { t: 'Er ruht.', fb: 'Dann hätte der Ring gar keine Pole.' } ],
+    warum: 'Südpol und Nordpol sind <b>ungleichnamig</b> → Anziehung. Angezogen wird der Ring nur, wenn der Magnet <b>weggezogen</b> wird – der Ring will ihn festhalten.' },
+
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Ein Magnet wird mit dem <b>Nordpol</b> in eine Spule geschoben. An die Spule ist eine Lampe angeschlossen – der Stromkreis ist geschlossen. Trage die Pole an den Enden der Spule ein.',
+    s: { lage: 'h', obj: 'spule', mag: 'L', pol: 'N', bew: 'hin', extra: 'lampe' } },
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet steckt mit dem <b>Südpol</b> rechts in der Spule (mit Lampe) und wird <b>herausgezogen</b>.',
+    s: { lage: 'h', obj: 'spule', mag: 'R', pol: 'S', bew: 'weg', extra: 'lampe' } },
+
+  { teil: 'B', tag: 'strom', typ: 'einzel', frage: 'Diesmal ist im Stromkreis der Spule ein Schalter, und er ist <b>offen</b>. Der Magnet wird hineingeschoben. Welche Pole entstehen an der Spule?',
+    a: [ { t: 'Keine – es fließt kein Induktionsstrom, also entsteht kein Magnetfeld.', ok: true },
+         { t: 'Dieselben wie bei geschlossenem Schalter.', fb: 'Die Spule wird nur durch den Induktions<b>strom</b> zum Magneten.' },
+         { t: 'Genau andersherum als bei geschlossenem Schalter.', fb: 'Ohne Strom gibt es gar keine Pole.' } ],
+    warum: K(['Der Magnet wird hineingeschoben.', 'Die Magnetfeldstärke in der Spule ändert sich.',
+              'Es entsteht eine Induktionsspannung – aber der Stromkreis ist offen: <b>kein</b> Induktionsstrom.',
+              'Kein Strom → kein eigenes Magnetfeld → keine Pole.']) },
+
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Eine Spule, deren Enden verbunden sind, steht auf einer Waage. Ein Magnet wird mit dem <b>Südpol</b> von oben in die Spule <b>hinein</b>geschoben, ohne sie zu berühren. Trage die Pole ein und entscheide, was die Waage anzeigt.',
+    s: { lage: 'v', obj: 'spule', mag: 'O', pol: 'S', bew: 'hin', extra: 'waage' } },
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Gleicher Aufbau: Der Magnet steckt mit dem <b>Nordpol</b> in der Spule und wird schnell nach oben <b>herausgezogen</b>.',
+    s: { lage: 'v', obj: 'spule', mag: 'O', pol: 'N', bew: 'weg', extra: 'waage' } },
+
+  { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Ein Magnet fällt durch ein senkrechtes Kupferrohr – viel langsamer als ein gleich großes Eisenstück. Warum?',
+    a: [ { t: 'Das Rohr ist wie viele Ringe übereinander: In den Ringen fließen Induktionsströme, und ihre Magnetfelder bremsen den Magneten.', ok: true },
+         { t: 'Kupfer ist magnetisch und hält den Magneten fest.', fb: 'Kupfer ist nicht magnetisch – der Magnet bleibt nicht am Rohr haften.' },
+         { t: 'Die Luft im Rohr bremst den Magneten.', fb: 'Dann müsste das Eisenstück genauso langsam fallen.' },
+         { t: 'Der Magnet ist schwerer als das Eisenstück.', fb: 'Schwerere Körper fallen nicht langsamer.' } ],
+    warum: K(['Der Magnet fällt durch das Rohr.', 'Die Magnetfeldstärke in den Ringen des Rohrs ändert sich.',
+              'In jedem Ring entsteht eine Induktionsspannung; es fließen Induktionsströme.',
+              'Ihre Magnetfelder wirken der Bewegung entgegen (Regel von Lenz) → der Magnet wird gebremst.']) },
+
+  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Diesmal <b>ruht</b> der Magnet. Der geschlossene Ring wird schnell auf den <b>Nordpol</b> zugeschoben.',
+    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'N', bew: 'hin', wer: 'ring' } },
+
+  /* ---------------- Teil C: Endspurt ---------------- */
+  { teil: 'C', tag: 'em', typ: 'einzel', frage: 'Lisa hält einen Kompass unter ein Lampenkabel. Erst als sie das Licht einschaltet, dreht sich die Nadel. Warum?',
+    a: [ { t: 'Durch das Kabel fließt jetzt ein Strom – und um jeden Strom entsteht ein Magnetfeld.', ok: true },
+         { t: 'Die Lampe wird warm und das lenkt die Nadel ab.', fb: 'Wärme lenkt eine Kompassnadel nicht ab.' },
+         { t: 'Im Kabel entsteht eine Induktionsspannung.', fb: 'Hier wird nichts induziert: Strom → Magnetfeld ist Elektromagnetismus.' },
+         { t: 'Das Licht der Lampe dreht die Nadel.', fb: 'Licht lenkt eine Kompassnadel nicht ab.' } ],
+    warum: K_EM('Lisa schaltet das Licht ein – durch das Kabel fließt ein Strom.', 'Das Magnetfeld lenkt die Kompassnadel ab.') },
+
+  { teil: 'C', tag: 'strom', typ: 'tabelle', frage: 'Entsteht eine Induktions<b>spannung</b>? Fließt ein Induktions<b>strom</b>? Entscheide beides.',
+    spalten: [ { titel: 'U<sub>ind</sub>?', opt: [ 'ja', 'nein' ] }, { titel: 'I<sub>ind</sub>?', opt: [ 'ja', 'nein' ] } ],
+    zeilen: [ { t: 'Ein Magnet wird in eine Spule mit angeschlossener Lampe geschoben.', a: [0, 0] },
+              { t: 'Ein Magnet wird in eine Spule geschoben, deren Enden offen sind.', a: [0, 1] },
+              { t: 'Ein Magnet liegt still in einer Spule mit Lampe.', a: [1, 1] },
+              { t: 'Ein geschlossener Ring wird über einen ruhenden Magneten gezogen.', a: [0, 0] },
+              { t: 'Aus einem offenen Ring wird ein Magnet herausgezogen.', a: [0, 1] } ],
+    warum: '<b>Spannung</b> entsteht, sobald sich die Magnetfeldstärke ändert – egal ob der Stromkreis offen oder geschlossen ist.<br>' +
+      '<b>Strom</b> fließt nur, wenn zusätzlich der Stromkreis <b>geschlossen</b> ist.' },
+
+  { teil: 'C', tag: 'lenz', typ: 'fehler', frage: 'In diesem Satz stecken <b>zwei</b> Fehler. Finde und verbessere beide.',
+    text: 'Wird der Magnet aus dem Ring herausgezogen, zeigt der Ring ihm einen [[gleichnamigen|ungleichnamigen|keinen|doppelten]] Pol und wird [[abgestoßen|angezogen|nicht bewegt|gedreht]].',
+    warum: K_RING('N', false) },
+
+  { teil: 'C', tag: 'ind', typ: 'luecke', frage: 'Alles auf einen Blick: Ergänze mit dem Wortspeicher.',
+    saetze: [ 'Immer wenn ein elektrischer [Strom] fließt, entsteht um den Leiter ein [Magnetfeld].',
+              'Ändert sich die [Magnetfeldstärke] in einer Spule, entsteht eine [Induktionsspannung].',
+              'Ist der Stromkreis [geschlossen], fließt ein [Induktionsstrom].',
+              'Dessen Magnetfeld wirkt der [Ursache] seiner Entstehung entgegen.' ],
+    extra: [ 'offen', 'Wirkung' ],
+    warum: MERKE_EM + MERKE_INDUKTION },
+
+  { teil: 'C', tag: 'em', typ: 'tabelle', frage: 'Noch einmal: <b>Elektromagnetismus</b> oder <b>Induktion</b>?',
+    spalten: [ { titel: '', opt: [ 'Elektromagnetismus', 'Induktion' ] } ],
+    zeilen: [ { t: 'Türöffner: Strom fließt durch eine Spule, die einen Riegel anzieht.', a: [0] },
+              { t: 'Windrad: Der Rotor dreht Magnete an Spulen vorbei.', a: [1] },
+              { t: 'Klingel: Ein Elektromagnet zieht den Klöppel an, sobald Strom fließt.', a: [0] },
+              { t: 'Kabelloses Laden: In der Spule im Handy ändert sich die Magnetfeldstärke.', a: [1] },
+              { t: 'Ein Kompass neben einem Kabel, durch das Strom fließt, schlägt aus.', a: [0] } ],
+    warum: '<b>Strom → Magnetfeld</b> (Elektromagnetismus): Türöffner, Klingel, Kompass am Kabel.<br><b>Magnetfeldstärke ändert sich → Spannung</b> (Induktion): Windrad, kabelloses Laden.' },
+
+  { teil: 'C', tag: 'pole', typ: 'pole', frage: 'Letzte Pol-Aufgabe: Der Magnet liegt <b>unter</b> dem Ring, <b>Nordpol</b> oben, und wird nach oben zum Ring <b>hin</b>bewegt.',
+    s: { lage: 'v', obj: 'ring', mag: 'U', pol: 'N', bew: 'hin' } },
+
+  { teil: 'C', tag: 'lenz', typ: 'einzel', frage: 'Welcher Satz beschreibt die Regel von Lenz beim Ring am besten?',
+    a: [ { t: 'Der Ring „wehrt sich“ immer gegen die Bewegung: Beim Hinbewegen stößt er ab, beim Wegziehen zieht er an.', ok: true },
+         { t: 'Der Ring wird immer abgestoßen.', fb: 'Nur beim Hinbewegen.' },
+         { t: 'Der Ring wird immer angezogen.', fb: 'Nur beim Wegziehen.' },
+         { t: 'Der Ring folgt immer dem Magneten.', fb: 'Nur beim Wegziehen – beim Hinbewegen weicht er aus.' } ],
+    warum: '<div class="merke" style="margin:4px 0"><b>Regel von Lenz:</b> Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld der Ursache seiner Entstehung entgegenwirkt.</div>' },
+
+  { typ: 'ende' }
+];
+
+/* =====================================================================
+   TECHNIK
+   ===================================================================== */
+var SPEICHER = 'p10-quiz-2-3-induktion';
+var STAND = {};   /* Kartenindex → true/false (erster Versuch) */
+var I = 0;
+try { var g = JSON.parse(localStorage.getItem(SPEICHER) || 'null'); if (g) { STAND = g.stand || {}; I = Math.min(g.i || 0, KARTEN.length - 1); } } catch (e) {}
+function speichern() { try { localStorage.setItem(SPEICHER, JSON.stringify({ i: I, stand: STAND })); } catch (e) {} }
+
+var FRAGEN = []; KARTEN.forEach(function (k, i) { if (k.tag) { k.nr = FRAGEN.length + 1; FRAGEN.push(i); } });
+var $karte = document.getElementById('karte'), $vor = document.getElementById('vor'), $zur = document.getElementById('zur');
+
+function mischen(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+
+function merke(ok) {
+  if (!(I in STAND)) STAND[I] = ok;
+  if (ok) $vor.classList.add('jetzt');
+  speichern(); kopf();
+}
+function knoepfe(box) {
+  var w = el('div', 'qknopf', '<button class="pr" type="button">Überprüfen</button><button class="zeig" type="button">Lösung anzeigen</button><button class="noch" type="button" hidden>Nochmal</button>');
+  var rk = el('div', 'rueck'); box.appendChild(w); box.appendChild(rk);
+  var k = { pr: w.children[0], zeig: w.children[1], noch: w.children[2], rk: rk, warn: false };
+  k.zeig.addEventListener('click', function () {
+    if (!k.warn) { k.warn = true; k.zeig.classList.add('warn'); k.zeig.textContent = 'Erst selbst probieren! (nochmal tippen)'; return; }
+    k.warn = false; k.zeig.classList.remove('warn'); k.zeig.textContent = 'Lösung anzeigen';
+    if (!(I in STAND)) STAND[I] = false; speichern(); kopf();
+    if (k.loesung) k.loesung();
+  });
+  return k;
+}
+function rueck(k, art, text, warum) {
+  k.rk.className = 'rueck ' + art;
+  k.rk.innerHTML = text + (warum ? '<div class="warum">' + warum + '</div>' : '');
+}
+var LOB = ['Richtig!', 'Genau!', 'Super, stimmt!', 'Sehr gut!', 'Richtig – weiter so!'];
+function lob() { return '<b>' + LOB[Math.floor(Math.random() * LOB.length)] + '</b>'; }
+function fertig(k) { k.pr.disabled = true; k.zeig.disabled = true; k.noch.hidden = false; }
+
+/* ---------- Auswahl (einzel/mehr) ---------- */
+function baueMC(box, q) {
+  box.appendChild(el('div', 'aufgabe', q.frage + (q.typ === 'mehr' ? ' <span class="klein">(mehrere Antworten richtig)</span>' : '')));
+  var ul = el('ul', 'mc ' + q.typ); box.appendChild(ul);
+  var k = knoepfe(box), liste = [];
+  function aufbauen() {
+    ul.innerHTML = ''; liste = []; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    mischen(q.a).forEach(function (a) {
+      var li = el('li'), b = el('button', '', '<span class="kx"></span><span>' + a.t + '</span>'); b.type = 'button';
+      b.onclick = function () { if (q.typ === 'einzel') liste.forEach(function (x) { if (x.b !== b) x.b.classList.remove('an'); }); b.classList.toggle('an'); };
+      li.appendChild(b); ul.appendChild(li); liste.push({ b: b, a: a, li: li });
+    });
+    k.pr.disabled = false; k.zeig.disabled = false; k.noch.hidden = true;
+  }
+  function zeigen(alleAuf) {
+    var alle = true;
+    liste.forEach(function (x) {
+      var an = x.b.classList.contains('an'); x.b.disabled = true;
+      if (an) { x.b.classList.add(x.a.ok ? 'r' : 'f'); x.b.querySelector('.kx').textContent = x.a.ok ? '✓' : '✗';
+        if (!x.a.ok) alle = false;
+        if (x.a.fb && !x.a.ok) x.li.appendChild(el('div', 'fb', x.a.fb)); }
+      else if (x.a.ok) { alle = false; x.b.classList.add(alleAuf ? 'r' : 'fehlt'); if (alleAuf) x.b.querySelector('.kx').textContent = '✓'; }
+    });
+    return alle;
+  }
+  k.pr.onclick = function () {
+    if (!liste.some(function (x) { return x.b.classList.contains('an'); })) { rueck(k, 'fast', 'Wähle zuerst eine Antwort aus.'); return; }
+    var ok = zeigen(false); merke(ok); fertig(k);
+    if (ok) rueck(k, 'gut', lob(), q.warum);
+    else rueck(k, 'falsch', q.typ === 'mehr' ? '<b>Noch nicht ganz.</b> Gestrichelt umrandet: Das hättest du auch ankreuzen müssen.' : '<b>Leider falsch.</b> Lies die Erklärung und probier es dann nochmal.', q.warum);
+  };
+  k.loesung = function () { liste.forEach(function (x) { x.b.classList.toggle('an', !!x.a.ok); }); zeigen(true); fertig(k); rueck(k, 'fast', '<b>So ist es richtig:</b>', q.warum); };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+/* ---------- Lückentext mit Wortspeicher ---------- */
+function baueLuecke(box, q) {
+  box.appendChild(el('div', 'aufgabe', q.frage + ' <span class="klein">Tippe auf ein Wort – es kommt in die gelbe Lücke. Tippe auf eine Lücke, um sie zu leeren.</span>'));
+  var lt = el('div', 'lt'), ws = el('div', 'speicher'); box.appendChild(lt); box.appendChild(ws);
+  var k = knoepfe(box), luecken = [], woerter = [], ziel = null;
+  function aufbauen() {
+    lt.innerHTML = ''; ws.innerHTML = '<div class="ws">Wortspeicher</div>'; luecken = []; woerter = []; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    q.saetze.forEach(function (s) {
+      var p = el('p'); var teile = s.split(/\[([^\]]+)\]/);
+      teile.forEach(function (t, i) {
+        if (i % 2 === 0) { p.appendChild(document.createTextNode(t)); return; }
+        var b = el('button', 'luecke'); b.type = 'button'; b.dataset.soll = t; b.wort = null;
+        b.onclick = function () { if (b.wort) { b.wort.classList.remove('weg'); b.wort = null; b.textContent = ''; } setZiel(b); };
+        p.appendChild(b); luecken.push(b);
+      });
+      lt.appendChild(p);
+    });
+    var alle = luecken.map(function (b) { return b.dataset.soll; }).concat(q.extra || []);
+    mischen(alle).forEach(function (w) {
+      var b = el('button', '', w); b.type = 'button';
+      b.onclick = function () {
+        var z = ziel && !ziel.wort ? ziel : luecken.filter(function (x) { return !x.wort; })[0];
+        if (!z) return; z.wort = b; z.textContent = w; b.classList.add('weg');
+        setZiel(luecken.filter(function (x) { return !x.wort; })[0] || null);
+      };
+      ws.appendChild(b); woerter.push(b);
+    });
+    setZiel(luecken[0]); k.pr.disabled = false; k.zeig.disabled = false; k.noch.hidden = true;
+  }
+  function setZiel(b) { ziel = b; luecken.forEach(function (x) { x.classList.toggle('ziel', x === b); }); }
+  function sperren() { luecken.concat(woerter).forEach(function (x) { x.disabled = true; }); setZiel(null); }
+  k.pr.onclick = function () {
+    if (luecken.some(function (b) { return !b.wort; })) { rueck(k, 'fast', 'Füll zuerst alle Lücken aus.'); return; }
+    var ok = true;
+    luecken.forEach(function (b) { var r = b.textContent === b.dataset.soll; b.classList.add(r ? 'r' : 'f'); if (!r) ok = false; });
+    sperren(); merke(ok); fertig(k);
+    if (ok) rueck(k, 'gut', lob(), q.warum);
+    else rueck(k, 'falsch', '<b>Noch nicht ganz.</b> Die roten Lücken stimmen nicht. Richtig wäre: ' +
+      luecken.filter(function (b) { return b.classList.contains('f'); }).map(function (b) { return '<b>' + b.dataset.soll + '</b>'; }).join(', ') + '.', q.warum);
+  };
+  k.loesung = function () { luecken.forEach(function (b) { b.textContent = b.dataset.soll; b.classList.remove('f'); b.classList.add('r'); }); sperren(); fertig(k); rueck(k, 'fast', '<b>So ist es richtig.</b>', q.warum); };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+/* ---------- Fehlertext: falsche Stelle antippen, dann verbessern ---------- */
+function baueFehler(box, q) {
+  box.appendChild(el('div', 'aufgabe', q.frage));
+  var ft = el('div', 'fehlertext'), ers = el('div', 'ersatz'); ers.hidden = true;
+  box.appendChild(ft); box.appendChild(ers);
+  var k = knoepfe(box), fehler = [], erster = true, offen = 0;
+  function aufbauen() {
+    ft.innerHTML = ''; fehler = []; ers.hidden = true; erster = true; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    q.text.split(/\[\[([^\]]+)\]\]/).forEach(function (t, i) {
+      if (i % 2 === 1) {
+        var o = t.split('|'), s = el('span', 'w', o[0]);
+        var f = { span: s, falsch: o[0], richtig: o[1], alt: o.slice(1), fertig: false }; fehler.push(f);
+        s.onclick = function () { if (!f.fertig) waehle(f); };
+        ft.appendChild(s); return;
+      }
+      t.split(/(\s+)/).forEach(function (w) {
+        if (!w) return;
+        if (/^\s+$/.test(w) || /^[,.;:–]$/.test(w)) { ft.appendChild(document.createTextNode(w)); return; }
+        var s = el('span', 'w', w);
+        s.onclick = function () {
+          erster = false; s.classList.add('falschtipp'); setTimeout(function () { s.classList.remove('falschtipp'); }, 700);
+          rueck(k, 'fast', '„' + w.replace(/[,.]$/, '') + '“ stimmt. Such weiter!');
+        };
+        ft.appendChild(s);
+      });
+    });
+    offen = fehler.length; k.pr.disabled = true; k.pr.hidden = true; k.zeig.disabled = false; k.noch.hidden = true;
+  }
+  function waehle(f) {
+    fehler.forEach(function (x) { x.span.classList.toggle('zu', x === f); });
+    k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    ers.hidden = false; ers.innerHTML = '<div class="ws">Gefunden! Was muss statt „' + f.falsch + '“ dort stehen?</div>';
+    mischen(f.alt).forEach(function (a) {
+      var b = el('button', '', a); b.type = 'button';
+      b.onclick = function () {
+        if (a !== f.richtig) { b.classList.add('f'); erster = false; return; }
+        f.fertig = true; f.span.classList.remove('zu'); f.span.classList.add('gefunden');
+        f.span.insertAdjacentHTML('afterend', '<span class="neu">' + f.richtig + '</span>');
+        ers.hidden = true; offen--;
+        if (offen === 0) { merke(erster); fertig(k); rueck(k, erster ? 'gut' : 'gut', erster ? lob() + ' Fehler gefunden und verbessert.' : '<b>Geschafft!</b> Jetzt stimmt der Satz.', q.warum); }
+        else rueck(k, 'fast', 'Gut! Es steckt noch ein Fehler im Satz.');
+      };
+      ers.appendChild(b);
+    });
+  }
+  k.loesung = function () {
+    fehler.forEach(function (f) { if (!f.fertig) { f.fertig = true; f.span.classList.remove('zu'); f.span.classList.add('gefunden');
+      f.span.insertAdjacentHTML('afterend', '<span class="neu">' + f.richtig + '</span>'); } });
+    ers.hidden = true; offen = 0; fertig(k); rueck(k, 'fast', '<b>So ist es richtig:</b>', q.warum);
+  };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+/* ---------- Ordnen ---------- */
+function baueOrdnen(box, q) {
+  box.appendChild(el('div', 'aufgabe', q.frage));
+  var ziel = el('ol', 'ord-ziel'), pool = el('div', 'ord-pool');
+  box.appendChild(ziel); box.appendChild(pool);
+  var k = knoepfe(box), gelegt = [];
+  function aufbauen() {
+    gelegt = []; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    var m; do { m = mischen(q.items.map(function (t, i) { return i; })); } while (m.every(function (x, i) { return x === i; }));
+    pool.innerHTML = '<div class="ws">Sätze zum Antippen</div>';
+    m.forEach(function (i) {
+      var b = el('button', '', '<span>' + q.items[i] + '</span>'); b.type = 'button'; b.dataset.i = i;
+      b.onclick = function () { b.hidden = true; gelegt.push(i); zeichne(); };
+      pool.appendChild(b);
+    });
+    zeichne(); k.pr.disabled = false; k.zeig.disabled = false; k.noch.hidden = true;
+  }
+  function zeichne(markieren) {
+    ziel.innerHTML = ''; pool.querySelector('.ws').hidden = gelegt.length === q.items.length;
+    gelegt.forEach(function (i, pos) {
+      var li = el('li', markieren ? (i === pos ? 'r' : 'f') : '', '<span class="n">' + pos + '</span><span>' + q.items[i] + '</span>');
+      if (!markieren) li.onclick = function () { gelegt.splice(pos, 1); pool.querySelector('[data-i="' + i + '"]').hidden = false; zeichne(); };
+      ziel.appendChild(li);
+    });
+  }
+  var warum = function () { return 'Die richtige Reihenfolge:' + K(q.items, q.w); };
+  k.pr.onclick = function () {
+    if (gelegt.length < q.items.length) { rueck(k, 'fast', 'Lege zuerst alle Sätze in die Reihenfolge.'); return; }
+    var ok = gelegt.every(function (x, i) { return x === i; });
+    zeichne(true); merke(ok); fertig(k);
+    if (ok) rueck(k, 'gut', lob() + ' Erst die Ursache, dann die Wirkung.', warum());
+    else rueck(k, 'falsch', '<b>Noch nicht ganz.</b> Die roten Sätze stehen an der falschen Stelle. Tipp: Starte immer mit dem, was zuerst passiert (0. Ursache).', warum());
+  };
+  k.loesung = function () { gelegt = q.items.map(function (t, i) { return i; }); pool.querySelectorAll('button').forEach(function (b) { b.hidden = true; }); zeichne(true); fertig(k); rueck(k, 'fast', '<b>So ist es richtig.</b>', warum()); };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+/* ---------- Tabelle / Zuordnen ---------- */
+function baueTabelle(box, q) {
+  box.appendChild(el('div', 'aufgabe', q.frage));
+  var liste = el('div'); box.appendChild(liste);
+  var k = knoepfe(box), zeilen = [];
+  function aufbauen() {
+    liste.innerHTML = ''; zeilen = []; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    q.zeilen.forEach(function (z) {
+      var d = el('div', 'zeile', '<div class="tx">' + z.t + '</div>'), sp = el('div', 'spalten'); d.appendChild(sp);
+      var wahl = [];
+      q.spalten.forEach(function (s, si) {
+        var g = el('span', 'sp', s.titel ? s.titel + ' ' : ''), seg = el('span', 'seg'); g.appendChild(seg); sp.appendChild(g);
+        wahl[si] = { v: null, knoepfe: [] };
+        s.opt.forEach(function (o, oi) {
+          var b = el('button', '', o); b.type = 'button';
+          b.onclick = function () { wahl[si].v = oi; wahl[si].knoepfe.forEach(function (x, xi) { x.classList.toggle('an', xi === oi); }); };
+          seg.appendChild(b); wahl[si].knoepfe.push(b);
+        });
+      });
+      liste.appendChild(d); zeilen.push({ d: d, z: z, wahl: wahl });
+    });
+    k.pr.disabled = false; k.zeig.disabled = false; k.noch.hidden = true;
+  }
+  function markiere(loesen) {
+    var alle = true;
+    zeilen.forEach(function (r) {
+      var zok = true;
+      r.wahl.forEach(function (w, si) {
+        if (loesen) w.v = r.z.a[si];
+        w.knoepfe.forEach(function (b, oi) { b.disabled = true; b.classList.remove('an');
+          if (oi === w.v) b.classList.add(oi === r.z.a[si] ? 'r' : 'f');
+          else if (oi === r.z.a[si]) b.classList.add('soll'); });
+        if (w.v !== r.z.a[si]) zok = false;
+      });
+      r.d.classList.add(zok ? 'r' : 'f'); if (!zok) alle = false;
+    });
+    return alle;
+  }
+  k.pr.onclick = function () {
+    if (zeilen.some(function (r) { return r.wahl.some(function (w) { return w.v === null; }); })) { rueck(k, 'fast', 'Entscheide zuerst bei jeder Zeile.'); return; }
+    var ok = markiere(false); merke(ok); fertig(k);
+    var n = zeilen.filter(function (r) { return r.d.classList.contains('f'); }).length;
+    if (ok) rueck(k, 'gut', lob(), q.warum);
+    else rueck(k, 'falsch', '<b>' + n + (n === 1 ? ' Zeile stimmt' : ' Zeilen stimmen') + ' noch nicht.</b> Grün umrandet ist die richtige Antwort.', q.warum);
+  };
+  k.loesung = function () { markiere(true); fertig(k); rueck(k, 'fast', '<b>So ist es richtig.</b>', q.warum); };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+/* =====================================================================
+   SZENEN: Magnet + Ring/Spule, Pole antippen
+   s = { lage:'h'|'v', obj:'ring'|'spule', mag:'L'|'R'|'O'|'U', pol:'N'|'S' (Pol zum Objekt), bew:'hin'|'weg', wer:'magnet'|'ring', extra:'lampe'|'waage' }
+   Kästchen 0 = links bzw. oben, Kästchen 1 = rechts bzw. unten
+   ===================================================================== */
+function loesungSzene(s) {
+  var nah = (s.mag === 'L' || s.mag === 'O') ? 0 : 1, hin = s.bew === 'hin';
+  var p = []; p[nah] = hin ? s.pol : anders(s.pol); p[1 - nah] = anders(p[nah]);
+  return { pole: p, kraft: hin ? 'ab' : 'an', nah: nah };
+}
+function pfeil(x1, y1, x2, y2, farbe) {
+  var a = Math.atan2(y2 - y1, x2 - x1), l = 11;
+  var p1 = [x2 - l * Math.cos(a - 0.5), y2 - l * Math.sin(a - 0.5)], p2 = [x2 - l * Math.cos(a + 0.5), y2 - l * Math.sin(a + 0.5)];
+  return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + (x2 - 6 * Math.cos(a)) + '" y2="' + (y2 - 6 * Math.sin(a)) + '" stroke="' + farbe + '" stroke-width="5" stroke-linecap="round"/>' +
+    '<path d="M' + x2 + ',' + y2 + ' L' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1) + ' L' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1) + 'z" fill="' + farbe + '"/>';
+}
+function magnetSVG(x, y, w, h, polA, polB) {   /* polA = linke bzw. obere Hälfte */
+  var fa = polA === 'N' ? 'var(--nord)' : 'var(--sued)', fb = polB === 'N' ? 'var(--nord)' : 'var(--sued)', v = h > w;
+  var r = v ? [x, y, w, h / 2, x, y + h / 2, w, h / 2] : [x, y, w / 2, h, x + w / 2, y, w / 2, h];
+  return '<g><rect x="' + r[0] + '" y="' + r[1] + '" width="' + r[2] + '" height="' + r[3] + '" fill="' + fa + '"/>' +
+    '<rect x="' + r[4] + '" y="' + r[5] + '" width="' + r[6] + '" height="' + r[7] + '" fill="' + fb + '"/>' +
+    '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="1.5" rx="2"/>' +
+    '<text x="' + (r[0] + r[2] / 2) + '" y="' + (r[1] + r[3] / 2 + 6.5) + '" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">' + polA + '</text>' +
+    '<text x="' + (r[4] + r[6] / 2) + '" y="' + (r[5] + r[7] / 2 + 6.5) + '" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">' + polB + '</text></g>';
+}
+function boxSVG(i, x, y, wert) {
+  return '<g class="box' + (wert ? ' ' + wert : '') + '" data-box="' + i + '" tabindex="0" role="button" aria-label="Pol eintragen">' +
+    '<rect x="' + (x - 17) + '" y="' + (y - 17) + '" width="34" height="34" rx="6"/>' +
+    (wert ? '<text x="' + x + '" y="' + (y + 6) + '" text-anchor="middle">' + wert + '</text>' : '<text class="frag" x="' + x + '" y="' + (y + 5) + '" text-anchor="middle">?</text>') + '</g>';
+}
+function spuleH(cx, cy, w, h) {
+  var s = '<rect x="' + (cx - w / 2) + '" y="' + (cy - h / 2) + '" width="' + w + '" height="' + h + '" rx="6" fill="#F1D3AE" stroke="#B87333" stroke-width="2"/>';
+  for (var x = cx - w / 2 + 7; x < cx + w / 2 - 4; x += 8) s += '<line x1="' + x + '" y1="' + (cy - h / 2 + 1) + '" x2="' + (x + 5) + '" y2="' + (cy + h / 2 - 1) + '" stroke="#B87333" stroke-width="2"/>';
+  return s;
+}
+function spuleV(cx, cy, w, h) {
+  var s = '<rect x="' + (cx - w / 2) + '" y="' + (cy - h / 2) + '" width="' + w + '" height="' + h + '" rx="6" fill="#F1D3AE" stroke="#B87333" stroke-width="2"/>';
+  for (var y = cy - h / 2 + 7; y < cy + h / 2 - 4; y += 8) s += '<line x1="' + (cx - w / 2 + 1) + '" y1="' + y + '" x2="' + (cx + w / 2 - 1) + '" y2="' + (y + 5) + '" stroke="#B87333" stroke-width="2"/>';
+  return s;
+}
+function szeneSVG(s, werte) {
+  var o = '', P = '#E97132';
+  if (s.lage === 'h') {
+    var W = 360, H = s.extra === 'lampe' ? 215 : 190, ay = 100, links = s.mag === 'L';
+    var cx = links ? 250 : 110;
+    var nah = s.bew === 'weg' && (s.wer || 'magnet') === 'magnet' && s.obj === 'ring' ? 40 : 0;   /* beim Herausziehen steht der Magnet noch dicht am Objekt */
+    var mx = links ? 30 + nah : 230 - nah, mw = 104, mh = 34;
+    var polA = links ? anders(s.pol) : s.pol, polB = links ? s.pol : anders(s.pol);
+    o += magnetSVG(mx, ay - mh / 2, mw, mh, polA, polB);
+    var b0, b1;
+    if (s.obj === 'ring') {
+      o += '<line x1="' + (cx - 46) + '" y1="16" x2="' + (cx + 46) + '" y2="16" stroke="#8a949c" stroke-width="5" stroke-linecap="round"/>' +
+        '<line x1="' + (cx - 24) + '" y1="17" x2="' + (cx - 3) + '" y2="' + (ay - 42) + '" stroke="#555" stroke-width="1.4"/>' +
+        '<line x1="' + (cx + 24) + '" y1="17" x2="' + (cx + 3) + '" y2="' + (ay - 42) + '" stroke="#555" stroke-width="1.4"/>' +
+        '<ellipse cx="' + cx + '" cy="' + ay + '" rx="10" ry="43" fill="none" stroke="#8a949c" stroke-width="8"/>' +
+        '<ellipse cx="' + cx + '" cy="' + ay + '" rx="10" ry="43" fill="none" stroke="#d5dbe0" stroke-width="2"/>';
+      b0 = [cx - 40, ay]; b1 = [cx + 40, ay];
+    } else {
+      var sw = 104, sh = 52; o += spuleH(cx, ay, sw, sh);
+      b0 = [cx - sw / 2 - 22, ay]; b1 = [cx + sw / 2 + 22, ay];
+      if (s.extra === 'lampe') {
+        var ly = 182;
+        o += '<path d="M' + (cx - 40) + ',' + (ay + sh / 2) + ' V' + ly + ' H' + (cx - 13) + ' M' + (cx + 13) + ',' + ly + ' H' + (cx + 40) + ' V' + (ay + sh / 2) + '" fill="none" stroke="#333" stroke-width="2.2"/>' +
+          '<circle cx="' + cx + '" cy="' + ly + '" r="13" fill="#FFF6D6" stroke="#333" stroke-width="2.2"/>' +
+          '<path d="M' + (cx - 9) + ',' + (ly - 9) + ' L' + (cx + 9) + ',' + (ly + 9) + ' M' + (cx + 9) + ',' + (ly - 9) + ' L' + (cx - 9) + ',' + (ly + 9) + '" stroke="#333" stroke-width="2"/>';
+      }
+    }
+    /* Bewegungspfeil */
+    var hin = s.bew === 'hin', zumObj = links ? 1 : -1;
+    if ((s.wer || 'magnet') === 'magnet') {
+      var px = mx + mw / 2, d = (hin ? zumObj : -zumObj) * 34;
+      o += pfeil(px - d, 52, px + d, 52, P);
+    } else {
+      var d2 = -zumObj * 30;   /* Ring bewegt sich zum Magneten hin */
+      o += pfeil(cx - d2 + (links ? 0 : 0), 168, cx + d2, 168, P);
+    }
+    o += boxSVG(0, b0[0], b0[1], werte[0]) + boxSVG(1, b1[0], b1[1], werte[1]);
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' + o + '</svg>';
+  }
+  /* senkrecht */
+  var W2 = 360, H2 = s.extra === 'waage' ? 300 : 290, cx2 = 150, cy = s.extra === 'waage' ? 175 : 150, oben = s.mag === 'O';
+  var weg = s.bew === 'weg', mw2 = 32, mh2 = 92, my = oben ? (weg ? 38 : 14) : cy + (weg ? 20 : 46);
+  if (s.obj === 'spule') my = oben ? (weg ? 62 : 22) : cy + 70;
+  var pa = oben ? anders(s.pol) : s.pol, pb = oben ? s.pol : anders(s.pol);
+  var bo, bu;
+  if (s.obj === 'ring') {
+    o += '<line x1="104" y1="' + cy + '" x2="62" y2="40" stroke="#555" stroke-width="1.4"/><line x1="196" y1="' + cy + '" x2="238" y2="40" stroke="#555" stroke-width="1.4"/>' +
+      '<line x1="52" y1="38" x2="74" y2="38" stroke="#8a949c" stroke-width="5" stroke-linecap="round"/><line x1="226" y1="38" x2="248" y2="38" stroke="#8a949c" stroke-width="5" stroke-linecap="round"/>' +
+      '<ellipse cx="' + cx2 + '" cy="' + cy + '" rx="46" ry="11" fill="none" stroke="#8a949c" stroke-width="8"/>' +
+      '<ellipse cx="' + cx2 + '" cy="' + cy + '" rx="46" ry="11" fill="none" stroke="#d5dbe0" stroke-width="2"/>';
+    o += magnetSVG(cx2 - mw2 / 2, my, mw2, mh2, pa, pb);
+    bo = [282, cy - 32]; bu = [282, cy + 32];
+    o += '<path d="M265,' + (cy - 32) + ' L' + (cx2 + 30) + ',' + (cy - 9) + '" stroke="#9aa8b2" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>' +
+         '<path d="M265,' + (cy + 32) + ' L' + (cx2 + 30) + ',' + (cy + 9) + '" stroke="#9aa8b2" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>';
+  } else {
+    var sw2 = 60, sh2 = 104, top = cy - sh2 / 2;
+    o += spuleV(cx2, cy, sw2, sh2);
+    /* Verbindung der Spulenenden (kurzgeschlossen) */
+    o += '<path d="M' + (cx2 + sw2 / 2) + ',' + (top + 8) + ' C' + (cx2 + 70) + ',' + (top + 8) + ' ' + (cx2 + 70) + ',' + (top + sh2 - 8) + ' ' + (cx2 + sw2 / 2) + ',' + (top + sh2 - 8) + '" fill="none" stroke="#333" stroke-width="2.2"/>';
+    if (s.extra === 'waage') {
+      var wy = cy + sh2 / 2;
+      o += '<rect x="70" y="' + wy + '" width="160" height="12" rx="3" fill="#cfd6db" stroke="#7b8a95" stroke-width="1.5"/>' +
+        '<rect x="62" y="' + (wy + 12) + '" width="176" height="40" rx="7" fill="#e9edf0" stroke="#7b8a95" stroke-width="1.5"/>' +
+        '<rect x="168" y="' + (wy + 20) + '" width="58" height="24" rx="4" fill="#1F2F3D"/><text x="197" y="' + (wy + 38) + '" text-anchor="middle" font-size="15" fill="#9ff0b4" font-family="monospace">? g</text>';
+    }
+    o += magnetSVG(cx2 - mw2 / 2, my, mw2, mh2 - 10, pa, pb);
+    bo = [282, top + 10]; bu = [282, top + sh2 - 10];
+    o += '<path d="M265,' + (top + 10) + ' H' + (cx2 + 36) + '" stroke="#9aa8b2" stroke-width="1.5" stroke-dasharray="4 3"/>' +
+         '<path d="M265,' + (top + sh2 - 10) + ' H' + (cx2 + 36) + '" stroke="#9aa8b2" stroke-width="1.5" stroke-dasharray="4 3"/>';
+  }
+  o += '<text x="304" y="' + (bo[1] + 5) + '" font-size="14" fill="#55606a">oben</text><text x="304" y="' + (bu[1] + 5) + '" font-size="14" fill="#55606a">unten</text>';
+  var hin2 = s.bew === 'hin', mcy = my + mh2 / 2, zum = oben ? 1 : -1, dd = (hin2 ? zum : -zum) * 30;
+  o += pfeil(96, mcy - dd, 96, mcy + dd, '#E97132');
+  o += boxSVG(0, bo[0], bo[1], werte[0]) + boxSVG(1, bu[0], bu[1], werte[1]);
+  return '<svg viewBox="0 0 ' + W2 + ' ' + H2 + '" xmlns="http://www.w3.org/2000/svg">' + o + '</svg>';
+}
+function kraftOptionen(s) {
+  if (s.extra === 'waage') return { frage: 'Die Waage zeigt …', opt: [ { t: 'mehr an', k: 'ab' }, { t: 'weniger an', k: 'an' }, { t: 'dasselbe an', k: '0' } ] };
+  if (s.wer === 'ring') return { frage: 'Der Ring wird …', opt: [ { t: 'abgebremst', k: 'ab' }, { t: 'schneller', k: 'an' } ] };
+  if (s.obj === 'spule') return { frage: 'Magnet und Spule …', opt: [ { t: 'ziehen sich an', k: 'an' }, { t: 'stoßen sich ab', k: 'ab' } ] };
+  return { frage: 'Der Ring wird …', opt: [ { t: 'angezogen', k: 'an' }, { t: 'abgestoßen', k: 'ab' } ] };
+}
+function erklaerSzene(s) {
+  var L = loesungSzene(s), ring = s.obj === 'ring', hin = s.bew === 'hin', im = ring ? 'im Ring' : 'in der Spule';
+  var u;
+  if (s.wer === 'ring') u = 'Der Ring wird zum ' + polName(s.pol) + ' des Magneten hinbewegt.';
+  else if (ring) u = 'Der Magnet wird mit dem ' + polName(s.pol) + (hin ? ' zum Ring hinbewegt.' : ' vom Ring weggezogen.');
+  else u = 'Der Magnet wird mit dem ' + polName(s.pol) + (hin ? ' in die Spule hineingeschoben.' : ' aus der Spule herausgezogen.');
+  var t = K([u, 'Die Magnetfeldstärke ' + im + ' ändert sich.',
+    'Es entsteht eine Induktionsspannung; ' + (ring ? 'im geschlossenen Ring' : 'in der geschlossenen Spule') + ' fließt ein Induktionsstrom.',
+    'Der Induktionsstrom erzeugt ein eigenes Magnetfeld – ' + (ring ? 'der Ring' : 'die Spule') + ' wird zum Magneten.',
+    'Zum Magneten hin entsteht ein ' + polName(L.pole[L.nah]) + (hin ? ': gleichnamige Pole → <b>Abstoßung</b>.' : ': ungleichnamige Pole → <b>Anziehung</b>.') +
+      ' Auf der anderen Seite entsteht der andere Pol (' + polName(L.pole[1 - L.nah]) + ').' ]);
+  if (s.extra === 'waage') t += hin ? 'Die Abstoßung drückt die Spule nach unten auf die Waage → die Waage zeigt <b>mehr</b> an.'
+                                    : 'Die Anziehung zieht die Spule etwas nach oben → die Waage zeigt <b>weniger</b> an.';
+  if (s.wer === 'ring') t += 'Die Abstoßung wirkt gegen die Bewegung des Rings → er wird <b>abgebremst</b> (Regel von Lenz).';
+  return t;
+}
+function bauePole(box, q) {
+  var s = q.s, L = loesungSzene(s), ko = kraftOptionen(s);
+  box.appendChild(el('div', 'aufgabe', q.frage));
+  box.appendChild(el('div', 'tipphinweis', 'Tippe auf ein Kästchen: leer → N → S. <span style="color:#E97132;font-weight:bold">Orange Pfeil</span> = Bewegung.'));
+  var sz = el('div', 'szene'); box.appendChild(sz);
+  var f2 = el('div', 'f2', ko.frage + ' '), seg = el('span', 'seg'); f2.appendChild(seg); box.appendChild(f2);
+  var k = knoepfe(box), werte, kraft, aus;
+  function zeichne(mark) {
+    sz.innerHTML = szeneSVG(s, werte);
+    if (mark) sz.querySelectorAll('.box').forEach(function (g) { var i = +g.dataset.box; g.classList.add(werte[i] === L.pole[i] ? 'r' : 'f'); });
+    if (!aus) sz.querySelectorAll('.box').forEach(function (g) {
+      function tipp() { var i = +g.dataset.box; werte[i] = werte[i] === '' ? 'N' : (werte[i] === 'N' ? 'S' : ''); zeichne(); }
+      g.addEventListener('click', tipp);
+      g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tipp(); } });
+    });
+  }
+  function aufbauen() {
+    werte = ['', '']; kraft = null; aus = false; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    seg.innerHTML = '';
+    ko.opt.forEach(function (o) {
+      var b = el('button', '', o.t); b.type = 'button'; b.dataset.k = o.k;
+      b.onclick = function () { if (aus) return; kraft = o.k; seg.querySelectorAll('button').forEach(function (x) { x.classList.toggle('an', x === b); }); };
+      seg.appendChild(b);
+    });
+    zeichne(); k.pr.disabled = false; k.zeig.disabled = false; k.noch.hidden = true;
+  }
+  function markKraft(loesen) {
+    seg.querySelectorAll('button').forEach(function (b) { b.disabled = true; b.classList.remove('an');
+      if (loesen ? b.dataset.k === L.kraft : b.dataset.k === kraft) b.classList.add(b.dataset.k === L.kraft ? 'r' : 'f');
+      else if (b.dataset.k === L.kraft) b.classList.add('soll'); });
+  }
+  k.pr.onclick = function () {
+    if (!werte[0] || !werte[1]) { rueck(k, 'fast', 'Trage in <b>beide</b> Kästchen einen Pol ein.'); return; }
+    if (!kraft) { rueck(k, 'fast', 'Entscheide noch: ' + ko.frage); return; }
+    aus = true;
+    var nahOk = werte[L.nah] === L.pole[L.nah], fernOk = werte[1 - L.nah] === L.pole[1 - L.nah], kOk = kraft === L.kraft;
+    var ok = nahOk && fernOk && kOk;
+    zeichne(true); markKraft(false); merke(ok); fertig(k);
+    var tipps = [];
+    if (!nahOk) tipps.push(s.bew === 'hin' ? 'Schau auf die Seite zum Magneten: Beim <b>Hinbewegen</b> wehrt sich der Ring – dort entsteht ein <b>gleichnamiger</b> Pol (Abstoßung).'
+                                          : 'Schau auf die Seite zum Magneten: Beim <b>Wegziehen</b> will der Ring den Magneten festhalten – dort entsteht ein <b>ungleichnamiger</b> Pol (Anziehung).');
+    if (nahOk && !fernOk) tipps.push('Ein Ring (eine Spule) hat wie ein Stabmagnet immer <b>einen Nord- und einen Südpol</b> – auf der anderen Seite also den anderen Pol.');
+    if (!kOk) tipps.push('Gleichnamige Pole stoßen sich ab, ungleichnamige ziehen sich an.');
+    if (ok) rueck(k, 'gut', lob(), erklaerSzene(s));
+    else rueck(k, 'falsch', '<b>Noch nicht ganz.</b> ' + tipps.join(' '), erklaerSzene(s));
+  };
+  k.loesung = function () { aus = true; werte = L.pole.slice(); zeichne(true); markKraft(true); fertig(k); rueck(k, 'fast', '<b>So ist es richtig:</b>', erklaerSzene(s)); };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+/* =====================================================================
+   MINI-SIMULATIONEN
+   ===================================================================== */
+var LAUF = [];   /* laufende Animationen beim Kartenwechsel stoppen */
+function stopAlle() { LAUF.forEach(function (f) { f(); }); LAUF = []; }
+
+/* --- 1: Strom macht Magnetfeld (Spule + Kompass) --- */
+function simStrom(box) {
+  var d = el('div', 'sim'); box.appendChild(d);
+  d.innerHTML = '<svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg">' +
+    '<defs><style>.draht{fill:none;stroke:#333;stroke-width:2.6}.el{fill:none;stroke:#1565C0;stroke-width:5;stroke-linecap:round;stroke-dasharray:0 16;opacity:0}' +
+    '.an .el{opacity:1;animation:fliess .8s linear infinite}.um .el{animation-direction:reverse}@keyframes fliess{to{stroke-dashoffset:-16}}' +
+    '.feldl{fill:none;stroke:#5DBB46;stroke-width:2.2;opacity:0;transition:opacity .5s}.an .feldl{opacity:1}' +
+    '#nadel{transform-box:fill-box;transform-origin:center;transition:transform .8s cubic-bezier(.3,1.4,.5,1)}.spol{opacity:0;transition:opacity .4s}.an .spol{opacity:1}</style></defs>' +
+    '<g id="feld"><ellipse class="feldl" cx="180" cy="80" rx="96" ry="42"/><ellipse class="feldl" cx="180" cy="80" rx="108" ry="62"/></g>' +
+    '<path id="kreis" class="draht" d="M108,103 V190 H130 M142,190 H200 M236,190 H252 V103"/>' +
+    '<path class="el" d="M108,103 V190 H252 V103"/>' +
+    '<g>' + spuleH(180, 80, 160, 46) + '</g>' +
+    '<g class="spol"><circle id="pl" cx="84" cy="80" r="12" fill="#3F8A4E"/><text id="tl" x="84" y="85.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">S</text>' +
+    '<circle id="pr" cx="276" cy="80" r="12" fill="#D9363E"/><text id="tr" x="276" y="85.5" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">N</text></g>' +
+    '<g transform="translate(126,190)"><line x1="4" y1="-14" x2="4" y2="14" stroke="#333" stroke-width="2.6"/><line x1="16" y1="-8" x2="16" y2="8" stroke="#333" stroke-width="5"/>' +
+    '<text id="plus" x="-6" y="-16" font-size="13" fill="#333">+</text><text x="20" y="-12" font-size="13" fill="#333">–</text></g>' +
+    '<g id="schalter" style="cursor:pointer"><rect x="190" y="168" width="56" height="40" fill="transparent"/><circle cx="200" cy="190" r="3.5" fill="#333"/><circle cx="236" cy="190" r="3.5" fill="#333"/>' +
+    '<line id="hebel" x1="200" y1="190" x2="234" y2="172" stroke="#333" stroke-width="3" stroke-linecap="round" style="transition:all .25s"/></g>' +
+    '<text x="218" y="222" text-anchor="middle" font-size="12.5" fill="#55606a">Schalter</text><text x="141" y="222" text-anchor="middle" font-size="12.5" fill="#55606a">Batterie</text>' +
+    '<g transform="translate(318,80)"><circle r="27" fill="#fff" stroke="#7b8a95" stroke-width="2"/><text y="-15" text-anchor="middle" font-size="10" fill="#7b8a95">N</text>' +
+    '<g id="nadel"><path d="M0,-21 L5,0 L-5,0z" fill="#D9363E"/><path d="M0,21 L5,0 L-5,0z" fill="#9aa8b2"/><circle r="2.5" fill="#333"/></g></g>' +
+    '<text x="318" y="125" text-anchor="middle" font-size="12.5" fill="#55606a">Kompass</text></svg>' +
+    '<div class="regler"><button class="knopf" type="button" id="sAn">Schalter schließen</button><button class="knopf grau" type="button" id="sUm">Batterie umpolen</button></div>' +
+    '<div class="status" id="sSt"></div>';
+  var svg = d.querySelector('svg'), an = false, um = false;
+  function stand() {
+    svg.classList.toggle('an', an); svg.classList.toggle('um', um);
+    d.querySelector('#hebel').setAttribute('y2', an ? 190 : 172); d.querySelector('#hebel').setAttribute('x2', an ? 236 : 234);
+    d.querySelector('#nadel').style.transform = an ? 'rotate(' + (um ? -90 : 90) + 'deg)' : 'rotate(0deg)';
+    d.querySelector('#pl').setAttribute('fill', um ? '#D9363E' : '#3F8A4E'); d.querySelector('#tl').textContent = um ? 'N' : 'S';
+    d.querySelector('#pr').setAttribute('fill', um ? '#3F8A4E' : '#D9363E'); d.querySelector('#tr').textContent = um ? 'S' : 'N';
+    d.querySelector('#sAn').textContent = an ? 'Schalter öffnen' : 'Schalter schließen';
+    d.querySelector('#sSt').innerHTML = an
+      ? K(['Der Schalter ist geschlossen – es fließt ein Strom durch die Spule.', 'Um die Spule entsteht ein Magnetfeld (grün); die Spule wird zum Elektromagneten.', 'Die Kompassnadel wird abgelenkt.' + (um ? ' Umgepolt: Die Pole der Spule tauschen – die Nadel zeigt andersherum.' : '')], 1)
+      : '<b>Schalter offen:</b> kein Strom → kein Magnetfeld. Die Kompassnadel zeigt nur nach Norden.';
+  }
+  d.querySelector('#sAn').onclick = function () { an = !an; stand(); };
+  d.querySelector('#schalter').onclick = function () { an = !an; stand(); };
+  d.querySelector('#sUm').onclick = function () { um = !um; stand(); };
+  stand();
+}
+
+/* --- 2: Magnet und Spule (Induktion) --- */
+function simSpule(box) {
+  var d = el('div', 'sim'); box.appendChild(d);
+  var CX = 238;   /* Mitte der Spule */
+  d.innerHTML = '<svg viewBox="0 0 360 215" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M' + (CX - 46) + ',108 V180 H' + (CX - 35) + ' M' + (CX - 9) + ',180 H' + (CX + 6) + ' M' + (CX + 40) + ',180 H' + (CX + 46) + ' V108" fill="none" stroke="#333" stroke-width="2.4"/>' +
+    '<g id="mag" style="cursor:grab"></g>' +
+    '<g opacity=".72" style="pointer-events:none">' + spuleH(CX, 82, 112, 52) + '</g>' +
+    '<g transform="translate(' + (CX - 22) + ',180)"><circle id="glow" r="22" fill="#FFD23F" opacity="0"/><circle r="13" fill="#FFF6D6" stroke="#333" stroke-width="2.2"/>' +
+    '<path d="M-9,-9 L9,9 M9,-9 L-9,9" stroke="#333" stroke-width="2"/></g>' +
+    '<text x="' + (CX - 22) + '" y="211" text-anchor="middle" font-size="12.5" fill="#55606a">Lampe</text>' +
+    '<g id="schalter2" style="cursor:pointer"><rect x="' + (CX - 2) + '" y="160" width="54" height="40" fill="transparent"/>' +
+    '<circle cx="' + (CX + 6) + '" cy="180" r="3.5" fill="#333"/><circle cx="' + (CX + 40) + '" cy="180" r="3.5" fill="#333"/>' +
+    '<line id="hebel2" x1="' + (CX + 6) + '" y1="180" x2="' + (CX + 40) + '" y2="180" stroke="#333" stroke-width="3" stroke-linecap="round"/></g>' +
+    '<text x="' + (CX + 23) + '" y="211" text-anchor="middle" font-size="12.5" fill="#55606a">Schalter</text>' +
+    '<text x="' + CX + '" y="44" text-anchor="middle" font-size="12.5" fill="#55606a">Spule</text></svg>' +
+    '<div class="regler"><input type="range" min="0" max="210" value="0" id="pos" aria-label="Lage des Magneten"></div>' +
+    '<div class="regler"><button class="knopf" type="button" data-z="schnell">Schnell hinein</button><button class="knopf" type="button" data-z="langsam">Langsam hinein</button>' +
+    '<button class="knopf" type="button" data-z="raus">Heraus</button><button class="knopf grau" type="button" id="schB">Schalter öffnen</button></div>' +
+    '<div class="messer"><span>Magnetfeldstärke in der Spule</span><span class="rohr"><i id="mB"></i></span>' +
+    '<span>Induktionsspannung U<sub>ind</sub></span><span class="rohr mitte"><i id="mU" style="background:var(--orange)"></i></span>' +
+    '<span>Induktionsstrom I<sub>ind</sub></span><span class="rohr mitte"><i id="mI" style="background:var(--blau)"></i></span></div>' +
+    '<div class="status" id="st2"></div>';
+  var svg = d.querySelector('svg'), mag = d.querySelector('#mag'), pos = d.querySelector('#pos');
+  var x = 0, zu = true, U = 0, Bv = null, tv = 0, halten = 0, ziel = null, run = true, letzt = '';
+  function B(xx) { var c = xx + 52; return Math.exp(-Math.pow((c - CX) / 62, 2)); }
+  function zeichneMag() { mag.innerHTML = magnetSVG(x, 65, 104, 34, 'S', 'N'); }
+  function schalter() {
+    d.querySelector('#hebel2').setAttribute('y2', zu ? 180 : 163); d.querySelector('#hebel2').setAttribute('x2', zu ? CX + 40 : CX + 37);
+    d.querySelector('#schB').textContent = zu ? 'Schalter öffnen' : 'Schalter schließen';
+  }
+  d.querySelector('#schB').onclick = d.querySelector('#schalter2').onclick = function () { zu = !zu; schalter(); };
+  pos.oninput = function () { ziel = null; x = +pos.value; zeichneMag(); };
+  d.querySelectorAll('[data-z]').forEach(function (b) {
+    b.onclick = function () { var z = b.dataset.z; ziel = { x: z === 'raus' ? 0 : 186, v: z === 'schnell' ? 700 : (z === 'langsam' ? 70 : 420) }; };
+  });
+  /* Magnet mit dem Finger ziehen */
+  var zieht = false, dx0 = 0;
+  function sx(e) { var r = svg.getBoundingClientRect(); return (e.clientX - r.left) / r.width * 360; }
+  mag.addEventListener('pointerdown', function (e) { zieht = true; ziel = null; dx0 = sx(e) - x; mag.setPointerCapture(e.pointerId); e.preventDefault(); });
+  mag.addEventListener('pointermove', function (e) { if (!zieht) return; x = Math.max(0, Math.min(210, sx(e) - dx0)); pos.value = x; zeichneMag(); });
+  mag.addEventListener('pointerup', function () { zieht = false; });
+  mag.style.touchAction = 'none';
+  function schritt(t) {
+    if (!run) return;
+    var dt = tv ? Math.min(0.05, (t - tv) / 1000) : 0.016; tv = t;
+    if (ziel) { var r = ziel.x - x, st = ziel.v * dt; if (Math.abs(r) <= st) { x = ziel.x; ziel = null; } else x += Math.sign(r) * st; pos.value = x; zeichneMag(); }
+    var b = B(x); var dB = Bv === null ? 0 : (b - Bv) / dt; Bv = b;
+    var Uz = Math.max(-1, Math.min(1, -dB * 0.2)); U += (Uz - U) * Math.min(1, dt * 14);
+    var I = zu ? U : 0;
+    d.querySelector('#mB').style.width = (b * 100).toFixed(1) + '%';
+    function mitte(id, v) { var e = d.querySelector(id); e.style.left = (v < 0 ? 50 + v * 50 : 50) + '%'; e.style.width = (Math.abs(v) * 50).toFixed(1) + '%'; }
+    mitte('#mU', U); mitte('#mI', I);
+    d.querySelector('#glow').setAttribute('opacity', Math.min(1, Math.abs(I) * 1.6).toFixed(2));
+    var txt, aktiv = Math.abs(U) > 0.05;
+    if (aktiv) halten = t;
+    if (aktiv || t - halten < 700) {
+      txt = K(['Der Magnet bewegt sich.', 'Die Magnetfeldstärke in der Spule ändert sich.',
+        zu ? 'Es entsteht eine Induktionsspannung. Der Stromkreis ist geschlossen → Induktionsstrom → die Lampe leuchtet.'
+           : 'Es entsteht eine Induktionsspannung. Aber der Schalter ist offen → <b>kein</b> Induktionsstrom, die Lampe bleibt aus.']) + '<span class="klein">Je schneller du bewegst, desto größer die Spannung.</span>';
+      txt = 'b' + zu + '|' + txt;
+    } else txt = 'r' + (b > 0.5) + '|' + (b > 0.5 ? '<b>Der Magnet liegt in der Spule</b> – aber die Magnetfeldstärke ändert sich nicht → <b>keine</b> Induktionsspannung.'
+                                     : '<b>Nichts bewegt sich</b> → die Magnetfeldstärke in der Spule bleibt gleich → keine Induktionsspannung.');
+    if (txt !== letzt) { letzt = txt; d.querySelector('#st2').innerHTML = txt.split('|')[1]; }
+    requestAnimationFrame(schritt);
+  }
+  zeichneMag(); schalter(); requestAnimationFrame(schritt);
+  LAUF.push(function () { run = false; });
+}
+
+/* --- 3: Magnet und Ring (Regel von Lenz) --- */
+function simRing(box) {
+  var d = el('div', 'sim'); box.appendChild(d);
+  var RX = 262, AY = 98;
+  d.innerHTML = '<svg viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg">' +
+    '<line x1="' + (RX - 46) + '" y1="14" x2="' + (RX + 46) + '" y2="14" stroke="#8a949c" stroke-width="5" stroke-linecap="round"/>' +
+    '<g id="mag3"></g><g id="ring3"></g></svg>' +
+    '<div class="regler"><span class="seg" id="wPol"><button type="button" class="an" data-v="N">Nordpol zum Ring</button><button type="button" data-v="S">Südpol zum Ring</button></span>' +
+    '<span class="seg" id="wRing"><button type="button" class="an" data-v="zu">Ring geschlossen</button><button type="button" data-v="offen">Ring offen</button></span></div>' +
+    '<div class="regler"><button class="knopf" type="button" id="bRein">Magnet hineinbewegen</button><button class="knopf" type="button" id="bRaus" disabled>Magnet herausziehen</button></div>' +
+    '<div class="status" id="st3">Wähle die Einstellungen und bewege dann den Magneten.</div>';
+  var pol = 'N', zu = true, drin = false, x = 40, ringDx = 0, pole = null, laeuft = false, run = true, timer = [];
+  var AUSSEN = 40, INNEN = RX - 104 + 6;
+  function zeichne() {
+    d.querySelector('#mag3').innerHTML = magnetSVG(x, AY - 17, 104, 34, anders(pol), pol);
+    var cx = RX + ringDx, r = '';
+    r += '<line x1="' + (RX - 24) + '" y1="15" x2="' + (cx - 3) + '" y2="' + (AY - 42) + '" stroke="#555" stroke-width="1.4"/><line x1="' + (RX + 24) + '" y1="15" x2="' + (cx + 3) + '" y2="' + (AY - 42) + '" stroke="#555" stroke-width="1.4"/>';
+    var gap = zu ? '' : ' pathLength="100" stroke-dasharray="94 6" stroke-dashoffset="-28"';
+    r += '<ellipse cx="' + cx + '" cy="' + AY + '" rx="10" ry="43" fill="none" stroke="#8a949c" stroke-width="8"' + gap + '/>';
+    r += '<ellipse cx="' + cx + '" cy="' + AY + '" rx="10" ry="43" fill="none" stroke="#d5dbe0" stroke-width="2"' + gap + '/>';
+    if (pole) {
+      [[cx - 30, pole[0]], [cx + 30, pole[1]]].forEach(function (p) {
+        r += '<circle cx="' + p[0] + '" cy="' + AY + '" r="13" fill="' + (p[1] === 'N' ? '#D9363E' : '#3F8A4E') + '"/><text x="' + p[0] + '" y="' + (AY + 5.5) + '" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">' + p[1] + '</text>';
+      });
+    }
+    d.querySelector('#ring3').innerHTML = r;
+  }
+  function knoepfe() { d.querySelector('#bRein').disabled = laeuft || drin; d.querySelector('#bRaus').disabled = laeuft || !drin;
+    d.querySelectorAll('#wPol button,#wRing button').forEach(function (b) { b.disabled = laeuft || drin; }); }
+  function seg(id, set) { d.querySelectorAll('#' + id + ' button').forEach(function (b) { b.onclick = function () { if (laeuft || drin) return;
+    d.querySelectorAll('#' + id + ' button').forEach(function (x) { x.classList.toggle('an', x === b); }); set(b.dataset.v); zeichne(); }; }); }
+  seg('wPol', function (v) { pol = v; }); seg('wRing', function (v) { zu = v === 'zu'; });
+  function anim(von, bis, ms, f, fertig) {
+    var t0 = null;
+    function s(t) { if (!run) return; if (t0 === null) t0 = t; var p = Math.min(1, (t - t0) / ms), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      f(von + (bis - von) * e, p); if (p < 1) requestAnimationFrame(s); else if (fertig) fertig(); }
+    requestAnimationFrame(s);
+  }
+  function bewege(hin) {
+    laeuft = true; knoepfe();
+    var p = hin ? pol : anders(pol);   /* Pol des Rings zum Magneten */
+    var kette = zu ? [ (hin ? 'Der Magnet wird mit dem ' + polName(pol) + ' in den Ring hineinbewegt.' : 'Der Magnet wird mit dem ' + polName(pol) + ' herausgezogen.'),
+        'Die Magnetfeldstärke im Ring ändert sich.', 'Es entsteht eine Induktionsspannung; im geschlossenen Ring fließt ein Induktionsstrom.',
+        'Der Induktionsstrom erzeugt ein eigenes Magnetfeld – der Ring wird zum Magneten.',
+        'Zum Magneten hin entsteht ein ' + polName(p) + (hin ? ': gleichnamige Pole → <b>Abstoßung</b>, der Ring weicht aus.' : ': ungleichnamige Pole → <b>Anziehung</b>, der Ring folgt dem Magneten.') ]
+      : [ (hin ? 'Der Magnet wird in den Ring hineinbewegt.' : 'Der Magnet wird herausgezogen.'), 'Die Magnetfeldstärke im Ring ändert sich.',
+          'Es entsteht eine Induktionsspannung – aber der Ring ist <b>offen</b>: kein Induktionsstrom.', 'Kein Strom → kein Magnetfeld → keine Pole → keine Kraft. Der Ring bleibt ruhig.' ];
+    d.querySelector('#st3').innerHTML = K(kette);
+    if (zu) pole = [p, anders(p)];
+    anim(x, hin ? INNEN : AUSSEN, 1000, function (v, pr) { x = v; if (zu) ringDx = (hin ? 1 : -1) * 20 * Math.sin(Math.min(1, pr * 1.2) * Math.PI / 2); zeichne(); }, function () {
+      drin = hin;
+      timer.push(setTimeout(function () {
+        pole = null;
+        anim(ringDx, 0, 800, function (v) { ringDx = v; zeichne(); }, function () {
+          laeuft = false; knoepfe();
+          d.querySelector('#st3').insertAdjacentHTML('beforeend', '<p class="klein">Jetzt ruht der Magnet wieder → die Magnetfeldstärke im Ring ändert sich nicht → kein Strom → der Ring hängt wieder ruhig.</p>');
+        });
+      }, 1300));
+    });
+  }
+  d.querySelector('#bRein').onclick = function () { bewege(true); };
+  d.querySelector('#bRaus').onclick = function () { bewege(false); };
+  zeichne(); knoepfe();
+  LAUF.push(function () { run = false; timer.forEach(clearTimeout); });
+}
+
+function baueErkunden(box, q) {
+  box.appendChild(el('h2', 'titel', q.titel));
+  box.appendChild(el('div', 'auftrag', q.auftrag));
+  ({ strom: simStrom, spule: simSpule, ring: simRing })[q.sim](box);
+  var f = el('div', 'frage-nach'); box.appendChild(f);
+  baueMC(f, q.q);
+}
+
+/* =====================================================================
+   KARTE ANZEIGEN
+   ===================================================================== */
+function kopf() {
+  var k = KARTEN[I], teil = k.teil || (k.typ === 'ende' ? 'C' : 'A');
+  var t = document.getElementById('teile'); t.innerHTML = '';
+  Object.keys(TEILE).forEach(function (key) {
+    var b = el('button', key === teil && k.typ !== 'start' && k.typ !== 'ende' ? 'an' : '', TEILE[key]); b.type = 'button';
+    b.onclick = function () { for (var i = 0; i < KARTEN.length; i++) if (KARTEN[i].teil === key) { geh(i); break; } };
+    t.appendChild(b);
+  });
+  var beantwortet = FRAGEN.filter(function (i) { return i in STAND; }).length, richtig = FRAGEN.filter(function (i) { return STAND[i] === true; }).length;
+  document.getElementById('balken').style.width = (I / (KARTEN.length - 1) * 100).toFixed(1) + '%';
+  document.getElementById('zaehler').textContent = (k.nr ? 'Frage ' + k.nr + ' von ' + FRAGEN.length + ' · ' : '') + '✓ ' + richtig + ' / ' + beantwortet;
+}
+function geh(i) { stopAlle(); I = Math.max(0, Math.min(KARTEN.length - 1, i)); speichern(); zeige(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+function zeige() {
+  var k = KARTEN[I];
+  $karte.innerHTML = ''; $karte.style.animation = 'none'; void $karte.offsetWidth; $karte.style.animation = '';
+  $vor.classList.remove('jetzt');
+  $zur.disabled = I === 0; $vor.hidden = k.typ === 'ende' || k.typ === 'start'; $zur.hidden = k.typ === 'start';
+  if (k.tag) $karte.appendChild(el('div', 'kopfzeile', '<span class="nr">Frage ' + k.nr + ':</span><span class="tag ' + TAGS[k.tag][0] + '">' + TAGS[k.tag][1] + '</span>'));
+  if (k.typ === 'start') zeigeStart();
+  else if (k.typ === 'ende') zeigeEnde();
+  else if (k.typ === 'merke') { $karte.appendChild(el('h2', 'titel', k.titel)); $karte.insertAdjacentHTML('beforeend', k.html); $vor.classList.add('jetzt'); }
+  else if (k.typ === 'einzel' || k.typ === 'mehr') baueMC($karte, k);
+  else if (k.typ === 'luecke') baueLuecke($karte, k);
+  else if (k.typ === 'fehler') baueFehler($karte, k);
+  else if (k.typ === 'ordnen') baueOrdnen($karte, k);
+  else if (k.typ === 'tabelle') baueTabelle($karte, k);
+  else if (k.typ === 'pole') bauePole($karte, k);
+  else if (k.typ === 'erkunden') baueErkunden($karte, k);
+  kopf();
+}
+function zeigeStart() {
+  var schon = Object.keys(STAND).length, html =
+    '<h2 class="titel">Fit für Induktion und Lenz</h2>' +
+    '<p>Hier übst du die wichtigsten Grundlagen – immer wieder, auf viele verschiedene Arten. Erklärungen sind immer gleich aufgebaut: ' +
+    '<b>0. Ursache</b> → … → <b>Wirkung</b>.</p>' +
+    '<ul class="fahrplan">' +
+    '<li><span class="tag t-em">Strom → Magnetfeld</span><span>Immer wenn ein Strom fließt, entsteht ein Magnetfeld.</span></li>' +
+    '<li><span class="tag t-ind">Induktion</span><span>Ändert sich die Magnetfeldstärke in einer Spule, entsteht eine Induktionsspannung.</span></li>' +
+    '<li><span class="tag t-strom">Induktionsstrom</span><span>Nur bei geschlossenem Stromkreis fließt ein Induktionsstrom.</span></li>' +
+    '<li><span class="tag t-lenz">Regel von Lenz</span><span>Welche Pole entstehen am Ring und an der Spule?</span></li></ul>' +
+    '<p class="klein">' + FRAGEN.length + ' Fragen in drei Teilen, dazwischen Merkkästen und drei Mini-Versuche zum Ausprobieren. Dein Stand wird auf diesem Gerät gespeichert.</p>';
+  $karte.insertAdjacentHTML('beforeend', html);
+  var offen = FRAGEN.filter(function (i) { return !(i in STAND); })[0];
+  if (schon && offen) {
+    var w = el('button', 'los', 'Weitermachen bei Frage ' + KARTEN[offen].nr); w.type = 'button';
+    w.onclick = function () { geh(offen); }; $karte.appendChild(w);
+  }
+  var b = el('button', schon ? 'los zweit' : 'los', schon ? 'Neu starten' : 'Los geht’s'); b.type = 'button';
+  b.onclick = function () { STAND = {}; geh(1); };
+  $karte.appendChild(b);
+  I = 0;
+}
+function zeigeEnde() {
+  var r = FRAGEN.filter(function (i) { return STAND[i] === true; }).length, n = FRAGEN.length;
+  var q = r / n, sterne = q >= .9 ? 3 : (q >= .7 ? 2 : (q >= .4 ? 1 : 0));
+  var html = '<h2 class="titel">Geschafft!</h2><div class="sterne">' + '★★★'.slice(0, sterne) + '<span style="color:#d5dde3">' + '★★★'.slice(0, 3 - sterne) + '</span></div>' +
+    '<p style="text-align:center"><b>' + r + ' von ' + n + '</b> Fragen beim ersten Versuch richtig.</p><table class="erg">';
+  Object.keys(TAGS).forEach(function (t) {
+    var f = FRAGEN.filter(function (i) { return KARTEN[i].tag === t; });
+    html += '<tr><td><span class="tag ' + TAGS[t][0] + '">' + TAGS[t][1] + '</span></td><td>' + f.filter(function (i) { return STAND[i] === true; }).length + ' / ' + f.length + '</td></tr>';
+  });
+  html += '</table>';
+  var falsch = FRAGEN.filter(function (i) { return STAND[i] !== true; });
+  if (falsch.length) html += '<p>Diese Fragen solltest du dir nochmal anschauen:</p><div class="springe" id="springe"></div>';
+  else html += '<p>Alles beim ersten Versuch richtig – stark! Jetzt sitzen die Grundlagen.</p>';
+  html += '<div class="merke"><h3>Das Wichtigste nochmal</h3><ol style="padding-left:20px">' +
+    '<li>Immer wenn ein Strom fließt, entsteht ein Magnetfeld (Elektromagnetismus).</li>' +
+    '<li>Ändert sich die Magnetfeldstärke in einer Spule, entsteht eine Induktionsspannung.</li>' +
+    '<li>Ist der Stromkreis geschlossen, fließt ein Induktionsstrom.</li>' +
+    '<li>Regel von Lenz: Sein Magnetfeld wirkt der Ursache seiner Entstehung entgegen – hinbewegen: Abstoßung, wegziehen: Anziehung.</li></ol></div>';
+  $karte.insertAdjacentHTML('beforeend', html);
+  var sp = document.getElementById('springe');
+  if (sp) falsch.forEach(function (i) { var b = el('button', '', 'Frage ' + KARTEN[i].nr); b.type = 'button'; b.onclick = function () { delete STAND[i]; geh(i); }; sp.appendChild(b); });
+  var n2 = el('button', 'los zweit', 'Alles nochmal von vorn'); n2.type = 'button'; n2.onclick = function () { STAND = {}; geh(1); };
+  $karte.appendChild(n2);
+}
+$vor.onclick = function () { geh(I + 1); };
+$zur.onclick = function () { geh(I - 1); };
+zeige();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7;color:#fff"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
