@@ -193,6 +193,25 @@
   .springe{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
   .springe button{border:2px solid #d5dde3;background:#fff;border-radius:999px;padding:5px 12px;font-size:14.5px;min-height:38px}
 
+  .besten{border:2px solid #E8C14A;background:#FFFBEA;border-radius:14px;padding:10px 12px;margin:10px 0}
+  .besten h3{margin:0 0 6px;font-size:18px;color:#8A6400}
+  .besten .deine{margin:4px 0 8px}
+  .besten .eintragen{display:flex;gap:8px}
+  .besten input{flex:1;min-width:0;font:inherit;font-size:16.5px;padding:8px 10px;border:2px solid #d5c48a;border-radius:10px;background:#fff;min-height:44px}
+  .besten .eintragen button{border:0;border-radius:10px;padding:8px 14px;font-weight:bold;font-size:15.5px;background:var(--petrol2);color:#fff;min-height:44px}
+  .besten .eintragen button:disabled{opacity:.55;cursor:default}
+  .besten .hinweis{margin:5px 0}
+  .netstatus{font-size:14.5px;margin:4px 0}
+  .netstatus:empty{display:none}
+  .netstatus.ok{color:var(--gruen);font-weight:bold} .netstatus.warn{color:#9A3412}
+  .rangliste{list-style:none;margin:8px 0 4px;padding:0;background:#fff;border-radius:10px;border:1.5px solid #eee1b5}
+  .rangliste li{display:grid;grid-template-columns:34px 1fr auto auto;gap:8px;align-items:center;padding:6px 10px;border-bottom:1px solid #f3ecd2;font-size:15.5px}
+  .rangliste li:last-child{border-bottom:0}
+  .rangliste li.leer,.rangliste li.luecke-r{display:block;color:#7b8a95;text-align:center}
+  .rangliste .rg{font-weight:bold;color:#7b8a95} .rangliste .nm{font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rangliste .pk{font-weight:bold;color:var(--petrol)} .rangliste .zt{color:var(--text2);font-size:14px;min-width:68px;text-align:right}
+  .rangliste li.p1 .rg{color:#C9A227} .rangliste li.p2 .rg{color:#8E9AA4} .rangliste li.p3 .rg{color:#B07A47}
+  .rangliste li.mein{background:#E6F4EC}
   @media (prefers-reduced-motion:reduce){ .karte,ol.kette li{animation:none;opacity:1} .balken i{transition:none} }
 </style>
 </head>
@@ -516,10 +535,13 @@ var KARTEN = [
    TECHNIK
    ===================================================================== */
 var SPEICHER = 'p10-quiz-2-3-induktion-v2';
-var STAND = {};   /* Kartenindex → true/false (erster Versuch) */
+var STAND = {};   /* Kartenindex → true/false; wird beim Wiederholen einer Frage gelöscht (Übungsstand) */
+var ERST = {};    /* Kartenindex → true/false beim allerersten Versuch – zählt für die Bestenliste, bleibt fest */
+var ZEIT = {};    /* s = Start, e = Ende des Hauptteils (ms) */
 var I = 0;
-try { var g = JSON.parse(localStorage.getItem(SPEICHER) || 'null'); if (g) { STAND = g.stand || {}; I = Math.min(g.i || 0, KARTEN.length - 1); } } catch (e) {}
-function speichern() { try { localStorage.setItem(SPEICHER, JSON.stringify({ i: I, stand: STAND })); } catch (e) {} }
+try { var g = JSON.parse(localStorage.getItem(SPEICHER) || 'null'); if (g) { STAND = g.stand || {}; ERST = g.erst || {}; ZEIT = g.zeit || {}; I = Math.min(g.i || 0, KARTEN.length - 1); } } catch (e) {}
+function speichern() { try { localStorage.setItem(SPEICHER, JSON.stringify({ i: I, stand: STAND, erst: ERST, zeit: ZEIT })); } catch (e) {} }
+function neuStart() { STAND = {}; ERST = {}; ZEIT = {}; geh(1); }
 
 /* Hauptteil (Teil A–C) und Bonus (Teil D) werden getrennt gezählt */
 var FRAGEN = [], BONUS = [];
@@ -533,6 +555,7 @@ function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.cl
 
 function merke(ok) {
   if (!(I in STAND)) STAND[I] = ok;
+  if (!(I in ERST)) ERST[I] = ok;
   if (ok) $vor.classList.add('jetzt');
   speichern(); kopf();
 }
@@ -543,7 +566,7 @@ function knoepfe(box) {
   k.zeig.addEventListener('click', function () {
     if (!k.warn) { k.warn = true; k.zeig.classList.add('warn'); k.zeig.textContent = 'Erst selbst probieren! (nochmal tippen)'; return; }
     k.warn = false; k.zeig.classList.remove('warn'); k.zeig.textContent = 'Lösung anzeigen';
-    if (!(I in STAND)) STAND[I] = false; speichern(); kopf();
+    if (!(I in STAND)) STAND[I] = false; if (!(I in ERST)) ERST[I] = false; speichern(); kopf();
     if (k.loesung) k.loesung();
   });
   return k;
@@ -1177,7 +1200,10 @@ function kopf() {
   document.getElementById('balken').style.width = (anteil * 100).toFixed(1) + '%';
   document.getElementById('zaehler').textContent = (k.nr ? nrText(k) + ' von ' + L.length + ' · ' : (imBonus ? 'Bonus · ' : '')) + '✓ ' + richtig + ' / ' + beantwortet;
 }
-function geh(i) { stopAlle(); I = Math.max(0, Math.min(KARTEN.length - 1, i)); speichern(); zeige(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function geh(i) { stopAlle(); I = Math.max(0, Math.min(KARTEN.length - 1, i));
+  if (I >= 1 && !ZEIT.s) ZEIT.s = Date.now();
+  if (I === I_ENDE && ZEIT.s && !ZEIT.e) ZEIT.e = Date.now();
+  speichern(); zeige(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 function zeige() {
   var k = KARTEN[I];
@@ -1216,18 +1242,18 @@ function zeigeStart() {
     w.onclick = function () { geh(offen); }; $karte.appendChild(w);
   }
   var b = el('button', schon ? 'los zweit' : 'los', schon ? 'Neu starten' : 'Los geht’s'); b.type = 'button';
-  b.onclick = function () { STAND = {}; geh(1); };
+  b.onclick = neuStart;
   $karte.appendChild(b);
   I = 0;
 }
 function zeigeEnde() {
-  var r = FRAGEN.filter(function (i) { return STAND[i] === true; }).length, n = FRAGEN.length;
+  var r = FRAGEN.filter(function (i) { return ERST[i] === true; }).length, n = FRAGEN.length;
   var q = r / n, sterne = q >= .9 ? 3 : (q >= .7 ? 2 : (q >= .4 ? 1 : 0));
   var html = '<h2 class="titel">Hauptteil geschafft!</h2><div class="sterne">' + '★★★'.slice(0, sterne) + '<span style="color:#d5dde3">' + '★★★'.slice(0, 3 - sterne) + '</span></div>' +
     '<p style="text-align:center"><b>' + r + ' von ' + n + '</b> Fragen beim ersten Versuch richtig.</p><table class="erg">';
   Object.keys(TAGS).forEach(function (t) {
     var f = FRAGEN.filter(function (i) { return KARTEN[i].tag === t; });
-    html += '<tr><td><span class="tag ' + TAGS[t][0] + '">' + TAGS[t][1] + '</span></td><td>' + f.filter(function (i) { return STAND[i] === true; }).length + ' / ' + f.length + '</td></tr>';
+    html += '<tr><td><span class="tag ' + TAGS[t][0] + '">' + TAGS[t][1] + '</span></td><td>' + f.filter(function (i) { return ERST[i] === true; }).length + ' / ' + f.length + '</td></tr>';
   });
   html += '</table>';
   var falsch = FRAGEN.filter(function (i) { return STAND[i] !== true; });
@@ -1243,11 +1269,12 @@ function zeigeEnde() {
   if (sp) falsch.forEach(function (i) { var b = el('button', '', 'Frage ' + KARTEN[i].nr); b.type = 'button'; b.onclick = function () { delete STAND[i]; geh(i); }; sp.appendChild(b); });
   var bo = el('button', 'los', '★ Bonus für Schnelle (' + BONUS.length + ' Fragen) ›'); bo.type = 'button'; bo.onclick = function () { geh(I_ENDE + 1); };
   bo.style.marginBottom = '6px'; $karte.querySelector('table.erg').after(bo);
-  var n2 = el('button', 'los zweit', 'Alles nochmal von vorn'); n2.type = 'button'; n2.onclick = function () { STAND = {}; geh(1); };
+  bo.before(bestenBox());
+  var n2 = el('button', 'los zweit', 'Alles nochmal von vorn'); n2.type = 'button'; n2.onclick = neuStart;
   $karte.appendChild(n2);
 }
 function zeigeEnde2() {
-  var r = BONUS.filter(function (i) { return STAND[i] === true; }).length, n = BONUS.length, h = FRAGEN.filter(function (i) { return STAND[i] === true; }).length;
+  var r = BONUS.filter(function (i) { return ERST[i] === true; }).length, n = BONUS.length, h = FRAGEN.filter(function (i) { return ERST[i] === true; }).length;
   var q = r / n, sterne = q >= .9 ? 3 : (q >= .7 ? 2 : (q >= .4 ? 1 : 0));
   var html = '<h2 class="titel">Bonus geschafft!</h2><div class="sterne">' + '★★★'.slice(0, sterne) + '<span style="color:#d5dde3">' + '★★★'.slice(0, 3 - sterne) + '</span></div>' +
     '<p style="text-align:center"><b>' + r + ' von ' + n + '</b> Bonusfragen beim ersten Versuch richtig.<br><span class="klein">Hauptteil: ' + h + ' von ' + FRAGEN.length + '</span></p>';
@@ -1257,8 +1284,85 @@ function zeigeEnde2() {
   $karte.insertAdjacentHTML('beforeend', html);
   var sp = document.getElementById('springe');
   if (sp) falsch.forEach(function (i) { var b = el('button', '', nrText(KARTEN[i])); b.type = 'button'; b.onclick = function () { delete STAND[i]; geh(i); }; sp.appendChild(b); });
+  $karte.querySelector('p').after(bestenBox());
   var z = el('button', 'los zweit', '‹ Zur Auswertung des Hauptteils'); z.type = 'button'; z.onclick = function () { geh(I_ENDE); };
   $karte.appendChild(z);
+}
+/* =====================================================================
+   KLASSEN-BESTENLISTE (Supabase, derselbe Dienst wie bei den Mathe-Spielen)
+   Rangfolge: Punkte (erster Versuch, Hauptteil + Bonus), bei Gleichstand die kürzere Zeit
+   für den Hauptteil. Die Datenbank sortiert nur nach „score“ – deshalb steckt beides darin:
+   score = Punkte · 10000 + (9999 − Sekunden). level = 1 (nur Hauptteil) oder 2 (mit Bonus),
+   ops = Zeit als Text. Name: 2–14 Zeichen, Wortfilter und Mengenbremse prüft die Datenbank.
+   ===================================================================== */
+var NET = { url: 'https://sliitqxickadcoghewli.supabase.co/rest/v1/', key: 'sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7', game: 'p10-quiz-2-3', klasse: '10c' };
+var NAME_KEY = 'quiz.spitzname', GESENDET_KEY = 'p10-quiz-2-3.gesendet';
+function lsGet(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function wertung() {
+  var h = FRAGEN.filter(function (i) { return ERST[i] === true; }).length, b = BONUS.filter(function (i) { return ERST[i] === true; }).length;
+  var sek = ZEIT.s && ZEIT.e ? Math.max(1, Math.round((ZEIT.e - ZEIT.s) / 1000)) : 0;
+  var mitBonus = BONUS.some(function (i) { return i in ERST; });
+  return { h: h, b: b, p: h + b, sek: sek, mitBonus: mitBonus, score: (h + b) * 10000 + (9999 - Math.min(sek, 9998)) };
+}
+function zeitText(sek) { if (!sek) return '–'; var m = Math.floor(sek / 60), x = sek % 60; return m + ':' + (x < 10 ? '0' : '') + x + ' min'; }
+function netFetch(path, body, extra) {
+  var ctl = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ctl) ctl.abort(); }, 7000);
+  var h = { apikey: NET.key, 'Content-Type': 'application/json' }; if (extra) for (var k in extra) h[k] = extra[k];
+  return fetch(NET.url + path, { method: 'POST', headers: h, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined })
+    .then(function (r) { clearTimeout(to); return r; }, function (e) { clearTimeout(to); throw e; });
+}
+function nameOk(n) { return typeof n === 'string' && n.length >= 2 && n.length <= 14 && /^[A-Za-z0-9ÄÖÜäöüß .\-_]+$/.test(n); }
+function bestenBox() {
+  var w = wertung(), box = el('div', 'besten');
+  box.innerHTML = '<h3>🏆 Bestenliste Klasse ' + NET.klasse + '</h3>' +
+    '<p class="deine">Deine Wertung: <b>' + w.p + (w.p === 1 ? ' Punkt' : ' Punkte') + '</b> <span class="klein">(Hauptteil ' + w.h + (w.mitBonus ? ' + Bonus ' + w.b : '') + ')</span> · Zeit für den Hauptteil: <b>' + zeitText(w.sek) + '</b></p>' +
+    '<div class="eintragen"><input type="text" maxlength="14" autocomplete="off" placeholder="Dein Spitzname" aria-label="Spitzname"><button type="button">Eintragen</button></div>' +
+    '<p class="klein hinweis">Nur Spitzname, kein echter Name! Gespeichert werden Spitzname, Punkte und Zeit. <a href="../datenschutz.html#bestenliste">Datenschutz</a></p>' +
+    '<div class="netstatus" role="status"></div><ol class="rangliste"></ol>' +
+    '<p class="klein">Es zählt, was beim ersten Versuch richtig war. Bei gleicher Punktzahl gewinnt die schnellere Zeit.' + (w.mitBonus ? '' : ' Mit den Bonusfragen holst du Extrapunkte – danach kannst du dich nochmal eintragen.') + '</p>';
+  var inp = box.querySelector('input'), knopf = box.querySelector('.eintragen button'), st = box.querySelector('.netstatus'), ol = box.querySelector('.rangliste');
+  inp.value = lsGet(NAME_KEY);
+  function status(art, t) { st.className = 'netstatus ' + art; st.textContent = t; }
+  if (!w.sek || w.p < 1) { knopf.disabled = true; inp.disabled = true; status('warn', w.sek ? 'Mit 0 Punkten gibt es noch keinen Eintrag.' : 'Starte das Quiz von vorne (Startseite), damit deine Zeit gemessen wird.'); }
+  else if (lsGet(GESENDET_KEY) === String(w.score)) { knopf.textContent = 'Eingetragen ✓'; knopf.disabled = true; }
+  inp.addEventListener('input', function () { if (lsGet(GESENDET_KEY) !== String(w.score) || inp.value !== lsGet(NAME_KEY)) { knopf.disabled = !w.sek || w.p < 1; knopf.textContent = 'Eintragen'; } });
+  knopf.onclick = function () {
+    var n = inp.value.trim().replace(/\s+/g, ' ');
+    if (!nameOk(n)) { status('warn', 'Der Spitzname braucht 2 bis 14 Zeichen: Buchstaben, Ziffern, Leerzeichen, Punkt oder Strich.'); return; }
+    knopf.disabled = true; status('', 'Wird eingetragen …');
+    netFetch('scores', { game: NET.game, name: n, score: w.score, level: w.mitBonus ? 2 : 1, ops: zeitText(w.sek) }, { Prefer: 'return=minimal' })
+      .then(function (r) { if (r.ok) return 'ok'; return r.text().then(function (t) { return /nicht erlaubt/.test(t) ? 'name' : (/Zu viele/.test(t) ? 'viele' : 'fehler'); }); }, function () { return 'offline'; })
+      .then(function (res) {
+        if (res === 'ok') { lsSet(NAME_KEY, n); lsSet(GESENDET_KEY, String(w.score)); knopf.textContent = 'Eingetragen ✓'; status('ok', 'Du stehst jetzt in der Bestenliste.'); laden(n); return; }
+        knopf.disabled = false;
+        if (res === 'name') status('warn', 'Dieser Spitzname ist nicht erlaubt. Nimm bitte einen anderen.');
+        else if (res === 'viele') status('warn', 'Gerade tragen sich sehr viele ein – probier es in einer Minute nochmal.');
+        else status('warn', 'Keine Verbindung zur Bestenliste. Probier es später nochmal.');
+      });
+  };
+  function laden(eigen) {
+    eigen = (eigen || lsGet(NAME_KEY)).toLowerCase();
+    ol.innerHTML = '<li class="leer">Lädt …</li>';
+    netFetch('rpc/top_scores', { p_game: NET.game, p_since: null, p_limit: 20 })
+      .then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+      .then(function (rows) {
+        if (!rows.length) { ol.innerHTML = '<li class="leer">Noch kein Eintrag – hol dir den ersten Platz!</li>'; return; }
+        ol.innerHTML = '';
+        rows.forEach(function (z, i) {
+          var mein = eigen && z.name.toLowerCase() === eigen;
+          if (i >= 10 && !mein) return;
+          var pkt = Math.floor(z.score / 10000), sek = 9999 - z.score % 10000;
+          var li = el('li', (mein ? 'mein' : '') + (i < 3 ? ' p' + (i + 1) : ''));
+          li.innerHTML = '<span class="rg">' + (i + 1) + '.</span><span class="nm"></span><span class="pk">' + pkt + ' P.</span><span class="zt">' + zeitText(sek) + '</span>';
+          li.querySelector('.nm').textContent = z.name;
+          if (i >= 10) ol.appendChild(el('li', 'luecke-r', '…'));
+          ol.appendChild(li);
+        });
+      }, function () { ol.innerHTML = '<li class="leer">Die Bestenliste ist gerade nicht erreichbar.</li>'; });
+  }
+  laden();
+  return box;
 }
 $vor.onclick = function () { geh(I + 1); };
 $zur.onclick = function () { geh(I - 1); };
