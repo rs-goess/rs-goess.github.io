@@ -23,7 +23,7 @@
   document.body.classList.toggle('bewertung', BEW);
   var BIRNE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></svg>';
   var HAKEN = '<svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  var HALB = '<svg viewBox="0 0 26 24"><path d="M2 12 L9 20 L17 8" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var HALB = '<svg viewBox="0 0 26 24"><path d="M2 12 L8 18.5 L18 3.5 M9 10 L18.5 12.6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function haken(p) { var h = ''; for (var i = 0; i < Math.floor(p + 1e-9); i++) h += HAKEN; if (p % 1 > 0.25) h += HALB; return h; }
   var KREUZ = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>';
 

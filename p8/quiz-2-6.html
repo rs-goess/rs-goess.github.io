@@ -93,10 +93,15 @@ var E_ZIFFERN = function (angaben, erg) { return { schritte: [
 var E_EINHEIT_N = { schritte: [
   { k: 'Einheiten', t: 'Kilogramm mal Newton pro Kilogramm: Das kg kürzt sich weg.', f: '$\\mathrm{kg} \\cdot \\dfrac{\\mathrm{N}}{\\mathrm{kg}} = \\mathrm{N}$' },
   { k: 'Taschenrechner', t: 'Tippe nur die Zahlen: <b>7,5 × 9,81</b>. Die Einheit schreibst du selbst dazu.' }] };
-var E_ORTSFAKTOR = { schritte: [
-  { k: 'Was misst man?', t: 'Die Masse des Massestücks kennt man (2,5 kg). Der Kraftmesser zeigt, wie stark Zyra daran zieht (27 N).' },
-  { k: 'Ortsfaktor', t: 'Der Ortsfaktor sagt, wie viel Newton auf <b>jedes Kilogramm</b> wirken – also Gewichtskraft geteilt durch Masse:', f: '$g = \\dfrac{' + FG + '}{m}$' },
-  { k: 'Genau so', t: 'haben wir in Versuch 2 den Ortsfaktor der Erde bestimmt.' }] };
+/* Umstellen von F_G = m · g nach g – beide Wege (erst umstellen oder erst einsetzen), Wunsch 24.11. */
+var E_UMSTELLEN = function (F, m) { return { schritte: [
+  { k: 'Woher kommt die Formel?', t: 'Du kennst: Gewichtskraft = Masse mal Ortsfaktor.', f: '$' + FG + ' = m \\cdot g$' },
+  { k: 'Umstellen nach g', t: '$g$ soll allein stehen. Neben $g$ steht „$m \\cdot$“ – also teilst du beide Seiten durch $m$.', f: '$' + FG + ' = m \\cdot g \\quad | :m$' },
+  { k: 'Kürzen', t: 'Rechts kürzt sich $m$ weg:', f: '$\\dfrac{' + FG + '}{m} = \\dfrac{\\weg{m} \\cdot g}{\\weg{m}}$' },
+  { k: 'Ergebnis', t: 'Seiten tauschen – fertig ist die Formel für den Ortsfaktor:', f: '$g = \\dfrac{' + FG + '}{m}$' },
+  { k: 'Auch richtig: erst einsetzen', t: 'Du kannst auch zuerst die Werte <b>mit Einheiten</b> in $' + FG + ' = m \\cdot g$ einsetzen und dann durch die Masse teilen:',
+    f: '$' + F + U('N') + ' = ' + m + U('kg') + ' \\cdot g \\quad | :' + m + U('kg') + '$' },
+  { k: 'Gleiche Rechnung', f: '$g = \\dfrac{' + F + U('N') + '}{' + m + U('kg') + '}$', t: 'Beide Wege führen zur selben Rechnung – beide sind richtig.' }] }; };
 
 /* ---------- Quiz-Fragen ---------- */
 var QZ = {
@@ -315,7 +320,7 @@ function rechnungO(o) {   /* Ortsfaktor: g = F_G / m */
              { z: '$' + FG + ' = ' + o.F + U('N') + '$', tipp: o.tF } ],
     ges: { z: '$g$', p: 0.5, tipp: 'Gesucht ist der Ortsfaktor. (½ Punkt für geg. und ges. zusammen)' },
     rechts: [
-      { z: '$g = \\dfrac{' + FG + '}{m}$', s: 'Formel', p: 1, tipp: 'Ortsfaktor = Gewichtskraft geteilt durch Masse – als Bruch.', erkl: o.erklF },
+      { z: '$g = \\dfrac{' + FG + '}{m}$', s: 'Formel', p: 1, tipp: 'Ortsfaktor = Gewichtskraft geteilt durch Masse – als Bruch. Oder: $' + FG + ' = m \\cdot g$ nach $g$ umstellen.', erkl: E_UMSTELLEN(o.F, o.m) },
       { z: '$g = \\dfrac{' + o.F + U('N') + '}{' + o.m + U('kg') + '}$', s: 'Einsetzen', p: 0.5, tipp: 'Oben die Gewichtskraft, unten die Masse – jeweils <b>mit Einheit</b>.' },
       { z: '$g = ' + o.roh + NKGt + '$', s: 'Ergebnis', p: 1, tipp: 'Wert (½ Punkt) und Einheit N/kg (½ Punkt) – noch nicht runden.' },
       { z: '$g \\approx \\underline{\\underline{' + o.erg + NKG + '}}$', s: 'Sinnvolle Ziffern', p: 0.5, tipp: o.tz, erkl: o.erklZ }],
@@ -337,7 +342,7 @@ window.PFAD = {
     '<div class="box"><b>So gibt es Punkte bei den Rechenaufgaben</b> (mit <b>Bewertung einblenden</b> siehst du sie als grüne Haken):' +
     '<table class="pkt"><tr><td>geg. und ges.</td><td>½</td></tr><tr><td>Formel</td><td>1</td></tr><tr><td>Einsetzen mit Einheiten</td><td>½</td></tr>' +
     '<tr><td>Ergebnis: richtiger Wert</td><td>½</td></tr><tr><td>Ergebnis: richtige Einheit</td><td>½</td></tr><tr><td>sinnvolle Ziffern</td><td>½</td></tr>' +
-    '<tr><td><b>zusammen</b></td><td>3,5</td></tr></table></div>' +
+    '<tr><td><b>zusammen</b></td><td>3,5</td></tr></table><span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = 1 Punkt, &nbsp;<span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 12 L8 18.5 L18 3.5 M9 10 L18.5 12.6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = ½ Punkt</div>' +
     '<div class="box">📱 Am Handy: Rechenblätter <b>quer halten</b> oder die <b>Lupe</b> nehmen.</div>' },
 
   /* ===================== Teil B: Begriffe ===================== */
@@ -386,7 +391,7 @@ window.PFAD = {
       { bild: 'bilder/2-6-quiz/r3.webp', top: 0, y0: 0, y1: 2.171 },
       { rechnung: rechnungO({ m: '2{,}5', F: '27', roh: '10{,}8', erg: '11',
         tm: 'Die Masse des Massestücks.', tF: 'Was zeigt der Kraftmesser an? Das ist die Gewichtskraft auf Zyra.',
-        erklF: E_ORTSFAKTOR, tz: 'Beide Angaben haben 2 Ziffern.',
+        tz: 'Beide Angaben haben 2 Ziffern.',
         erklZ: E_ZIFFERN('$2{,}5$ kg → 2 Ziffern; $27$ N → 2 Ziffern. Also 2.', '$10{,}8' + NKGt + ' \\approx 11' + NKGt + '$'),
         satz: 'Auf Zyra beträgt der Ortsfaktor etwa 11 N/kg – etwas mehr als auf der Erde.' }) }
     ],
