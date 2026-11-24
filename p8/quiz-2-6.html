@@ -306,24 +306,24 @@ function rechnungG(o) {   /* Gewichtskraft: F_G = m · g */
   return { x0: 1.5, w: 18.0, strich: 7.5, lx: 1.75,
     links: [ { z: '$m = ' + o.m + U('kg') + '$', tipp: o.tm },
              { z: '$' + o.gz + ' = ' + o.g + NKGt + '$', tipp: o.tg } ],
-    ges: { z: '$' + FG + '$', p: 0.5, tipp: 'Was sollst du berechnen? Schreib das Formelzeichen auf. (½ Punkt für geg. und ges. zusammen)' },
+    ges: { z: '$' + FG + '$', p: 0.5, pl: 'geg./ges.', hdy: -0.5, tipp: 'Was sollst du berechnen? Schreib das Formelzeichen auf. (½ Punkt für geg. und ges. zusammen)' },
     rechts: [
-      { z: '$' + FG + ' = m \\cdot ' + o.gz + '$', s: 'Formel', p: 1, tipp: 'Gewichtskraft = Masse mal Ortsfaktor.' },
-      { z: '$' + FG + ' = ' + o.m + U('kg') + ' \\cdot ' + o.g + NKGt + '$', s: 'Einsetzen', p: 0.5, tipp: 'Setze die Zahlen <b>mit Einheiten</b> ein.', erkl: o.erklE },
-      { z: '$' + FG + ' = ' + o.roh + U('N') + '$', s: 'Ergebnis', p: 1, tipp: 'Taschenrechner! Wert (½ Punkt) und Einheit N (½ Punkt) – noch nicht runden.' },
-      { z: '$' + FG + ' \\approx$&nbsp;<span class="unter">$' + o.erg + U('N') + '$</span>', s: 'Sinnvolle Ziffern', p: 0.5, tipp: o.tz, erkl: o.erklZ }],
+      { z: '$' + FG + ' = m \\cdot ' + o.gz + '$', s: 'Formel', p: 1, pl: 'Formel', tipp: 'Gewichtskraft = Masse mal Ortsfaktor.' },
+      { z: '$' + FG + ' = ' + o.m + U('kg') + ' \\cdot ' + o.g + NKGt + '$', s: 'Einsetzen', p: 0.5, pl: 'Einsetzen', tipp: 'Setze die Zahlen <b>mit Einheiten</b> ein.', erkl: o.erklE },
+      { z: '$' + FG + ' = ' + o.roh + U('N') + '$', s: 'Ergebnis', p: 1, pl: [[0.5, 'Wert'], [0.5, 'Einheit']], tipp: 'Taschenrechner! Wert (½ Punkt) und Einheit N (½ Punkt) – noch nicht runden.' },
+      { z: '$' + FG + ' \\approx$&nbsp;<span class="unter">$' + o.erg + U('N') + '$</span>', s: 'Sinnvolle Ziffern', p: 0.5, pl: 'Ziffern', tipp: o.tz, erkl: o.erklZ }],
     antwort: { z: o.satz, tipp: 'Antworte in einem ganzen Satz.' } };
 }
 function rechnungO(o) {   /* Ortsfaktor: g = F_G / m */
   return { x0: 1.5, w: 18.0, strich: 7.5, lx: 1.75,
     links: [ { z: '$m = ' + o.m + U('kg') + '$', tipp: o.tm },
              { z: '$' + FG + ' = ' + o.F + U('N') + '$', tipp: o.tF } ],
-    ges: { z: '$g$', p: 0.5, tipp: 'Gesucht ist der Ortsfaktor. (½ Punkt für geg. und ges. zusammen)' },
+    ges: { z: '$g$', p: 0.5, pl: 'geg./ges.', hdy: -0.5, tipp: 'Gesucht ist der Ortsfaktor. (½ Punkt für geg. und ges. zusammen)' },
     rechts: [
-      { z: '$g = \\dfrac{' + FG + '}{m}$', s: 'Formel', p: 1, tipp: 'Ortsfaktor = Gewichtskraft geteilt durch Masse – als Bruch. Oder: $' + FG + ' = m \\cdot g$ nach $g$ umstellen.', erkl: E_UMSTELLEN(o.F, o.m) },
-      { z: '$g = \\dfrac{' + o.F + U('N') + '}{' + o.m + U('kg') + '}$', s: 'Einsetzen', p: 0.5, tipp: 'Oben die Gewichtskraft, unten die Masse – jeweils <b>mit Einheit</b>.' },
-      { z: '$g = ' + o.roh + NKGt + '$', s: 'Ergebnis', p: 1, tipp: 'Wert (½ Punkt) und Einheit N/kg (½ Punkt) – noch nicht runden.' },
-      { z: '$g \\approx \\underline{\\underline{' + o.erg + NKG + '}}$', s: 'Sinnvolle Ziffern', p: 0.5, tipp: o.tz, erkl: o.erklZ }],
+      { z: '$g = \\dfrac{' + FG + '}{m}$', s: 'Formel', p: 1, pl: 'Formel', tipp: 'Ortsfaktor = Gewichtskraft geteilt durch Masse – als Bruch. Oder: $' + FG + ' = m \\cdot g$ nach $g$ umstellen.', erkl: E_UMSTELLEN(o.F, o.m) },
+      { z: '$g = \\dfrac{' + o.F + U('N') + '}{' + o.m + U('kg') + '}$', s: 'Einsetzen', p: 0.5, pl: 'Einsetzen', tipp: 'Oben die Gewichtskraft, unten die Masse – jeweils <b>mit Einheit</b>.' },
+      { z: '$g = ' + o.roh + NKGt + '$', s: 'Ergebnis', p: 1, pl: [[0.5, 'Wert'], [0.5, 'Einheit']], tipp: 'Wert (½ Punkt) und Einheit N/kg (½ Punkt) – noch nicht runden.' },
+      { z: '$g \\approx \\underline{\\underline{' + o.erg + NKG + '}}$', s: 'Sinnvolle Ziffern', p: 0.5, pl: 'Ziffern', tipp: o.tz, erkl: o.erklZ }],
     antwort: { z: o.satz, tipp: 'Antworte in einem ganzen Satz.' } };
 }
 

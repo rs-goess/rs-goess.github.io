@@ -14,6 +14,7 @@
    Z.tl = Teilaufgabe ('a)'), Z.luft = zusätzliche freie Reihen davor, Z.dx = Einrückung,
    Z.typ:'skizze' (html = SVG, w, h in cm). Rechnung: strich = Lage des Mittelstrichs (cm).
    Bewertung (grüne Haken, Punkte) erst nach „Bewertung einblenden“ (wird im Browser gemerkt).
+   Seit 24.11.: Z.pl = Index am Haken ('Formel' oder [[0.5,'Wert'],[0.5,'Einheit']]), Z.hdy = Haken senkrecht verschieben (cm).
    ===================================================================== */
 (function () {
   'use strict';
@@ -24,7 +25,12 @@
   var BIRNE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></svg>';
   var HAKEN = '<svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var HALB = '<svg viewBox="0 0 26 24"><path d="M2 12 L8 18.5 L18 3.5 M9 10 L18.5 12.6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  function haken(p) { var h = ''; for (var i = 0; i < Math.floor(p + 1e-9); i++) h += HAKEN; if (p % 1 > 0.25) h += HALB; return h; }
+  /* pl = kleiner Index am Haken (wofür der Punkt ist): Text, oder Liste [[Punkte, 'Text'], …] für mehrere Haken an einer Zeile */
+  function haken(p, pl) {
+    if (Array.isArray(pl)) return pl.map(function (t) { return '<span class="hk">' + (t[0] >= 1 ? HAKEN : HALB) + '<sub>' + t[1] + '</sub></span>'; }).join('');
+    var h = ''; for (var i = 0; i < Math.floor(p + 1e-9); i++) h += HAKEN; if (p % 1 > 0.25) h += HALB;
+    return pl ? '<span class="hk">' + h + '<sub>' + pl + '</sub></span>' : h;
+  }
   var KREUZ = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>';
 
   var MAKROS = { '\\weg': '\\htmlClass{st}{\\cancel{#1}}' };
@@ -226,7 +232,7 @@
       var lab = null;
       if (z.lab) { lab = el('div', 'bl-lab' + (z.labcls ? ' ' + z.labcls : ''), z.lab); lab.style.left = px(z.labx != null ? z.labx : 0.65); lab.style.top = T(z.y); blatt.appendChild(lab); }
       var hk = null;
-      if (z.p) { hk = el('div', 'bl-haken', haken(z.p)); hk.title = (String(z.p).replace('.', ',')) + (z.p === 1 ? ' Punkt' : ' Punkte'); blatt.appendChild(hk); }
+      if (z.p) { hk = el('div', 'bl-haken', haken(z.p, z.pl)); hk.title = (String(z.p).replace('.', ',')) + (z.p === 1 ? ' Punkt' : ' Punkte'); blatt.appendChild(hk); }
       var b = null;
       if (z.erkl) {
         b = el('button', 'bl-birne' + (z.birne ? ' eck' : ''), BIRNE); b.type = 'button'; b.setAttribute('aria-label', 'Erklärung');
@@ -256,7 +262,7 @@
       var rechts = l + w + 6;
       if (o.hk && BEW) {
         if (o.z.haken) { o.hk.style.left = (o.z.haken[0] * PX) + 'px'; o.hk.style.top = ((o.z.haken[1] - y0) * PX - 13) + 'px'; }
-        else { o.hk.style.left = rechts + 'px'; o.hk.style.top = (t - 6) + 'px'; rechts += o.hk.offsetWidth + 4; }
+        else { o.hk.style.left = rechts + 'px'; o.hk.style.top = (t - 6 + (o.z.hdy || 0) * PX) + 'px'; if (!o.z.hdy) rechts += o.hk.offsetWidth + 4; }
       }
       if (!o.b) return;
       if (o.z.birne) { o.b.style.left = (o.z.birne[0] * PX - 14) + 'px'; o.b.style.top = ((o.z.birne[1] - y0) * PX - 14 + 5) + 'px'; return; }
