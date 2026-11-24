@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.6 Quiz Gewichtskraft und Ortsfaktor</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/ab-pfad.css">
+<style>
+  /* ---------- Quiz-Bausteine (Muster: p9/lernpfad-2-2.html) ---------- */
+  .qz{font-size:16.5px;line-height:1.45}
+  .qz .frage{font-weight:bold;margin:0 0 4px}
+  .qz .klein{font-weight:normal;font-size:14px;color:#566}
+  .mc{list-style:none;margin:8px 0;padding:0}
+  .mc li{margin:7px 0}
+  .mc button{width:100%;text-align:left;display:flex;gap:10px;align-items:flex-start;border:2px solid #d5dde3;background:#fff;
+    border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;color:inherit;cursor:pointer;min-height:46px}
+  .mc button .kx{flex:none;width:22px;height:22px;border:2px solid #9aa8b2;margin-top:1px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px}
+  .mc.einzel button .kx{border-radius:50%}
+  .mc.mehr button .kx{border-radius:5px}
+  .mc button.an{border-color:var(--petrol2);background:#eef7fa}
+  .mc button.an .kx{background:var(--petrol2);border-color:var(--petrol2);color:#fff}
+  .mc button.r{border-color:var(--gruen);background:var(--gruen-hell)}
+  .mc button.r .kx{background:var(--gruen);border-color:var(--gruen);color:#fff}
+  .mc button.f{border-color:var(--rot);background:#fde8e8}
+  .mc button.f .kx{background:var(--rot);border-color:var(--rot);color:#fff}
+  .mc button.fehlt{border-style:dashed;border-color:var(--gruen)}
+  .mc button:disabled{cursor:default}
+  .mc .fb{font-size:14.5px;margin:3px 4px 0 34px;color:#444}
+  .qknopf{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .qknopf button{border:0;border-radius:10px;padding:10px 14px;font:inherit;font-size:15px;font-weight:bold;cursor:pointer;min-height:44px}
+  .qknopf .pr{background:var(--petrol2);color:#fff}
+  .qknopf .nochmal,.qknopf .zeig{background:#e1e6ea;color:var(--dunkel)}
+  .qknopf button:disabled{opacity:.35;cursor:default}
+  .rueck{display:none;margin-top:10px;border-radius:10px;padding:9px 12px;font-size:15.5px}
+  .rueck.gut{display:block;background:var(--gruen-hell);border-left:5px solid var(--gruen)}
+  .rueck.falsch{display:block;background:#fde8e8;border-left:5px solid var(--rot)}
+  .rueck.fast{display:block;background:var(--gelb-hell);border-left:5px solid #e0a93c}
+  .rueck .warum{margin-top:6px;color:#333}
+  .speicher{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 10px;padding:9px;background:#F2F2F2;border-radius:12px}
+  .speicher button{border:2px solid #b9c6cf;background:#fff;border-radius:999px;padding:6px 13px;font:inherit;font-size:16px;cursor:pointer;min-height:40px}
+  .speicher button:disabled{opacity:.3;cursor:default}
+  .lt p{margin:8px 0;line-height:2.1}
+  .luecke{display:inline-block;min-width:92px;min-height:34px;vertical-align:middle;border:0;border-bottom:2.5px solid #8a99a6;background:#f6f8fa;
+    border-radius:6px 6px 0 0;font:inherit;font-size:16px;padding:2px 8px;cursor:pointer;color:var(--tinte)}
+  .luecke.ziel{background:var(--gelb-hell);border-bottom-color:#e0a93c}
+  .luecke.r{background:var(--gruen-hell);border-bottom-color:var(--gruen)}
+  .luecke.f{background:#fde8e8;border-bottom-color:var(--rot)}
+  .teil{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;
+    background:var(--petrol2);border-radius:999px;padding:3px 10px;margin-bottom:8px}
+  .teil.l{background:var(--lila)} .teil.b{background:var(--orange)}
+  .plan{list-style:none;padding:0;margin:10px 0}
+  .plan li{display:flex;gap:10px;align-items:flex-start;margin:8px 0}
+  .plan .teil{flex:none;margin:1px 0 0;min-width:22px;text-align:center}
+  table.pkt{border-collapse:collapse;margin:6px 0;font-size:15px}
+  table.pkt td{padding:3px 10px 3px 0;border-bottom:1px solid #e5e5e5}
+  table.pkt td:last-child{text-align:right;font-weight:bold;white-space:nowrap}
+  .auswertung{background:#EEF6F8;border:1.5px solid #9cc9d4;border-radius:12px;padding:10px 12px;margin:10px 0}
+  /* Pop-up vor dem Start */
+  dialog.pop{border:0;padding:0;border-radius:22px;width:min(560px,calc(100vw - 24px));background:#FFFDF8;color:#1b1b1b;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  dialog.pop::backdrop{background:rgba(10,25,30,.7)}
+  .pop .in{padding:24px 22px 20px;text-align:center}
+  .pop .blatt{width:110px;height:90px;margin:0 auto 12px;border-radius:8px;border:2px solid #9aa8b2;transform:rotate(-4deg);
+    background-color:#fff;background-image:linear-gradient(#cfd8de 1px,transparent 1px),linear-gradient(90deg,#cfd8de 1px,transparent 1px);background-size:11px 11px;
+    box-shadow:4px 5px 0 rgba(0,0,0,.08);display:grid;place-items:center;font-size:38px}
+  .pop h2{margin:0 0 10px;font-size:25px;line-height:1.2;color:var(--petrol)}
+  .pop p{font-size:18px;line-height:1.45;margin:8px 0}
+  .pop .los{margin-top:14px;border:0;border-radius:999px;min-height:52px;padding:0 26px;font:inherit;font-size:18px;font-weight:800;cursor:pointer;
+    background:linear-gradient(135deg,#8E3BA6,#5B3FC4);color:#fff;width:100%}
+</style>
+</head>
+<body>
+<script>
+/* =====================================================================
+   Physik 8b · 2.6 Quiz Gewichtskraft und Ortsfaktor (zum Üben vor der Ex)
+   Teil B: Begriffe (Auswahl, Lückentext) · Teil R: Rechnen im Lernpfad-Format · Teil L: Logikfragen
+   Aufgabenbilder: bilder/2-6-quiz/r1–r4.webp (selbst gesetzt im AB-Stil, 21 cm breit, 104 px/cm)
+   Bewertung Rechnen (Wunsch 24.11.): geg./ges. ½ · Formel 1 · Einsetzen mit Einheiten ½ ·
+   Ergebnis: Wert ½ + Einheit ½ · sinnvolle Ziffern ½  → 3,5 Punkte je Aufgabe
+   ===================================================================== */
+var U = function (e) { return '\\,\\mathrm{' + e + '}'; };
+var NKG = '\\,\\dfrac{\\mathrm{N}}{\\mathrm{kg}}';
+var NKGt = '\\,\\tfrac{\\mathrm{N}}{\\mathrm{kg}}';
+var FG = 'F_{\\mathrm{G}}';
+
+var E_ZIFFERN = function (angaben, erg) { return { schritte: [
+  { k: 'Regel', t: 'Das Ergebnis bekommt so viele Ziffern wie die Angabe mit den <b>wenigsten Ziffern</b> – aber mindestens 2.' },
+  { k: 'Ziffern zählen', t: angaben },
+  { k: 'Also', f: erg }] }; };
+var E_EINHEIT_N = { schritte: [
+  { k: 'Einheiten', t: 'Kilogramm mal Newton pro Kilogramm: Das kg kürzt sich weg.', f: '$\\mathrm{kg} \\cdot \\dfrac{\\mathrm{N}}{\\mathrm{kg}} = \\mathrm{N}$' },
+  { k: 'Taschenrechner', t: 'Tippe nur die Zahlen: <b>7,5 × 9,81</b>. Die Einheit schreibst du selbst dazu.' }] };
+var E_ORTSFAKTOR = { schritte: [
+  { k: 'Was misst man?', t: 'Die Masse des Massestücks kennt man (2,5 kg). Der Kraftmesser zeigt, wie stark Zyra daran zieht (27 N).' },
+  { k: 'Ortsfaktor', t: 'Der Ortsfaktor sagt, wie viel Newton auf <b>jedes Kilogramm</b> wirken – also Gewichtskraft geteilt durch Masse:', f: '$g = \\dfrac{' + FG + '}{m}$' },
+  { k: 'Genau so', t: 'haben wir in Versuch 2 den Ortsfaktor der Erde bestimmt.' }] };
+
+/* ---------- Quiz-Fragen ---------- */
+var QZ = {
+  b1: { typ: 'einzel', frage: 'Was versteht man unter der <b>Gewichtskraft</b>?',
+    a: [ { t: 'Die Kraft, mit der ein Himmelskörper (z. B. die Erde) einen Körper anzieht.', ok: true },
+         { t: 'Wie viel Stoff in einem Körper steckt.', fb: 'Das ist die <b>Masse</b>.' },
+         { t: 'Die Anzeige einer Küchenwaage in Kilogramm.', fb: 'Kilogramm ist die Einheit der <b>Masse</b>.' },
+         { t: 'Wie viel Newton auf 1 kg wirken.', fb: 'Das ist der <b>Ortsfaktor</b>.' } ],
+    warum: 'Die Erde zieht jeden Körper zu ihrem Mittelpunkt hin. Diese Kraft heißt Gewichtskraft $' + FG + '$.' },
+  b2: { typ: 'luecke', frage: 'Ergänze mit dem Wortspeicher.',
+    saetze: [ 'Die Masse hat das Formelzeichen [$m$] und die Einheit [kg]. Man misst sie mit einer [Waage].',
+              'Die Gewichtskraft hat das Formelzeichen [$' + FG + '$] und die Einheit [N]. Man misst sie mit einem [Kraftmesser].',
+              'Der Ortsfaktor hat das Formelzeichen [$g$] und die Einheit [$\\tfrac{\\mathrm{N}}{\\mathrm{kg}}$].' ],
+    extra: [ 'Lineal', '$\\tfrac{\\mathrm{kg}}{\\mathrm{N}}$' ],
+    warum: 'Masse: $m$ in kg (Waage)<br>Gewichtskraft: $' + FG + '$ in N (Kraftmesser)<br>Ortsfaktor: $g$ in $\\tfrac{\\mathrm{N}}{\\mathrm{kg}}$.' },
+  b3: { typ: 'einzel', frage: 'Was gibt der <b>Ortsfaktor</b> an?',
+    a: [ { t: 'Wie viel Newton Gewichtskraft an diesem Ort auf jedes Kilogramm Masse wirken.', ok: true },
+         { t: 'Wie viel Kilogramm ein Körper an diesem Ort hat.', fb: 'Die Masse hängt nicht vom Ort ab – sie ist überall gleich.' },
+         { t: 'Wie weit ein Ort vom Erdmittelpunkt entfernt ist.', fb: 'Das ist eine Länge – der Ortsfaktor hat die Einheit N/kg.' },
+         { t: 'Welche Masse 1 Newton an diesem Ort hat.', fb: 'Andersherum: Newton <b>pro</b> Kilogramm.' } ],
+    warum: '$g = \\dfrac{' + FG + '}{m}$ – auf der Erde wirken auf 1 kg etwa 9,81 N.' },
+  b4: { typ: 'mehr', frage: 'Welche Aussagen stimmen?',
+    a: [ { t: 'Die Gewichtskraft greift im Schwerpunkt eines Körpers an.', ok: true },
+         { t: 'Die Gewichtskraft zeigt immer senkrecht nach unten – zum Erdmittelpunkt.', ok: true },
+         { t: 'Die Masse eines Körpers ist überall im Weltall gleich.', ok: true },
+         { t: 'Die Gewichtskraft eines Körpers ist überall gleich.', fb: 'Nein – sie hängt vom Ortsfaktor ab.' },
+         { t: 'Auf einer schiefen Rampe zeigt die Gewichtskraft parallel zur Rampe nach unten.', fb: 'Nein – auch dort zeigt sie senkrecht nach unten.' } ],
+    warum: 'Angriffspunkt: Schwerpunkt · Richtung: senkrecht nach unten · Betrag: hängt von Masse <b>und</b> Ort ab.' },
+  b5: { typ: 'einzel', frage: 'Mia sagt: „Mein Rucksack hat eine Gewichtskraft von 8 kg.“ Was ist falsch?',
+    a: [ { t: 'Kilogramm ist die Einheit der Masse. Die Gewichtskraft gibt man in Newton an.', ok: true },
+         { t: 'Nichts – Gewichtskraft und Masse sind dasselbe.', fb: 'Masse = wie viel Stoff (kg). Gewichtskraft = wie stark die Erde zieht (N).' },
+         { t: 'Es müsste „8 N/kg“ heißen.', fb: 'N/kg ist die Einheit des <b>Ortsfaktors</b>.' },
+         { t: 'Ein Rucksack hat keine Gewichtskraft.', fb: 'Jeder Körper mit Masse wird von der Erde angezogen.' } ],
+    warum: 'Richtig wäre: Der Rucksack hat eine <b>Masse</b> von 8 kg – seine Gewichtskraft ist $8' + U('kg') + ' \\cdot 9{,}81' + NKGt + ' \\approx 78' + U('N') + '$.' },
+
+  zyra: { typ: 'einzel', frage: 'Auf Zyra ist der Ortsfaktor etwa $11' + NKGt + '$. Könntest du dort höher springen als auf der Erde?',
+    a: [ { t: 'Nein – Zyra zieht stärker als die Erde. Meine Gewichtskraft ist größer, ich springe etwas weniger hoch.', ok: true },
+         { t: 'Ja, weil meine Masse auf Zyra kleiner ist.', fb: 'Die Masse ist überall gleich.' },
+         { t: 'Genauso hoch, weil meine Masse überall gleich ist.', fb: 'Die Masse ist gleich – aber die Gewichtskraft nicht.' },
+         { t: 'Ja, viel höher – wie auf dem Mond.', fb: 'Der Mond hat einen <b>kleineren</b> Ortsfaktor (1,62 N/kg).' } ],
+    warum: '$11' + NKGt + '$ ist mehr als $9{,}81' + NKGt + '$ → auf jedes Kilogramm wirkt mehr Kraft.' },
+  planet: { typ: 'einzel', frage: 'Vergleiche deinen Ortsfaktor: Auf welchem Himmelskörper ist der Rover gelandet?',
+    a: [ { t: 'Mond ($1{,}62' + NKGt + '$)', fb: 'Dein Ergebnis ist mehr als doppelt so groß.' },
+         { t: 'Mars ($3{,}71' + NKGt + '$)', ok: true },
+         { t: 'Venus ($8{,}87' + NKGt + '$)', fb: 'Rechne nochmal: 3335 N geteilt durch 899 kg.' },
+         { t: 'Jupiter ($24{,}8' + NKGt + '$)', fb: 'Viel zu groß – vergleiche mit deinem Ergebnis.' } ],
+    warum: '$3{,}71' + NKGt + '$ passt genau zum Mars. Übrigens: Der echte Mars-Rover „Curiosity“ hat genau diese Masse – 899 kg – und fährt seit 2012 über den Mars.' },
+
+  l1: { typ: 'einzel', frage: 'Ein Astronaut fliegt von der Erde zum Mond. Was passiert mit seiner Masse und seiner Gewichtskraft?',
+    a: [ { t: 'Die Masse bleibt gleich, die Gewichtskraft wird kleiner.', ok: true },
+         { t: 'Beides wird kleiner.', fb: 'Er verliert unterwegs keinen „Stoff“ – die Masse bleibt.' },
+         { t: 'Beides bleibt gleich.', fb: 'Der Mond zieht schwächer als die Erde.' },
+         { t: 'Die Masse wird kleiner, die Gewichtskraft bleibt gleich.', fb: 'Genau andersherum.' } ],
+    warum: '$' + FG + ' = m \\cdot g$: $m$ bleibt gleich, $g$ wird kleiner ($1{,}62' + NKGt + '$ statt $9{,}81' + NKGt + '$) – also wird $' + FG + '$ kleiner.' },
+  l2: { typ: 'einzel', frage: 'Du packst doppelt so viele gleiche Bücher in deinen Rucksack – die Masse verdoppelt sich. Was passiert mit der Gewichtskraft?',
+    a: [ { t: 'Sie wird doppelt so groß.', ok: true },
+         { t: 'Sie bleibt gleich.', fb: 'Mehr Masse wird stärker angezogen.' },
+         { t: 'Sie wird halb so groß.' },
+         { t: 'Sie wird viermal so groß.', fb: 'Doppelte Masse – nicht vierfache.' } ],
+    warum: 'Gewichtskraft und Masse sind <b>direkt proportional</b> (Versuch 2): doppelte Masse → doppelte Gewichtskraft.' },
+  l3: { typ: 'einzel', frage: 'Ein Gegenstand wird von der Erde zum Jupiter gebracht ($g \\approx 24{,}8' + NKGt + '$). Seine Gewichtskraft ist dort …',
+    a: [ { t: '… etwa 2,5-mal so groß wie auf der Erde.', ok: true },
+         { t: '… gleich groß, weil die Masse gleich bleibt.', fb: 'Die Masse bleibt gleich – der Ortsfaktor aber nicht.' },
+         { t: '… etwa 2,5-mal so klein wie auf der Erde.', fb: 'Jupiter zieht <b>stärker</b>: 24,8 ist mehr als 9,81.' },
+         { t: '… etwa 25-mal so groß wie auf der Erde.', fb: 'Vergleiche 24,8 mit 9,81 – nicht mit 1.' } ],
+    warum: '$\\dfrac{24{,}8' + NKGt + '}{9{,}81' + NKGt + '} \\approx 2{,}5$ – jedes Kilogramm wird etwa 2,5-mal so stark angezogen.' },
+  l4: { typ: 'einzel', frage: 'Stein A (2 kg) liegt auf dem Mars ($3{,}71' + NKGt + '$). Stein B (1 kg) liegt auf der Erde ($9{,}81' + NKGt + '$). Welcher Stein hat die größere Gewichtskraft?',
+    a: [ { t: 'Stein B auf der Erde.', ok: true },
+         { t: 'Stein A – er hat ja die doppelte Masse.', fb: 'Die Masse allein entscheidet nicht – rechne nach!' },
+         { t: 'Beide gleich, weil die Masse überall gleich ist.', fb: 'Die Gewichtskraft hängt auch vom Ort ab.' } ],
+    warum: 'A: $2' + U('kg') + ' \\cdot 3{,}71' + NKGt + ' \\approx 7{,}4' + U('N') + '$<br>B: $1' + U('kg') + ' \\cdot 9{,}81' + NKGt + ' \\approx 9{,}8' + U('N') + '$<br>Die Gewichtskraft hängt von Masse <b>und</b> Ortsfaktor ab.' },
+  l5: { typ: 'einzel', frage: 'Eine Raumsonde fliegt weit draußen im All – weit weg von allen Planeten und Sternen. Was stimmt?',
+    a: [ { t: 'Ihre Masse ist unverändert, ihre Gewichtskraft ist fast 0 N.', ok: true },
+         { t: 'Ihre Masse ist dort 0 kg.', fb: 'Die Sonde verliert keinen Stoff – die Masse bleibt.' },
+         { t: 'Masse und Gewichtskraft sind genauso groß wie auf der Erde.', fb: 'Weit weg von allen Himmelskörpern zieht fast nichts an ihr.' },
+         { t: 'Ihre Gewichtskraft ist riesig, weil sie so schnell fliegt.', fb: 'Die Gewichtskraft hängt nicht von der Geschwindigkeit ab.' } ],
+    warum: 'Ohne einen Himmelskörper in der Nähe ist der Ortsfaktor fast 0 – also auch $' + FG + ' = m \\cdot g$ fast 0. Die Masse bleibt gleich.' }
+};
+
+/* ---------- Quiz-Technik ---------- */
+var STAND = {};               /* id → true/false beim ersten Überprüfen */
+function qtex(s) {
+  return String(s || '').replace(/\$([^$]+)\$/g, function (_, x) {
+    try { return katex.renderToString(x.replace(/\\cdot(?!\\nobreak)/g, '\\cdot\\nobreak '), { throwOnError: false }); } catch (e) { return x; }
+  });
+}
+function mischen(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function merke(id, ok) {
+  if (!(id in STAND)) STAND[id] = ok;
+  if (ok) { var sec = document.querySelector('.qz[data-id="' + id + '"]'); sec = sec && sec.closest('section.karte');
+    if (sec && sec.pruefe && !sec.querySelector('.check')) { sec.checkOk = true; sec.pruefe(); } }
+  auswerten();
+}
+function knoepfe(box) {
+  var d = document.createElement('div');
+  d.innerHTML = '<div class="qknopf"><button class="pr" type="button">Überprüfen</button><button class="zeig" type="button" disabled>Lösung anzeigen</button>' +
+    '<button class="nochmal" type="button" disabled>Nochmal</button></div><div class="rueck"></div>';
+  while (d.firstChild) box.appendChild(d.firstChild);
+  return { pr: box.querySelector('.pr'), zeig: box.querySelector('.zeig'), noch: box.querySelector('.nochmal'), rk: box.querySelector('.rueck') };
+}
+function rueck(q, k, art, text) { k.rk.className = 'rueck ' + art; k.rk.innerHTML = text + (q.warum && art !== 'fast' ? '<div class="warum">' + qtex(q.warum) + '</div>' : ''); }
+
+function baueQuiz(box, id) {
+  var q = QZ[id]; if (!q) return;
+  if (q.typ === 'luecke') return baueLuecke(box, id, q);
+  box.innerHTML = '<p class="frage">' + qtex(q.frage) + (q.typ === 'mehr' ? ' <span class="klein">(mehrere Antworten möglich)</span>' : '') + '</p><ul class="mc ' + q.typ + '"></ul>';
+  var ul = box.querySelector('.mc'), k = knoepfe(box), liste = [];
+  function aufbauen() {
+    ul.innerHTML = ''; liste = []; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    mischen(q.a).forEach(function (a) {
+      var li = document.createElement('li'), b = document.createElement('button'); b.type = 'button';
+      b.innerHTML = '<span class="kx"></span><span>' + qtex(a.t) + '</span>';
+      b.onclick = function () { if (q.typ === 'einzel') liste.forEach(function (x) { x.b.classList.remove('an'); }); b.classList.toggle('an'); };
+      li.appendChild(b); ul.appendChild(li); liste.push({ b: b, a: a, li: li });
+    });
+    k.pr.disabled = false; k.zeig.disabled = true; k.noch.disabled = true;
+  }
+  k.pr.onclick = function () {
+    var gew = liste.filter(function (x) { return x.b.classList.contains('an'); });
+    if (!gew.length) { k.rk.className = 'rueck fast'; k.rk.innerHTML = 'Wähle zuerst eine Antwort aus.'; return; }
+    var alle = true;
+    liste.forEach(function (x) {
+      var an = x.b.classList.contains('an'); x.b.disabled = true;
+      if (an) {
+        x.b.classList.add(x.a.ok ? 'r' : 'f'); x.b.querySelector('.kx').textContent = x.a.ok ? '✓' : '✗';
+        if (x.a.fb) { var d = document.createElement('div'); d.className = 'fb'; d.innerHTML = qtex(x.a.fb); x.li.appendChild(d); }
+      }
+      if (an !== !!x.a.ok) alle = false;
+    });
+    if (alle) rueck(q, k, 'gut', '<b>Richtig!</b>');
+    else rueck(q, k, 'falsch', '<b>Noch nicht ganz.</b> Lies die Rückmeldung – dann <b>Nochmal</b> oder <b>Lösung anzeigen</b>.');
+    if (!alle) k.rk.querySelector('.warum').hidden = true;
+    k.pr.disabled = true; k.zeig.disabled = alle; k.noch.disabled = false;
+    merke(id, alle);
+  };
+  k.zeig.onclick = function () {
+    liste.forEach(function (x) { if (x.a.ok && !x.b.classList.contains('r')) { x.b.classList.add('fehlt'); x.b.querySelector('.kx').textContent = '✓'; } });
+    rueck(q, k, 'gut', 'Gestrichelt: Das ist richtig.'); k.zeig.disabled = true;
+  };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+function baueLuecke(box, id, q) {
+  var woerter = [];
+  var html = q.saetze.map(function (s) {
+    return '<p>' + qtex(s.replace(/\[([^\]]+)\]/g, function (_, w) { woerter.push(w); return '§' + (woerter.length - 1) + '§'; }))
+      .replace(/§(\d+)§/g, function (_, n) { return '<button type="button" class="luecke" data-n="' + n + '">&nbsp;</button>'; }) + '</p>';
+  }).join('');
+  box.innerHTML = '<p class="frage">' + qtex(q.frage) + ' <span class="klein">Tippe auf ein Wort – es kommt in die gelbe Lücke. Tippe auf eine volle Lücke, um sie zu leeren.</span></p>' +
+    '<div class="speicher"></div><div class="lt">' + html + '</div>';
+  var sp = box.querySelector('.speicher'), lk = [].slice.call(box.querySelectorAll('.luecke')), k = knoepfe(box), ziel = null, fertig = false;
+  function markiere(l) { lk.forEach(function (x) { x.classList.remove('ziel'); }); ziel = l; if (l) l.classList.add('ziel'); }
+  function naechste() { for (var i = 0; i < lk.length; i++) if (lk[i].dataset.v == null) return lk[i]; return null; }
+  function aufbauen() {
+    sp.innerHTML = ''; fertig = false; k.rk.className = 'rueck'; k.rk.innerHTML = '';
+    lk.forEach(function (l) { delete l.dataset.v; l.innerHTML = '&nbsp;'; l.className = 'luecke'; l.disabled = false; });
+    mischen(woerter.concat(q.extra || [])).forEach(function (w) {
+      var b = document.createElement('button'); b.type = 'button'; b.innerHTML = qtex(w); b.dataset.w = w;
+      b.onclick = function () {
+        if (fertig) return; var z = ziel || naechste(); if (!z) return;
+        if (z.dataset.v != null) freigeben(z);
+        z.dataset.v = w; z.innerHTML = qtex(w); b.disabled = true; markiere(naechste());
+      };
+      sp.appendChild(b);
+    });
+    k.pr.disabled = false; k.zeig.disabled = true; k.noch.disabled = true; markiere(lk[0]);
+  }
+  function freigeben(l) { [].forEach.call(sp.children, function (b) { if (b.dataset.w === l.dataset.v) b.disabled = false; }); delete l.dataset.v; l.innerHTML = '&nbsp;'; }
+  lk.forEach(function (l) { l.onclick = function () { if (fertig) return; if (l.dataset.v != null) freigeben(l); markiere(l); }; });
+  k.pr.onclick = function () {
+    if (naechste()) { k.rk.className = 'rueck fast'; k.rk.innerHTML = 'Fülle zuerst alle Lücken.'; return; }
+    var alle = true; fertig = true; markiere(null);
+    lk.forEach(function (l) { var ok = l.dataset.v === woerter[+l.dataset.n]; l.classList.add(ok ? 'r' : 'f'); l.disabled = true; if (!ok) alle = false; });
+    if (alle) rueck(q, k, 'gut', '<b>Alles richtig!</b>');
+    else { rueck(q, k, 'falsch', '<b>Rot markierte Lücken stimmen noch nicht.</b> Versuch es nochmal oder lass dir die Lösung zeigen.'); k.rk.querySelector('.warum').hidden = true; }
+    k.pr.disabled = true; k.zeig.disabled = alle; k.noch.disabled = false; merke(id, alle);
+  };
+  k.zeig.onclick = function () {
+    lk.forEach(function (l) { l.innerHTML = qtex(woerter[+l.dataset.n]); l.className = 'luecke r'; });
+    rueck(q, k, 'gut', 'So ist es richtig.'); k.zeig.disabled = true;
+  };
+  k.noch.onclick = aufbauen;
+  aufbauen();
+}
+
+function auswerten() {
+  var ort = document.getElementById('auswertung'); if (!ort) return;
+  var ids = ['b1', 'b2', 'b3', 'b4', 'b5', 'zyra', 'planet', 'l1', 'l2', 'l3', 'l4', 'l5'];
+  var bearb = ids.filter(function (i) { return i in STAND; }), richtig = bearb.filter(function (i) { return STAND[i]; });
+  var rech = ['R1', 'R2', 'R3', 'R4'].filter(function (c) { var s = document.querySelector('section.karte[data-chip="' + c + '"]'); return s && s.querySelector('.rm.gut'); });
+  ort.innerHTML = '<b>Deine Auswertung</b><br>Quizfragen beim ersten Versuch richtig: <b>' + richtig.length + ' von ' + ids.length + '</b>' +
+    (bearb.length < ids.length ? ' <span class="klein">(' + (ids.length - bearb.length) + ' noch nicht beantwortet)</span>' : '') +
+    '<br>Rechenaufgaben mit richtigem Ergebnis geprüft: <b>' + rech.length + ' von 4</b>' +
+    (richtig.length === ids.length && rech.length === 4 ? '<br>🏆 Stark – du bist bereit für die Ex!' : '');
+}
+function Q(id) { return '<div class="qz" data-id="' + id + '"></div>'; }
+function quizSpiel(titel, id) { return { titel: titel, html: Q(id), init: function (el) { baueQuiz(el.querySelector('.qz'), id); } }; }
+
+/* ---------- Rechenaufgaben: Hilfen ---------- */
+function rechnungG(o) {   /* Gewichtskraft: F_G = m · g */
+  return { x0: 1.5, w: 18.0, strich: 7.5, lx: 1.75,
+    links: [ { z: '$m = ' + o.m + U('kg') + '$', tipp: o.tm },
+             { z: '$' + o.gz + ' = ' + o.g + NKGt + '$', tipp: o.tg } ],
+    ges: { z: '$' + FG + '$', p: 0.5, tipp: 'Was sollst du berechnen? Schreib das Formelzeichen auf. (½ Punkt für geg. und ges. zusammen)' },
+    rechts: [
+      { z: '$' + FG + ' = m \\cdot ' + o.gz + '$', s: 'Formel', p: 1, tipp: 'Gewichtskraft = Masse mal Ortsfaktor.' },
+      { z: '$' + FG + ' = ' + o.m + U('kg') + ' \\cdot ' + o.g + NKGt + '$', s: 'Einsetzen', p: 0.5, tipp: 'Setze die Zahlen <b>mit Einheiten</b> ein.', erkl: o.erklE },
+      { z: '$' + FG + ' = ' + o.roh + U('N') + '$', s: 'Ergebnis', p: 1, tipp: 'Taschenrechner! Wert (½ Punkt) und Einheit N (½ Punkt) – noch nicht runden.' },
+      { z: '$' + FG + ' \\approx$&nbsp;<span class="unter">$' + o.erg + U('N') + '$</span>', s: 'Sinnvolle Ziffern', p: 0.5, tipp: o.tz, erkl: o.erklZ }],
+    antwort: { z: o.satz, tipp: 'Antworte in einem ganzen Satz.' } };
+}
+function rechnungO(o) {   /* Ortsfaktor: g = F_G / m */
+  return { x0: 1.5, w: 18.0, strich: 7.5, lx: 1.75,
+    links: [ { z: '$m = ' + o.m + U('kg') + '$', tipp: o.tm },
+             { z: '$' + FG + ' = ' + o.F + U('N') + '$', tipp: o.tF } ],
+    ges: { z: '$g$', p: 0.5, tipp: 'Gesucht ist der Ortsfaktor. (½ Punkt für geg. und ges. zusammen)' },
+    rechts: [
+      { z: '$g = \\dfrac{' + FG + '}{m}$', s: 'Formel', p: 1, tipp: 'Ortsfaktor = Gewichtskraft geteilt durch Masse – als Bruch.', erkl: o.erklF },
+      { z: '$g = \\dfrac{' + o.F + U('N') + '}{' + o.m + U('kg') + '}$', s: 'Einsetzen', p: 0.5, tipp: 'Oben die Gewichtskraft, unten die Masse – jeweils <b>mit Einheit</b>.' },
+      { z: '$g = ' + o.roh + NKGt + '$', s: 'Ergebnis', p: 1, tipp: 'Wert (½ Punkt) und Einheit N/kg (½ Punkt) – noch nicht runden.' },
+      { z: '$g \\approx \\underline{\\underline{' + o.erg + NKG + '}}$', s: 'Sinnvolle Ziffern', p: 0.5, tipp: o.tz, erkl: o.erklZ }],
+    antwort: { z: o.satz, tipp: 'Antworte in einem ganzen Satz.' } };
+}
+
+window.PFAD = {
+  fach: 'Physik 8b', titel: '2.6 Quiz Gewichtskraft und Ortsfaktor', zurueck: 'material.html', breite: 21,
+  ueberschrift: 'Quiz: Gewichtskraft und Ortsfaktor üben',
+  karten: [
+
+  /* ===================== Start ===================== */
+  { chip: 'Start', start: true, titel: 'Fit für die Ex: Gewichtskraft und Ortsfaktor',
+    html:
+    '<p>Das Quiz hat drei Teile. Oben kannst du jederzeit zu einer Aufgabe springen.</p>' +
+    '<ul class="plan"><li><span class="teil b">B</span><span><b>Begriffe</b> – 5 Fragen zum Durchklicken: Was ist was?</span></li>' +
+    '<li><span class="teil">R</span><span><b>Rechnen</b> – 2 Aufgaben zur Gewichtskraft, 2 Planeten mit unbekanntem Ortsfaktor. Erst auf dem Blatt rechnen, dann Schritt für Schritt vergleichen.</span></li>' +
+    '<li><span class="teil l">L</span><span><b>Logik</b> – 5 Fragen: Wie verhalten sich Masse und Gewichtskraft?</span></li></ul>' +
+    '<div class="box"><b>So gibt es Punkte bei den Rechenaufgaben</b> (mit <b>Bewertung einblenden</b> siehst du sie als grüne Haken):' +
+    '<table class="pkt"><tr><td>geg. und ges.</td><td>½</td></tr><tr><td>Formel</td><td>1</td></tr><tr><td>Einsetzen mit Einheiten</td><td>½</td></tr>' +
+    '<tr><td>Ergebnis: richtiger Wert</td><td>½</td></tr><tr><td>Ergebnis: richtige Einheit</td><td>½</td></tr><tr><td>sinnvolle Ziffern</td><td>½</td></tr>' +
+    '<tr><td><b>zusammen</b></td><td>3,5</td></tr></table></div>' +
+    '<div class="box">📱 Am Handy: Rechenblätter <b>quer halten</b> oder die <b>Lupe</b> nehmen.</div>' },
+
+  /* ===================== Teil B: Begriffe ===================== */
+  { chip: 'B1', start: true, titel: '<span class="teil b">Begriffe 1 von 5</span><br>Gewichtskraft', html: Q('b1') },
+  { chip: 'B2', start: true, titel: '<span class="teil b">Begriffe 2 von 5</span><br>Formelzeichen, Einheit, Messgerät', html: Q('b2') },
+  { chip: 'B3', start: true, titel: '<span class="teil b">Begriffe 3 von 5</span><br>Ortsfaktor', html: Q('b3') },
+  { chip: 'B4', start: true, titel: '<span class="teil b">Begriffe 4 von 5</span><br>Eigenschaften der Gewichtskraft', html: Q('b4') },
+  { chip: 'B5', start: true, titel: '<span class="teil b">Begriffe 5 von 5</span><br>Finde den Fehler', html: Q('b5') },
+
+  /* ===================== Teil R: Rechnen ===================== */
+  { chip: 'R1', name: 'Aufgabe 1',
+    check: { frage: 'Ergebnis prüfen: Gib die Gewichtskraft des Rucksacks ein.', einh: 'N', ok: [74], exakt: 73.575, bsp: '12,3',
+      runden: 'Wie viele Ziffern haben 7,5 kg und 9,81 N/kg?',
+      fehler: [{ w: 0.7645, rel: 0.02, t: '<b>Geteilt statt mal?</b> Die Gewichtskraft ist Masse <b>mal</b> Ortsfaktor.' },
+               { w: 75, rel: 0.001, t: 'Hast du mit $10' + NKGt + '$ gerechnet? In der Aufgabe steht $9{,}81' + NKGt + '$.' }] },
+    teile: [
+      { bild: 'bilder/2-6-quiz/r1.webp', top: 0, y0: 0, y1: 1.728 },
+      { rechnung: rechnungG({ m: '7{,}5', g: '9{,}81', gz: 'g', roh: '73{,}575', erg: '74',
+        tm: 'Die Masse des Rucksacks – mit Formelzeichen und Einheit.', tg: 'Den Ortsfaktor der Erde findest du in der Klammer.',
+        erklE: E_EINHEIT_N, tz: 'So viele Ziffern wie die ungenaueste Angabe.',
+        erklZ: E_ZIFFERN('$7{,}5$ kg → 2 Ziffern; $9{,}81$ N/kg → 3 Ziffern. Am wenigsten: 2.', '$73{,}575' + U('N') + ' \\approx 74' + U('N') + '$'),
+        satz: 'Der Rucksack hat auf der Erde eine Gewichtskraft von etwa 74 N.' }) }
+    ] },
+  { chip: 'R2', name: 'Aufgabe 2',
+    check: { frage: 'Ergebnis prüfen: Gib die Gewichtskraft der Astronautin auf dem Mond ein.', einh: 'N', ok: [219], exakt: 218.7, bsp: '12,3',
+      runden: 'Beide Angaben haben 3 Ziffern.',
+      fehler: [{ w: 83.33, rel: 0.02, t: '<b>Geteilt statt mal?</b> Die Gewichtskraft ist Masse <b>mal</b> Ortsfaktor.' },
+               { w: 1324.35, rel: 0.01, t: 'Das wäre ihre Gewichtskraft auf der <b>Erde</b>. Rechne mit dem Ortsfaktor des Mondes.' },
+               { w: 220, rel: 0.001, t: 'Fast – aber zu stark gerundet: Beide Angaben haben <b>3</b> Ziffern.' }] },
+    teile: [
+      { bild: 'bilder/2-6-quiz/r2.webp', top: 0, y0: 0, y1: 1.728 },
+      { rechnung: rechnungG({ m: '135', g: '1{,}62', gz: 'g', roh: '218{,}7', erg: '219',
+        tm: 'Die Masse mit Raumanzug – sie ist auf dem Mond genauso groß wie auf der Erde.', tg: 'Ortsfaktor des Mondes.',
+        tz: 'So viele Ziffern wie die ungenaueste Angabe.',
+        erklZ: E_ZIFFERN('$135$ kg → 3 Ziffern; $1{,}62$ N/kg → 3 Ziffern. Also 3.', '$218{,}7' + U('N') + ' \\approx 219' + U('N') + '$'),
+        satz: 'Die Astronautin hat auf dem Mond eine Gewichtskraft von etwa 219 N.' }),
+      }
+    ] },
+  { chip: 'R3', name: 'Aufgabe 3',
+    check: { frage: 'Ergebnis prüfen: Gib den Ortsfaktor auf Zyra ein.', einh: 'N/kg', ok: [11], exakt: 10.8, bsp: '12,3',
+      runden: 'Beide Angaben (2,5 kg und 27 N) haben nur 2 Ziffern.',
+      fehler: [{ w: 67.5, t: '<b>Mal statt geteilt?</b> Der Ortsfaktor ist Gewichtskraft <b>geteilt</b> durch Masse.' },
+               { w: 0.0926, rel: 0.02, t: '<b>Bruch falsch herum?</b> Oben steht die Gewichtskraft, unten die Masse.' },
+               { w: 9.81, t: 'Das ist der Ortsfaktor der <b>Erde</b>. Rechne mit den Messwerten von Zyra.' }] },
+    teile: [
+      { bild: 'bilder/2-6-quiz/r3.webp', top: 0, y0: 0, y1: 2.171 },
+      { rechnung: rechnungO({ m: '2{,}5', F: '27', roh: '10{,}8', erg: '11',
+        tm: 'Die Masse des Massestücks.', tF: 'Was zeigt der Kraftmesser an? Das ist die Gewichtskraft auf Zyra.',
+        erklF: E_ORTSFAKTOR, tz: 'Beide Angaben haben 2 Ziffern.',
+        erklZ: E_ZIFFERN('$2{,}5$ kg → 2 Ziffern; $27$ N → 2 Ziffern. Also 2.', '$10{,}8' + NKGt + ' \\approx 11' + NKGt + '$'),
+        satz: 'Auf Zyra beträgt der Ortsfaktor etwa 11 N/kg – etwas mehr als auf der Erde.' }) }
+    ],
+    spiele: [quizSpiel('Weitergedacht', 'zyra')] },
+  { chip: 'R4', name: 'Aufgabe 4',
+    check: { frage: 'Ergebnis prüfen: Gib den Ortsfaktor ein.', einh: 'N/kg', ok: [3.71], exakt: 3.70968, bsp: '12,3',
+      runden: 'Beide Angaben (899 kg und 3335 N) haben 3 oder mehr Ziffern – also 3 Ziffern.',
+      fehler: [{ w: 2998165, rel: 0.02, t: '<b>Mal statt geteilt?</b> Der Ortsfaktor ist Gewichtskraft <b>geteilt</b> durch Masse.' },
+               { w: 0.26957, rel: 0.02, t: '<b>Bruch falsch herum?</b> Oben steht die Gewichtskraft, unten die Masse.' },
+               { w: 9.81, t: 'Das ist der Ortsfaktor der <b>Erde</b>. Rechne mit den Messwerten des Rovers.' }] },
+    teile: [
+      { bild: 'bilder/2-6-quiz/r4.webp', top: 0, y0: 0, y1: 2.171 },
+      { rechnung: rechnungO({ m: '899', F: '3335', roh: '3{,}7096\\ldots', erg: '3{,}71',
+        tm: 'Die Masse des Rovers – sie ist überall gleich.', tF: 'Die gemessene Gewichtskraft auf dem Planeten.',
+        tz: 'Die ungenaueste Angabe hat 3 Ziffern.',
+        erklZ: E_ZIFFERN('$899$ kg → 3 Ziffern; $3335$ N → 4 Ziffern. Am wenigsten: 3.', '$3{,}7096\\ldots' + NKGt + ' \\approx 3{,}71' + NKGt + '$'),
+        satz: 'Der Ortsfaktor auf dem Planeten beträgt etwa 3,71 N/kg.' }) }
+    ],
+    spiele: [quizSpiel('Detektivfrage', 'planet')] },
+
+  /* ===================== Teil L: Logik ===================== */
+  { chip: 'L1', start: true, titel: '<span class="teil l">Logik 1 von 5</span><br>Ab zum Mond', html: Q('l1') },
+  { chip: 'L2', start: true, titel: '<span class="teil l">Logik 2 von 5</span><br>Schwerer Rucksack', html: Q('l2') },
+  { chip: 'L3', start: true, titel: '<span class="teil l">Logik 3 von 5</span><br>Ausflug zum Jupiter', html: Q('l3') },
+  { chip: 'L4', start: true, titel: '<span class="teil l">Logik 4 von 5</span><br>Zwei Steine, zwei Planeten', html: Q('l4') },
+  { chip: 'L5', start: true, titel: '<span class="teil l">Logik 5 von 5</span><br>Weit draußen im All', html: Q('l5') },
+
+  /* ===================== Ende ===================== */
+  { chip: 'Ende', start: true, titel: 'Geschafft! 🎉',
+    html: '<div class="auswertung" id="auswertung"></div>' +
+      '<p>Checkliste für die Ex:</p><ul><li>Ich kann erklären, was <b>Masse</b>, <b>Gewichtskraft</b> und <b>Ortsfaktor</b> sind – mit Formelzeichen, Einheit und Messgerät.</li>' +
+      '<li>Die Masse ist überall gleich, die Gewichtskraft hängt vom Ortsfaktor ab.</li>' +
+      '<li>Ich berechne die Gewichtskraft mit $' + FG + ' = m \\cdot g$ und den Ortsfaktor mit $g = \\dfrac{' + FG + '}{m}$.</li>' +
+      '<li>Ich schreibe geg. und ges. auf, setze mit Einheiten ein und runde sinnvoll.</li></ul>' +
+      '<p>Lief etwas nicht? Schau dir die Lernpfade noch einmal an:<br><a href="ab-2-6.html" style="color:var(--petrol2);font-weight:bold">Arbeitsblatt 2.6</a> &nbsp;·&nbsp; ' +
+      '<a href="uebung-2-6.html" style="color:var(--petrol2);font-weight:bold">Übungsblatt 2.6</a> &nbsp;·&nbsp; <a href="material.html" style="color:var(--petrol2);font-weight:bold">Zum Material</a></p>' }
+  ] };
+</script>
+<script src="../assets/ab-pfad.js"></script>
+<dialog class="pop" id="pop">
+  <div class="in">
+    <div class="blatt" aria-hidden="true">✏️</div>
+    <h2>Bevor es losgeht …</h2>
+    <p>Leg dir bitte ein <b>kariertes Blatt</b> bereit.</p>
+    <p>Löse die Aufgaben – falls nötig – auf diesem karierten Blatt. Die Rechenaufgaben schreibst du wie in der Ex: <b>geg., ges., Formel, Einsetzen mit Einheiten, Ergebnis</b>.</p>
+    <button class="los" type="button" id="los">Blatt liegt bereit – los geht's!</button>
+  </div>
+</dialog>
+<script>
+/* Quizfragen in die Karten setzen, Auswertung vorbereiten, Pop-up zeigen */
+[].forEach.call(document.querySelectorAll('main .qz[data-id]'), function (b) { if (!b.firstChild) baueQuiz(b, b.dataset.id); });
+document.addEventListener('click', function () { setTimeout(auswerten, 0); });
+auswerten();
+(function () {
+  var d = document.getElementById('pop');
+  document.getElementById('los').onclick = function () { d.close(); };
+  if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
