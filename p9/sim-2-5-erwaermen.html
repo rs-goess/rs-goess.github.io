@@ -10,6 +10,7 @@
   :root{--petrol:#0B3B47;--petrol2:#0E7490;--orange:#E8822A;--dunkel:#1f2f3d;--grau:#f2f4f5;--gelb:#ffd23f;
         --blau:#1565C0;--lila:#6A2C9E;--gruen:#1E8449;--rot:#C62828;--mint:#BFEBD3}
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;background:var(--petrol);color:var(--dunkel);font-family:Nunito,Calibri,"Segoe UI",Roboto,Arial,sans-serif;
        font-size:17px;line-height:1.45;padding-bottom:30px}
   header{color:#fff;max-width:1040px;margin:0 auto;padding:12px 16px 6px}
@@ -18,16 +19,40 @@
   header p{margin:0 0 6px;font-size:15px;opacity:.92}
   .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;
             font-size:14px;font-weight:bold;text-decoration:none}
+  .dreischritt{display:flex;flex-wrap:wrap;gap:6px 14px;margin:4px 0 2px;font-size:14.5px;font-weight:700}
+  .dreischritt span{background:rgba(255,255,255,.14);border-radius:999px;padding:3px 11px}
   main{max-width:1040px;margin:0 auto;padding:6px 12px}
-  .karte{background:#fff;border-radius:16px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.18);margin-bottom:12px;position:relative}
-  h2{margin:2px 0 8px;font-size:19px;color:var(--petrol2)}
-  /* Steuerleiste */
-  .leiste{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--grau);border-radius:12px;padding:8px 10px}
+  .karte{background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 4px 14px rgba(0,0,0,.18);margin-bottom:14px;position:relative;scroll-margin-top:8px}
+  h2{margin:2px 0 8px;font-size:20px;color:var(--petrol);line-height:1.25}
+  .schritt{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:900;color:#fff;background:var(--petrol2);
+           border-radius:999px;padding:3px 12px 3px 4px;margin-bottom:6px;letter-spacing:.2px}
+  .schritt b{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#fff;color:var(--petrol2)}
   .knopf{border:0;border-radius:12px;padding:9px 16px;font:inherit;font-weight:800;font-size:16px;background:var(--orange);color:#fff;
          min-height:46px;cursor:pointer}
   .knopf:disabled{opacity:.4;cursor:default}
   .knopf.grau{background:#dfe5e9;color:var(--dunkel)}
   .knopf.petrol{background:var(--petrol2)}
+  .knopf.gruen{background:var(--gruen)}
+  /* Fortschritt */
+  .fortschritt{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  .fortschritt button{border:0;border-radius:999px;padding:4px 12px;font:inherit;font-size:14px;font-weight:800;background:#e1e6ea;color:#55606a;min-height:32px}
+  .fortschritt button.jetzt{background:var(--gelb);color:#222;box-shadow:0 0 0 2px #e0b400 inset}
+  .fortschritt button.fertig{background:var(--gruen);color:#fff;cursor:pointer}
+  .fortschritt button:disabled{cursor:default}
+  /* Auftrag */
+  .ziel{background:#FFF8DB;border:2px dashed #F2B705;border-radius:12px;padding:8px 12px;margin:6px 0 10px;font-size:17px}
+  .vorgehen{margin:0 0 8px}
+  .vorgehen ol{margin:4px 0 0;padding-left:24px}
+  .vorgehen li{margin:3px 0}
+  .setup{background:#EAF2FC;border-left:5px solid var(--blau);border-radius:10px;padding:8px 10px;margin:8px 0 4px;
+         display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+  .setup .becher{font-size:15.5px}
+  .setup .becher div{margin:1px 0}
+  .marke{display:inline-block;background:var(--blau);color:#fff;border-radius:999px;font-size:13px;font-weight:800;padding:1px 9px;margin-right:4px}
+  .setup .knopf{margin-left:auto}
+  .klein{font-size:13.5px;color:#6b7780}
+  /* Labor */
+  .leiste{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--grau);border-radius:12px;padding:8px 10px}
   .uhr{margin-left:auto;font-weight:800;font-size:18px;background:#fff;border:2px solid #d5dde3;border-radius:12px;padding:6px 12px;
        font-variant-numeric:tabular-nums;white-space:nowrap}
   .gruppe{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
@@ -36,11 +61,14 @@
   .seg button+button{border-left:2px solid #d5dde3}
   .seg button.an{background:var(--petrol2);color:#fff;font-weight:800}
   .seg button:disabled{cursor:not-allowed;opacity:.55}
-  /* Stationen */
   .stationen{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
   @media (max-width:760px){ .stationen{grid-template-columns:1fr} }
-  .station{border:2px solid #e3e8ec;border-radius:14px;padding:8px}
+  .station{border:2px solid #e3e8ec;border-radius:14px;padding:8px;position:relative}
   .station svg{width:100%;height:auto;display:block}
+  .station.aus svg{opacity:.35}
+  .station .ausinfo{display:none;position:absolute;left:12%;right:12%;top:28%;background:#fff;border:2px solid #d5dde3;border-radius:12px;
+                    padding:8px 10px;text-align:center;font-size:15px;font-weight:700;color:#55606a}
+  .station.aus .ausinfo{display:block}
   .einst{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;margin-top:4px;font-size:15px}
   .einst .lab{font-weight:800;color:#55606a}
   .einst .seg button{padding:6px 9px;white-space:nowrap}
@@ -48,37 +76,28 @@
   .hinweis{font-size:14px;color:#6b7780;margin:8px 2px 0}
   .sperre{display:none;font-size:14px;background:#FFF8DB;border:1.5px dashed #F2B705;border-radius:10px;padding:6px 10px;margin-top:8px;color:#5c4a00}
   body.laeuft .sperre{display:block}
-  /* Messtabelle */
-  table.mt{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
-  table.mt th,table.mt td{border:1.5px solid #d5dde3;padding:5px 7px;text-align:center}
-  table.mt th{background:#EAF2FC;color:var(--blau)}
-  table.mt tr.neu td{animation:blink 1.2s ease-out}
-  @keyframes blink{from{background:#FFF1D6}to{background:#fff}}
-  .tabwrap{overflow-x:auto}
-  .leer{color:#8a949c;font-style:italic}
-  .klein{font-size:13.5px;color:#6b7780}
-  .linkknopf{border:0;background:none;color:var(--petrol2);font:inherit;font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px}
-  /* Aufträge */
-  .fortschritt{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
-  .fortschritt span{border-radius:999px;padding:3px 12px;font-size:14px;font-weight:800;background:#e1e6ea;color:#55606a}
-  .fortschritt span.jetzt{background:var(--gelb);color:#222}
-  .fortschritt span.fertig{background:var(--gruen);color:#fff}
-  .auftrag{border:2px solid #e3e8ec;border-radius:14px;padding:10px 12px;margin:10px 0;background:#fff}
-  .auftrag.zu{opacity:.55}
-  .auftrag.zu .inhalt{display:none}
-  .auftrag h3{margin:0 0 6px;font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .auftrag h3 .nr{background:var(--lila);color:#fff;border-radius:999px;font-size:14px;padding:2px 11px}
-  .auftrag h3 .ok{margin-left:auto;font-size:14px;color:var(--gruen)}
-  .setup{background:#EAF2FC;border-left:5px solid var(--blau);border-radius:10px;padding:8px 10px;margin:6px 0 8px}
-  .setup ul{margin:4px 0 6px;padding-left:20px}
-  .mess{font-size:14.5px;margin:4px 0 0;padding:0;list-style:none}
-  .mess li::before{content:"○ ";color:#8a949c}
-  .mess li.da::before{content:"✓ ";color:var(--gruen);font-weight:900}
-  .frage{border-top:1px dashed #d5dde3;padding:9px 0 8px}
-  .frage .q{font-weight:700;margin-bottom:6px}
-  .frage.gesperrt{opacity:.45;pointer-events:none}
+  .fertigmeldung{display:none;margin-top:10px;background:var(--mint);color:#0F5132;border-radius:12px;padding:8px 12px;font-weight:800;
+                 align-items:center;gap:10px;flex-wrap:wrap}
+  .fertigmeldung.an{display:flex}
+  .fertigmeldung .knopf{margin-left:auto}
+  /* Auswertung */
+  .messbar{position:sticky;top:0;z-index:5;background:#fff;border:2px solid #CFE0F4;border-radius:12px;padding:6px 10px;margin:4px 0 10px;
+           box-shadow:0 6px 10px -6px rgba(0,0,0,.25)}
+  .messbar .titel{font-size:13px;font-weight:900;color:var(--blau);text-transform:uppercase;letter-spacing:.4px}
+  .messbar .werte{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:15.5px}
+  .messbar .wert{white-space:nowrap}
+  .messbar .wert b{font-size:18px;color:var(--dunkel)}
+  .messbar .offen{color:#8a949c;font-style:italic}
+  .messbar .ab{font-size:13.5px;color:#6b7780}
+  @media (max-width:520px){ .messbar{padding:4px 8px} .messbar .titel{font-size:11.5px} .messbar .werte{flex-direction:column;gap:0;font-size:14px}
+    .messbar .wert{white-space:normal} .messbar .wert b{font-size:16px} .messbar .klein,.messbar .ab{display:none} .messbar .marke{font-size:12px;padding:0 7px} }
+  .block{border:2px solid #e3e8ec;border-radius:14px;padding:10px 12px;margin:10px 0;scroll-margin-top:120px;animation:rein .35s ease-out}
+  @keyframes rein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .block.erledigt{border-color:#cfe9d8;background:#fbfefc}
+  .block .kopf{font-size:13px;font-weight:900;color:var(--lila);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+  .block .q{font-weight:700;margin-bottom:8px}
   .wahl{display:flex;flex-wrap:wrap;gap:8px}
-  .wahl button{border:2px solid #cfd8de;background:#fff;border-radius:12px;padding:8px 12px;font:inherit;font-size:16px;min-height:44px;cursor:pointer}
+  .wahl button{border:2px solid #cfd8de;background:#fff;border-radius:12px;padding:8px 12px;font:inherit;font-size:16px;min-height:44px;cursor:pointer;text-align:left}
   .wahl button.falsch{border-color:var(--rot);background:#fdecec;animation:wackel .3s}
   .wahl button.richtig{border-color:var(--gruen);background:#e7f6ec;font-weight:800}
   .wahl button:disabled{cursor:default;color:#7b8790}
@@ -94,17 +113,27 @@
   .satz select.richtig{border-color:var(--gruen);background:#e7f6ec}
   .satz select.falsch{border-color:var(--rot);background:#fdecec}
   .pruef{border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:800;font-size:15px;background:var(--petrol2);color:#fff;min-height:44px;cursor:pointer}
+  .pruef:disabled{opacity:.45;cursor:default}
   .rm{font-size:15px;margin-top:6px;min-height:1px}
-  .rm.gut{color:var(--gruen);font-weight:700}
+  .rm.gut{color:var(--gruen);font-weight:800}
   .rm.schlecht{color:var(--rot)}
-  .belohnung{display:none;margin-top:8px;background:var(--mint);color:#0F5132;border-radius:12px;padding:8px 12px;font-weight:800}
-  .auftrag.erledigt .belohnung{display:block}
+  .erkl{display:none;margin-top:8px;background:#FFF4E5;border-left:5px solid var(--orange);border-radius:10px;padding:8px 10px;font-size:16px}
+  .erkl.an{display:block}
+  .erkl .ab{display:block;margin-top:4px;font-weight:800;color:#8a4a00}
+  .weiter{display:none;margin-top:10px}
+  .weiter.an{display:inline-block}
+  .messinfo{font-size:16px}
+  .messinfo .warte{color:#55606a}
   .kachel{display:inline-block;border:2px solid #cfd8de;border-radius:10px;padding:6px 12px;margin:3px;font-weight:800;font-size:17px;cursor:pointer;background:#fff;min-width:44px;text-align:center;font-family:"Cambria Math",Cambria,serif}
   .kachel.weg{visibility:hidden}
   .formelzeile{font-family:"Cambria Math",Cambria,serif;font-size:22px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}
   .slot{display:inline-block;min-width:52px;min-height:42px;border:2px dashed #9fb0bb;border-radius:10px;text-align:center;line-height:38px;cursor:pointer;background:#fafcfd}
   .slot.voll{border-style:solid;border-color:var(--lila);background:#F4ECFB}
   .slot.richtig{border-color:var(--gruen);background:#e7f6ec}
+  .belohnung{background:var(--mint);color:#0F5132;border-radius:12px;padding:10px 12px;font-weight:800}
+  .belohnung .buch{display:inline-flex;gap:4px;margin:0 4px;vertical-align:middle}
+  .belohnung .buch span{width:30px;height:36px;border-radius:8px;background:var(--gelb);border:2px solid #e0b400;display:inline-flex;align-items:center;justify-content:center;font-size:20px;color:var(--petrol)}
+  .belohnung p{margin:6px 0 0;font-weight:700}
   /* Lösungswort */
   .wort{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
   .wort span{width:42px;height:50px;border-radius:10px;border:2px solid #cfd8de;display:inline-flex;align-items:center;justify-content:center;
@@ -112,9 +141,19 @@
   .wort span.da{background:var(--gelb);border-color:#e0b400}
   .fertigbox{display:none;margin-top:8px;font-size:17px}
   .fertigbox.an{display:block}
+  /* Messtabelle + Info */
+  table.mt{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+  table.mt th,table.mt td{border:1.5px solid #d5dde3;padding:5px 7px;text-align:center}
+  table.mt th{background:#EAF2FC;color:var(--blau)}
+  table.mt tr.neu td{animation:blink 1.2s ease-out}
+  @keyframes blink{from{background:#FFF1D6}to{background:#fff}}
+  .tabwrap{overflow-x:auto}
+  .leer{color:#8a949c;font-style:italic}
+  .linkknopf{border:0;background:none;color:var(--petrol2);font:inherit;font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px}
   details.info{border:2px solid #e3e8ec;border-radius:12px;padding:0 12px;margin-top:10px}
   details.info summary{cursor:pointer;padding:10px 0;font-weight:800;color:var(--petrol2)}
   sub{font-size:.7em}
+  @media (max-width:520px){ .wort span{width:34px;height:42px;font-size:22px} .wort{gap:4px} }
 </style>
 </head>
 <body>
@@ -122,16 +161,27 @@
   <a class="zurStart" href="material.html">‹ Material</a>
   <small>Physik 9b · 2.5 Das Erwärmungsgesetz · Experimente online</small>
   <h1>Wärme-Labor: Wie viel Energie braucht das Erwärmen?</h1>
-  <p>Arbeitet zu zweit. Erledigt die Aufträge 1 bis 4 unten – jeder geschaffte Auftrag verrät ein Stück vom Lösungswort.</p>
+  <p>Arbeitet zu zweit. Jeder Auftrag hat drei Schritte – geht sie der Reihe nach durch:</p>
+  <div class="dreischritt"><span>① Auftrag lesen</span><span>② Im Labor messen</span><span>③ Auswerten und Fragen</span></div>
 </header>
 <main>
 
+<section class="karte" id="auftrag">
+  <div class="fortschritt" id="fort"></div>
+  <div class="schritt"><b>1</b>Auftrag lesen</div>
+  <h2 id="aTitel"></h2>
+  <div class="ziel" id="aZiel"></div>
+  <div class="vorgehen"><b>So geht ihr vor:</b><ol id="aSchritte"></ol></div>
+  <div class="setup" id="aSetup"></div>
+</section>
+
 <section class="karte" id="labor">
+  <div class="schritt"><b>2</b>Im Labor messen</div>
   <div class="leiste">
     <button class="knopf" id="start" type="button">▶ Start</button>
     <button class="knopf grau" id="reset" type="button">↺ Zurücksetzen</button>
     <span class="gruppe">Tempo <span class="seg" id="tempo">
-      <button type="button" data-v="1" class="an">1×</button><button type="button" data-v="2">2×</button><button type="button" data-v="5">5×</button><button type="button" data-v="10">10×</button>
+      <button type="button" data-v="1">1×</button><button type="button" data-v="2">2×</button><button type="button" data-v="5" class="an">5×</button><button type="button" data-v="10">10×</button>
     </span></span>
     <span class="uhr" id="uhr">⏱ t = 0,0 s</span>
   </div>
@@ -140,48 +190,49 @@
     <div class="station" id="stA"></div>
     <div class="station" id="stB"></div>
   </div>
-  <p class="hinweis">Beide Tauchsieder sind gleich: Jeder gibt in jeder Sekunde 1&nbsp;kJ Energie an die Flüssigkeit ab.
-    Das Energiemessgerät zählt mit. Sobald die Flüssigkeit um Δϑ wärmer ist, schaltet der Tauchsieder ab. Start: immer 20&nbsp;°C.</p>
+  <div class="fertigmeldung" id="fertigMeldung"><span>✓ Messung fertig! Eure Werte stehen jetzt in der Auswertung.</span>
+    <button class="knopf gruen" type="button" id="zurAuswertung">Weiter zur Auswertung ↓</button></div>
+  <p class="hinweis">Beide Tauchsieder sind gleich: Jeder gibt in jeder Sekunde 1&nbsp;kJ Energie ab. Das Energiemessgerät zählt mit.
+    Sobald die Flüssigkeit um Δϑ wärmer ist, schaltet der Tauchsieder ab. Wie bei echten Messungen schwanken die Werte ein bisschen.</p>
 </section>
 
-<section class="karte">
-  <h2>Messtabelle</h2>
-  <div class="tabwrap">
-  <table class="mt" id="tab">
-    <thead><tr><th>Becher</th><th>Stoff</th><th>Masse m</th><th>Temperatur&shy;unterschied Δϑ</th><th>Zeit t</th><th>Energie W<sub>th</sub></th></tr></thead>
-    <tbody></tbody>
-  </table>
-  </div>
-  <p class="klein">Jede fertige Messung wird automatisch eingetragen. <button class="linkknopf" id="tabLeer" type="button">Tabelle leeren</button></p>
+<section class="karte" id="auswertung">
+  <div class="schritt"><b>3</b>Auswerten und Fragen</div>
+  <div class="messbar" id="messbar"></div>
+  <div id="ablauf"></div>
 </section>
 
-<section class="karte" id="auftraege">
-  <h2>Aufträge</h2>
-  <div class="fortschritt" id="fort"></div>
-  <div id="liste"></div>
-  <div class="auftrag" id="schluss">
-    <h3><span class="nr">Ziel</span> Euer Lösungswort</h3>
-    <div class="wort" id="wort"></div>
-    <div class="fertigbox" id="fertig">
-      <p><b>Geschafft!</b> Schreibt das Lösungswort auf euer Arbeitsblatt (Kasten „Experimente online“).
-        Dann füllt ihr den Merkkasten aus – zurück zum Whirlpool!</p>
-    </div>
+<section class="karte" id="wortkarte">
+  <h2>Euer Lösungswort</h2>
+  <div class="wort" id="wort"></div>
+  <div class="fertigbox" id="fertig">
+    <p><b>Geschafft!</b> Schreibt das Lösungswort auf euer Arbeitsblatt (Kasten „Experimente online“).
+      Prüft, ob in der Tabelle auf dem AB alle Messwerte und Kreuze stehen – dann geht es zurück zum Whirlpool!</p>
   </div>
-  <p class="klein"><button class="linkknopf" id="neuStart" type="button">Alle Aufträge zurücksetzen</button></p>
 </section>
 
 <section class="karte">
   <details class="info">
-    <summary>So rechnet das Wärme-Labor</summary>
-    <p>Das Labor ist ein Modell ohne Wärmeverluste: Die ganze Energie des Tauchsieders bleibt in der Flüssigkeit.
-       Jeder Tauchsieder gibt 1&nbsp;kJ pro Sekunde ab (Leistung 1000&nbsp;W).</p>
-    <p>Spezifische Wärmekapazität: Wasser c = 4,19&nbsp;kJ/(kg&nbsp;·&nbsp;°C), Speiseöl c = 2,0&nbsp;kJ/(kg&nbsp;·&nbsp;°C).
-       Speiseöl ist etwas leichter als Wasser (0,92&nbsp;kg pro Liter) – darum steht es bei gleicher Masse etwas höher im Becherglas.</p>
-    <p>Echte Messungen liefern etwas mehr Energie, weil immer ein Teil der Wärme an Becherglas und Luft verloren geht.</p>
+    <summary>Alle Messungen (Messtabelle)</summary>
+    <div class="tabwrap">
+    <table class="mt" id="tab">
+      <thead><tr><th>Becher</th><th>Stoff</th><th>Masse m</th><th>Temperatur&shy;unterschied Δϑ</th><th>Zeit t</th><th>Energie W<sub>th</sub></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <p class="klein">Jede fertige Messung wird automatisch eingetragen. <button class="linkknopf" id="tabLeer" type="button">Tabelle leeren</button></p>
   </details>
+  <details class="info">
+    <summary>So rechnet das Wärme-Labor</summary>
+    <p>Jeder Tauchsieder gibt 1&nbsp;kJ pro Sekunde ab (Leistung 1000&nbsp;W). Spezifische Wärmekapazität: Wasser c = 4,19&nbsp;kJ/(kg&nbsp;·&nbsp;°C),
+       Speiseöl c = 2,0&nbsp;kJ/(kg&nbsp;·&nbsp;°C). Speiseöl ist etwas leichter als Wasser (0,92&nbsp;kg pro Liter) – darum steht es bei gleicher Masse etwas höher im Becherglas.</p>
+    <p>Wie bei einem echten Versuch geht ein kleiner Teil der Wärme an Becherglas und Luft verloren (etwa 2 bis 6&nbsp;%, bei größerem Δϑ etwas mehr).
+       Deshalb zeigt das Energiemessgerät immer etwas mehr an, als man mit dem Erwärmungsgesetz ausrechnet – und jede Messung fällt ein bisschen anders aus.
+       Auch die Starttemperatur liegt nicht immer genau bei 20&nbsp;°C.</p>
+  </details>
+  <p class="klein"><button class="linkknopf" id="neuStart" type="button">Alle Aufträge zurücksetzen</button></p>
 </section>
 </main>
-
 <script>
 (function(){
 'use strict';
@@ -192,16 +243,19 @@ var STOFFE = {
 var MASSEN = [0.5, 1, 1.5, 2];
 var ZIELE = [10, 20, 30];
 var P = 1.0;           // kJ pro s
-var T0 = 20;
-var SPEICHER = 'p9-labor-2-5';
+var SPEICHER = 'p9-labor-2-5-v2';
 
 function k(x, d){ return x.toFixed(d).replace('.', ','); }
-function mtxt(m){ return k(m, m % 1 ? 1 : 0).replace(',0','') + ' kg'; }
+function mtxt(m){ return k(m, m % 1 ? 1 : 0).replace(',0','') + ' kg'; }
+function cfgTxt(c){ return mtxt(c[1]) + ' ' + STOFFE[c[0]].name + ', Δϑ = ' + c[2] + ' °C'; }
 function laden(){ try{ return JSON.parse(localStorage.getItem(SPEICHER)) || {}; }catch(e){ return {}; } }
 function sichern(){ try{ localStorage.setItem(SPEICHER, JSON.stringify(zustand)); }catch(e){} }
 var zustand = laden();
 zustand.zeilen = zustand.zeilen || [];
 zustand.erledigt = zustand.erledigt || {};
+zustand.pos = zustand.pos || {};
+zustand.mess = zustand.mess || {};
+zustand.aktiv = zustand.aktiv || 0;
 
 // ---------------------------------------------------------------- Stationen
 var NS = 'http://www.w3.org/2000/svg';
@@ -214,16 +268,14 @@ function Station(id, name, start){
   var s = this;
   s.id = id; s.name = name;
   s.stoff = start.stoff; s.m = start.m; s.ziel = start.ziel;
-  s.W = 0; s.t = 0; s.an = false; s.fertig = false;
-  var box = document.getElementById(id);
+  s.W = 0; s.t = 0; s.an = false; s.fertig = false; s.aus = false;
+  s.v = 0.03; s.T0 = 20;
+  var box = document.getElementById(id); s.box = box;
   var svg = el('svg', {viewBox:'0 0 450 384', role:'img', 'aria-label':'Becher ' + name}, box);
   el('rect', {x:0, y:0, width:450, height:384, rx:12, fill:'#F7FAFB'}, svg);
-  // Tisch
   el('rect', {x:6, y:362, width:438, height:12, rx:3, fill:'#C8A27A'}, svg);
-  // Name
   el('rect', {x:14, y:14, width:112, height:34, rx:17, fill:'#1565C0'}, svg);
   var tn = el('text', {x:70, y:37, 'text-anchor':'middle', 'font-size':19, 'font-weight':800, fill:'#fff'}, svg); tn.textContent = 'Becher ' + name;
-  // Energiemessgerät
   el('rect', {x:14, y:150, width:132, height:184, rx:12, fill:'#37474F'}, svg);
   var t1 = el('text', {x:80, y:173, 'text-anchor':'middle', 'font-size':14, 'font-weight':700, fill:'#CFD8DC'}, svg); t1.textContent = 'Energie W';
   var t1s = el('tspan', {'font-size':10, dy:3}, t1); t1s.textContent = 'th';
@@ -236,12 +288,9 @@ function Station(id, name, start){
   var u2 = el('text', {x:116, y:279, 'font-size':14, 'font-weight':800, fill:'#1B3B1B'}, svg); u2.textContent = 's';
   s.led = el('circle', {cx:36, cy:311, r:8, fill:'#78909C'}, svg);
   s.ledT = el('text', {x:52, y:316, 'font-size':14, 'font-weight':800, fill:'#ECEFF1'}, svg);
-  // Kabel
   el('path', {d:'M246 62 C 246 20, 80 20, 80 150', fill:'none', stroke:'#263238', 'stroke-width':4, 'stroke-linecap':'round'}, svg);
-  // Flüssigkeit (unter dem Glas)
   s.fl = el('rect', {x:BK.x + 6, width:BK.w - 12, rx:4}, svg);
   s.blasen = el('g', {}, svg);
-  // Becherglas
   el('path', {d:'M'+BK.x+' '+BK.y+' L'+BK.x+' '+(BK.y+BK.h-8)+' Q'+BK.x+' '+(BK.y+BK.h)+' '+(BK.x+8)+' '+(BK.y+BK.h)+
                 ' L'+(BK.x+BK.w-8)+' '+(BK.y+BK.h)+' Q'+(BK.x+BK.w)+' '+(BK.y+BK.h)+' '+(BK.x+BK.w)+' '+(BK.y+BK.h-8)+' L'+(BK.x+BK.w)+' '+BK.y,
             fill:'rgba(200,225,240,.18)', stroke:'#7FA7BF', 'stroke-width':4, 'stroke-linejoin':'round'}, svg);
@@ -250,27 +299,26 @@ function Station(id, name, start){
     el('line', {x1:BK.x+4, y1:yy, x2:BK.x+18, y2:yy, stroke:'#7FA7BF', 'stroke-width':2}, svg);
     var lt = el('text', {x:BK.x-6, y:yy+5, 'font-size':13, 'text-anchor':'end', fill:'#5F8299'}, svg); lt.textContent = k(l, 1).replace(',0','') + ' l';
   }
-  // Tauchsieder
   el('rect', {x:232, y:62, width:28, height:50, rx:7, fill:'#455A64'}, svg);
   el('line', {x1:240, y1:112, x2:240, y2:318, stroke:'#90A4AE', 'stroke-width':5}, svg);
   el('line', {x1:252, y1:112, x2:252, y2:318, stroke:'#90A4AE', 'stroke-width':5}, svg);
   var sp = 'M240 318'; for (var i = 0; i < 4; i++){ sp += ' C 205 '+(322+i*8)+', 205 '+(330+i*8)+', 246 '+(330+i*8)+' C 288 '+(330+i*8)+', 288 '+(322+i*8)+', 252 '+(318+i*8 + 8); }
   s.spirale = el('path', {d:sp, fill:'none', stroke:'#90A4AE', 'stroke-width':6, 'stroke-linecap':'round'}, svg);
-  // Thermometer
   el('line', {x1:362, y1:98, x2:362, y2:344, stroke:'#B0BEC5', 'stroke-width':5, 'stroke-linecap':'round'}, svg);
   el('rect', {x:290, y:12, width:150, height:86, rx:10, fill:'#fff', stroke:'#C62828', 'stroke-width':3}, svg);
   s.thT = el('text', {x:430, y:38, 'text-anchor':'end', 'font-size':20, 'font-weight':800, fill:'#1f2f3d'}, svg);
   s.thD = el('text', {x:430, y:63, 'text-anchor':'end', 'font-size':17, 'font-weight':800, fill:'#C62828'}, svg);
   s.zielT = el('text', {x:430, y:87, 'text-anchor':'end', 'font-size':13.5, 'font-weight':700, fill:'#55606a'}, svg);
+  var ai = document.createElement('div'); ai.className = 'ausinfo';
+  ai.textContent = 'Becher ' + name + ' wird bei diesem Auftrag nicht gebraucht.'; box.appendChild(ai);
 
-  // Einstellungen
   var einst = document.createElement('div'); einst.className = 'einst';
   function zeile(lab, werte, schluessel, txt){
     var a = document.createElement('span'); a.className = 'lab'; a.textContent = lab; einst.appendChild(a);
     var g = document.createElement('span'); g.className = 'seg';
     werte.forEach(function(w){
       var b = document.createElement('button'); b.type = 'button'; b.textContent = txt(w); b.dataset.v = w;
-      b.addEventListener('click', function(){ if (labor.gesperrt()) return; s[schluessel] = w; labor.neu(); });
+      b.addEventListener('click', function(){ if (labor.gesperrt()) return; s[schluessel] = w; s.aus = false; labor.neu(); });
       g.appendChild(b);
     });
     einst.appendChild(g); s['seg_' + schluessel] = g;
@@ -281,14 +329,20 @@ function Station(id, name, start){
   box.appendChild(einst);
   s.blasenListe = [];
 }
-Station.prototype.Wziel = function(){ return this.m * STOFFE[this.stoff].c * this.ziel; };
-Station.prototype.temp = function(){ return T0 + this.W / (this.m * STOFFE[this.stoff].c); };
-Station.prototype.zuruecksetzen = function(){ this.W = 0; this.t = 0; this.an = false; this.fertig = false; this.blasenListe = []; while (this.blasen.firstChild) this.blasen.removeChild(this.blasen.firstChild); };
+// Wie bei echten Messungen: ein kleiner Teil der Wärme geht verloren (bei größerem Δϑ etwas mehr),
+// die Starttemperatur schwankt leicht um 20 °C.
+Station.prototype.wuerfeln = function(){
+  this.v = 0.02 + 0.001 * this.ziel + (Math.random() - 0.5) * 0.02;
+  this.T0 = Math.round((19.5 + Math.random() * 1.2) * 10) / 10;
+};
+Station.prototype.Wende = function(){ return this.m * STOFFE[this.stoff].c * this.ziel / (1 - this.v); };
+Station.prototype.temp = function(){ return this.T0 + this.W * (1 - this.v) / (this.m * STOFFE[this.stoff].c); };
+Station.prototype.zuruecksetzen = function(){ this.W = 0; this.t = 0; this.an = false; this.fertig = false; this.T0 = 20; this.blasenListe = []; while (this.blasen.firstChild) this.blasen.removeChild(this.blasen.firstChild); };
 Station.prototype.schritt = function(dt){
   if (!this.an) return false;
-  var rest = this.Wziel() - this.W;
+  var rest = this.Wende() - this.W;
   var dW = P * dt;
-  if (dW >= rest){ this.W = this.Wziel(); this.t += rest / P; this.an = false; this.fertig = true; return true; }
+  if (dW >= rest){ this.W = this.Wende(); this.t += rest / P; this.an = false; this.fertig = true; return true; }
   this.W += dW; this.t += dt; return false;
 };
 Station.prototype.zeichnen = function(dtEcht){
@@ -296,20 +350,20 @@ Station.prototype.zeichnen = function(dtEcht){
   var vol = this.m / st.rho;
   var h = vol * PXL, y = BK.y + BK.h - 6 - h;
   this.fl.setAttribute('y', y); this.fl.setAttribute('height', h);
-  var f = Math.min(1, (this.temp() - T0) / 30);
+  var f = Math.min(1, (this.temp() - this.T0) / 30);
   var c = st.farbe.map(function(v, i){ return Math.round(v + (st.warm[i] - v) * f * 0.55); });
   this.fl.setAttribute('fill', 'rgb(' + c.join(',') + ')');
   this.fl.setAttribute('fill-opacity', '0.78');
   this.lcdW.textContent = k(this.W, 1);
   this.lcdT.textContent = k(this.t, 1);
   this.thT.textContent = 'ϑ = ' + k(this.temp(), 1) + ' °C';
-  this.thD.textContent = 'Δϑ = ' + k(this.temp() - T0, 1) + ' °C';
+  this.thD.textContent = 'Δϑ = ' + k(Math.min(this.ziel, this.temp() - this.T0), 1) + ' °C';
   this.zielT.textContent = 'Aus bei Δϑ = ' + this.ziel + ' °C';
   var heiz = this.an && labor.laeuft;
   this.led.setAttribute('fill', this.an ? '#FF9800' : (this.fertig ? '#43A047' : '#78909C'));
   this.ledT.textContent = this.an ? 'Heizt' : (this.fertig ? 'Fertig' : 'Aus');
   this.spirale.setAttribute('stroke', this.an ? '#FF7043' : '#90A4AE');
-  // Blasen
+  this.box.classList.toggle('aus', this.aus);
   if (heiz && dtEcht > 0 && Math.random() < 0.5 * labor.tempo * dtEcht * 8){
     var b = el('circle', {cx:215 + Math.random() * 62, cy:345, r:2 + Math.random() * 3, fill:'#fff', 'fill-opacity':.75}, this.blasen);
     this.blasenListe.push({e:b, y:345, v:40 + Math.random() * 40});
@@ -331,7 +385,7 @@ Station.prototype.zeichnen = function(dtEcht){
 
 // ---------------------------------------------------------------- Labor
 var labor = {
-  laeuft:false, tempo:1, t:0,
+  laeuft:false, tempo:5, t:0,
   gesperrt: function(){ return this.laeuft || (this.t > 0 && !this.allesFertig()); },
   allesFertig: function(){ return !A.an && !B.an && (A.fertig || B.fertig); },
   neu: function(){ this.laeuft = false; this.t = 0; A.zuruecksetzen(); B.zuruecksetzen(); this.knoepfe(); },
@@ -352,8 +406,11 @@ document.getElementById('start').addEventListener('click', function(){
   if (labor.laeuft){ labor.laeuft = false; }
   else {
     if (labor.allesFertig()){ labor.t = 0; A.zuruecksetzen(); B.zuruecksetzen(); }
-    if (labor.t === 0){ A.an = true; B.an = true; }
-    labor.laeuft = true;
+    if (labor.t === 0){
+      [A, B].forEach(function(s){ if (!s.aus){ s.wuerfeln(); s.an = true; } });
+      document.getElementById('fertigMeldung').classList.remove('an');
+    }
+    labor.laeuft = A.an || B.an;
   }
   labor.knoepfe();
 });
@@ -364,15 +421,23 @@ Array.prototype.forEach.call(document.querySelectorAll('#tempo button'), functio
     Array.prototype.forEach.call(document.querySelectorAll('#tempo button'), function(x){ x.classList.toggle('an', x === b); });
   });
 });
+document.getElementById('zurAuswertung').addEventListener('click', function(){
+  document.getElementById('auswertung').scrollIntoView({behavior:'smooth', block:'start'});
+});
 
+function passt(z, c){ return c && z.stoff === c[0] && z.m === c[1] && z.ziel === c[2]; }
 function eintragen(s){
-  zustand.zeilen.push({b:s.name, stoff:s.stoff, m:s.m, ziel:s.ziel, t:Math.round(s.t * 10) / 10, W:Math.round(s.W * 10) / 10});
-  if (zustand.zeilen.length > 14) zustand.zeilen.shift();
-  sichern(); tabelle(true); auftraegeAktualisieren();
+  var z = {b:s.name, stoff:s.stoff, m:s.m, ziel:s.ziel, t:Math.round(s.t * 10) / 10, W:Math.round(s.W * 10) / 10};
+  zustand.zeilen.push(z);
+  if (zustand.zeilen.length > 20) zustand.zeilen.shift();
+  // Messwerte für den aktuellen Auftrag festhalten (erste passende Messung je Becher)
+  var ai = zustand.aktiv, a = AUFTRAEGE[ai], m = zustand.mess[ai] = zustand.mess[ai] || {};
+  ['A', 'B'].forEach(function(sl){ if (!m[sl] && passt(z, a.setup[sl])) m[sl] = z; });
+  sichern(); tabelle(true);
 }
 function tabelle(neu){
   var tb = document.querySelector('#tab tbody'); tb.innerHTML = '';
-  if (!zustand.zeilen.length){ tb.innerHTML = '<tr><td colspan="6" class="leer">Noch keine Messung – stellt die Becher ein und drückt „▶ Start“.</td></tr>'; return; }
+  if (!zustand.zeilen.length){ tb.innerHTML = '<tr><td colspan="6" class="leer">Noch keine Messung.</td></tr>'; return; }
   zustand.zeilen.forEach(function(z, i){
     var tr = document.createElement('tr');
     if (neu && i >= zustand.zeilen.length - 2) tr.className = 'neu';
@@ -381,7 +446,7 @@ function tabelle(neu){
     tb.appendChild(tr);
   });
 }
-document.getElementById('tabLeer').addEventListener('click', function(){ zustand.zeilen = []; sichern(); tabelle(); auftraegeAktualisieren(); });
+document.getElementById('tabLeer').addEventListener('click', function(){ zustand.zeilen = []; sichern(); tabelle(); });
 
 var letzt = null;
 function takt(ts){
@@ -392,7 +457,12 @@ function takt(ts){
     labor.t += dt;
     if (aFertig) eintragen(A);
     if (bFertig) eintragen(B);
-    if (!A.an && !B.an){ labor.laeuft = false; labor.t = Math.max(A.t, B.t); }
+    if (!A.an && !B.an){
+      labor.laeuft = false; labor.t = Math.max(A.t, B.t);
+      var vorher = messFertig(zustand.aktiv);
+      ablaufAktualisieren();
+      if (messFertig(zustand.aktiv)) document.getElementById('fertigMeldung').classList.add('an');
+    }
     labor.knoepfe();
   }
   A.zeichnen(dtE); B.zeichnen(dtE);
@@ -400,170 +470,315 @@ function takt(ts){
 }
 
 // ---------------------------------------------------------------- Aufträge
-function gemessen(stoff, m, ziel){ return zustand.zeilen.some(function(z){ return z.stoff === stoff && z.m === m && z.ziel === ziel; }); }
-function Wvon(stoff, m, ziel){ return m * STOFFE[stoff].c * ziel; }
+function M(ai){ return zustand.mess[ai] || {}; }
+function wA(ai){ return M(ai).A ? M(ai).A.W : NaN; }
+function wB(ai){ return M(ai).B ? M(ai).B.W : NaN; }
+function kj(x){ return k(x, 1) + ' kJ'; }
+function messFertig(ai){
+  var a = AUFTRAEGE[ai], m = M(ai);
+  return ['A', 'B'].every(function(sl){ return !a.setup[sl] || m[sl]; });
+}
 
 var AUFTRAEGE = [
-  { titel:'Doppelter Temperaturunterschied', code:'HE',
+  { titel:'Doppelter Temperaturunterschied', code:'HE', zeile:1,
+    ziel:'Findet heraus: Wie hängt die nötige Energie W<sub>th</sub> vom <b>Temperaturunterschied Δϑ</b> ab?',
+    schritte:['Drückt „⚙ Labor einstellen“. Beide Becher enthalten dann 1&nbsp;kg Wasser.',
+              'Becher A wird um 10&nbsp;°C erwärmt, Becher B um 20&nbsp;°C – also doppelt so stark.',
+              'Drückt im Labor „▶ Start“ und wartet, bis beide Becher fertig sind.',
+              'Tragt eure beiden Messwerte auf dem AB in Zeile 1 ein. Dann beantwortet ihr unten die Fragen.'],
     setup:{A:['wasser', 1, 10], B:['wasser', 1, 20]},
-    text:'Beide Becher: 1 kg Wasser. Becher A wird um 10 °C erwärmt, Becher B um 20 °C.',
-    fragen:[
-      {typ:'zahl', q:'Lies ab: Wie viel Energie hat Becher A gebraucht?', soll:Wvon('wasser', 1, 10), tol:0.3, einh:'kJ'},
-      {typ:'zahl', q:'Lies ab: Wie viel Energie hat Becher B gebraucht?', soll:Wvon('wasser', 1, 20), tol:0.3, einh:'kJ'},
-      {typ:'wahl', q:'Becher B wurde doppelt so stark erwärmt. Er brauchte …', opt:['halb so viel Energie', 'gleich viel Energie', 'doppelt so viel Energie', 'viermal so viel Energie'], ok:2,
-       tipp:'Vergleiche die beiden Werte in der Messtabelle: Wie oft passt A in B?'},
-      {typ:'wahl', q:'Vorhersage: Wie viel Energie braucht 1 kg Wasser, um 30 °C wärmer zu werden?', opt:['etwa 63 kJ', 'etwa 126 kJ', 'etwa 168 kJ'], ok:1,
-       tipp:'Dreifacher Temperaturunterschied … Tipp: Ihr könnt es im Labor ausprobieren!'},
-      {typ:'wahl', q:'Und die Zeit? Becher B war … eingeschaltet wie Becher A.', opt:['halb so lange', 'genauso lange', 'doppelt so lange'], ok:2,
-       tipp:'Schaut auf die Zeit t in der Messtabelle. Der Tauchsieder gibt jede Sekunde gleich viel Energie ab.'},
-      {typ:'satz', teile:['Je größer der Temperaturunterschied Δϑ, desto ', ['mehr', 'weniger'], ' Energie braucht man. Doppelter Temperaturunterschied bedeutet ', ['halbe', 'gleiche', 'doppelte'], ' Energie.'],
-       ok:[0, 2]}
+    ablauf:[
+      {typ:'messen'},
+      {typ:'wahl', q:'Becher B wurde doppelt so stark erwärmt wie Becher A. Er brauchte …',
+       opt:['etwa halb so viel Energie', 'etwa gleich viel Energie', 'etwa doppelt so viel Energie', 'etwa viermal so viel Energie'], ok:2,
+       tipp:'Schaut oben auf eure Messwerte: Wie oft passt der Wert von A in den Wert von B?',
+       erkl:function(){ return 'Becher B: ' + kj(wB(0)) + ' – das ist ungefähr das Doppelte von Becher A (2 · ' + kj(wA(0)) + ' = ' + kj(2 * wA(0)) + '). ' +
+         'Ganz genau das Doppelte ist es nicht: Bei echten Messungen gibt es immer kleine Abweichungen, zum Beispiel weil etwas Wärme an Glas und Luft verloren geht.'; }},
+      {typ:'wahl', q:'Und die Heizzeit t? Der Tauchsieder von Becher B war … eingeschaltet wie der von Becher A.',
+       opt:['halb so lange', 'genauso lange', 'etwa doppelt so lange'], ok:2,
+       tipp:'Der Tauchsieder gibt in jeder Sekunde gleich viel Energie ab (1 kJ). Schaut im Labor auf die Zeit t.',
+       erkl:'Jeder Tauchsieder gibt in jeder Sekunde 1&nbsp;kJ ab. Doppelt so viel Energie dauert deshalb doppelt so lange. Darum kostet es auch mehr Strom, Wasser stärker aufzuheizen.'},
+      {typ:'wahl', q:'Vorhersage: Wie viel Energie braucht 1 kg Wasser ungefähr, um 30 °C wärmer zu werden?',
+       opt:['etwa 65 kJ', 'etwa 130 kJ', 'etwa 170 kJ'], ok:1,
+       tipp:'30 °C ist dreimal so viel wie 10 °C …',
+       erkl:function(){ return 'Dreifacher Temperaturunterschied → etwa dreifache Energie: 3 · ' + kj(wA(0)) + ' ≈ ' + kj(3 * wA(0)) + '. Wenn ihr wollt, probiert es im Labor aus (Becher A auf Δϑ = 30 °C).'; }},
+      {typ:'satz', teile:['Je größer der Temperaturunterschied Δϑ, desto ', ['mehr', 'weniger'], ' Energie braucht man. Bei doppeltem Δϑ ', ['halbiert sich', 'verdoppelt sich'], ' die Energie.'],
+       ok:[0, 1], erkl:'Man sagt: Die Energie W<sub>th</sub> ist <b>direkt proportional</b> zum Temperaturunterschied: W<sub>th</sub> ~ Δϑ.'}
     ]},
-  { titel:'Doppelte Masse', code:'IZ',
+  { titel:'Doppelte Masse', code:'IZ', zeile:2,
+    ziel:'Findet heraus: Wie hängt die nötige Energie W<sub>th</sub> von der <b>Masse m</b> ab?',
+    schritte:['Drückt „⚙ Labor einstellen“. Beide Becher werden um 10&nbsp;°C erwärmt.',
+              'Becher A enthält 1&nbsp;kg Wasser, Becher B 2&nbsp;kg Wasser – also doppelt so viel.',
+              'Drückt im Labor „▶ Start“ und wartet, bis beide Becher fertig sind.',
+              'Tragt eure Messwerte auf dem AB in Zeile 2 ein. Dann beantwortet ihr unten die Fragen.'],
     setup:{A:['wasser', 1, 10], B:['wasser', 2, 10]},
-    text:'Beide Becher werden um 10 °C erwärmt. Becher A: 1 kg Wasser, Becher B: 2 kg Wasser.',
-    fragen:[
-      {typ:'zahl', q:'Lies ab: Wie viel Energie hat Becher B (2 kg) gebraucht?', soll:Wvon('wasser', 2, 10), tol:0.3, einh:'kJ'},
-      {typ:'wahl', q:'Doppelte Masse bedeutet …', opt:['halbe Energie', 'gleiche Energie', 'doppelte Energie'], ok:2,
-       tipp:'Vergleicht Becher A (1 kg) und Becher B (2 kg) in der Messtabelle.'},
-      {typ:'wahl', q:'Vorhersage: Wie viel Energie brauchen 1,5 kg Wasser, um 10 °C wärmer zu werden?', opt:['etwa 21 kJ', 'etwa 42 kJ', 'etwa 63 kJ', 'etwa 84 kJ'], ok:2,
-       tipp:'1,5 kg sind anderthalbmal so viel wie 1 kg.'},
-      {typ:'satz', teile:['Je größer die Masse m, desto ', ['mehr', 'weniger'], ' Energie braucht man für dieselbe Erwärmung. Die Energie ist ', ['direkt proportional', 'umgekehrt proportional'], ' zur Masse.'],
-       ok:[0, 0]}
+    ablauf:[
+      {typ:'messen'},
+      {typ:'wahl', q:'In Becher B ist doppelt so viel Wasser wie in Becher A. Becher B brauchte …',
+       opt:['etwa halb so viel Energie', 'etwa gleich viel Energie', 'etwa doppelt so viel Energie'], ok:2,
+       tipp:'Vergleicht oben Becher A (1 kg) und Becher B (2 kg).',
+       erkl:function(){ return 'Becher B: ' + kj(wB(1)) + ' ≈ 2 · ' + kj(wA(1)) + '. Doppelt so viel Wasser hat doppelt so viele Teilchen – die alle schneller werden müssen. Dafür braucht man doppelt so viel Energie.'; }},
+      {typ:'wahl', q:'Vorhersage: Wie viel Energie brauchen 1,5 kg Wasser ungefähr, um 10 °C wärmer zu werden?',
+       opt:['etwa 22 kJ', 'etwa 43 kJ', 'etwa 65 kJ', 'etwa 87 kJ'], ok:2,
+       tipp:'1,5 kg sind anderthalbmal so viel wie 1 kg.',
+       erkl:function(){ return '1,5-fache Masse → 1,5-fache Energie: 1,5 · ' + kj(wA(1)) + ' ≈ ' + kj(1.5 * wA(1)) + '.'; }},
+      {typ:'satz', teile:['Je größer die Masse m, desto ', ['mehr', 'weniger'], ' Energie braucht man für dieselbe Erwärmung. Bei doppelter Masse ', ['halbiert sich', 'verdoppelt sich'], ' die Energie.'],
+       ok:[0, 1], erkl:'Auch hier gilt: W<sub>th</sub> ist <b>direkt proportional</b> zur Masse: W<sub>th</sub> ~ m.'}
     ]},
-  { titel:'Anderer Stoff', code:'ST',
+  { titel:'Anderer Stoff', code:'ST', zeile:3,
+    ziel:'Findet heraus: Braucht jeder <b>Stoff</b> gleich viel Energie, um wärmer zu werden?',
+    schritte:['Drückt „⚙ Labor einstellen“. Beide Becher enthalten 1&nbsp;kg und werden um 10&nbsp;°C erwärmt.',
+              'Becher A enthält Wasser, Becher B Speiseöl.',
+              'Drückt im Labor „▶ Start“ und wartet, bis beide Becher fertig sind.',
+              'Tragt eure Messwerte auf dem AB in Zeile 3 ein. Dann beantwortet ihr unten die Fragen.'],
     setup:{A:['wasser', 1, 10], B:['oel', 1, 10]},
-    text:'Beide Becher: 1 kg, beide werden um 10 °C erwärmt. Becher A: Wasser, Becher B: Speiseöl.',
-    fragen:[
-      {typ:'zahl', q:'Lies ab: Wie viel Energie hat das Speiseöl gebraucht?', soll:Wvon('oel', 1, 10), tol:0.3, einh:'kJ'},
-      {typ:'wahl', q:'Welcher Stoff braucht für dieselbe Erwärmung mehr Energie?', opt:['Wasser – etwa doppelt so viel', 'Speiseöl – etwa doppelt so viel', 'beide gleich viel'], ok:0},
-      {typ:'zahl', q:'Wie viel Energie braucht 1 kg Wasser, um nur 1 °C wärmer zu werden? (Tipp: Teile die Energie für 10 °C durch 10.)', soll:4.19, tol:0.02, einh:'kJ', d:2},
-      {typ:'zahl', q:'Und 1 kg Speiseöl für 1 °C?', soll:2.0, tol:0.05, einh:'kJ'},
-      {typ:'satz', teile:['Die Energie, die man braucht, um 1 kg eines Stoffes um 1 °C zu erwärmen, heißt ', ['Temperaturunterschied', 'spezifische Wärmekapazität c', 'Wärmeleitung'], '. Wasser hat eine ', ['große', 'kleine'], ' spezifische Wärmekapazität.'],
-       ok:[1, 0]}
+    ablauf:[
+      {typ:'messen'},
+      {typ:'wahl', q:'Welcher Stoff brauchte für dieselbe Erwärmung mehr Energie?',
+       opt:['Wasser – etwa doppelt so viel wie Speiseöl', 'Speiseöl – etwa doppelt so viel wie Wasser', 'beide etwa gleich viel'], ok:0,
+       erkl:function(){ return 'Wasser: ' + kj(wA(2)) + ', Speiseöl: ' + kj(wB(2)) + '. Gleiche Masse, gleiches Δϑ – und trotzdem verschieden viel Energie. Es kommt also auch auf den Stoff an.'; }},
+      {typ:'zahl', q:'Wie viel Energie braucht 1 kg Wasser, um nur 1 °C wärmer zu werden? Teilt euren Messwert für 10 °C durch 10.',
+       soll:function(){ return wA(2) / 10; }, tol:0.06, d:2, einh:'kJ',
+       tipp:function(){ return 'Rechnet ' + kj(wA(2)) + ' : 10.'; },
+       erkl:function(){ return 'In der Tabelle auf dem AB steht für Wasser 4,19&nbsp;kJ. Euer Wert (' + k(wA(2) / 10, 2) + '&nbsp;kJ) ist ein bisschen größer, weil im Labor etwas Wärme an Becherglas und Luft verloren geht.'; }},
+      {typ:'zahl', q:'Und wie viel Energie braucht 1 kg Speiseöl für 1 °C?',
+       soll:function(){ return wB(2) / 10; }, tol:0.06, d:2, einh:'kJ',
+       tipp:function(){ return 'Rechnet ' + kj(wB(2)) + ' : 10.'; },
+       erkl:'Tabellenwert für Speiseöl: 2,0&nbsp;kJ. Wasser braucht also etwa doppelt so viel Energie wie Speiseöl.'},
+      {typ:'satz', teile:['Die Energie, die 1 kg eines Stoffes braucht, um 1 °C wärmer zu werden, heißt ', ['Temperaturunterschied', 'spezifische Wärmekapazität c', 'Wärmeleitung'], '. Wasser hat eine ', ['große', 'kleine'], ' spezifische Wärmekapazität.'],
+       ok:[1, 0], erkl:'Wasser: c = 4,19&nbsp;kJ/(kg · °C), Speiseöl: c = 2,0&nbsp;kJ/(kg · °C). Die Werte für andere Stoffe stehen in der Tabelle auf dem AB.'}
     ]},
-  { titel:'Alles zusammen: das Erwärmungsgesetz', code:'AB',
-    setup:{A:['oel', 1.5, 20], B:['wasser', 0.5, 30]},
-    text:'Fasst zusammen. Die Energie hängt von der Masse m, vom Temperaturunterschied Δϑ und vom Stoff (c) ab.',
-    fragen:[
-      {typ:'formel', q:'Baue das Erwärmungsgesetz: Tippe nacheinander auf die drei passenden Größen.', kacheln:['m', 'Δϑ', 't', 'c', 'V', 'p'], ok:['m', 'c', 'Δϑ']},
-      {typ:'zahl', q:'Rechne mit dem Gesetz: 1,5 kg Speiseöl sollen um 20 °C wärmer werden. Wie viel Energie braucht man?', soll:Wvon('oel', 1.5, 20), tol:0.5, einh:'kJ',
-       tipp:'W = m · c · Δϑ = 1,5 kg · 2,0 kJ/(kg · °C) · 20 °C'},
-      {typ:'wahl', q:'Prüft im Labor (Knopf „Labor einstellen“, Becher A). Stimmt eure Rechnung?', opt:['Ja, das Labor zeigt denselben Wert.', 'Nein, das Labor zeigt etwas ganz anderes.'], ok:0,
-       braucht:['oel', 1.5, 20], tipp:'Messt erst Becher A (1,5 kg Speiseöl, Δϑ = 20 °C).'}
+  { titel:'Alles zusammen: das Erwärmungsgesetz', code:'AB', zeile:4,
+    ziel:'Stellt das <b>Erwärmungsgesetz</b> auf und prüft mit einer Messung, ob eure Rechnung stimmt.',
+    schritte:['Baut unten in der Auswertung zuerst das Erwärmungsgesetz und rechnet damit.',
+              'Danach drückt ihr „⚙ Labor einstellen“ und messt mit Becher A (1,5&nbsp;kg Speiseöl, Δϑ&nbsp;=&nbsp;20&nbsp;°C).',
+              'Tragt Rechnung und Messung auf dem AB in Zeile 4 ein und vergleicht.'],
+    setup:{A:['oel', 1.5, 20], B:null},
+    ablauf:[
+      {typ:'formel', q:'Baut das Erwärmungsgesetz: Tippt nacheinander auf die drei Größen, von denen die Energie abhängt.', kacheln:['m', 'Δϑ', 't', 'c', 'V', 'p'], ok:['m', 'c', 'Δϑ'],
+       erkl:'Das <b>Erwärmungsgesetz</b>: W<sub>th</sub> = m · c · Δϑ. Die Reihenfolge beim Malnehmen ist egal.'},
+      {typ:'zahl', q:'Rechnet mit dem Gesetz: 1,5 kg Speiseöl sollen um 20 °C wärmer werden. Wie viel Energie braucht man?',
+       soll:function(){ return 60; }, tol:0.5, d:0, einh:'kJ',
+       tipp:'W<sub>th</sub> = m · c · Δϑ = 1,5 kg · 2,0 kJ/(kg · °C) · 20 °C',
+       erkl:'W<sub>th</sub> = 1,5&nbsp;kg · 2,0&nbsp;kJ/(kg · °C) · 20&nbsp;°C = 60&nbsp;kJ.', ab:'Tragt 60 kJ auf dem AB in Zeile 4 bei „berechnet“ ein.'},
+      {typ:'messen'},
+      {typ:'wahl', q:function(){ return 'Vergleicht: Rechnung 60 kJ – Messung ' + kj(wA(3)) + '. Was stimmt?'; },
+       opt:['Die Messung ist etwas größer – Rechnung und Messung passen ungefähr.', 'Rechnung und Messung sind ganz genau gleich.', 'Die Messung ist ganz anders – das Gesetz stimmt nicht.'], ok:0,
+       erkl:function(){ return 'Die Messung (' + kj(wA(3)) + ') liegt nur wenige Prozent über der Rechnung. Das Erwärmungsgesetz passt also.'; }},
+      {typ:'wahl', q:'Warum braucht man im Labor etwas mehr Energie als berechnet?',
+       opt:['Ein Teil der Wärme geht an Becherglas und Luft verloren.', 'Der Tauchsieder hat sich verrechnet.', 'Das Öl wird beim Erwärmen schwerer.'], ok:0,
+       erkl:'Genau. Das Gesetz gibt die Wärme an, die wirklich in der Flüssigkeit ankommt. Bei echten Versuchen geht immer etwas Wärme verloren – deshalb misst man ein bisschen mehr.'}
     ]}
 ];
 var CODE = AUFTRAEGE.map(function(a){ return a.code; }).join('');
+function wert(x){ return typeof x === 'function' ? x() : x; }
 
 function stellen(a){
   labor.neu();
-  A.stoff = a.setup.A[0]; A.m = a.setup.A[1]; A.ziel = a.setup.A[2];
-  B.stoff = a.setup.B[0]; B.m = a.setup.B[1]; B.ziel = a.setup.B[2];
+  A.stoff = a.setup.A[0]; A.m = a.setup.A[1]; A.ziel = a.setup.A[2]; A.aus = false;
+  if (a.setup.B){ B.stoff = a.setup.B[0]; B.m = a.setup.B[1]; B.ziel = a.setup.B[2]; B.aus = false; }
+  else B.aus = true;
+  document.getElementById('fertigMeldung').classList.remove('an');
   document.getElementById('labor').scrollIntoView({behavior:'smooth', block:'start'});
-}
-function messliste(a){
-  var l = [a.setup.A, a.setup.B];
-  return l.filter(function(x, i){ return !(i === 1 && x[0] === l[0][0] && x[1] === l[0][1] && x[2] === l[0][2]); });
 }
 function zahlLesen(s){ s = String(s).trim().replace(/\s/g, '').replace(',', '.'); return s === '' ? NaN : Number(s); }
 
-var ui = [];
-function bauen(){
-  var liste = document.getElementById('liste'); liste.innerHTML = '';
-  ui = [];
+function auftragFertig(ai){ return AUFTRAEGE[ai].ablauf.every(function(f, fi){ return f.typ === 'messen' ? messFertig(ai) : zustand.erledigt[ai + '-' + fi]; }); }
+function freigeschaltet(ai){ for (var i = 0; i < ai; i++) if (!auftragFertig(i)) return false; return true; }
+
+// ---- Schritt 1: Auftrag
+function auftragZeigen(){
+  var ai = zustand.aktiv, a = AUFTRAEGE[ai];
+  document.getElementById('aTitel').innerHTML = 'Auftrag ' + (ai + 1) + ' von 4: ' + a.titel;
+  document.getElementById('aZiel').innerHTML = '🎯 <b>Ziel:</b> ' + a.ziel;
+  document.getElementById('aSchritte').innerHTML = a.schritte.map(function(t){ return '<li>' + t + '</li>'; }).join('');
+  var su = document.getElementById('aSetup');
+  su.innerHTML = '<div class="becher"><div><span class="marke">Becher A</span>' + cfgTxt(a.setup.A) + '</div>' +
+                 (a.setup.B ? '<div><span class="marke">Becher B</span>' + cfgTxt(a.setup.B) + '</div>' : '<div class="klein">Becher B wird nicht gebraucht.</div>') + '</div>';
+  var bt = document.createElement('button'); bt.className = 'knopf petrol'; bt.type = 'button'; bt.textContent = '⚙ Labor einstellen';
+  bt.addEventListener('click', function(){ stellen(a); });
+  su.appendChild(bt);
+  fortschritt();
+}
+function fortschritt(){
+  var fort = document.getElementById('fort'); fort.innerHTML = '';
   AUFTRAEGE.forEach(function(a, ai){
-    var d = document.createElement('div'); d.className = 'auftrag'; liste.appendChild(d);
-    d.innerHTML = '<h3><span class="nr">Auftrag ' + (ai + 1) + '</span> ' + a.titel + '<span class="ok"></span></h3><div class="inhalt"></div>';
-    var inh = d.querySelector('.inhalt');
-    var mess = (ai < 3) ? messliste(a) : [];
-    var su = document.createElement('div'); su.className = 'setup';
-    su.innerHTML = '<div>' + a.text + '</div>' + (mess.length ? '<ul class="mess"></ul>' : '');
-    var bt = document.createElement('button'); bt.className = 'knopf petrol'; bt.type = 'button';
-    bt.textContent = ai < 3 ? '⚙ Labor einstellen' : '⚙ Labor einstellen (zum Prüfen)';
-    bt.addEventListener('click', function(){ stellen(a); });
-    su.appendChild(bt);
-    if (ai < 3){ var hw = document.createElement('div'); hw.className = 'klein'; hw.textContent = 'Dann „▶ Start“ drücken. Die Fragen öffnen sich, sobald die Messungen in der Tabelle stehen.'; su.appendChild(hw); }
-    inh.appendChild(su);
-    var fu = {d:d, a:a, mess:mess, ml:su.querySelector('.mess'), fragen:[]};
-    a.fragen.forEach(function(f, fi){ fu.fragen.push(frageBauen(f, inh, ai, fi)); });
-    var bel = document.createElement('div'); bel.className = 'belohnung';
-    bel.textContent = '★ Geschafft! Euer Teil vom Lösungswort: ' + a.code.split('').join(' ');
-    inh.appendChild(bel);
-    ui.push(fu);
+    var b = document.createElement('button'); b.type = 'button';
+    var fertig = auftragFertig(ai), frei = freigeschaltet(ai);
+    b.textContent = (fertig ? '✓ ' : (frei ? '' : '🔒 ')) + 'Auftrag ' + (ai + 1);
+    b.className = ai === zustand.aktiv ? 'jetzt' : (fertig ? 'fertig' : '');
+    b.disabled = !frei || ai === zustand.aktiv;
+    b.addEventListener('click', function(){ wechseln(ai, true); });
+    fort.appendChild(b);
   });
-  var w = document.getElementById('wort'); w.innerHTML = '';
-  CODE.split('').forEach(function(){ var s = document.createElement('span'); w.appendChild(s); });
+}
+function wechseln(ai, hoch){
+  zustand.aktiv = ai; sichern();
+  document.getElementById('fertigMeldung').classList.remove('an');
+  auftragZeigen(); ablaufBauen(); wortZeigen();
+  if (hoch) document.getElementById('auftrag').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function frageBauen(f, eltern, ai, fi){
+// ---- Schritt 3: Messwerte + Fragen nacheinander
+function messbar(){
+  var ai = zustand.aktiv, a = AUFTRAEGE[ai], m = M(ai), mb = document.getElementById('messbar');
+  var h = '<div class="titel">Eure Messwerte – Auftrag ' + (ai + 1) + '</div><div class="werte">';
+  ['A', 'B'].forEach(function(sl){
+    var c = a.setup[sl]; if (!c) return;
+    h += '<span class="wert"><span class="marke">' + sl + '</span>' + cfgTxt(c) + ': ' +
+         (m[sl] ? '<b>' + kj(m[sl].W) + '</b> <span class="klein">(t = ' + k(m[sl].t, 1) + ' s)</span>' : '<span class="offen">noch nicht gemessen</span>') + '</span>';
+  });
+  if (ai === 3 && zustand.erledigt['3-1']) h += '<span class="wert">Rechnung: <b>60,0&nbsp;kJ</b></span>';
+  h += '</div>';
+  if (messFertig(ai)) h += '<div class="ab">📝 Diese Werte gehören auf das AB (Tabelle, Zeile ' + a.zeile + ').</div>';
+  mb.innerHTML = h;
+}
+
+var bloecke = [];
+function ablaufBauen(){
+  var ai = zustand.aktiv, a = AUFTRAEGE[ai], box = document.getElementById('ablauf');
+  box.innerHTML = ''; bloecke = [];
+  var n = a.ablauf.filter(function(f){ return f.typ !== 'messen'; }).length, nr = 0;
+  a.ablauf.forEach(function(f, fi){
+    var b = f.typ === 'messen' ? messBlock(ai, f, fi) : frageBlock(ai, f, fi, ++nr, n);
+    b.d.style.display = 'none'; box.appendChild(b.d); bloecke.push(b);
+  });
+  var ende = document.createElement('div'); ende.className = 'block'; ende.style.display = 'none';
+  var weiter = ai < 3 ? '<button class="knopf gruen" type="button">Weiter zu Auftrag ' + (ai + 2) + ' ›</button>'
+                      : '<button class="knopf gruen" type="button">Zum Lösungswort ›</button>';
+  ende.innerHTML = '<div class="belohnung">★ Auftrag ' + (ai + 1) + ' geschafft! Eure Buchstaben: <span class="buch">' +
+    a.code.split('').map(function(c){ return '<span>' + c + '</span>'; }).join('') + '</span>' +
+    '<p>📝 Auf dem AB: Messwerte in Zeile ' + a.zeile + ' prüfen, das Ergebnis ankreuzen und die Buchstaben eintragen.</p></div>' +
+    '<div style="margin-top:10px">' + weiter + '</div>';
+  ende.querySelector('button').addEventListener('click', function(){
+    if (ai < 3) wechseln(ai + 1, true);
+    else document.getElementById('wortkarte').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  box.appendChild(ende); bloecke.ende = ende;
+  ablaufAktualisieren();
+}
+function blockFertig(ai, fi){ var f = AUFTRAEGE[ai].ablauf[fi]; return f.typ === 'messen' ? messFertig(ai) : !!zustand.erledigt[ai + '-' + fi]; }
+function ablaufAktualisieren(){
+  var ai = zustand.aktiv, a = AUFTRAEGE[ai];
+  var pos = zustand.pos[ai] || 0;
+  bloecke.forEach(function(b, i){
+    b.d.style.display = i <= pos ? '' : 'none';
+    var fertig = blockFertig(ai, i);
+    b.d.classList.toggle('erledigt', fertig);
+    if (b.aktualisieren) b.aktualisieren();
+    var w = b.d.querySelector('.weiter');
+    if (w) w.classList.toggle('an', fertig && i === pos && i < bloecke.length);
+  });
+  bloecke.ende.style.display = (pos >= bloecke.length) ? '' : 'none';
+  messbar(); fortschritt(); wortZeigen();
+}
+function weiterKnopf(ai, fi, d){
+  var w = document.createElement('button'); w.className = 'knopf petrol weiter'; w.type = 'button'; w.textContent = 'Weiter ›';
+  w.addEventListener('click', function(){
+    zustand.pos[ai] = Math.max(zustand.pos[ai] || 0, fi + 1); sichern(); ablaufAktualisieren();
+    var naechst = fi + 1 < bloecke.length ? bloecke[fi + 1].d : bloecke.ende;
+    setTimeout(function(){ naechst.scrollIntoView({behavior:'smooth', block:'start'}); }, 30);
+  });
+  d.appendChild(w);
+}
+function messBlock(ai, f, fi){
+  var a = AUFTRAEGE[ai];
+  var d = document.createElement('div'); d.className = 'block';
+  d.innerHTML = '<div class="kopf">Messung</div><div class="messinfo"></div>';
+  var info = d.querySelector('.messinfo');
+  var o = {d:d, aktualisieren:function(){
+    if (messFertig(ai)){
+      info.innerHTML = '✓ <b>Messung fertig.</b> Eure Werte stehen oben im Kasten „Eure Messwerte“ – sie bleiben dort, während ihr die Fragen beantwortet.' +
+        '<div class="erkl an"><span class="ab">📝 Tragt sie jetzt auf dem AB in die Tabelle ein (Zeile ' + a.zeile + ').</span></div>';
+    } else {
+      info.innerHTML = '<span class="warte">Noch nicht gemessen. Stellt das Labor ein und drückt dort „▶ Start“. Sobald alle Becher fertig sind, geht es hier weiter.</span>';
+      var bt = document.createElement('button'); bt.className = 'knopf petrol'; bt.type = 'button'; bt.textContent = '⚙ Labor einstellen';
+      bt.style.marginTop = '8px'; bt.addEventListener('click', function(){ stellen(a); });
+      var p = document.createElement('div'); p.appendChild(bt); info.appendChild(p);
+    }
+  }};
+  weiterKnopf(ai, fi, d);
+  return o;
+}
+function frageBlock(ai, f, fi, nr, n){
   var key = ai + '-' + fi;
-  var d = document.createElement('div'); d.className = 'frage'; eltern.appendChild(d);
+  var d = document.createElement('div'); d.className = 'block';
+  var kopf = document.createElement('div'); kopf.className = 'kopf'; kopf.textContent = 'Frage ' + nr + ' von ' + n; d.appendChild(kopf);
   var q = document.createElement('div'); q.className = 'q'; d.appendChild(q);
   var rm = document.createElement('div'); rm.className = 'rm';
+  var erkl = document.createElement('div'); erkl.className = 'erkl';
   var o = {d:d, f:f, key:key};
-  function richtig(text){ zustand.erledigt[key] = true; sichern(); rm.className = 'rm gut'; rm.textContent = text || '✓ Richtig!'; auftraegeAktualisieren(); }
-  function falsch(text){ rm.className = 'rm schlecht'; rm.textContent = text; }
+  function erklZeigen(){
+    erkl.innerHTML = '💡 ' + wert(f.erkl) + (f.ab ? '<span class="ab">📝 ' + f.ab + '</span>' : '');
+    erkl.classList.add('an');
+  }
+  function richtig(text){ zustand.erledigt[key] = true; sichern(); rm.className = 'rm gut'; rm.textContent = text || '✓ Richtig!'; erklZeigen(); ablaufAktualisieren(); }
+  function falsch(text){ rm.className = 'rm schlecht'; rm.innerHTML = text; }
+  o.aktualisieren = function(){ q.innerHTML = wert(f.q) || q.innerHTML; };
   if (f.typ === 'zahl'){
-    q.textContent = f.q;
     var z = document.createElement('div'); z.className = 'zahl';
     var inp = document.createElement('input'); inp.inputMode = 'decimal'; inp.placeholder = '…';
     var e = document.createElement('span'); e.textContent = f.einh;
     var b = document.createElement('button'); b.className = 'pruef'; b.type = 'button'; b.textContent = 'Prüfen';
     z.appendChild(inp); z.appendChild(e); z.appendChild(b); d.appendChild(z);
-    function pr(){
-      var v = zahlLesen(inp.value);
-      if (isNaN(v)){ falsch('Gib eine Zahl ein (mit Komma, z. B. 12,5).'); return; }
-      if (Math.abs(v - f.soll) <= f.tol){ inp.className = 'richtig'; inp.disabled = true; b.disabled = true; richtig('✓ Richtig: ' + k(f.soll, f.d || 1) + ' ' + f.einh); }
-      else { inp.className = 'falsch'; falsch('Noch nicht. ' + (f.tipp || 'Schaut genau in die Messtabelle (letzte Spalte).')); }
-    }
+    var pr = function(){
+      var v = zahlLesen(inp.value), soll = f.soll();
+      if (isNaN(v)){ falsch('Gebt eine Zahl ein (mit Komma, z. B. 12,5).'); return; }
+      if (Math.abs(v - soll) <= f.tol){ inp.className = 'richtig'; inp.disabled = true; b.disabled = true; richtig('✓ Richtig: ' + k(soll, f.d) + ' ' + f.einh); }
+      else { inp.className = 'falsch'; falsch('Noch nicht. ' + (wert(f.tipp) || 'Schaut oben auf eure Messwerte.')); }
+    };
     b.addEventListener('click', pr);
     inp.addEventListener('keydown', function(ev){ if (ev.key === 'Enter') pr(); });
-    o.fertigZeigen = function(){ inp.value = k(f.soll, f.d || 1); inp.className = 'richtig'; inp.disabled = true; b.disabled = true; rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+    o.fertigZeigen = function(){ inp.value = k(f.soll(), f.d); inp.className = 'richtig'; inp.disabled = true; b.disabled = true; rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; erklZeigen(); };
   } else if (f.typ === 'wahl'){
-    q.textContent = f.q;
     var w = document.createElement('div'); w.className = 'wahl'; d.appendChild(w);
     var knoepfe = f.opt.map(function(t, i){
       var b = document.createElement('button'); b.type = 'button'; b.textContent = t; w.appendChild(b);
       b.addEventListener('click', function(){
         if (zustand.erledigt[key]) return;
         if (i === f.ok){ b.classList.add('richtig'); knoepfe.forEach(function(x){ x.disabled = true; }); richtig(); }
-        else { b.classList.remove('falsch'); void b.offsetWidth; b.classList.add('falsch'); falsch('Noch nicht. ' + (f.tipp || 'Überlegt noch einmal.')); }
+        else { b.classList.remove('falsch'); void b.offsetWidth; b.classList.add('falsch'); falsch('Noch nicht. ' + (wert(f.tipp) || 'Überlegt noch einmal.')); }
       });
       return b;
     });
-    o.fertigZeigen = function(){ knoepfe[f.ok].classList.add('richtig'); knoepfe.forEach(function(x){ x.disabled = true; }); rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+    o.fertigZeigen = function(){ knoepfe[f.ok].classList.add('richtig'); knoepfe.forEach(function(x){ x.disabled = true; }); rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; erklZeigen(); };
   } else if (f.typ === 'satz'){
-    q.textContent = 'Vervollständige den Satz.';
+    q.textContent = 'Vervollständigt den Satz.';
     var s = document.createElement('div'); s.className = 'satz'; d.appendChild(s);
     var sel = [];
     f.teile.forEach(function(t){
       if (typeof t === 'string'){ s.appendChild(document.createTextNode(t)); return; }
       var se = document.createElement('select');
-      var o0 = document.createElement('option'); o0.textContent = '… wähle …'; o0.value = ''; se.appendChild(o0);
+      var o0 = document.createElement('option'); o0.textContent = '… wählt …'; o0.value = ''; se.appendChild(o0);
       t.forEach(function(x, i){ var op = document.createElement('option'); op.textContent = x; op.value = i; se.appendChild(op); });
       s.appendChild(se); sel.push({se:se, wahl:t});
     });
-    var b = document.createElement('button'); b.className = 'pruef'; b.type = 'button'; b.textContent = 'Prüfen';
-    var bw = document.createElement('div'); bw.appendChild(b); d.appendChild(bw);
-    b.addEventListener('click', function(){
+    var b2 = document.createElement('button'); b2.className = 'pruef'; b2.type = 'button'; b2.textContent = 'Prüfen';
+    var bw = document.createElement('div'); bw.appendChild(b2); d.appendChild(bw);
+    b2.addEventListener('click', function(){
       var alle = true;
       sel.forEach(function(x, i){ var ok = x.se.value !== '' && +x.se.value === f.ok[i]; x.se.className = ok ? 'richtig' : 'falsch'; if (!ok) alle = false; });
-      if (alle){ sel.forEach(function(x){ x.se.disabled = true; }); b.disabled = true; richtig(); }
-      else falsch('Rot markierte Lücken stimmen noch nicht. Schaut auf eure Antworten oben.');
+      if (alle){ sel.forEach(function(x){ x.se.disabled = true; }); b2.disabled = true; richtig(); }
+      else falsch('Rot markierte Lücken stimmen noch nicht. Schaut auf eure Messwerte und Antworten oben.');
     });
-    o.fertigZeigen = function(){ sel.forEach(function(x, i){ x.se.value = f.ok[i]; x.se.className = 'richtig'; x.se.disabled = true; }); b.disabled = true; rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+    o.fertigZeigen = function(){ sel.forEach(function(x, i){ x.se.value = f.ok[i]; x.se.className = 'richtig'; x.se.disabled = true; }); b2.disabled = true; rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; erklZeigen(); };
   } else if (f.typ === 'formel'){
-    q.textContent = f.q;
     var zl = document.createElement('div'); zl.className = 'formelzeile';
     zl.innerHTML = '<span>W<sub>th</sub> =</span>';
     var slots = [];
     for (var i = 0; i < 3; i++){
-      if (i) { var m = document.createElement('span'); m.textContent = '·'; zl.appendChild(m); }
+      if (i) { var mm = document.createElement('span'); mm.textContent = '·'; zl.appendChild(mm); }
       var sl = document.createElement('span'); sl.className = 'slot'; zl.appendChild(sl); slots.push(sl);
     }
     d.appendChild(zl);
     var ka = document.createElement('div'); d.appendChild(ka);
     var inhalt = [];
+    var malen = function(){ slots.forEach(function(sl, i){ sl.textContent = inhalt[i] || ''; sl.className = 'slot' + (inhalt[i] ? ' voll' : ''); }); };
+    var pruefen = function(){
+      var ok = f.ok.every(function(x){ return inhalt.indexOf(x) >= 0; });
+      if (ok){ slots.forEach(function(sl){ sl.classList.add('richtig'); }); richtig(); }
+      else falsch('Noch nicht. Welche drei Größen habt ihr in den Aufträgen 1 bis 3 untersucht? Tippt auf ein Feld, um es zu leeren.');
+    };
     var kach = f.kacheln.map(function(t){
       var c = document.createElement('span'); c.className = 'kachel'; c.textContent = t; c.setAttribute('role', 'button'); c.tabIndex = 0; ka.appendChild(c);
       c.addEventListener('click', function(){
@@ -577,62 +792,32 @@ function frageBauen(f, eltern, ai, fi){
       if (zustand.erledigt[key] || i >= inhalt.length) return;
       var t = inhalt.splice(i, 1)[0]; kach.forEach(function(c){ if (c.textContent === t) c.classList.remove('weg'); }); malen(); rm.textContent = '';
     }); });
-    function malen(){ slots.forEach(function(sl, i){ sl.textContent = inhalt[i] || ''; sl.className = 'slot' + (inhalt[i] ? ' voll' : ''); }); }
-    function pruefen(){
-      var ok = f.ok.every(function(x){ return inhalt.indexOf(x) >= 0; });
-      if (ok){ slots.forEach(function(sl){ sl.classList.add('richtig'); }); richtig('✓ Richtig! Das Erwärmungsgesetz: Wₜₕ = m · c · Δϑ (die Reihenfolge beim Malnehmen ist egal).'); }
-      else falsch('Noch nicht. Welche drei Größen habt ihr in den Aufträgen 1 bis 3 untersucht? Tippt auf ein Feld, um es zu leeren.');
-    }
-    o.fertigZeigen = function(){ inhalt = f.ok.slice(); malen(); slots.forEach(function(sl){ sl.classList.add('richtig'); }); kach.forEach(function(c){ if (f.ok.indexOf(c.textContent) >= 0) c.classList.add('weg'); }); rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; };
+    o.fertigZeigen = function(){ inhalt = f.ok.slice(); malen(); slots.forEach(function(sl){ sl.classList.add('richtig'); }); kach.forEach(function(c){ if (f.ok.indexOf(c.textContent) >= 0) c.classList.add('weg'); }); rm.className = 'rm gut'; rm.textContent = '✓ Richtig!'; erklZeigen(); };
   }
-  d.appendChild(rm);
+  if (f.typ !== 'satz') q.innerHTML = wert(f.q);
+  d.appendChild(rm); d.appendChild(erkl);
+  weiterKnopf(ai, fi, d);
   if (zustand.erledigt[key]) o.fertigZeigen();
+  if (f.typ === 'satz') o.aktualisieren = null;
   return o;
 }
 
-function auftragFertig(ai){ return AUFTRAEGE[ai].fragen.every(function(f, fi){ return zustand.erledigt[ai + '-' + fi]; }); }
-function auftraegeAktualisieren(){
-  var fort = document.getElementById('fort'); fort.innerHTML = '';
-  var offen = true;
-  ui.forEach(function(u, ai){
-    var fertig = auftragFertig(ai);
-    var zu = !offen;
-    u.d.classList.toggle('zu', zu);
-    u.d.classList.toggle('erledigt', fertig);
-    u.d.querySelector('.ok').textContent = fertig ? '✓ erledigt' : (zu ? '🔒 erst Auftrag ' + ai : '');
-    var chip = document.createElement('span'); chip.textContent = 'Auftrag ' + (ai + 1);
-    chip.className = fertig ? 'fertig' : (zu ? '' : 'jetzt'); fort.appendChild(chip);
-    // Messungen
-    var alleDa = true;
-    if (u.ml){
-      u.ml.innerHTML = '';
-      u.mess.forEach(function(m){
-        var da = gemessen(m[0], m[1], m[2]); if (!da) alleDa = false;
-        var li = document.createElement('li'); li.className = da ? 'da' : '';
-        li.textContent = 'Messung: ' + STOFFE[m[0]].name + ', ' + mtxt(m[1]) + ', Δϑ = ' + m[2] + ' °C';
-        u.ml.appendChild(li);
-      });
-    }
-    var vorher = true;
-    u.fragen.forEach(function(fr){
-      var gesp = !alleDa || !vorher;
-      if (fr.f.braucht && !gemessen(fr.f.braucht[0], fr.f.braucht[1], fr.f.braucht[2])) gesp = true;
-      if (zustand.erledigt[fr.key]) gesp = false;
-      fr.d.classList.toggle('gesperrt', gesp);
-      if (!zustand.erledigt[fr.key]) vorher = false;
-    });
-    if (!fertig) offen = false;
-  });
-  var spans = document.querySelectorAll('#wort span'), pos = 0, alle = true;
+// ---- Lösungswort
+function wortZeigen(){
+  var w = document.getElementById('wort');
+  if (!w.children.length) CODE.split('').forEach(function(){ w.appendChild(document.createElement('span')); });
+  var spans = w.children, pos = 0, alle = true;
   AUFTRAEGE.forEach(function(a, ai){
-    var f = auftragFertig(ai); if (!f) alle = false;
+    var f = auftragFertig(ai) && (zustand.pos[ai] || 0) >= a.ablauf.length; if (!f) alle = false;
     a.code.split('').forEach(function(ch){ var s = spans[pos++]; s.textContent = f ? ch : ''; s.className = f ? 'da' : ''; });
   });
   document.getElementById('fertig').classList.toggle('an', alle);
 }
+
 document.getElementById('neuStart').addEventListener('click', function(){
   if (!confirmFrei()) return;
-  zustand.erledigt = {}; sichern(); bauen(); auftraegeAktualisieren();
+  zustand = {zeilen:zustand.zeilen, erledigt:{}, pos:{}, mess:{}, aktiv:0}; sichern();
+  labor.neu(); wechseln(0, true);
 });
 // Bestätigung ohne Browser-Dialog: zweimal tippen
 var zweit = 0;
@@ -644,7 +829,8 @@ function confirmFrei(){
   return false;
 }
 
-bauen(); tabelle(); auftraegeAktualisieren(); labor.knoepfe();
+if (!freigeschaltet(zustand.aktiv)) zustand.aktiv = 0;
+tabelle(); auftragZeigen(); ablaufBauen(); labor.knoepfe();
 requestAnimationFrame(takt);
 })();
 </script>
