@@ -232,7 +232,7 @@ function K(schritte, w) {
 }
 var TAGS = { em: ['t-em', 'Strom → Magnetfeld'], ind: ['t-ind', 'Induktion'], strom: ['t-strom', 'Induktionsstrom'],
              lenz: ['t-lenz', 'Regel von Lenz'], pole: ['t-pole', 'Pole bestimmen'] };
-var TEILE = { A: 'A · Grundlagen', B: 'B · Regel von Lenz', C: 'C · Endspurt' };
+var TEILE = { A: 'A · Grundlagen', B: 'B · Regel von Lenz', C: 'C · Endspurt', D: '★ Bonus' };
 
 /* Ketten, die oft vorkommen */
 var K_EM = function (ursache, folge) {
@@ -267,7 +267,6 @@ var KARTEN = [
          { t: 'Eine Induktionsspannung.', fb: 'Dafür müsste sich die Magnetfeldstärke in einer Spule ändern. Hier fließt einfach ein Strom.' },
          { t: 'Nur Wärme.', fb: 'Warm wird das Kabel auch – aber es entsteht immer auch ein Magnetfeld.' } ],
     warum: K_EM('Durch das Kabel fließt ein Strom.') },
-
   { teil: 'A', tag: 'ind', typ: 'einzel', frage: 'Wann entsteht in einer Spule eine <b>Induktionsspannung</b>?',
     a: [ { t: 'Wenn sich die Magnetfeldstärke in der Spule ändert.', ok: true },
          { t: 'Wenn ein Magnet ruhig in der Spule liegt.', fb: 'Dann bleibt die Magnetfeldstärke gleich – keine Spannung.' },
@@ -275,15 +274,12 @@ var KARTEN = [
          { t: 'Wenn durch die Spule ein Strom fließt.', fb: 'Das ist Elektromagnetismus: Strom → Magnetfeld. Bei der Induktion ändert sich die Magnetfeldstärke → Spannung.' } ],
     warum: K(['Ein Magnet wird in die Spule hinein- oder herausbewegt.', 'Die Magnetfeldstärke in der Spule ändert sich.',
               'Zwischen den Enden der Spule entsteht eine Induktionsspannung.']) },
-
   { teil: 'A', typ: 'merke', titel: 'Die beiden Grundlagen', html: MERKE_EM + MERKE_INDUKTION +
     '<p class="klein">Unterschied: Beim <b>Elektromagnetismus</b> macht ein Strom ein Magnetfeld. Bei der <b>Induktion</b> macht ein Magnetfeld, das sich ändert, eine Spannung.</p>' },
-
   { teil: 'A', tag: 'em', typ: 'luecke', frage: 'Ergänze den Merksatz zum Elektromagnetismus mit dem Wortspeicher.',
     saetze: [ 'Immer wenn ein elektrischer [Strom] fließt, entsteht um den Leiter ein [Magnetfeld].', 'Diese Erscheinung heißt [Elektromagnetismus].' ],
     extra: [ 'elektromagnetische Induktion', 'Induktionsspannung', 'Magneten' ],
     warum: K_EM() },
-
   { teil: 'A', tag: 'em', typ: 'erkunden', sim: 'strom', titel: 'Ausprobieren: Strom macht ein Magnetfeld',
     auftrag: 'Schließe den Schalter (Knopf oder auf den Schalter tippen) und beobachte die Kompassnadel. Öffne ihn wieder. Pole dann die Batterie um.',
     q: { typ: 'einzel', frage: 'Warum dreht sich die Kompassnadel, sobald der Schalter geschlossen ist?',
@@ -292,12 +288,10 @@ var KARTEN = [
            { t: 'Die Spule zieht die Nadel immer an, weil sie aus Metall ist.', fb: 'Bei offenem Schalter passiert gar nichts. Also liegt es am Strom.' },
            { t: 'In der Spule entsteht eine Induktionsspannung.', fb: 'Hier fließt ein Strom und erzeugt ein Magnetfeld – das ist Elektromagnetismus.' } ],
       warum: K_EM('Du schließt den Schalter – es fließt ein Strom durch die Spule.', 'Die Spule wird zum Magneten und lenkt die Kompassnadel ab.') } },
-
   { teil: 'A', tag: 'ind', typ: 'luecke', frage: 'Ergänze die drei Sätze zur elektromagnetischen Induktion.',
     saetze: [ '1. Ändert sich die [Magnetfeldstärke] in einer Spule, …', '2. … entsteht zwischen den Enden der Spule eine [Induktionsspannung].',
               '3. Ist der Stromkreis [geschlossen], fließt ein [Induktionsstrom].' ],
     extra: [ 'offen', 'Elektromagnetismus', 'Batterie' ], warum: MERKE_INDUKTION },
-
   { teil: 'A', tag: 'ind', typ: 'tabelle', frage: 'Entsteht in der Spule eine <b>Induktionsspannung</b>? Entscheide für jede Situation.',
     spalten: [ { titel: '', opt: [ 'ja', 'nein' ] } ],
     zeilen: [ { t: 'Ein Magnet wird in die Spule hineingeschoben.', a: [0] },
@@ -309,7 +303,6 @@ var KARTEN = [
     warum: 'Es kommt nicht darauf an, <i>ob</i> ein Magnet da ist, sondern ob sich die Magnetfeldstärke in der Spule <b>ändert</b>.' +
       K(['Magnet oder Spule bewegen sich.', 'Die Magnetfeldstärke in der Spule ändert sich.', 'Es entsteht eine Induktionsspannung.']) +
       'Ruht alles, bleibt die Magnetfeldstärke gleich → keine Spannung. Holz ist nicht magnetisch → nichts ändert sich.' },
-
   { teil: 'A', tag: 'em', typ: 'einzel', frage: 'Auf dem Schrottplatz hebt ein Kran mit einem großen <b>Elektromagneten</b> ein Autowrack hoch. Der Kranführer schaltet den Strom aus – das Auto fällt herunter. Warum?',
     a: [ { t: 'Ohne Strom gibt es kein Magnetfeld mehr – der Elektromagnet hält nicht mehr.', ok: true },
          { t: 'Das Auto ist plötzlich zu schwer geworden.', fb: 'Die Masse ändert sich nicht. Entscheidend ist der Strom.' },
@@ -317,7 +310,6 @@ var KARTEN = [
          { t: 'Das Auto ist aus Kupfer.', fb: 'Dann hätte der Kran es gar nicht erst hochheben können.' } ],
     warum: K(['Der Kranführer schaltet den Strom aus.', 'Es fließt kein Strom mehr – also gibt es kein Magnetfeld mehr.', 'Das Auto wird nicht mehr festgehalten und fällt.'], 1) +
       'Ein Elektromagnet ist nur ein Magnet, <b>solange ein Strom fließt</b>.' },
-
   { teil: 'A', tag: 'strom', typ: 'mehr', frage: 'Bei einer Spule sind die beiden Enden <b>nicht</b> miteinander verbunden – der Stromkreis ist offen. Tom schiebt einen Magneten schnell hinein. Was stimmt?',
     a: [ { t: 'Es entsteht eine Induktionsspannung.', ok: true },
          { t: 'Es fließt kein Induktionsstrom.', ok: true },
@@ -325,7 +317,6 @@ var KARTEN = [
          { t: 'Es entsteht keine Induktionsspannung.', fb: 'Doch: Die Magnetfeldstärke ändert sich – die Spannung entsteht auch bei offenem Stromkreis.' } ],
     warum: K(['Tom schiebt den Magneten hinein.', 'Die Magnetfeldstärke in der Spule ändert sich.',
               'Es entsteht eine Induktionsspannung. Aber: Der Stromkreis ist <b>offen</b> → <b>kein</b> Induktionsstrom.']) },
-
   { teil: 'A', tag: 'ind', typ: 'erkunden', sim: 'spule', titel: 'Ausprobieren: Magnet und Spule',
     auftrag: 'Schiebe den Magneten mit dem Finger oder dem Regler in die Spule und wieder heraus. Probiere: schnell, langsam, Magnet still in der Spule – und mit offenem Schalter.',
     q: { typ: 'mehr', frage: 'Was hast du beobachtet?',
@@ -335,11 +326,9 @@ var KARTEN = [
            { t: 'Die Spannung ist am größten, wenn der Magnet ruhig in der Mitte der Spule liegt.', fb: 'Dort ist die Magnetfeldstärke zwar groß – aber sie ändert sich nicht. Also: 0.' } ],
       warum: K(['Der Magnet wird bewegt.', 'Die Magnetfeldstärke in der Spule ändert sich – je schneller, desto größer die Spannung.',
                 'Es entsteht eine Induktionsspannung; nur bei geschlossenem Schalter fließt ein Induktionsstrom und die Lampe leuchtet.']) } },
-
   { teil: 'A', tag: 'ind', typ: 'fehler', frage: 'In diesem Merksatz steckt <b>ein</b> Fehler. Tippe auf die falsche Stelle und verbessere sie.',
     text: 'Immer wenn die Magnetfeldstärke in einer Spule [[gleich bleibt|sich ändert|groß ist|klein ist]], entsteht eine Induktionsspannung.',
     warum: 'Richtig: Immer wenn sich die Magnetfeldstärke in einer Spule <b>ändert</b>, entsteht eine Induktionsspannung. Eine große, aber gleichbleibende Magnetfeldstärke reicht nicht.' },
-
   { teil: 'A', tag: 'em', typ: 'tabelle', frage: '<b>Elektromagnetismus</b> oder <b>Induktion</b>? Ordne zu.<br><span class="klein">Elektromagnetismus: Strom → Magnetfeld. Induktion: Magnetfeldstärke ändert sich → Spannung.</span>',
     spalten: [ { titel: '', opt: [ 'Elektromagnetismus', 'Induktion' ] } ],
     zeilen: [ { t: 'Ein Elektromagnet hält die Brandschutztür offen, solange Strom fließt.', a: [0] },
@@ -350,20 +339,13 @@ var KARTEN = [
               { t: 'Unter der E-Gitarren-Saite sitzt eine Spule; die schwingende Saite ändert die Magnetfeldstärke darin.', a: [1] } ],
     warum: '<b>Strom fließt → Magnetfeld entsteht</b>: Elektromagnetismus (Brandschutztür, Kompass, Lautsprecher).<br>' +
       '<b>Magnetfeldstärke ändert sich → Spannung entsteht</b>: Induktion (Dynamo, Schütteltaschenlampe, E-Gitarre).' },
-
   { teil: 'A', tag: 'strom', typ: 'fehler', frage: 'Auch hier steckt <b>ein</b> Fehler. Finde und verbessere ihn.',
     text: 'Ist der Stromkreis [[offen|geschlossen|unterbrochen|ausgeschaltet]], fließt ein Induktionsstrom.',
     warum: 'Richtig: Ist der Stromkreis <b>geschlossen</b>, fließt ein Induktionsstrom. Bei offenem Stromkreis gibt es nur die Induktionsspannung.' },
-
   { teil: 'A', tag: 'ind', typ: 'ordnen', frage: 'Die Schütteltaschenlampe: Bringe die Erklärung in die richtige Reihenfolge. Fang mit der <b>Ursache</b> an.',
     items: [ 'Beim Schütteln bewegt sich der Magnet durch die Spule.', 'Die Magnetfeldstärke in der Spule ändert sich.',
              'Zwischen den Enden der Spule entsteht eine Induktionsspannung.', 'Der Stromkreis ist geschlossen – es fließt ein Induktionsstrom.',
              'Der Kondensator wird geladen, die Lampe leuchtet.' ], w: 2 },
-
-  { teil: 'A', tag: 'em', typ: 'fehler', frage: 'Finde den Fehler und verbessere ihn.',
-    text: 'Um einen Draht entsteht nur dann ein Magnetfeld, wenn [[er aus Eisen ist|ein Strom durch ihn fließt|er sehr lang ist|er aus Kupfer ist]].',
-    warum: K_EM('Durch den Draht fließt ein Strom.') + ' Ob Kupfer, Aluminium oder Eisen ist egal.' },
-
   { teil: 'A', tag: 'ind', typ: 'einzel', frage: 'Lena hält mit dem Fahrrad an der Ampel. Ihr Licht hängt nur am Dynamo (kein Akku) und geht aus. Warum?',
     a: [ { t: 'Das Rad dreht sich nicht mehr – die Magnetfeldstärke in der Spule ändert sich nicht mehr.', ok: true },
          { t: 'Der Magnet im Dynamo hat seine Kraft verloren.', fb: 'Der Magnet ist noch genauso stark – er bewegt sich nur nicht mehr.' },
@@ -371,15 +353,6 @@ var KARTEN = [
          { t: 'Die Spule ist zu warm geworden.', fb: 'Damit hat es nichts zu tun.' } ],
     warum: K(['Das Rad – und damit der Magnet – steht still.', 'Die Magnetfeldstärke in der Spule bleibt gleich.',
               'Es entsteht <b>keine</b> Induktionsspannung → kein Induktionsstrom → kein Licht.']) },
-
-  { teil: 'A', tag: 'ind', typ: 'einzel', frage: 'Beim kabellosen Laden liegt das Handy ruhig auf der Ladeschale. Nichts bewegt sich – trotzdem wird der Akku geladen. Wie geht das?',
-    a: [ { t: 'In der Ladeschale fließt ein Strom, der sich ständig ändert. Dadurch ändert sich auch die Magnetfeldstärke in der Spule im Handy.', ok: true },
-         { t: 'Die Ladeschale ist ein Dauermagnet.', fb: 'Ein ruhender Dauermagnet ändert nichts – keine Induktion.' },
-         { t: 'Der Strom fließt durch die Luft ins Handy.', fb: 'Strom braucht einen Leiter. Übertragen wird ein Magnetfeld, das sich ändert.' },
-         { t: 'Das Handy lädt sich durch die Wärme der Ladeschale.', fb: 'Wärme lädt keinen Akku.' } ],
-    warum: K(['In der Spule der Ladeschale fließt ein Strom, dessen Stärke sich ständig ändert.',
-              'Jeder Strom erzeugt ein Magnetfeld (Elektromagnetismus) → die Magnetfeldstärke in der Spule im Handy ändert sich ständig.',
-              'Im Handy entsteht eine Induktionsspannung; der Stromkreis ist geschlossen → ein Induktionsstrom lädt den Akku.']) },
 
   /* ---------------- Teil B: Regel von Lenz ---------------- */
   { teil: 'B', typ: 'merke', titel: 'Die Regel von Lenz', html:
@@ -390,7 +363,6 @@ var KARTEN = [
     '<div class="regel">Regel von Lenz: Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld der Ursache seiner Entstehung entgegenwirkt.</div>' +
     '<span class="klein">Kurz gesagt: Der Ring „wehrt sich“ immer gegen die Bewegung des Magneten.</span></div>' +
     '<p class="klein">Schritt 3 ist wieder Elektromagnetismus: Der Induktionsstrom ist ein Strom – und jeder Strom erzeugt ein Magnetfeld.</p>' },
-
   { teil: 'B', tag: 'em', typ: 'einzel', frage: 'Aluminium ist <b>nicht</b> magnetisch. Warum wird ein geschlossener Aluminiumring trotzdem zum Magneten, wenn man einen Magneten hineinschiebt?',
     a: [ { t: 'Im Ring fließt ein Induktionsstrom – und jeder Strom erzeugt ein Magnetfeld.', ok: true },
          { t: 'Der Magnet magnetisiert das Aluminium wie ein Eisenstück.', fb: 'Dann müsste der Ring auch an einem ruhenden Magneten hängen bleiben.' },
@@ -399,18 +371,15 @@ var KARTEN = [
     warum: K(['Der Magnet wird in den Ring hineingeschoben.', 'Die Magnetfeldstärke im Ring ändert sich.',
               'Es entsteht eine Induktionsspannung; im geschlossenen Ring fließt ein Induktionsstrom.',
               'Der Induktionsstrom erzeugt ein eigenes Magnetfeld (Elektromagnetismus!) – der Ring wird zum Magneten.']) },
-
   { teil: 'B', tag: 'lenz', typ: 'luecke', frage: 'Ergänze die Regel von Lenz mit dem Wortspeicher.',
     saetze: [ 'Der [Induktionsstrom] ist immer so gerichtet, dass sein [Magnetfeld] der [Ursache] seiner Entstehung [entgegenwirkt].' ],
     extra: [ 'unterstützt', 'Wirkung', 'Spannung' ],
     warum: 'Beim Ring heißt das: Der Ring „wehrt sich“ gegen die Bewegung des Magneten. Hinbewegen → er stößt ab. Wegziehen → er hält fest (zieht an).' },
-
   { teil: 'B', tag: 'lenz', typ: 'ordnen', frage: 'Der Nordpol eines Magneten wird zum geschlossenen Ring hinbewegt. Bringe die Erklärung in die richtige Reihenfolge – beginne mit der <b>Ursache</b>.',
     items: [ 'Der Magnet wird mit dem Nordpol zum Ring hinbewegt.', 'Die Magnetfeldstärke im Ring ändert sich.',
              'Es entsteht eine Induktionsspannung; im geschlossenen Ring fließt ein Induktionsstrom.',
              'Der Induktionsstrom erzeugt ein eigenes Magnetfeld – der Ring wird zum Magneten.',
              'Der Ring zeigt dem Magneten einen Nordpol: gleichnamige Pole → Abstoßung.' ], w: 2 },
-
   { teil: 'B', tag: 'lenz', typ: 'erkunden', sim: 'ring', titel: 'Ausprobieren: Magnet und Ring',
     auftrag: 'Wähle, welcher Pol zum Ring zeigt, und bewege den Magneten hinein und wieder heraus. Achte auf die Pole am Ring. Probiere auch den offenen Ring.' +
       '<br><a class="groß" href="sim-2-3-ring.html">Zur großen Simulation mit Feldlinien ›</a>',
@@ -422,80 +391,22 @@ var KARTEN = [
       warum: K(['Der Magnet wird bewegt.', 'Die Magnetfeldstärke im Ring ändert sich.',
                 'Es entsteht eine Induktionsspannung – aber der Ring ist offen: <b>kein</b> Induktionsstrom.',
                 'Kein Strom → kein Magnetfeld → keine Pole → keine Kraft. Der Ring bleibt ruhig.']) } },
-
   { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der <b>Nordpol</b> eines Magneten wird schnell zum geschlossenen Ring <b>hin</b>bewegt. Trage die Pole des Rings ein.',
     s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'N', bew: 'hin' } },
   { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Jetzt zeigt der <b>Südpol</b> zum Ring. Der Magnet wird zum Ring <b>hin</b>bewegt.',
     s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'S', bew: 'hin' } },
   { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet steckt mit dem <b>Nordpol</b> im Ring und wird schnell <b>herausgezogen</b>.',
     s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'N', bew: 'weg' } },
-
   { teil: 'B', tag: 'lenz', typ: 'fehler', frage: 'In dieser Regel von Lenz steckt <b>ein</b> Fehler. Finde und verbessere ihn.',
     text: 'Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld [[die Ursache seiner Entstehung unterstützt|der Ursache seiner Entstehung entgegenwirkt|die Ursache seiner Entstehung verstärkt|der Wirkung seiner Entstehung entgegenwirkt]].',
     warum: 'Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld der <b>Ursache</b> seiner Entstehung <b>entgegenwirkt</b>. Die Ursache ist hier die Bewegung des Magneten – sie wird gebremst.' },
-
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Diesmal steht der Magnet <b>rechts</b>. Er zeigt mit dem <b>Südpol</b> zum Ring und wird zum Ring <b>hin</b>bewegt.',
-    s: { lage: 'h', obj: 'ring', mag: 'R', pol: 'S', bew: 'hin' } },
-
   { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Der Magnet steckt im Ring und wird <b>nicht</b> bewegt. Was passiert mit dem Ring?',
     a: [ { t: 'Nichts – die Magnetfeldstärke im Ring ändert sich nicht, also fließt kein Strom.', ok: true },
          { t: 'Er wird abgestoßen, weil gleichnamige Pole gegenüberliegen.', fb: 'Ohne Induktionsstrom hat der Ring gar keine Pole.' },
          { t: 'Er wird angezogen, weil der Magnet so nah ist.', fb: 'Aluminium wird von einem ruhenden Magneten nicht angezogen.' } ],
     warum: K(['Der Magnet ruht.', 'Die Magnetfeldstärke im Ring bleibt gleich.', '<b>Keine</b> Induktionsspannung → kein Induktionsstrom → kein Magnetfeld → keine Kraft.']) },
-
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet rechts zeigt mit dem <b>Nordpol</b> zum Ring und wird <b>weg</b>gezogen.',
-    s: { lage: 'h', obj: 'ring', mag: 'R', pol: 'N', bew: 'weg' } },
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der <b>Südpol</b> steckt im Ring und wird schnell <b>herausgezogen</b>.',
-    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'S', bew: 'weg' } },
-
-  { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Tom bewegt einen Magneten. Der geschlossene Ring wird <b>angezogen</b> – er folgt dem Magneten. Was hat Tom gemacht?',
-    a: [ { t: 'Er hat den Magneten vom Ring weggezogen.', ok: true },
-         { t: 'Er hat den Magneten zum Ring hinbewegt.', fb: 'Dann würde der Ring abgestoßen.' },
-         { t: 'Er hat den Magneten ruhig gehalten.', fb: 'Ohne Bewegung: kein Strom → keine Kraft.' } ],
-    warum: 'Regel von Lenz: Der Ring „wehrt sich“ gegen die Bewegung. Wird der Magnet weggezogen, will der Ring ihn festhalten → ungleichnamige Pole → <b>Anziehung</b>.' },
-
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Ein Magnet wird mit dem <b>Nordpol</b> nach unten von oben auf einen waagrecht hängenden Ring <b>zu</b>bewegt. Trage die Pole an der Ober- und Unterseite des Rings ein.',
-    s: { lage: 'v', obj: 'ring', mag: 'O', pol: 'N', bew: 'hin' } },
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet liegt <b>unter</b> dem Ring, sein <b>Südpol</b> zeigt nach oben. Er wird nach unten <b>weg</b>gezogen.',
-    s: { lage: 'v', obj: 'ring', mag: 'U', pol: 'S', bew: 'weg' } },
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet hängt <b>über</b> dem Ring, <b>Südpol</b> unten. Er wird nach oben <b>weg</b>gezogen.',
-    s: { lage: 'v', obj: 'ring', mag: 'O', pol: 'S', bew: 'weg' } },
-
-  { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Ein Magnet zeigt mit dem <b>Südpol</b> zum Ring. Auf der Seite zum Magneten entsteht am Ring ein <b>Nordpol</b>. Was macht der Magnet gerade?',
-    a: [ { t: 'Er wird weggezogen – der Ring wird angezogen.', ok: true },
-         { t: 'Er wird hinbewegt – der Ring wird abgestoßen.', fb: 'Beim Hinbewegen zeigt der Ring einen <b>gleichnamigen</b> Pol – hier also einen Südpol.' },
-         { t: 'Er ruht.', fb: 'Dann hätte der Ring gar keine Pole.' } ],
-    warum: 'Südpol und Nordpol sind <b>ungleichnamig</b> → Anziehung. Angezogen wird der Ring nur, wenn der Magnet <b>weggezogen</b> wird – der Ring will ihn festhalten.' },
-
   { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Ein Magnet wird mit dem <b>Nordpol</b> in eine Spule geschoben. An die Spule ist eine Lampe angeschlossen – der Stromkreis ist geschlossen. Trage die Pole an den Enden der Spule ein.',
     s: { lage: 'h', obj: 'spule', mag: 'L', pol: 'N', bew: 'hin', extra: 'lampe' } },
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Der Magnet steckt mit dem <b>Südpol</b> rechts in der Spule (mit Lampe) und wird <b>herausgezogen</b>.',
-    s: { lage: 'h', obj: 'spule', mag: 'R', pol: 'S', bew: 'weg', extra: 'lampe' } },
-
-  { teil: 'B', tag: 'strom', typ: 'einzel', frage: 'Diesmal ist im Stromkreis der Spule ein Schalter, und er ist <b>offen</b>. Der Magnet wird hineingeschoben. Welche Pole entstehen an der Spule?',
-    a: [ { t: 'Keine – es fließt kein Induktionsstrom, also entsteht kein Magnetfeld.', ok: true },
-         { t: 'Dieselben wie bei geschlossenem Schalter.', fb: 'Die Spule wird nur durch den Induktions<b>strom</b> zum Magneten.' },
-         { t: 'Genau andersherum als bei geschlossenem Schalter.', fb: 'Ohne Strom gibt es gar keine Pole.' } ],
-    warum: K(['Der Magnet wird hineingeschoben.', 'Die Magnetfeldstärke in der Spule ändert sich.',
-              'Es entsteht eine Induktionsspannung – aber der Stromkreis ist offen: <b>kein</b> Induktionsstrom.',
-              'Kein Strom → kein eigenes Magnetfeld → keine Pole.']) },
-
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Eine Spule, deren Enden verbunden sind, steht auf einer Waage. Ein Magnet wird mit dem <b>Südpol</b> von oben in die Spule <b>hinein</b>geschoben, ohne sie zu berühren. Trage die Pole ein und entscheide, was die Waage anzeigt.',
-    s: { lage: 'v', obj: 'spule', mag: 'O', pol: 'S', bew: 'hin', extra: 'waage' } },
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Gleicher Aufbau: Der Magnet steckt mit dem <b>Nordpol</b> in der Spule und wird schnell nach oben <b>herausgezogen</b>.',
-    s: { lage: 'v', obj: 'spule', mag: 'O', pol: 'N', bew: 'weg', extra: 'waage' } },
-
-  { teil: 'B', tag: 'lenz', typ: 'einzel', frage: 'Ein Magnet fällt durch ein senkrechtes Kupferrohr – viel langsamer als ein gleich großes Eisenstück. Warum?',
-    a: [ { t: 'Das Rohr ist wie viele Ringe übereinander: In den Ringen fließen Induktionsströme, und ihre Magnetfelder bremsen den Magneten.', ok: true },
-         { t: 'Kupfer ist magnetisch und hält den Magneten fest.', fb: 'Kupfer ist nicht magnetisch – der Magnet bleibt nicht am Rohr haften.' },
-         { t: 'Die Luft im Rohr bremst den Magneten.', fb: 'Dann müsste das Eisenstück genauso langsam fallen.' },
-         { t: 'Der Magnet ist schwerer als das Eisenstück.', fb: 'Schwerere Körper fallen nicht langsamer.' } ],
-    warum: K(['Der Magnet fällt durch das Rohr.', 'Die Magnetfeldstärke in den Ringen des Rohrs ändert sich.',
-              'In jedem Ring entsteht eine Induktionsspannung; es fließen Induktionsströme.',
-              'Ihre Magnetfelder wirken der Bewegung entgegen (Regel von Lenz) → der Magnet wird gebremst.']) },
-
-  { teil: 'B', tag: 'pole', typ: 'pole', frage: 'Diesmal <b>ruht</b> der Magnet. Der geschlossene Ring wird schnell auf den <b>Nordpol</b> zugeschoben.',
-    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'N', bew: 'hin', wer: 'ring' } },
 
   /* ---------------- Teil C: Endspurt ---------------- */
   { teil: 'C', tag: 'em', typ: 'einzel', frage: 'Lisa hält einen Kompass unter ein Lampenkabel. Erst als sie das Licht einschaltet, dreht sich die Nadel. Warum?',
@@ -504,7 +415,6 @@ var KARTEN = [
          { t: 'Im Kabel entsteht eine Induktionsspannung.', fb: 'Hier wird nichts induziert: Strom → Magnetfeld ist Elektromagnetismus.' },
          { t: 'Das Licht der Lampe dreht die Nadel.', fb: 'Licht lenkt eine Kompassnadel nicht ab.' } ],
     warum: K_EM('Lisa schaltet das Licht ein – durch das Kabel fließt ein Strom.', 'Das Magnetfeld lenkt die Kompassnadel ab.') },
-
   { teil: 'C', tag: 'strom', typ: 'tabelle', frage: 'Entsteht eine Induktions<b>spannung</b>? Fließt ein Induktions<b>strom</b>? Entscheide beides.',
     spalten: [ { titel: 'U<sub>ind</sub>?', opt: [ 'ja', 'nein' ] }, { titel: 'I<sub>ind</sub>?', opt: [ 'ja', 'nein' ] } ],
     zeilen: [ { t: 'Ein Magnet wird in eine Spule mit angeschlossener Lampe geschoben.', a: [0, 0] },
@@ -514,11 +424,9 @@ var KARTEN = [
               { t: 'Aus einem offenen Ring wird ein Magnet herausgezogen.', a: [0, 1] } ],
     warum: '<b>Spannung</b> entsteht, sobald sich die Magnetfeldstärke ändert – egal ob der Stromkreis offen oder geschlossen ist.<br>' +
       '<b>Strom</b> fließt nur, wenn zusätzlich der Stromkreis <b>geschlossen</b> ist.' },
-
   { teil: 'C', tag: 'lenz', typ: 'fehler', frage: 'In diesem Satz stecken <b>zwei</b> Fehler. Finde und verbessere beide.',
     text: 'Wird der Magnet aus dem Ring herausgezogen, zeigt der Ring ihm einen [[gleichnamigen|ungleichnamigen|keinen|doppelten]] Pol und wird [[abgestoßen|angezogen|nicht bewegt|gedreht]].',
     warum: K_RING('N', false) },
-
   { teil: 'C', tag: 'ind', typ: 'luecke', frage: 'Alles auf einen Blick: Ergänze mit dem Wortspeicher.',
     saetze: [ 'Immer wenn ein elektrischer [Strom] fließt, entsteht um den Leiter ein [Magnetfeld].',
               'Ändert sich die [Magnetfeldstärke] in einer Spule, entsteht eine [Induktionsspannung].',
@@ -526,8 +434,72 @@ var KARTEN = [
               'Dessen Magnetfeld wirkt der [Ursache] seiner Entstehung entgegen.' ],
     extra: [ 'offen', 'Wirkung' ],
     warum: MERKE_EM + MERKE_INDUKTION },
+  { teil: 'C', tag: 'pole', typ: 'pole', frage: 'Jetzt hängt der Ring waagrecht. Der Magnet liegt <b>unter</b> dem Ring, <b>Nordpol</b> oben, und wird nach oben zum Ring <b>hin</b>bewegt. Trage die Pole an der Ober- und Unterseite des Rings ein.',
+    s: { lage: 'v', obj: 'ring', mag: 'U', pol: 'N', bew: 'hin' } },
+  { teil: 'C', tag: 'lenz', typ: 'einzel', frage: 'Welcher Satz beschreibt die Regel von Lenz beim Ring am besten?',
+    a: [ { t: 'Der Ring „wehrt sich“ immer gegen die Bewegung: Beim Hinbewegen stößt er ab, beim Wegziehen zieht er an.', ok: true },
+         { t: 'Der Ring wird immer abgestoßen.', fb: 'Nur beim Hinbewegen.' },
+         { t: 'Der Ring wird immer angezogen.', fb: 'Nur beim Wegziehen.' },
+         { t: 'Der Ring folgt immer dem Magneten.', fb: 'Nur beim Wegziehen – beim Hinbewegen weicht er aus.' } ],
+    warum: '<div class="merke" style="margin:4px 0"><b>Regel von Lenz:</b> Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld der Ursache seiner Entstehung entgegenwirkt.</div>' },
+  { typ: 'ende' },
 
-  { teil: 'C', tag: 'em', typ: 'tabelle', frage: 'Noch einmal: <b>Elektromagnetismus</b> oder <b>Induktion</b>?',
+  /* ---------------- Bonus für Schnelle ---------------- */
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Diesmal steht der Magnet <b>rechts</b>. Er zeigt mit dem <b>Südpol</b> zum Ring und wird zum Ring <b>hin</b>bewegt.',
+    s: { lage: 'h', obj: 'ring', mag: 'R', pol: 'S', bew: 'hin' } },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Der Magnet rechts zeigt mit dem <b>Nordpol</b> zum Ring und wird <b>weg</b>gezogen.',
+    s: { lage: 'h', obj: 'ring', mag: 'R', pol: 'N', bew: 'weg' } },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Der <b>Südpol</b> steckt im Ring und wird schnell <b>herausgezogen</b>.',
+    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'S', bew: 'weg' } },
+  { teil: 'D', tag: 'lenz', typ: 'einzel', frage: 'Tom bewegt einen Magneten. Der geschlossene Ring wird <b>angezogen</b> – er folgt dem Magneten. Was hat Tom gemacht?',
+    a: [ { t: 'Er hat den Magneten vom Ring weggezogen.', ok: true },
+         { t: 'Er hat den Magneten zum Ring hinbewegt.', fb: 'Dann würde der Ring abgestoßen.' },
+         { t: 'Er hat den Magneten ruhig gehalten.', fb: 'Ohne Bewegung: kein Strom → keine Kraft.' } ],
+    warum: 'Regel von Lenz: Der Ring „wehrt sich“ gegen die Bewegung. Wird der Magnet weggezogen, will der Ring ihn festhalten → ungleichnamige Pole → <b>Anziehung</b>.' },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Ein Magnet wird mit dem <b>Nordpol</b> nach unten von oben auf einen waagrecht hängenden Ring <b>zu</b>bewegt. Trage die Pole an der Ober- und Unterseite des Rings ein.',
+    s: { lage: 'v', obj: 'ring', mag: 'O', pol: 'N', bew: 'hin' } },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Der Magnet liegt <b>unter</b> dem Ring, sein <b>Südpol</b> zeigt nach oben. Er wird nach unten <b>weg</b>gezogen.',
+    s: { lage: 'v', obj: 'ring', mag: 'U', pol: 'S', bew: 'weg' } },
+  { teil: 'D', tag: 'em', typ: 'fehler', frage: 'Finde den Fehler und verbessere ihn.',
+    text: 'Um einen Draht entsteht nur dann ein Magnetfeld, wenn [[er aus Eisen ist|ein Strom durch ihn fließt|er sehr lang ist|er aus Kupfer ist]].',
+    warum: K_EM('Durch den Draht fließt ein Strom.') + ' Ob Kupfer, Aluminium oder Eisen ist egal.' },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Der Magnet hängt <b>über</b> dem Ring, <b>Südpol</b> unten. Er wird nach oben <b>weg</b>gezogen.',
+    s: { lage: 'v', obj: 'ring', mag: 'O', pol: 'S', bew: 'weg' } },
+  { teil: 'D', tag: 'lenz', typ: 'einzel', frage: 'Ein Magnet zeigt mit dem <b>Südpol</b> zum Ring. Auf der Seite zum Magneten entsteht am Ring ein <b>Nordpol</b>. Was macht der Magnet gerade?',
+    a: [ { t: 'Er wird weggezogen – der Ring wird angezogen.', ok: true },
+         { t: 'Er wird hinbewegt – der Ring wird abgestoßen.', fb: 'Beim Hinbewegen zeigt der Ring einen <b>gleichnamigen</b> Pol – hier also einen Südpol.' },
+         { t: 'Er ruht.', fb: 'Dann hätte der Ring gar keine Pole.' } ],
+    warum: 'Südpol und Nordpol sind <b>ungleichnamig</b> → Anziehung. Angezogen wird der Ring nur, wenn der Magnet <b>weggezogen</b> wird – der Ring will ihn festhalten.' },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Der Magnet steckt mit dem <b>Südpol</b> rechts in der Spule (mit Lampe) und wird <b>herausgezogen</b>.',
+    s: { lage: 'h', obj: 'spule', mag: 'R', pol: 'S', bew: 'weg', extra: 'lampe' } },
+  { teil: 'D', tag: 'strom', typ: 'einzel', frage: 'Diesmal ist im Stromkreis der Spule ein Schalter, und er ist <b>offen</b>. Der Magnet wird hineingeschoben. Welche Pole entstehen an der Spule?',
+    a: [ { t: 'Keine – es fließt kein Induktionsstrom, also entsteht kein Magnetfeld.', ok: true },
+         { t: 'Dieselben wie bei geschlossenem Schalter.', fb: 'Die Spule wird nur durch den Induktions<b>strom</b> zum Magneten.' },
+         { t: 'Genau andersherum als bei geschlossenem Schalter.', fb: 'Ohne Strom gibt es gar keine Pole.' } ],
+    warum: K(['Der Magnet wird hineingeschoben.', 'Die Magnetfeldstärke in der Spule ändert sich.',
+              'Es entsteht eine Induktionsspannung – aber der Stromkreis ist offen: <b>kein</b> Induktionsstrom.',
+              'Kein Strom → kein eigenes Magnetfeld → keine Pole.']) },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Eine Spule, deren Enden verbunden sind, steht auf einer Waage. Ein Magnet wird mit dem <b>Südpol</b> von oben in die Spule <b>hinein</b>geschoben, ohne sie zu berühren. Trage die Pole ein und entscheide, was die Waage anzeigt.',
+    s: { lage: 'v', obj: 'spule', mag: 'O', pol: 'S', bew: 'hin', extra: 'waage' } },
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Gleicher Aufbau: Der Magnet steckt mit dem <b>Nordpol</b> in der Spule und wird schnell nach oben <b>herausgezogen</b>.',
+    s: { lage: 'v', obj: 'spule', mag: 'O', pol: 'N', bew: 'weg', extra: 'waage' } },
+  { teil: 'D', tag: 'ind', typ: 'einzel', frage: 'Beim kabellosen Laden liegt das Handy ruhig auf der Ladeschale. Nichts bewegt sich – trotzdem wird der Akku geladen. Wie geht das?',
+    a: [ { t: 'In der Ladeschale fließt ein Strom, der sich ständig ändert. Dadurch ändert sich auch die Magnetfeldstärke in der Spule im Handy.', ok: true },
+         { t: 'Die Ladeschale ist ein Dauermagnet.', fb: 'Ein ruhender Dauermagnet ändert nichts – keine Induktion.' },
+         { t: 'Der Strom fließt durch die Luft ins Handy.', fb: 'Strom braucht einen Leiter. Übertragen wird ein Magnetfeld, das sich ändert.' },
+         { t: 'Das Handy lädt sich durch die Wärme der Ladeschale.', fb: 'Wärme lädt keinen Akku.' } ],
+    warum: K(['In der Spule der Ladeschale fließt ein Strom, dessen Stärke sich ständig ändert.',
+              'Jeder Strom erzeugt ein Magnetfeld (Elektromagnetismus) → die Magnetfeldstärke in der Spule im Handy ändert sich ständig.',
+              'Im Handy entsteht eine Induktionsspannung; der Stromkreis ist geschlossen → ein Induktionsstrom lädt den Akku.']) },
+  { teil: 'D', tag: 'lenz', typ: 'einzel', frage: 'Ein Magnet fällt durch ein senkrechtes Kupferrohr – viel langsamer als ein gleich großes Eisenstück. Warum?',
+    a: [ { t: 'Das Rohr ist wie viele Ringe übereinander: In den Ringen fließen Induktionsströme, und ihre Magnetfelder bremsen den Magneten.', ok: true },
+         { t: 'Kupfer ist magnetisch und hält den Magneten fest.', fb: 'Kupfer ist nicht magnetisch – der Magnet bleibt nicht am Rohr haften.' },
+         { t: 'Die Luft im Rohr bremst den Magneten.', fb: 'Dann müsste das Eisenstück genauso langsam fallen.' },
+         { t: 'Der Magnet ist schwerer als das Eisenstück.', fb: 'Schwerere Körper fallen nicht langsamer.' } ],
+    warum: K(['Der Magnet fällt durch das Rohr.', 'Die Magnetfeldstärke in den Ringen des Rohrs ändert sich.',
+              'In jedem Ring entsteht eine Induktionsspannung; es fließen Induktionsströme.',
+              'Ihre Magnetfelder wirken der Bewegung entgegen (Regel von Lenz) → der Magnet wird gebremst.']) },
+  { teil: 'D', tag: 'em', typ: 'tabelle', frage: 'Noch einmal: <b>Elektromagnetismus</b> oder <b>Induktion</b>?',
     spalten: [ { titel: '', opt: [ 'Elektromagnetismus', 'Induktion' ] } ],
     zeilen: [ { t: 'Türöffner: Strom fließt durch eine Spule, die einen Riegel anzieht.', a: [0] },
               { t: 'Windrad: Der Rotor dreht Magnete an Spulen vorbei.', a: [1] },
@@ -535,30 +507,25 @@ var KARTEN = [
               { t: 'Kabelloses Laden: In der Spule im Handy ändert sich die Magnetfeldstärke.', a: [1] },
               { t: 'Ein Kompass neben einem Kabel, durch das Strom fließt, schlägt aus.', a: [0] } ],
     warum: '<b>Strom → Magnetfeld</b> (Elektromagnetismus): Türöffner, Klingel, Kompass am Kabel.<br><b>Magnetfeldstärke ändert sich → Spannung</b> (Induktion): Windrad, kabelloses Laden.' },
-
-  { teil: 'C', tag: 'pole', typ: 'pole', frage: 'Letzte Pol-Aufgabe: Der Magnet liegt <b>unter</b> dem Ring, <b>Nordpol</b> oben, und wird nach oben zum Ring <b>hin</b>bewegt.',
-    s: { lage: 'v', obj: 'ring', mag: 'U', pol: 'N', bew: 'hin' } },
-
-  { teil: 'C', tag: 'lenz', typ: 'einzel', frage: 'Welcher Satz beschreibt die Regel von Lenz beim Ring am besten?',
-    a: [ { t: 'Der Ring „wehrt sich“ immer gegen die Bewegung: Beim Hinbewegen stößt er ab, beim Wegziehen zieht er an.', ok: true },
-         { t: 'Der Ring wird immer abgestoßen.', fb: 'Nur beim Hinbewegen.' },
-         { t: 'Der Ring wird immer angezogen.', fb: 'Nur beim Wegziehen.' },
-         { t: 'Der Ring folgt immer dem Magneten.', fb: 'Nur beim Wegziehen – beim Hinbewegen weicht er aus.' } ],
-    warum: '<div class="merke" style="margin:4px 0"><b>Regel von Lenz:</b> Der Induktionsstrom ist immer so gerichtet, dass sein Magnetfeld der Ursache seiner Entstehung entgegenwirkt.</div>' },
-
-  { typ: 'ende' }
+  { teil: 'D', tag: 'pole', typ: 'pole', frage: 'Diesmal <b>ruht</b> der Magnet. Der geschlossene Ring wird schnell auf den <b>Nordpol</b> zugeschoben.',
+    s: { lage: 'h', obj: 'ring', mag: 'L', pol: 'N', bew: 'hin', wer: 'ring' } },
+  { typ: 'ende2' }
 ];
 
 /* =====================================================================
    TECHNIK
    ===================================================================== */
-var SPEICHER = 'p10-quiz-2-3-induktion';
+var SPEICHER = 'p10-quiz-2-3-induktion-v2';
 var STAND = {};   /* Kartenindex → true/false (erster Versuch) */
 var I = 0;
 try { var g = JSON.parse(localStorage.getItem(SPEICHER) || 'null'); if (g) { STAND = g.stand || {}; I = Math.min(g.i || 0, KARTEN.length - 1); } } catch (e) {}
 function speichern() { try { localStorage.setItem(SPEICHER, JSON.stringify({ i: I, stand: STAND })); } catch (e) {} }
 
-var FRAGEN = []; KARTEN.forEach(function (k, i) { if (k.tag) { k.nr = FRAGEN.length + 1; FRAGEN.push(i); } });
+/* Hauptteil (Teil A–C) und Bonus (Teil D) werden getrennt gezählt */
+var FRAGEN = [], BONUS = [];
+KARTEN.forEach(function (k, i) { if (!k.tag) return; if (k.teil === 'D') { k.nr = BONUS.length + 1; k.bonus = true; BONUS.push(i); } else { k.nr = FRAGEN.length + 1; FRAGEN.push(i); } });
+var I_ENDE = KARTEN.map(function (k) { return k.typ; }).indexOf('ende');
+function nrText(k) { return (k.bonus ? 'Bonus ' : 'Frage ') + k.nr; }
 var $karte = document.getElementById('karte'), $vor = document.getElementById('vor'), $zur = document.getElementById('zur');
 
 function mischen(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
@@ -1197,16 +1164,18 @@ function baueErkunden(box, q) {
    KARTE ANZEIGEN
    ===================================================================== */
 function kopf() {
-  var k = KARTEN[I], teil = k.teil || (k.typ === 'ende' ? 'C' : 'A');
+  var k = KARTEN[I], teil = k.teil || '';
   var t = document.getElementById('teile'); t.innerHTML = '';
   Object.keys(TEILE).forEach(function (key) {
-    var b = el('button', key === teil && k.typ !== 'start' && k.typ !== 'ende' ? 'an' : '', TEILE[key]); b.type = 'button';
+    var b = el('button', key === teil ? 'an' : '', TEILE[key]); b.type = 'button';
     b.onclick = function () { for (var i = 0; i < KARTEN.length; i++) if (KARTEN[i].teil === key) { geh(i); break; } };
     t.appendChild(b);
   });
-  var beantwortet = FRAGEN.filter(function (i) { return i in STAND; }).length, richtig = FRAGEN.filter(function (i) { return STAND[i] === true; }).length;
-  document.getElementById('balken').style.width = (I / (KARTEN.length - 1) * 100).toFixed(1) + '%';
-  document.getElementById('zaehler').textContent = (k.nr ? 'Frage ' + k.nr + ' von ' + FRAGEN.length + ' · ' : '') + '✓ ' + richtig + ' / ' + beantwortet;
+  var imBonus = I > I_ENDE, L = imBonus ? BONUS : FRAGEN;
+  var beantwortet = L.filter(function (i) { return i in STAND; }).length, richtig = L.filter(function (i) { return STAND[i] === true; }).length;
+  var anteil = imBonus ? (I - I_ENDE) / (KARTEN.length - 1 - I_ENDE) : I / I_ENDE;
+  document.getElementById('balken').style.width = (anteil * 100).toFixed(1) + '%';
+  document.getElementById('zaehler').textContent = (k.nr ? nrText(k) + ' von ' + L.length + ' · ' : (imBonus ? 'Bonus · ' : '')) + '✓ ' + richtig + ' / ' + beantwortet;
 }
 function geh(i) { stopAlle(); I = Math.max(0, Math.min(KARTEN.length - 1, i)); speichern(); zeige(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
@@ -1214,10 +1183,11 @@ function zeige() {
   var k = KARTEN[I];
   $karte.innerHTML = ''; $karte.style.animation = 'none'; void $karte.offsetWidth; $karte.style.animation = '';
   $vor.classList.remove('jetzt');
-  $zur.disabled = I === 0; $vor.hidden = k.typ === 'ende' || k.typ === 'start'; $zur.hidden = k.typ === 'start';
-  if (k.tag) $karte.appendChild(el('div', 'kopfzeile', '<span class="nr">Frage ' + k.nr + ':</span><span class="tag ' + TAGS[k.tag][0] + '">' + TAGS[k.tag][1] + '</span>'));
+  $zur.disabled = I === 0; $vor.hidden = k.typ === 'ende' || k.typ === 'ende2' || k.typ === 'start'; $zur.hidden = k.typ === 'start';
+  if (k.tag) $karte.appendChild(el('div', 'kopfzeile', '<span class="nr">' + nrText(k) + ':</span><span class="tag ' + TAGS[k.tag][0] + '">' + TAGS[k.tag][1] + '</span>'));
   if (k.typ === 'start') zeigeStart();
   else if (k.typ === 'ende') zeigeEnde();
+  else if (k.typ === 'ende2') zeigeEnde2();
   else if (k.typ === 'merke') { $karte.appendChild(el('h2', 'titel', k.titel)); $karte.insertAdjacentHTML('beforeend', k.html); $vor.classList.add('jetzt'); }
   else if (k.typ === 'einzel' || k.typ === 'mehr') baueMC($karte, k);
   else if (k.typ === 'luecke') baueLuecke($karte, k);
@@ -1238,7 +1208,7 @@ function zeigeStart() {
     '<li><span class="tag t-ind">Induktion</span><span>Ändert sich die Magnetfeldstärke in einer Spule, entsteht eine Induktionsspannung.</span></li>' +
     '<li><span class="tag t-strom">Induktionsstrom</span><span>Nur bei geschlossenem Stromkreis fließt ein Induktionsstrom.</span></li>' +
     '<li><span class="tag t-lenz">Regel von Lenz</span><span>Welche Pole entstehen am Ring und an der Spule?</span></li></ul>' +
-    '<p class="klein">' + FRAGEN.length + ' Fragen in drei Teilen, dazwischen Merkkästen und drei Mini-Versuche zum Ausprobieren. Dein Stand wird auf diesem Gerät gespeichert.</p>';
+    '<p class="klein">' + FRAGEN.length + ' Fragen in drei Teilen, dazwischen Merkkästen und drei Mini-Versuche zum Ausprobieren. Wer schnell fertig ist, macht danach mit ' + BONUS.length + ' Bonusfragen weiter. Dein Stand wird auf diesem Gerät gespeichert.</p>';
   $karte.insertAdjacentHTML('beforeend', html);
   var offen = FRAGEN.filter(function (i) { return !(i in STAND); })[0];
   if (schon && offen) {
@@ -1253,7 +1223,7 @@ function zeigeStart() {
 function zeigeEnde() {
   var r = FRAGEN.filter(function (i) { return STAND[i] === true; }).length, n = FRAGEN.length;
   var q = r / n, sterne = q >= .9 ? 3 : (q >= .7 ? 2 : (q >= .4 ? 1 : 0));
-  var html = '<h2 class="titel">Geschafft!</h2><div class="sterne">' + '★★★'.slice(0, sterne) + '<span style="color:#d5dde3">' + '★★★'.slice(0, 3 - sterne) + '</span></div>' +
+  var html = '<h2 class="titel">Hauptteil geschafft!</h2><div class="sterne">' + '★★★'.slice(0, sterne) + '<span style="color:#d5dde3">' + '★★★'.slice(0, 3 - sterne) + '</span></div>' +
     '<p style="text-align:center"><b>' + r + ' von ' + n + '</b> Fragen beim ersten Versuch richtig.</p><table class="erg">';
   Object.keys(TAGS).forEach(function (t) {
     var f = FRAGEN.filter(function (i) { return KARTEN[i].tag === t; });
@@ -1271,8 +1241,24 @@ function zeigeEnde() {
   $karte.insertAdjacentHTML('beforeend', html);
   var sp = document.getElementById('springe');
   if (sp) falsch.forEach(function (i) { var b = el('button', '', 'Frage ' + KARTEN[i].nr); b.type = 'button'; b.onclick = function () { delete STAND[i]; geh(i); }; sp.appendChild(b); });
+  var bo = el('button', 'los', '★ Bonus für Schnelle (' + BONUS.length + ' Fragen) ›'); bo.type = 'button'; bo.onclick = function () { geh(I_ENDE + 1); };
+  bo.style.marginBottom = '6px'; $karte.querySelector('table.erg').after(bo);
   var n2 = el('button', 'los zweit', 'Alles nochmal von vorn'); n2.type = 'button'; n2.onclick = function () { STAND = {}; geh(1); };
   $karte.appendChild(n2);
+}
+function zeigeEnde2() {
+  var r = BONUS.filter(function (i) { return STAND[i] === true; }).length, n = BONUS.length, h = FRAGEN.filter(function (i) { return STAND[i] === true; }).length;
+  var q = r / n, sterne = q >= .9 ? 3 : (q >= .7 ? 2 : (q >= .4 ? 1 : 0));
+  var html = '<h2 class="titel">Bonus geschafft!</h2><div class="sterne">' + '★★★'.slice(0, sterne) + '<span style="color:#d5dde3">' + '★★★'.slice(0, 3 - sterne) + '</span></div>' +
+    '<p style="text-align:center"><b>' + r + ' von ' + n + '</b> Bonusfragen beim ersten Versuch richtig.<br><span class="klein">Hauptteil: ' + h + ' von ' + FRAGEN.length + '</span></p>';
+  var falsch = BONUS.filter(function (i) { return STAND[i] !== true; });
+  if (falsch.length) html += '<p>Diese Bonusfragen kannst du dir nochmal anschauen:</p><div class="springe" id="springe"></div>';
+  else html += '<p>Alles beim ersten Versuch richtig – du bist bereit für die Schulaufgabe!</p>';
+  $karte.insertAdjacentHTML('beforeend', html);
+  var sp = document.getElementById('springe');
+  if (sp) falsch.forEach(function (i) { var b = el('button', '', nrText(KARTEN[i])); b.type = 'button'; b.onclick = function () { delete STAND[i]; geh(i); }; sp.appendChild(b); });
+  var z = el('button', 'los zweit', '‹ Zur Auswertung des Hauptteils'); z.type = 'button'; z.onclick = function () { geh(I_ENDE); };
+  $karte.appendChild(z);
 }
 $vor.onclick = function () { geh(I + 1); };
 $zur.onclick = function () { geh(I - 1); };
