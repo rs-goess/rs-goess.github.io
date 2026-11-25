@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Rechengesetze-Quiz – Mathe 5a</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/portal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23139AA5'/%3E%3Cpath d='M20 14c-8 10-8 26 0 36M44 14c8 10 8 26 0 36' fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M26 32h12M32 26v12' stroke='%23FFD23F' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{--rot:#C0392B;--rot-hell:#FBE7E4;--mark:#1F5FC4;--mark-hell:#E9F1FC;--gold:#E8C14A;--gold-hell:#FFFBEA;--gold-text:#8A6400}
+@media (prefers-color-scheme:dark){:root{--rot:#FF8A7A;--rot-hell:#3A1F1C;--mark:#8DB8FF;--mark-hell:#1B2A40;--gold:#9C7E22;--gold-hell:#2A2614;--gold-text:#F2CF63}}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:22px;padding:16px;box-shadow:var(--schatten)}
+.leiste{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2);margin-bottom:10px}
+.leiste b{color:var(--text)}
+.balken{flex:1;height:8px;background:var(--linie);border-radius:9px;overflow:hidden}
+.balken i{display:block;height:100%;width:0;background:linear-gradient(90deg,#139AA5,#3480DC);transition:width .3s}
+.kat{display:inline-block;font-size:13.5px;font-weight:800;letter-spacing:.02em;color:var(--blau-text);background:var(--blau-hell);border-radius:10px;padding:3px 10px;margin-bottom:8px}
+.frage{font-size:19px;font-weight:700;line-height:1.45;margin:2px 0 12px}
+.frage .katex{font-size:1.1em}
+.gross{display:block;text-align:center;font-size:23px;margin:10px 0 2px}
+.nw{white-space:nowrap}
+.antworten{display:grid;gap:10px}
+.antworten button{font:inherit;font-size:17.5px;font-weight:600;text-align:left;border:2px solid var(--linie);background:var(--bg);color:var(--text);
+  border-radius:16px;padding:11px 14px;min-height:54px;cursor:pointer;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent}
+.antworten button .bu{flex:none;width:30px;height:30px;border-radius:10px;background:var(--blau-hell);color:var(--blau-text);display:grid;place-items:center;font-weight:800;font-size:15px}
+.antworten button .katex{font-size:1.08em}
+.antworten button:disabled{cursor:default}
+.antworten button.richtig{border-color:var(--gruen);background:var(--gruen-hell)}
+.antworten button.falsch{border-color:var(--rot);background:var(--rot-hell)}
+.antworten button.blass{opacity:.55}
+.rueck{border-radius:16px;padding:12px 14px;margin-top:12px;font-size:16.5px;line-height:1.5;display:none}
+.rueck.ok{display:block;background:var(--gruen-hell);border:2px solid var(--gruen)}
+.rueck.no{display:block;background:var(--rot-hell);border:2px solid var(--rot)}
+.rueck b.t{display:block;font-size:17px;margin-bottom:2px}
+.knopf{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:16px;padding:14px;width:100%;margin-top:12px;color:#fff;
+  background:linear-gradient(135deg,#139AA5,#2552B6);cursor:pointer;display:block}
+.weiter{display:none}
+.start h2{margin:2px 0 6px;font-size:22px}
+.start ul{margin:6px 0 4px;padding-left:20px;color:var(--text2)}
+.start li{margin:3px 0}
+.ende{text-align:center}
+.ende .ober{color:var(--akzent);font-weight:800;letter-spacing:.09em;font-size:13px;text-transform:uppercase}
+.ende .punkte{font-size:52px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0}
+.ende .zeit{color:var(--text2);margin:0 0 4px}
+.ende p.lob{margin:4px 0 6px}
+.fehlerliste{text-align:left;margin:10px 0 0;padding:0;list-style:none;font-size:15.5px}
+.fehlerliste .fq{display:block;font-weight:700;margin-bottom:3px}
+.fehlerliste li{border-left:4px solid var(--rot);background:var(--rot-hell);border-radius:10px;padding:8px 10px;margin:6px 0}
+.besten{border:2px solid var(--gold);background:var(--gold-hell);border-radius:16px;padding:12px;margin:14px 0 4px;text-align:left}
+.besten h3{margin:0 0 6px;font-size:18px;color:var(--gold-text)}
+.besten .eintragen{display:flex;gap:8px}
+.besten input{flex:1;min-width:0;font:inherit;font-size:16.5px;padding:8px 10px;border:2px solid var(--gold);border-radius:12px;background:var(--karte);color:var(--text);min-height:44px}
+.besten .eintragen button{font:inherit;border:0;border-radius:12px;padding:8px 14px;font-weight:800;font-size:15.5px;background:#2552B6;color:#fff;min-height:44px;cursor:pointer}
+.besten .eintragen button:disabled{opacity:.55;cursor:default}
+.besten .klein{font-size:13.5px;color:var(--text2);margin:6px 0}
+.besten .klein a{color:inherit}
+.reiter{display:flex;gap:6px;margin:8px 0 0}
+.reiter button{font:inherit;font-size:14.5px;font-weight:800;border:2px solid var(--gold);background:transparent;color:var(--gold-text);border-radius:999px;padding:5px 12px;cursor:pointer}
+.reiter button[aria-selected="true"]{background:var(--gold);color:#3A2A00}
+.netstatus{font-size:14.5px;margin:6px 0 0}
+.netstatus:empty{display:none}
+.netstatus.ok{color:var(--gruen-text);font-weight:800}.netstatus.warn{color:var(--rot)}
+.rangliste{list-style:none;margin:8px 0 2px;padding:0;background:var(--karte);border-radius:12px;border:1.5px solid var(--linie)}
+.rangliste li{display:grid;grid-template-columns:32px 1fr auto auto;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid var(--linie);font-size:15.5px}
+.rangliste li:last-child{border-bottom:0}
+.rangliste li.leer,.rangliste li.luecke{display:block;color:var(--text2);text-align:center}
+.rangliste .rg{font-weight:800;color:var(--text2)}.rangliste .nm{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rangliste .pk{font-weight:800;color:var(--blau-text)}.rangliste .zt{color:var(--text2);font-size:14px;min-width:64px;text-align:right}
+.rangliste li.p1 .rg{color:#C9A227}.rangliste li.p2 .rg{color:#8E9AA4}.rangliste li.p3 .rg{color:#B07A47}
+.rangliste li.mein{background:var(--gruen-hell)}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" href="spiele.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg>Spiele</a>
+<header class="kopf">
+  <div class="ober">Mathe 5a · 3.6 Rechengesetze</div>
+  <h1>Rechengesetze-Quiz</h1>
+  <p>Vertauschen, Klammern setzen, ausmultiplizieren, ausklammern – kannst du alle Gesetze?</p>
+</header>
+<div class="karte" id="quiz"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* =====================================================================
+   FRAGEN: 15 pro Runde, aus festen Fragen (Fachbegriffe) und Fragen mit
+   Zufallszahlen – jede Runde sieht anders aus. Richtige Antwort = a[0]
+   (wird beim Anzeigen gemischt). e = Erklärung nach der Antwort.
+   ===================================================================== */
+const zz=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const wahl=arr=>arr[Math.floor(Math.random()*arr.length)];
+const mischen=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a};
+const n=x=>{const s=String(x);return s.length>3?s.replace(/\B(?=(\d{3})+(?!\d))/g,'\\,'):s;};   // 1700 -> 1\,700 (Tausenderlücke wie im Lernjob und in der Präsi)
+function falsche(r,kand){const d=[];kand.forEach(v=>{if(v>0&&v!==r&&d.indexOf(v)<0)d.push(v);});let k=1;while(d.length<3){[r+10*k,r-10*k].forEach(v=>{if(v>0&&v!==r&&d.indexOf(v)<0&&d.length<3)d.push(v);});k++;}return d.slice(0,3);}
+const m=x=>'$'+x+'$';
+const KG='Kommutativgesetz', AG='Assoziativgesetz', DG='Distributivgesetz', KEINS='Keins – die Gleichung stimmt nicht';
+
+// ---------- 1) Fachbegriffe (feste Fragen) ----------
+const BEGRIFFE=[
+ {f:'Wie heißt das Kommutativgesetz auf Deutsch?',a:['Vertauschungsgesetz','Verbindungsgesetz','Verteilungsgesetz','Klammergesetz'],
+  e:'Kommutativ – „Komm, wir tauschen!“: Man darf Summanden bzw. Faktoren <b>vertauschen</b>.'},
+ {f:'Wie heißt das Assoziativgesetz auf Deutsch?',a:['Verbindungsgesetz','Vertauschungsgesetz','Verteilungsgesetz','Klammergesetz'],
+  e:'Assoziativ: Die Zahlen <b>verbinden</b> sich in einer Klammer – man darf die Klammern verschieben.'},
+ {f:'Wie heißt das Distributivgesetz auf Deutsch?',a:['Verteilungsgesetz','Vertauschungsgesetz','Verbindungsgesetz','Klammergesetz'],
+  e:'Englisch „to distribute“ heißt <b>verteilen</b>: Der Faktor wird auf alle Summanden in der Klammer verteilt.'},
+ {f:'Für welche Rechenarten gilt das Kommutativgesetz?',a:['für Plus und Mal','für Plus und Minus','für Mal und Geteilt','für alle vier Rechenarten'],
+  e:'Vertauschen darf man nur bei Plus und Mal. Bei Minus und Geteilt nicht: $10-4=6$, aber $4-10$ geht nicht.'},
+ {f:'Für welche Rechenarten gilt das Assoziativgesetz?',a:['für Plus und Mal','für Minus und Geteilt','nur für Plus','für alle vier Rechenarten'],
+  e:'Klammern verschieben darf man nur bei Plus und Mal. Zum Beispiel: $(20-8)-2=10$, aber $20-(8-2)=14$.'},
+ {f:'Was sagt das Kommutativgesetz der Addition?',a:['In einer Summe darf man die Summanden vertauschen.','In einer Differenz darf man die Zahlen vertauschen.','In einer Summe darf man Klammern beliebig setzen.','Man darf einen Faktor auf die Summanden verteilen.'],
+  e:'Zum Beispiel $37+48=48+37$. Das Ergebnis bleibt gleich.'},
+ {f:'Was sagt das Assoziativgesetz der Multiplikation?',a:['In einem Produkt darf man Klammern beliebig setzen.','In einem Produkt darf man die Faktoren vertauschen.','In einem Quotienten darf man Klammern beliebig setzen.','Man darf den Faktor auf die Summanden verteilen.'],
+  e:'Zum Beispiel $(7\\cdot 4)\\cdot 25=7\\cdot(4\\cdot 25)=7\\cdot 100=700$.'},
+ {f:'Was bedeutet „ausmultiplizieren“?',a:['Den Faktor vor der Klammer mit jedem Summanden in der Klammer malnehmen.','Nur den ersten Summanden in der Klammer malnehmen.','Einen gemeinsamen Faktor vor eine Klammer schreiben.','Die Klammer einfach weglassen.'],
+  e:'Zum Beispiel $5\\cdot(3+8)=5\\cdot 3+5\\cdot 8$. Die 5 wird auf beide Summanden verteilt.'},
+ {f:'Was bedeutet „ausklammern“?',a:['Einen gemeinsamen Faktor vor eine Klammer schreiben.','Den Faktor vor der Klammer mit jedem Summanden malnehmen.','Alle Klammern weglassen.','Die Summanden in der Klammer vertauschen.'],
+  e:'Zum Beispiel $5\\cdot 3+5\\cdot 8=5\\cdot(3+8)$. Die 5 kommt in beiden Produkten vor – sie wird ausgeklammert.'},
+ {f:'In $4\\cdot 13\\cdot 25$ heißen die Zahlen $4$, $13$ und $25$ …',a:['Faktoren','Summanden','Produkte','Quotienten'],
+  e:'Zahlen, die man malnimmt, heißen <b>Faktoren</b>. Die ganze Rechnung heißt <b>Produkt</b>.'},
+ {f:'In $37+48+63$ heißen die Zahlen $37$, $48$ und $63$ …',a:['Summanden','Faktoren','Summen','Differenzen'],
+  e:'Zahlen, die man addiert, heißen <b>Summanden</b>. Die ganze Rechnung heißt <b>Summe</b>.'},
+ {f:'Wie heißt eine Rechnung mit Mal, zum Beispiel $6\\cdot 4$?',a:['Produkt','Summe','Differenz','Quotient'],
+  e:'Plus → Summe, Minus → Differenz, Mal → <b>Produkt</b>, Geteilt → Quotient.'},
+ {f:'Wie heißt eine Rechnung mit Geteilt, zum Beispiel $18:3$?',a:['Quotient','Produkt','Differenz','Summe'],
+  e:'Plus → Summe, Minus → Differenz, Mal → Produkt, Geteilt → <b>Quotient</b>.'},
+ {f:'Welche Eselsbrücke passt zum Kommutativgesetz?',a:['„Komm, wir tauschen!“','„Die Zahlen verbinden sich in einer Klammer.“','„Der Faktor wird verteilt.“','„Punkt vor Strich!“'],
+  e:'Kommutativ – <b>Komm</b>, wir tauschen! Die Zahlen tauschen ihre Plätze.'},
+ {f:'„Der Faktor wird auf alle Summanden verteilt.“ Welches Gesetz ist das?',a:[DG,KG,AG,'Punkt vor Strich'],
+  e:'Verteilen, englisch „to distribute“ → <b>Distributivgesetz</b>: $3\\cdot(5+8)=3\\cdot 5+3\\cdot 8$.'},
+ {f:'Bei welcher Rechnung darfst du die beiden Zahlen <b>nicht</b> vertauschen?',a:['$20-5$','$20+5$','$20\\cdot 5$','$5+20$'],
+  e:'Bei Minus gilt das Kommutativgesetz nicht: $20-5=15$, aber $5-20$ geht nicht.'},
+ {f:'Bei welcher Rechnung darfst du die beiden Zahlen <b>nicht</b> vertauschen?',a:['$24:6$','$24\\cdot 6$','$6+24$','$24+6$'],
+  e:'Bei Geteilt gilt das Kommutativgesetz nicht: $24:6=4$, aber $6:24$ geht nicht.'},
+ {f:'Timo sagt: „Beim Teilen darf man die Zahlen immer tauschen.“ Stimmt das?',a:['Nein: $12:4=3$, aber $4:12$ geht nicht.','Ja, genau wie beim Malnehmen.','Ja, aber nur bei geraden Zahlen.','Nein, tauschen darf man nur beim Minus.'],
+  e:'Das Kommutativgesetz gilt nur für Plus und Mal – nicht für Minus und Geteilt.'},
+ {f:'Wie rechnest du $60:6:2$ richtig?',a:['Von links nach rechts: $10:2=5$','Erst $6:2=3$, dann $60:3=20$','Egal – beides ergibt dasselbe.','Von rechts nach links: $2:6$ zuerst'],
+  e:'Bei Geteilt darf man keine Klammern verschieben. Man rechnet von links nach rechts: $60:6=10$, $10:2=5$.'},
+ {f:'Welche Gleichung zeigt das Distributivgesetz?',a:['$3\\cdot(4+5)=3\\cdot 4+3\\cdot 5$','$3\\cdot(4+5)=3\\cdot 4+5$','$(3\\cdot 4)\\cdot 5=3\\cdot(4\\cdot 5)$','$3+4=4+3$'],
+  e:'Beim Distributivgesetz wird die 3 auf <b>beide</b> Summanden verteilt. Die anderen: Assoziativgesetz bzw. Kommutativgesetz – oder falsch.'},
+ {f:'Welche Gleichung zeigt das Assoziativgesetz?',a:['$(8+7)+3=8+(7+3)$','$8+7=7+8$','$8\\cdot(7+3)=8\\cdot 7+8\\cdot 3$','$(20-8)-2=20-(8-2)$'],
+  e:'Beim Assoziativgesetz verschiebt man die Klammer, die Reihenfolge bleibt. Bei Minus gilt es nicht.'}
+];
+
+// ---------- 2) Welches Gesetz wurde benutzt? ----------
+const GESETZ_OPT=[KG,AG,DG,KEINS];
+function genGesetz(){
+  const typ=wahl(['kgp','kgm','agp','agm','dg1','dg2','falschMinus','falschGeteilt']);
+  let gl,ok,e;
+  if(typ==='kgp'){const a=zz(12,89),b=zz(12,89);gl=`${a}+${b}=${b}+${a}`;ok=KG;e='Die beiden Summanden haben die Plätze getauscht → <b>Kommutativgesetz</b> (Vertauschungsgesetz).';}
+  else if(typ==='kgm'){const a=wahl([4,2,5,8]),b=zz(13,49),c=wahl([25,5,50,125]);gl=`${a}\\cdot ${b}\\cdot ${c}=${a}\\cdot ${c}\\cdot ${b}`;ok=KG;e=`Die Faktoren $${b}$ und $${c}$ wurden vertauscht → <b>Kommutativgesetz</b>.`;}
+  else if(typ==='agp'){const a=zz(15,79),b=zz(11,49),c=100-b;gl=`(${a}+${b})+${c}=${a}+(${b}+${c})`;ok=AG;e=`Die Reihenfolge bleibt, nur die Klammer wandert → <b>Assoziativgesetz</b>. Praktisch: $${b}+${c}=100$.`;}
+  else if(typ==='agm'){const a=zz(3,19),p=wahl([[4,25],[2,50],[5,20],[8,125]]);gl=`(${a}\\cdot ${p[0]})\\cdot ${p[1]}=${a}\\cdot(${p[0]}\\cdot ${p[1]})`;ok=AG;e=`Die Klammer wurde verschoben → <b>Assoziativgesetz</b>. Praktisch: $${p[0]}\\cdot ${p[1]}=${p[0]*p[1]}$.`;}
+  else if(typ==='dg1'){const a=zz(3,9),b=wahl([10,20,30,40,100,200]),c=zz(2,9);gl=`${a}\\cdot(${b}+${c})=${a}\\cdot ${b}+${a}\\cdot ${c}`;ok=DG;e=`Die $${a}$ wurde auf beide Summanden verteilt (ausmultipliziert) → <b>Distributivgesetz</b>.`;}
+  else if(typ==='dg2'){const a=zz(3,15),b=zz(11,19),c=20-b;gl=`${a}\\cdot ${b}+${a}\\cdot ${c}=${a}\\cdot(${b}+${c})`;ok=DG;e=`Der gemeinsame Faktor $${a}$ wurde ausgeklammert → <b>Distributivgesetz</b>.`;}
+  else if(typ==='falschMinus'){const b=zz(12,39),a=b+zz(11,40);gl=`${a}-${b}=${b}-${a}`;ok=KEINS;e=`Bei Minus darf man nicht vertauschen: $${a}-${b}=${a-b}$, aber $${b}-${a}$ geht nicht.`;}
+  else {const c=wahl([2,3]),b=c*wahl([2,3,4]),a=b*c*wahl([2,3,4,5]);gl=`(${a}:${b}):${c}=${a}:(${b}:${c})`;ok=KEINS;e=`Bei Geteilt darf man keine Klammern verschieben: links $${a/b}:${c}=${a/b/c}$, rechts $${a}:${b/c}=${a/(b/c)}$.`;}
+  return {kat:'Welches Gesetz?',f:`Welches Rechengesetz wurde benutzt?<span class="gross">${m(gl)}</span>`,a:[ok].concat(GESETZ_OPT.filter(x=>x!==ok)),e,fest:true};
+}
+
+// ---------- 3) Welche Gleichung stimmt? ----------
+function genStimmt(){
+  const a=zz(20,60),b=zz(5,15),c=zz(2,4),d=zz(3,9),e1=wahl([10,20,30]);
+  const richtig=wahl([
+    [`${a}+${b}+${c}=${c}+${b}+${a}`,'Bei Plus darf man vertauschen (Kommutativgesetz).'],
+    [`(${d}\\cdot ${b})\\cdot ${c}=${d}\\cdot(${b}\\cdot ${c})`,'Bei Mal darf man Klammern verschieben (Assoziativgesetz).'],
+    [`${d}\\cdot(${e1}+${c})=${d}\\cdot ${e1}+${d}\\cdot ${c}`,'Das ist das Distributivgesetz: Die $'+d+'$ wird auf beide Summanden verteilt.']]);
+  const q=c*wahl([2,3]),p=q*wahl([2,4,5]);
+  const falsch=mischen([
+    `${a}-${b}-${c}=${a}-(${b}-${c})`,
+    `${d}\\cdot(${e1}+${c})=${d}\\cdot ${e1}+${c}`,
+    `${p}:${q}=${q}:${p}`,
+    `${a}-${b}=${b}-${a}`]).slice(0,3);
+  return {kat:'Gleichungen prüfen',f:'Welche Gleichung stimmt?',a:[m(richtig[0])].concat(falsch.map(m)),
+    e:'Richtig ist $'+richtig[0]+'$. '+richtig[1]+' Die anderen stimmen nicht: Bei Minus und Geteilt gelten Vertauschen und Klammer-Verschieben nicht, und beim Ausmultiplizieren muss der Faktor mit <b>jedem</b> Summanden malgenommen werden.'};
+}
+
+// ---------- 4) Geschickt rechnen (Ergebnis) ----------
+function genGeschickt(){
+  if(Math.random()<.5){ // Produkt mit Partnern
+    const p=wahl([[4,25],[2,50],[5,20],[8,125],[2,5],[25,8]]),x=zz(11,49),r=p[0]*p[1]*x;
+    const reihe=wahl([[p[0],x,p[1]],[x,p[0],p[1]],[p[0],p[1],x].reverse()]);
+    const fs=reihe.join('\\cdot ');
+    const d=falsche(r,[r*10,r/10|0,r+p[0]*p[1]]);
+    return {kat:'Geschickt rechnen',f:`Rechne geschickt im Kopf:<span class="gross">${m(fs)}</span>`,a:[m(n(r))].concat(d.slice(0,3).map(v=>m(n(v)))),
+      e:`Partner suchen: $${p[0]}\\cdot ${p[1]}=${p[0]*p[1]}$. Dann $${p[0]*p[1]}\\cdot ${x}=${n(r)}$.`};
+  }
+  const s=wahl([100,100,200]),a=zz(11,s===100?89:189),b=s-a,c=zz(12,89),d0=100-c,r=s+100;
+  const fs=wahl([`${a}+${c}+${b}+${d0}`,`${c}+${a}+${d0}+${b}`,`${a}+${c}+${d0}+${b}`]);
+  const d=falsche(r,[r-10,r+10,r-100]);
+  return {kat:'Geschickt rechnen',f:`Rechne geschickt im Kopf:<span class="gross">${m(fs)}</span>`,a:[m(n(r))].concat(d.slice(0,3).map(v=>m(n(v)))),
+    e:`Vertauschen und Partner bilden: $(${a}+${b})+(${c}+${d0})=${s}+100=${r}$.`};
+}
+function uniq(a){return a.filter((v,i)=>a.indexOf(v)===i);}
+
+// ---------- 5) Welche Partner fasst du zusammen? ----------
+function genPartner(){
+  if(Math.random()<.5){
+    const p=wahl([[4,25],[2,50],[5,20],[8,125]]);let x=zz(13,47);while(p.indexOf(x)>=0)x=zz(13,47);
+    const z=mischen([p[0],p[1],x]);
+    return {kat:'Geschickt rechnen',f:`Welche Faktoren nimmst du bei ${m(z.join('\\cdot '))} zuerst mal?`,
+      a:[m(`${p[0]}\\cdot ${p[1]}`),m(`${p[0]}\\cdot ${x}`),m(`${p[1]}\\cdot ${x}`),'Man muss von links nach rechts rechnen.'],
+      e:`$${p[0]}\\cdot ${p[1]}=${p[0]*p[1]}$ – mit ${p[0]*p[1]} rechnet es sich ganz leicht. Vertauschen und Klammern setzen ist beim Malnehmen erlaubt.`};
+  }
+  let a=zz(13,87);while(a===50)a=zz(13,87);const b=100-a;let c=zz(13,87);while(c===a||c===b||100-c===a)c=zz(13,87);
+  const z=mischen([a,b,c]);
+  return {kat:'Geschickt rechnen',f:`Welche Summanden fasst du bei ${m(z.join('+'))} zuerst zusammen?`,
+    a:[m(`${a}+${b}`),m(`${a}+${c}`),m(`${b}+${c}`),'Man muss von links nach rechts rechnen.'],
+    e:`$${a}+${b}=100$ – damit rechnet es sich leicht: $100+${c}=${100+c}$.`};
+}
+
+// ---------- 6) Ausmultiplizieren ----------
+function genAusmult(i){
+  const a=zz(3,9),b=wahl([10,20,30,40,50,60,100]);let c=zz(2,9);while(c===a)c=zz(2,9);
+  if(i%2===0){
+    return {kat:'Ausmultiplizieren',f:`Multipliziere aus:<span class="gross">${m(`${a}\\cdot(${b}+${c})`)}</span>`,
+      a:[m(`${a}\\cdot ${b}+${a}\\cdot ${c}`),m(`${a}\\cdot ${b}+${c}`),m(`${a}\\cdot ${b}\\cdot ${c}`),m(`${a}+${b}+${a}+${c}`)],
+      e:`Die $${a}$ wird mit <b>jedem</b> Summanden malgenommen: $${a}\\cdot ${b}+${a}\\cdot ${c}=${a*b}+${a*c}=${a*(b+c)}$.`};
+  }
+  return {kat:'Ausmultiplizieren',f:`Multipliziere aus:<span class="gross">${m(`${a}\\cdot(${b}-${c})`)}</span>`,
+    a:[m(`${a}\\cdot ${b}-${a}\\cdot ${c}`),m(`${a}\\cdot ${b}-${c}`),m(`${a}\\cdot ${b}+${a}\\cdot ${c}`),m(`${a}\\cdot ${c}-${a}\\cdot ${b}`)],
+    e:`Das klappt auch mit Minus in der Klammer: $${a}\\cdot ${b}-${a}\\cdot ${c}=${a*b}-${a*c}=${a*(b-c)}$.`};
+}
+
+// ---------- 7) Ausklammern ----------
+function genAusklammern(i){
+  const a=zz(3,12),b=zz(11,29);let c=zz(3,29);while(c===b||c===a)c=zz(3,29);
+  if(i%2===0){
+    return {kat:'Ausklammern',f:`Klammere den gemeinsamen Faktor aus:<span class="gross">${m(`${a}\\cdot ${b}+${a}\\cdot ${c}`)}</span>`,
+      a:[m(`${a}\\cdot(${b}+${c})`),m(`${a}\\cdot ${b}\\cdot ${c}`),m(`(${a}+${a})\\cdot(${b}+${c})`),m(`${a}\\cdot ${b}+${c}`)],
+      e:`Die $${a}$ steckt in beiden Produkten. Sie kommt einmal vor die Klammer: $${a}\\cdot(${b}+${c})=${a}\\cdot ${b+c}=${a*(b+c)}$.`};
+  }
+  return {kat:'Ausklammern',f:`Klammere den gemeinsamen Faktor aus:<span class="gross">${m(`${b}\\cdot ${a}+${c}\\cdot ${a}`)}</span>`,
+    a:[m(`(${b}+${c})\\cdot ${a}`),m(`(${b}+${a})\\cdot ${c}`),m(`${b}\\cdot ${c}\\cdot ${a}`),m(`${b}+${c}\\cdot ${a}`)],
+    e:`Der gemeinsame Faktor $${a}$ steht hier hinten. Ausgeklammert: $(${b}+${c})\\cdot ${a}=${b+c}\\cdot ${a}=${(b+c)*a}$.`};
+}
+
+// ---------- 8) Distributivgesetz zum Kopfrechnen ----------
+function genDGWert(i){
+  const typ=i%2===0?wahl(['plus','minus']):'klammern';
+  if(typ==='plus'){
+    const a=zz(3,9),h=wahl([100,200,300]),k=zz(2,9),r=a*(h+k);
+    const d=falsche(r,[a*h+k,a*h+a,r+10*a,r-a]);
+    return {kat:'Rechentrick',f:`Rechne im Kopf mit dem Distributivgesetz:<span class="gross">${m(`${a}\\cdot ${h+k}`)}</span>`,a:[m(n(r))].concat(d.slice(0,3).map(v=>m(n(v)))),
+      e:`Zerlegen: $${a}\\cdot(${h}+${k})=${a}\\cdot ${h}+${a}\\cdot ${k}=${a*h}+${a*k}=${n(r)}$.`};
+  }
+  if(typ==='minus'){
+    const a=zz(3,9),h=wahl([100,100,200,50]),k=wahl([1,1,2]),r=a*(h-k);
+    const d=falsche(r,[a*h-k,a*h+a*k,r-10,r+a]);
+    return {kat:'Rechentrick',f:`Rechne im Kopf mit dem Distributivgesetz:<span class="gross">${m(`${a}\\cdot ${h-k}`)}</span>`,a:[m(n(r))].concat(d.slice(0,3).map(v=>m(n(v)))),
+      e:`Zerlegen: $${a}\\cdot(${h}-${k})=${a}\\cdot ${h}-${a}\\cdot ${k}=${a*h}-${a*k}=${n(r)}$.`};
+  }
+  const f=zz(11,25),s=wahl([10,20,30,40,50]),b=zz(2,s-2),c=s-b,r=f*s;
+  const d=falsche(r,[f*b+c,r+f,r-10,r+100]);
+  return {kat:'Rechentrick',f:`Rechne geschickt – klammere aus:<span class="gross">${m(`${b}\\cdot ${f}+${c}\\cdot ${f}`)}</span>`,a:[m(n(r))].concat(d.slice(0,3).map(v=>m(n(v)))),
+    e:`Ausklammern: $(${b}+${c})\\cdot ${f}=${s}\\cdot ${f}=${n(r)}$.`};
+}
+
+// ---------- 9) Lücke oder Fehler finden ----------
+function genLueckeFehler(){
+  const typ=wahl(['lueckeAG','lueckeDG','fehlerMinus','fehlerDG']);
+  if(typ==='lueckeAG'){
+    const x=zz(6,39),p=wahl([[4,25],[2,50],[5,20],[8,125]]);
+    const d=falsche(p[1],[p[0],x,p[0]*p[1],p[1]+1]);
+    return {kat:'Lücke füllen',f:`Welche Zahl gehört in die Lücke?<span class="gross">${m(`(${x}\\cdot ${p[0]})\\cdot ${p[1]}=${x}\\cdot(${p[0]}\\cdot\\square)`)}</span>`,
+      a:[m(p[1])].concat(d.slice(0,3).map(m)),e:`Beim Assoziativgesetz bleiben alle Zahlen gleich, nur die Klammer wandert: $${x}\\cdot(${p[0]}\\cdot ${p[1]})$.`};
+  }
+  if(typ==='lueckeDG'){
+    const a=zz(3,9),b=wahl([20,30,40,50]),c=zz(2,9);
+    const d=falsche(a,[c,b,a+1,a*c]);
+    return {kat:'Lücke füllen',f:`Welche Zahl gehört in die Lücke?<span class="gross">${m(`${a}\\cdot(${b}+${c})=${a}\\cdot ${b}+\\square\\cdot ${c}`)}</span>`,
+      a:[m(a)].concat(d.slice(0,3).map(m)),e:`Die $${a}$ wird auf beide Summanden verteilt: $${a}\\cdot ${b}+${a}\\cdot ${c}$.`};
+  }
+  if(typ==='fehlerMinus'){
+    const c=zz(10,30),b=c+zz(10,30),a=b+c+zz(20,60),richtig=a-b-c,falsch=a-(b-c);
+    return {kat:'Fehler finden',f:`Lea rechnet: ${m(`${a}-${b}-${c}=${a}-(${b}-${c})=${falsch}`)}. Was stimmt?`,
+      a:[`Falsch – bei Minus darf man keine Klammer verschieben. Richtig: ${m(richtig)}`,'Richtig – das ist das Assoziativgesetz.','Richtig – das ist das Kommutativgesetz.',`Falsch – richtig wäre ${m(falsch+10)}`],
+      e:`Von links nach rechts: $${a}-${b}=${a-b}$, $${a-b}-${c}=${richtig}$. Das Assoziativgesetz gilt nur für Plus und Mal.`};
+  }
+  const a=zz(3,9),b=wahl([10,20,30,40]),c=zz(2,9),falsch=a*b+c,richtig=a*(b+c);
+  return {kat:'Fehler finden',f:`Max rechnet: ${m(`${a}\\cdot(${b}+${c})=${a*b}+${c}=${falsch}`)}. Was stimmt?`,
+    a:[`Falsch – auch die ${m(c)} muss mit ${m(a)} malgenommen werden. Richtig: ${m(richtig)}`,'Richtig – das ist das Distributivgesetz.',`Falsch – richtig wäre ${m(a*b)}`,`Falsch – richtig wäre ${m(a+b+c)}`],
+    e:`Ausmultiplizieren heißt: <b>jeden</b> Summanden malnehmen. $${a}\\cdot ${b}+${a}\\cdot ${c}=${a*b}+${a*c}=${richtig}$.`};
+}
+
+const PLAN=['begriff','begriff','begriff','gesetz','gesetz','stimmt','geschickt','partner','ausmult','ausmult','ausklammern','ausklammern','dgwert','dgwert','luecke'];
+function runde(){
+  const begriffe=mischen(BEGRIFFE).slice(0,3).map(q=>Object.assign({kat:'Fachbegriffe'},q));
+  const zaehl={};const out=[];
+  PLAN.forEach(t=>{const i=zaehl[t]=(zaehl[t]||0);zaehl[t]++;let q;
+    if(t==='begriff')q=begriffe[i];
+    else if(t==='gesetz'){do{q=genGesetz();}while(i>0&&q.a[0]===out.find(x=>x.kat==='Welches Gesetz?').a[0]);}
+    else if(t==='stimmt')q=genStimmt();
+    else if(t==='geschickt')q=genGeschickt();
+    else if(t==='partner')q=genPartner();
+    else if(t==='ausmult')q=genAusmult(i);
+    else if(t==='ausklammern')q=genAusklammern(i);
+    else if(t==='dgwert')q=genDGWert(i);
+    else q=genLueckeFehler();
+    out.push(q);});
+  return mischen(out);
+}
+window.__quiz={runde,BEGRIFFE,genGesetz,genStimmt,genGeschickt,genPartner,genAusmult,genAusklammern,genDGWert,genLueckeFehler};   // für Tests
+
+/* =====================================================================
+   ANZEIGE
+   ===================================================================== */
+const tex=t=>{t=t.replace(/\d{4,}/g,d=>d.replace(/\B(?=(\d{3})+(?!\d))/g,'\\,'));try{return katex.renderToString(t,{throwOnError:false})}catch(e){return t}};
+// lange Rechnungen dürfen am Gleichheitszeichen umbrechen (Handy)
+const texU=(t,vor,nach)=>{const p=t.split('=');const st=p.length<3?[t]:p.map((x,i)=>i?'{}='+x:x);
+  return st.map((x,i)=>'<span class="nw">'+(i===0?vor:'')+tex(x)+(i===st.length-1?nach:'')+'</span>').join('\u200b');};
+const T=s=>String(s).replace(/([^\s>$]*)\$([^$]+)\$([^\s<$]*)/g,(mm,a,t,b)=>texU(t,a,b));
+const box=document.getElementById('quiz');
+let fragen=[],nr=0,punkte=0,t0=0,sek=0,fehler=[];
+
+function startSeite(){
+  box.innerHTML=`<div class="start"><h2>So geht’s</h2><ul>
+    <li><b>15 Fragen</b> – jede Runde neu gemischt, mit neuen Zahlen.</li>
+    <li>Fachbegriffe, Vertauschen, Klammern setzen, Ausmultiplizieren und Ausklammern.</li>
+    <li>Jede Antwort zählt sofort. Nach jeder Frage siehst du eine kurze Erklärung.</li>
+    <li>Für die <b>Bestenliste</b> zählen die Punkte – bei Gleichstand gewinnt die schnellere Zeit.</li></ul>
+    <button class="knopf" type="button" id="los">Los geht’s!</button></div>`;
+  document.getElementById('los').onclick=neu;
+}
+function neu(){fragen=runde();nr=0;punkte=0;fehler=[];t0=Date.now();zeige();}
+
+function zeige(){
+  const q=fragen[nr];
+  let h=`<div class="leiste"><span>Frage <b>${nr+1}</b> von ${fragen.length}</span><span class="balken"><i style="width:${nr/fragen.length*100}%"></i></span><span><b>${punkte}</b> richtig</span></div>`;
+  h+=`<span class="kat">${q.kat}</span><div class="frage">${T(q.f)}</div>`;
+  const reihen=q.a.map((x,i)=>({x,ok:i===0}));
+  const gem=q.fest?reihen.slice().sort((u,v)=>GESETZ_OPT.indexOf(u.x)-GESETZ_OPT.indexOf(v.x)):mischen(reihen);
+  h+=`<div class="antworten">`;
+  gem.forEach((r,i)=>{h+=`<button type="button" data-ok="${r.ok?1:0}"><span class="bu">${'ABCD'[i]}</span><span>${T(r.x)}</span></button>`;});
+  h+=`</div><div class="rueck" id="rueck" role="status"></div><button class="knopf weiter" id="weiter" type="button">${nr+1<fragen.length?'Nächste Frage':'Zum Ergebnis'}</button>`;
+  box.innerHTML=h;
+  box.querySelectorAll('.antworten button').forEach(b=>b.addEventListener('click',()=>antwort(b,q)));
+  document.getElementById('weiter').onclick=()=>{nr++;if(nr<fragen.length){zeige();window.scrollTo({top:box.offsetTop-12,behavior:'smooth'});}else ende();};
+}
+function antwort(b,q){
+  const alle=box.querySelectorAll('.antworten button'),ok=b.dataset.ok==='1';
+  alle.forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('richtig');else if(x!==b)x.classList.add('blass');});
+  if(ok)punkte++;else{b.classList.add('falsch');fehler.push(q);}
+  const r=document.getElementById('rueck');
+  r.className='rueck '+(ok?'ok':'no');
+  r.innerHTML=`<b class="t">${ok?wahl(['Richtig!','Stark!','Genau!','Super!']):'Leider nicht.'}</b>${T(q.e)}`;
+  const w=document.getElementById('weiter');w.style.display='block';
+  box.querySelector('.balken i').style.width=((nr+1)/fragen.length*100)+'%';
+  box.querySelector('.leiste span:last-child b').textContent=punkte;
+  if(nr+1>=fragen.length)sek=Math.max(1,Math.round((Date.now()-t0)/1000));
+  w.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function zeitText(s){if(!s)return '–';const mi=Math.floor(s/60),x=s%60;return mi+':'+(x<10?'0':'')+x+' min';}
+function ende(){
+  const N=fragen.length;
+  const s=punkte===N?'Perfekt – du bist ein echter Rechengesetz-Profi!':punkte>=N-2?'Sehr gut! Nur kleine Ausrutscher.':
+    punkte>=N/2?'Gut gemacht! Lies dir die Erklärungen unten nochmal durch.':'Noch nicht ganz – schau in deinen Hefteintrag und versuch es nochmal.';
+  let h=`<div class="ende"><div class="ober">Ergebnis</div><div class="punkte">${punkte} / ${N}</div>
+    <p class="zeit">Zeit: ${zeitText(sek)}</p><p class="lob">${s}</p></div>`;
+  h+='<div id="bestenplatz"></div>';
+  h+=`<button class="knopf" type="button" id="nochmal">Neue Runde (andere Fragen)</button>`;
+  if(fehler.length){h+=`<h3 style="margin:18px 0 0;font-size:17px">Das schaust du dir nochmal an:</h3><ul class="fehlerliste">`+
+    fehler.map(q=>`<li><span class="fq">${T(q.f.replace(/<span class="gross">/,' ').replace('</span>',''))}</span>${T(q.e)}</li>`).join('')+'</ul>';}
+  h+=`<p style="margin:14px 0 0;text-align:center"><a href="spiele.html" style="color:var(--blau-text);font-weight:700">Zu den anderen Spielen →</a></p>`;
+  box.innerHTML=h;
+  document.getElementById('bestenplatz').appendChild(bestenBox());
+  document.getElementById('nochmal').onclick=()=>{neu();window.scrollTo({top:box.offsetTop-12,behavior:'smooth'});};
+  window.scrollTo({top:box.offsetTop-12,behavior:'smooth'});
+}
+
+/* =====================================================================
+   KLASSEN-BESTENLISTE (Supabase, derselbe Dienst wie bei den anderen Spielen)
+   score = Punkte · 10000 + (9999 − Sekunden): erst Punkte, bei Gleichstand die Zeit.
+   level = 1, ops = Zeit als Text. Name 2–14 Zeichen; Wortfilter und Mengenbremse
+   prüft die Datenbank. Reiter Woche (ab Montag 0 Uhr) / Gesamt.
+   ===================================================================== */
+const NET={url:'https://sliitqxickadcoghewli.supabase.co/rest/v1/',key:'sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7',game:'m5-quiz-3-6',klasse:'5a'};
+const NAME_KEY='quiz.spitzname',ANSICHT_KEY='bestenliste.ansicht.'+NET.game;
+function lsGet(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function wochenStart(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d;}
+function netFetch(path,body,extra){
+  const ctl=window.AbortController?new AbortController():null,to=setTimeout(()=>{if(ctl)ctl.abort();},7000);
+  const h={apikey:NET.key,'Content-Type':'application/json'};if(extra)for(const k in extra)h[k]=extra[k];
+  return fetch(NET.url+path,{method:'POST',headers:h,body:JSON.stringify(body),signal:ctl?ctl.signal:undefined})
+    .then(r=>{clearTimeout(to);return r;},e=>{clearTimeout(to);throw e;});
+}
+function nameOk(x){return typeof x==='string'&&x.length>=2&&x.length<=14&&/^[A-Za-zÄÖÜäöüß0-9 .\-_]+$/.test(x);}
+function bestenBox(){
+  const score=punkte*10000+(9999-Math.min(sek,9998));
+  const div=document.createElement('div');div.className='besten';
+  let ansicht=lsGet(ANSICHT_KEY)==='gesamt'?'gesamt':'woche',gesendet=false;
+  div.innerHTML=`<h3>🏆 Bestenliste Klasse ${NET.klasse}</h3>
+    <div class="eintragen"><input type="text" maxlength="14" autocomplete="off" placeholder="Dein Spitzname" aria-label="Spitzname"><button type="button">Eintragen</button></div>
+    <p class="klein">Nur Spitzname, kein echter Name! Gespeichert werden Spitzname, Punkte und Zeit. <a href="../datenschutz.html#bestenliste">Datenschutz</a></p>
+    <div class="netstatus" role="status"></div>
+    <div class="reiter" role="tablist"><button type="button" data-v="woche">Diese Woche</button><button type="button" data-v="gesamt">Gesamt</button></div>
+    <ol class="rangliste"></ol>`;
+  const inp=div.querySelector('input'),knopf=div.querySelector('.eintragen button'),st=div.querySelector('.netstatus'),ol=div.querySelector('.rangliste');
+  inp.value=lsGet(NAME_KEY);
+  const status=(art,t)=>{st.className='netstatus '+art;st.textContent=t;};
+  if(punkte<1){knopf.disabled=true;inp.disabled=true;status('warn','Mit 0 Punkten gibt es noch keinen Eintrag.');}
+  knopf.onclick=()=>{
+    const x=inp.value.trim().replace(/\s+/g,' ');
+    if(!nameOk(x)){status('warn','Der Spitzname braucht 2 bis 14 Zeichen: Buchstaben, Ziffern, Leerzeichen, Punkt oder Strich.');return;}
+    knopf.disabled=true;status('','Wird eingetragen …');
+    netFetch('scores',{game:NET.game,name:x,score:score,level:1,ops:zeitText(sek)},{Prefer:'return=minimal'})
+      .then(r=>{if(r.ok)return 'ok';return r.text().then(t=>/nicht erlaubt/.test(t)?'name':(/Zu viele/.test(t)?'viele':'fehler'));},()=>'offline')
+      .then(res=>{
+        if(res==='ok'){lsSet(NAME_KEY,x);gesendet=true;knopf.textContent='Eingetragen ✓';inp.disabled=true;status('ok','Du stehst jetzt in der Bestenliste.');laden();return;}
+        knopf.disabled=false;
+        if(res==='name')status('warn','Dieser Spitzname ist nicht erlaubt. Nimm bitte einen anderen.');
+        else if(res==='viele')status('warn','Gerade tragen sich sehr viele ein – probier es in einer Minute nochmal.');
+        else status('warn','Keine Verbindung zur Bestenliste. Probier es später nochmal.');
+      });
+  };
+  div.querySelectorAll('.reiter button').forEach(b=>b.onclick=()=>{ansicht=b.dataset.v;lsSet(ANSICHT_KEY,ansicht);laden();});
+  function laden(){
+    div.querySelectorAll('.reiter button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===ansicht));
+    const eigen=(lsGet(NAME_KEY)||'').toLowerCase();
+    ol.innerHTML='<li class="leer">Lädt …</li>';
+    netFetch('rpc/top_scores',{p_game:NET.game,p_since:ansicht==='woche'?wochenStart().toISOString():null,p_limit:20})
+      .then(r=>{if(!r.ok)throw new Error('http');return r.json();})
+      .then(rows=>{
+        if(!rows.length){ol.innerHTML=`<li class="leer">${ansicht==='woche'?'Diese Woche noch kein Eintrag':'Noch kein Eintrag'} – hol dir den ersten Platz!</li>`;return;}
+        ol.innerHTML='';
+        rows.forEach((z,i)=>{
+          const mein=eigen&&z.name.toLowerCase()===eigen;
+          if(i>=10&&!mein)return;
+          if(i>=10){const l=document.createElement('li');l.className='luecke';l.textContent='…';ol.appendChild(l);}
+          const pk=Math.floor(z.score/10000),s=9999-z.score%10000;
+          const li=document.createElement('li');li.className=(mein?'mein':'')+(i<3?' p'+(i+1):'');
+          li.innerHTML=`<span class="rg">${i+1}.</span><span class="nm"></span><span class="pk">${pk} P.</span><span class="zt">${zeitText(s)}</span>`;
+          li.querySelector('.nm').textContent=z.name;ol.appendChild(li);
+        });
+      },()=>{ol.innerHTML='<li class="leer">Die Bestenliste ist gerade nicht erreichbar.</li>';});
+  }
+  laden();
+  return div;
+}
+
+if(window.katex)startSeite();else window.addEventListener('load',startSeite);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
