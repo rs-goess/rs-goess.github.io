@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070B1A">
+<title>Größen-Runner – Größe, Einheit, Symbole</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23BB283F'/%3E%3Cpath d='M14 50L28 14h8l14 36' fill='none' stroke='%23fff' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M32 22v28' stroke='%23FFD23F' stroke-width='4' stroke-dasharray='5 5'/%3E%3C/svg%3E">
+<style>
+:root{
+  --nacht:#070B1A; --glas:rgba(12,16,36,.80); --rand:rgba(255,255,255,.14);
+  --text:#F3F5FB; --text2:#AEB6CC; --rot:#E4464E; --rot2:#BB283F; --cyan:#3FD0D4; --gelb:#FFC93C; --orange:#FFB36B;
+  --ok:#2FD07F; --no:#FF5C6C;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--nacht);color:var(--text);overflow:hidden;overscroll-behavior:none}
+body{font-family:Nunito,system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:600;font-size:16px;line-height:1.4;position:fixed;inset:0}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+a{color:inherit}
+.hidden{display:none!important}
+#app{position:absolute;inset:0;overflow:hidden;user-select:none;-webkit-user-select:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+sub{font-size:.66em;line-height:0;vertical-align:-.28em;font-style:normal}
+i.gs{font-style:italic}
+
+/* ---------- HUD ---------- */
+.hud{position:absolute;left:0;right:0;top:0;padding:max(10px,env(safe-area-inset-top)) 10px 0;pointer-events:none;display:flex;flex-direction:column;align-items:center}
+.hud > *{width:100%;max-width:640px}
+.leiste{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.rund{pointer-events:auto;flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--glas);border:1px solid var(--rand);text-decoration:none}
+.rund svg{width:18px;height:18px}
+.herzen{display:flex;gap:3px;font-size:20px;line-height:1;padding:0 4px}
+.herzen span{transition:opacity .3s,transform .3s}
+.herzen span.weg{opacity:.18;transform:scale(.8);filter:grayscale(1)}
+.punkte{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--glas);border:1px solid var(--rand);border-radius:999px;padding:5px 12px 5px 14px;min-height:42px}
+.punkte b{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;min-width:2.2em;text-align:right}
+.combo{display:none;font-weight:900;font-size:13px;color:#241600;background:var(--gelb);border-radius:8px;padding:1px 6px}
+.combo.an{display:inline-block}
+.karte{background:var(--glas);border:1px solid var(--rand);border-radius:20px;padding:10px 10px 10px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 18px 40px -24px #000;transition:border-color .2s,background .2s}
+.karte.ok{border-color:var(--ok);background:rgba(10,48,32,.86)}
+.karte.no{border-color:var(--no);background:rgba(60,12,22,.88)}
+.tag{display:flex;justify-content:center;align-items:center;gap:6px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);text-align:center}
+.tag .stufe{color:var(--text2);font-weight:800;letter-spacing:.04em}
+.prompt{text-align:center;font-weight:900;font-size:26px;line-height:1.2;margin:4px 4px 10px;min-height:2.5em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;text-wrap:balance}
+.prompt .gl{font-size:28px;letter-spacing:.01em;white-space:nowrap}
+.prompt .satz{font-size:20px;font-weight:800}
+.prompt mark{background:none;color:var(--gelb);border-bottom:3px solid var(--gelb);padding:0 2px;border-radius:2px}
+.prompt .es{font-family:Nunito,sans-serif}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.chip{pointer-events:auto;position:relative;height:62px;overflow:hidden;border-radius:14px;border:2px solid rgba(63,208,212,.35);background:rgba(8,26,40,.75);
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 6px;font-weight:800;font-size:16px;line-height:1.15;
+  hyphens:manual;overflow-wrap:normal;word-break:normal;transition:border-color .15s,background .15s,transform .15s}
+.chip.kurz{font-size:24px}.chip.mittel{font-size:14.5px}.chip.lang{font-size:13px;line-height:1.1}
+.chip.hier{border-color:var(--cyan);background:rgba(18,70,86,.9);box-shadow:0 0 0 2px rgba(63,208,212,.25)}
+.chip.richtig{border-color:var(--ok);background:rgba(20,110,64,.9)}
+.chip.falsch{border-color:var(--no);background:rgba(140,26,44,.9)}
+.chip.blass{opacity:.45}
+.chip .t{display:block;max-width:100%}
+.chip .pf{position:absolute;top:3px;font-size:10px;opacity:.55;font-weight:900}
+.chip:nth-child(1) .pf{left:7px}.chip:nth-child(3) .pf{right:7px}
+.toast{margin-top:8px;text-align:center;font-weight:800;font-size:15px;min-height:1.4em;opacity:0;transition:opacity .25s;text-shadow:0 2px 6px #000}
+.toast.an{opacity:1}
+.toast .gs{font-style:italic}
+.hinweis{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));text-align:center;font-weight:800;font-size:14px;color:var(--text2);pointer-events:none;transition:opacity .6s;text-shadow:0 2px 6px #000}
+
+/* ---------- Bildschirme ---------- */
+.schirm{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:max(14px,env(safe-area-inset-top)) 12px max(24px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,11,26,.55),rgba(7,11,26,.88) 60%)}
+.panel{width:100%;max-width:480px;margin:auto 0;background:rgba(14,18,38,.92);border:1px solid var(--rand);border-radius:26px;padding:20px 18px 18px;box-shadow:0 24px 60px -30px #000}
+.oben{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.ober{font-size:12.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--orange)}
+h1{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:30px;line-height:1.05;letter-spacing:-.02em;margin:4px 0 8px;
+  background:linear-gradient(90deg,#fff,#FFC7CC 60%,#FF8A95);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:20px;margin:0 0 6px}
+.panel p{margin:6px 0;color:var(--text2)}
+.bsp{margin:14px 0 12px;border-radius:18px;padding:12px 12px 10px;background:rgba(255,255,255,.04);border:1px solid var(--rand)}
+.bsp .gl{text-align:center;font-size:30px;font-weight:900;letter-spacing:.02em;margin:0 0 8px}
+.bsp .gl span{padding:0 3px;border-radius:8px}
+.bsp dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0;font-size:15px}
+.bsp dt{font-weight:900}
+.bsp dd{margin:0;color:var(--text2)}
+.k1{color:#7FE3E6}.k2{color:#FFC93C}.k3{color:#FF8FA0}.k4{color:#B9A6FF}.k5{color:#8CF0B4}
+.steuer{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0 4px}
+.steuer div{border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--rand);padding:8px 6px;text-align:center;font-size:13px;color:var(--text2);line-height:1.25}
+.steuer b{display:block;color:var(--text);font-size:15px;margin-bottom:2px}
+.knopf{display:block;width:100%;margin-top:14px;min-height:56px;border-radius:18px;font-weight:900;font-size:19px;color:#fff;
+  background:linear-gradient(135deg,#E4464E,#BB283F);box-shadow:0 12px 26px -14px #E4464E}
+.knopf:active{transform:scale(.98)}
+.knopf.zweit{background:rgba(255,255,255,.08);box-shadow:none;border:1px solid var(--rand);font-size:16px;min-height:48px;margin-top:10px}
+.zeile{display:flex;gap:8px;margin-top:10px}
+.zeile > *{flex:1;margin-top:0!important}
+.bestwert{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:15px;color:var(--text2)}
+.bestwert b{color:var(--gelb);font-family:Unbounded,Nunito,sans-serif;font-weight:700}
+.klein{font-size:13px;color:var(--text2)}
+.gross{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:56px;letter-spacing:-.03em;text-align:center;margin:4px 0 0;line-height:1.05}
+.rekord{text-align:center;font-weight:900;color:var(--gelb);min-height:1.3em;margin:4px 0}
+.werte{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+.werte div{text-align:center;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--rand);padding:8px 4px;font-size:12.5px;color:var(--text2)}
+.werte b{display:block;font-size:20px;color:var(--text);font-family:Unbounded,Nunito,sans-serif;font-weight:700}
+.merke{list-style:none;margin:8px 0 0;padding:0;font-size:15px}
+.merke li{border-left:4px solid var(--orange);background:rgba(255,179,107,.08);border-radius:10px;padding:7px 10px;margin:6px 0;color:var(--text)}
+.merke .gs{font-style:italic}
+details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:40px;display:flex;align-items:center;color:var(--text)}
+
+/* Bestenliste */
+.besten{border:2px solid rgba(255,201,60,.55);background:rgba(255,201,60,.06);border-radius:18px;padding:12px;margin:14px 0 4px}
+.besten h3{margin:0 0 8px;font-size:17px;color:var(--gelb)}
+.besten .eintragen{display:flex;gap:8px}
+.besten input{flex:1;min-width:0;font:inherit;font-size:16.5px;padding:8px 10px;border:2px solid rgba(255,201,60,.55);border-radius:12px;background:rgba(0,0,0,.25);color:var(--text);min-height:44px}
+.besten .eintragen button{border-radius:12px;padding:8px 14px;font-weight:900;font-size:15.5px;background:var(--gelb);color:#2A1C00;min-height:44px}
+.besten .eintragen button:disabled{opacity:.5;cursor:default}
+.netstatus{font-size:14px;margin:6px 0;min-height:0}
+.netstatus.ok{color:var(--ok)}.netstatus.warn{color:var(--orange)}
+.reiter{display:flex;gap:6px;margin:8px 0 6px}
+.reiter button{flex:1;min-height:36px;border-radius:10px;border:1px solid var(--rand);font-weight:800;font-size:14px;color:var(--text2)}
+.reiter button[aria-selected="true"]{background:rgba(255,201,60,.18);color:var(--text);border-color:rgba(255,201,60,.6)}
+.rangliste{list-style:none;margin:0;padding:0;font-size:15px}
+.rangliste li{display:grid;grid-template-columns:2.2em 1fr auto;gap:6px;align-items:center;padding:5px 6px;border-radius:9px}
+.rangliste li:nth-child(odd){background:rgba(255,255,255,.04)}
+.rangliste li.mein{background:rgba(63,208,212,.18);outline:1px solid rgba(63,208,212,.6)}
+.rangliste li.p1 .rg{color:#FFD54A}.rangliste li.p2 .rg{color:#D8DEE9}.rangliste li.p3 .rg{color:#E9A26B}
+.rangliste .rg{font-weight:900}.rangliste .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rangliste .pk{font-weight:900}
+.rangliste li.leer{display:block;color:var(--text2);text-align:center;background:none}
+.rangliste li.luecke{display:block;text-align:center;background:none;color:var(--text2)}
+
+@media (min-width:700px){
+  .prompt{font-size:30px}.prompt .gl{font-size:32px}.prompt .satz{font-size:23px}
+  .chip{font-size:18px;height:64px}.chip.mittel{font-size:16px}.chip.lang{font-size:14.5px}
+  h1{font-size:36px}
+}
+@media (max-height:620px){
+  .prompt{font-size:21px;margin-bottom:6px}.prompt .gl{font-size:23px}.prompt .satz{font-size:17px}
+  .chip{height:50px;font-size:14.5px}.chip.mittel{font-size:13px}.chip.lang{font-size:12px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="cv" aria-label="Spielfeld"></canvas>
+
+  <div class="hud hidden" id="hud">
+    <div class="leiste">
+      <button class="rund" id="pauseKnopf" aria-label="Pause"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="3.4" height="12" rx="1"/><rect x="11.6" y="4" width="3.4" height="12" rx="1"/></svg></button>
+      <div class="herzen" id="herzen" aria-label="Leben"></div>
+      <div class="punkte"><span class="combo" id="combo">×2</span><b id="punkte">0</b></div>
+    </div>
+    <div class="karte" id="karte">
+      <div class="tag"><span id="tag">Größe → Größensymbol</span><span class="stufe" id="stufe"></span></div>
+      <div class="prompt" id="prompt"></div>
+      <div class="chips" id="chips">
+        <button class="chip" data-l="0"><span class="pf">◀</span><span class="t"></span></button>
+        <button class="chip" data-l="1"><span class="t"></span></button>
+        <button class="chip" data-l="2"><span class="pf">▶</span><span class="t"></span></button>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+  <div class="hinweis hidden" id="hinweis">Wischen, Pfeiltasten oder Antwort antippen</div>
+
+  <!-- Start -->
+  <div class="schirm" id="start">
+    <div class="panel">
+      <div class="oben"><a class="rund" id="zurueck1" href="../" aria-label="Zurück zur Klassenseite"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg></a><span class="ober" id="klassenName">Physik</span></div>
+      <h1>Größen-Runner</h1>
+      <p>Steuere deinen Gleiter durch das Tor mit der richtigen Antwort. Je länger du durchhältst, desto schneller wird es.</p>
+      <div class="bsp" aria-label="Beispiel: Kraft F = 35 N">
+        <div class="gl"><span class="k1"><i>F</i></span> = <span class="k2">35</span> <span class="k3">N</span></div>
+        <dl>
+          <dt class="k4">Größe</dt><dd>Kraft</dd>
+          <dt class="k1">Größensymbol</dt><dd><i>F</i> (kursiv)</dd>
+          <dt class="k2">Zahlenwert</dt><dd>35</dd>
+          <dt class="k5">Einheit</dt><dd>Newton</dd>
+          <dt class="k3">Einheitensymbol</dt><dd>N</dd>
+        </dl>
+      </div>
+      <div class="steuer">
+        <div><b>◀ ▶</b>Pfeiltasten oder A / D</div>
+        <div><b>Wischen</b>nach links oder rechts</div>
+        <div><b>Antippen</b>die Antwort oben</div>
+      </div>
+      <p class="klein">3 Leben · richtige Tore in Serie geben ×2 bis ×5 · ⚡ sammeln gibt Extrapunkte · alle 8 richtigen in Serie ein Herz zurück.</p>
+      <div class="bestwert"><span>Dein Bestwert</span><b id="bestStart">0</b></div>
+      <button class="knopf" id="losKnopf">Los geht's</button>
+      <div class="zeile">
+        <button class="knopf zweit" id="tonKnopf" aria-pressed="false">🔇 Ton aus</button>
+        <button class="knopf zweit" id="listeKnopf">🏆 Bestenliste</button>
+      </div>
+      <div id="listePlatz"></div>
+    </div>
+  </div>
+
+  <!-- Pause -->
+  <div class="schirm hidden" id="pause">
+    <div class="panel">
+      <h2>Pause</h2>
+      <p>Die Runde wartet auf dich.</p>
+      <button class="knopf" id="weiterKnopf">Weiter</button>
+      <button class="knopf zweit" id="abbruchKnopf">Runde beenden</button>
+    </div>
+  </div>
+
+  <!-- Ende -->
+  <div class="schirm hidden" id="ende">
+    <div class="panel">
+      <div class="ober" style="text-align:center">Runde vorbei</div>
+      <div class="gross" id="endPunkte">0</div>
+      <div class="rekord" id="rekord"></div>
+      <div class="werte">
+        <div><b id="wRichtig">0</b>richtig</div>
+        <div><b id="wSerie">0</b>beste Serie</div>
+        <div><b id="wStufe">1</b>Stufe</div>
+      </div>
+      <div id="merkPlatz"></div>
+      <div id="bestenPlatz"></div>
+      <button class="knopf" id="nochmalKnopf">Nochmal</button>
+      <a class="knopf zweit" id="zurueck2" href="../" style="text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center">Zur Klassenseite</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* =====================================================================
+   EINSTELLUNGEN – hier lässt sich alles bequem ändern
+   ---------------------------------------------------------------------
+   GROESSEN: alle Größen mit Größensymbol, Einheit und Einheitensymbol.
+     sym/es: _G = tiefgestellt, _{pot} = mehrere Zeichen tiefgestellt.
+     altEs/altEin: weitere RICHTIGE Einheiten – werden nie als falsche Antwort angeboten.
+     fallenSym/fallenEs/fallenEin: typische Verwechslungen (werden gern als falsche Antwort genommen).
+     nieSym/nieEs/nieName: darf nie als falsche Antwort auftauchen (wäre mehrdeutig).
+     fam: Familie (z. B. alle Kräfte) – innerhalb der Familie wird nicht gegeneinander gefragt.
+     wert: Beispielwert für „Was ist das Markierte?“ – [Zahl, Einheitensymbol, Einheit ausgeschrieben].
+   KLASSEN: welche Größen eine Klasse kennt (?k=p9 usw.) und welche Bestenliste sie nutzt.
+   ===================================================================== */
+var GROESSEN = [
+  // Jgst. 7 – Mechanik
+  { id:'s',   name:'Weg',      nom:'Der Weg',      sym:'s',   ein:'Meter',     es:'m',  altEs:['km','cm','mm','dm'], altEin:['Kilometer','Zentimeter','Millimeter'], fam:'laenge', wert:['120','m','Meter'], fallenSym:['w','W'] },
+  { id:'h',   name:'Höhe',     nom:'Die Höhe',     sym:'h',   ein:'Meter',     es:'m',  altEs:['km','cm','mm','dm'], altEin:['Kilometer','Zentimeter','Millimeter'], fam:'laenge', wert:['12','m','Meter'], nieSym:['s'], fallenSym:['H'] },
+  { id:'t',   name:'Zeit',     nom:'Die Zeit',     sym:'t',   ein:'Sekunde',   es:'s',  altEs:['min','h','ms'], altEin:['Minute','Stunde'], wert:['45','s','Sekunden'], fallenSym:['z','Z'], fallenEin:['Meter'] },
+  { id:'v',   name:'Geschwindigkeit', nom:'Die Geschwindigkeit', sym:'v', ein:'Meter pro Sekunde', es:'m/s', altEs:['km/h'], altEin:['Kilometer pro Stunde'], wert:['12','m/s','Meter pro Sekunde'], fallenSym:['g','G'], fallenEs:['m·s','s/m'] },
+  { id:'F',   name:'Kraft',    nom:'Die Kraft',    sym:'F',   ein:'Newton',    es:'N',  altEs:['kN'], altEin:['Kilonewton'], fam:'kraft', wert:['35','N','Newton'], fallenSym:['K','k'], fallenEin:['Kilogramm'] },
+  { id:'FG',  name:'Gewichtskraft', nom:'Die Gewichtskraft', sym:'F_G', ein:'Newton', es:'N', altEs:['kN'], altEin:['Kilonewton'], fam:'kraft', wert:['680','N','Newton'], fallenSym:['G','m'], fallenEs:['kg'], fallenEin:['Kilogramm'] },
+  { id:'m',   name:'Masse',    nom:'Die Masse',    sym:'m',   ein:'Kilogramm', es:'kg', altEs:['g','t','mg'], altEin:['Gramm','Tonne','Milligramm'], wert:['3,5','kg','Kilogramm'], fallenSym:['M'], fallenEs:['N'], fallenEin:['Newton'] },
+  { id:'g',   name:'Ortsfaktor', nom:'Der Ortsfaktor', sym:'g', ein:'Newton pro Kilogramm', es:'N/kg', altEs:['m/s²'], wert:['9,81','N/kg','Newton pro Kilogramm'], fallenSym:['O','o'], fallenEs:['kg/N','N·kg'], fallenEin:['Kilogramm pro Newton'] },
+  { id:'D',   name:'Federhärte', nom:'Die Federhärte', sym:'D', ein:'Newton pro Meter', es:'N/m', altEs:['N/cm'], altEin:['Newton pro Zentimeter'], wert:['40','N/m','Newton pro Meter'], fallenSym:['F','H'], fallenEs:['N·m','m/N'], fallenEin:['Newtonmeter'] },
+  { id:'V',   name:'Volumen',  nom:'Das Volumen',  sym:'V',   ein:'Kubikmeter', es:'m³', altEs:['l','cm³','dm³','ml'], altEin:['Liter','Kubikzentimeter','Kubikdezimeter'], wert:['0,25','m³','Kubikmeter'], fallenEs:['m²'], fallenEin:['Quadratmeter'] },
+  { id:'rho', name:'Dichte',   nom:'Die Dichte',   sym:'ρ',   ein:'Kilogramm pro Kubikmeter', es:'kg/m³', altEs:['g/cm³','kg/dm³','g/l','kg/l'], altEin:['Gramm pro Kubikzentimeter'], wert:['1000','kg/m³','Kilogramm pro Kubikmeter'], fallenSym:['D','d'], fallenEs:['m³/kg','kg·m³'], fallenEin:['Kubikmeter pro Kilogramm'] },
+  // Jgst. 8
+  { id:'W',   name:'Arbeit',   nom:'Die Arbeit',   sym:'W',   ein:'Joule',     es:'J',  altEs:['kJ','Nm','Ws','kWh','MJ'], altEin:['Kilojoule','Newtonmeter','Wattsekunde','Kilowattstunde'], fam:'energie', wert:['600','J','Joule'], fallenSym:['A','a'], fallenEs:['W'], fallenEin:['Watt'] },
+  { id:'E',   name:'Energie',  nom:'Die Energie',  sym:'E',   ein:'Joule',     es:'J',  altEs:['kJ','Nm','Ws','kWh','MJ'], altEin:['Kilojoule','Newtonmeter','Wattsekunde','Kilowattstunde'], fam:'energie', wert:['2400','J','Joule'], fallenEs:['W'], fallenEin:['Watt'] },
+  { id:'Epot',name:'Lageenergie', nom:'Die Lageenergie', sym:'E_{pot}', ein:'Joule', es:'J', altEs:['kJ','Nm','Ws','kWh','MJ'], altEin:['Kilojoule','Newtonmeter','Wattsekunde','Kilowattstunde'], fam:'energie', wert:['150','J','Joule'], fallenSym:['L'], fallenEs:['W'] },
+  { id:'Ekin',name:'Bewegungsenergie', nom:'Die Bewegungsenergie', sym:'E_{kin}', ein:'Joule', es:'J', altEs:['kJ','Nm','Ws','kWh','MJ'], altEin:['Kilojoule','Newtonmeter','Wattsekunde','Kilowattstunde'], fam:'energie', wert:['90','J','Joule'], fallenSym:['B'], fallenEs:['W'] },
+  { id:'P',   name:'Leistung', nom:'Die Leistung', sym:'P',   ein:'Watt',      es:'W',  altEs:['kW','MW','J/s'], altEin:['Kilowatt','Megawatt','Joule pro Sekunde'], wert:['600','W','Watt'], fallenSym:['L','p'], fallenEs:['J','P'], fallenEin:['Joule'] },
+  { id:'eta', name:'Wirkungsgrad', nom:'Der Wirkungsgrad', sym:'η', ein:null, es:null, keineEinheit:true, fallenSym:['W','n'] },
+  { id:'th',  name:'Temperatur', nom:'Die Temperatur', sym:'ϑ', ein:'Grad Celsius', es:'°C', fam:'temp', wert:['21','°C','Grad Celsius'], nieSym:['T'], nieEs:['K'], nieEin:['Kelvin'], fallenSym:['t'], fallenEs:['C'] },
+  { id:'I',   name:'Stromstärke', nom:'Die Stromstärke', sym:'I', ein:'Ampere', es:'A', altEs:['mA'], altEin:['Milliampere'], wert:['0,5','A','Ampere'], fallenSym:['S','A'], fallenEs:['I'] },
+  { id:'Q',   name:'Ladung',   nom:'Die Ladung',   sym:'Q',   ein:'Coulomb',   es:'C',  altEs:['As'], altEin:['Amperesekunde'], wert:['2','C','Coulomb'], fallenSym:['L'], fallenEs:['Q'] },
+  // Jgst. 9 – Mechanik der Flüssigkeiten und Gase, Wärmelehre
+  { id:'p',   name:'Druck',    nom:'Der Druck',    sym:'p',   ein:'Pascal',    es:'Pa', altEs:['bar','hPa','mbar','N/m²','kPa'], altEin:['Bar','Hektopascal','Millibar','Kilopascal'], wert:['2500','Pa','Pascal'], fallenSym:['P','D'], fallenEs:['N','P'], fallenEin:['Newton'] },
+  { id:'A',   name:'Fläche',   nom:'Die Fläche',   sym:'A',   ein:'Quadratmeter', es:'m²', altEs:['cm²','dm²','km²','mm²'], altEin:['Quadratzentimeter','Quadratdezimeter'], wert:['0,8','m²','Quadratmeter'], fallenSym:['F','f'], fallenEs:['m³'], fallenEin:['Kubikmeter'] },
+  { id:'FA',  name:'Auftriebskraft', nom:'Die Auftriebskraft', sym:'F_A', ein:'Newton', es:'N', altEs:['kN'], altEin:['Kilonewton'], fam:'kraft', wert:['4,9','N','Newton'], fallenSym:['A'], fallenEs:['kg'] },
+  { id:'T',   name:'absolute Temperatur', nom:'Die absolute Temperatur', sym:'T', ein:'Kelvin', es:'K', fam:'temp', wert:['293','K','Kelvin'], fallenSym:['t','K'], fallenEs:['°C','°K'], fallenEin:['Grad Celsius','Grad Kelvin'] },
+  { id:'dth', name:'Temperaturänderung', nom:'Die Temperaturänderung', sym:'Δϑ', ein:'Grad Celsius', es:'°C', altEs:['K'], altEin:['Kelvin'], fam:'temp', wert:['25','°C','Grad Celsius'], fallenSym:['ϑ','t'], fallenEs:['C'] },
+  { id:'c',   name:'spezifische Wärmekapazität', nom:'Die spezifische Wärmekapazität', sym:'c', ein:null, es:'kJ/(kg·°C)', altEs:['J/(kg·K)','kJ/(kg·K)','J/(kg·°C)'], wert:['4,19','kJ/(kg·°C)',null], fallenSym:['C','W'], fallenEs:['kJ/kg','kJ·kg·°C'] },
+  { id:'Wth', nieSym:['Q'], name:'Wärme',    nom:'Die Wärme',    sym:'W_{th}', ein:'Joule',  es:'J',  altEs:['kJ','Nm','Ws','kWh','MJ'], altEin:['Kilojoule','Newtonmeter','Wattsekunde','Kilowattstunde'], fam:'energie', wert:['84','kJ','Kilojoule'], fallenSym:['T','th'], fallenEs:['°C','W'], fallenEin:['Grad Celsius','Watt'] }
+];
+
+/* Einheiten: Verwechslungen beim Schreiben des Einheitensymbols (Groß-/Kleinschreibung, °K …) */
+var EINHEIT_FALLEN = {
+  'm':['M','mt'], 's':['S','sec'], 'kg':['Kg','KG'], 'N':['n','Nw'], 'J':['j','Jl'], 'W':['w','Wt'], 'Pa':['pa','PA'],
+  'K':['°K','k'], '°C':['C','°c'], 'A':['a','Am'], 'C':['c','Co'], 'm³':['m²','qm'], 'm²':['m³','2m'],
+  'm/s':['m·s','s/m'], 'N/kg':['kg/N','N·kg'], 'N/m':['N·m','m/N'], 'kg/m³':['m³/kg','kg·m³']
+};
+
+var KLASSEN = {
+  p9: { titel:'Physik 9b', zurueck:'../p9/', game:'p9-runner', klasse:'9b',
+        ids:['s','h','t','v','F','FG','m','g','D','V','rho','W','E','Epot','Ekin','P','eta','th','I','Q','p','A','FA','T','dth','c','Wth'] },
+  // vorbereitet, aber noch nicht auf den Klassenseiten verlinkt:
+  p7: { titel:'Physik 7a', zurueck:'../p7/', game:'p7-runner', klasse:'7a', ids:['s','t','v','F','FG','m','g','D'] },
+  p8: { titel:'Physik 8b', zurueck:'../p8/', game:'p8-runner', klasse:'8b', ids:['s','t','v','F','FG','m','g','D'] }
+};
+
+/* Fragearten und wie oft sie kommen (Gewicht) */
+var ARTEN = [
+  { typ:'begriff', w:26 },   // „Was ist das Markierte?“ – Größe / Größensymbol / Einheit / Einheitensymbol / Zahlenwert
+  { typ:'g2sym',   w:13 },   // Größe → Größensymbol
+  { typ:'sym2g',   w:12 },   // Größensymbol → Größe
+  { typ:'g2es',    w:14 },   // Größe → Einheitensymbol
+  { typ:'g2ein',   w:9 },    // Größe → Einheit
+  { typ:'es2ein',  w:8 },    // Einheitensymbol → Einheit
+  { typ:'ein2es',  w:8 },    // Einheit → Einheitensymbol
+  { typ:'es2g',    w:10 }    // Einheitensymbol → Größe
+];
+
+var SPIEL = { V0:11, VPLUS:0.42, VMAX:18.5, ZFERN:70, ZP:5, CAMH:1.4, LEBEN:3, HERZ_SERIE:8 };
+
+/* ===================================================================== */
+var K = (function(){ var m=/[?&]k=([a-z0-9]+)/i.exec(location.search); var k=m&&m[1].toLowerCase(); return KLASSEN[k]?k:'p9'; })();
+var KL = KLASSEN[K];
+var GM = {}; GROESSEN.forEach(function(g){ GM[g.id]=g; });
+var POOL = KL.ids.map(function(id){ return GM[id]; }).filter(Boolean);
+
+function $(id){ return document.getElementById(id); }
+function rnd(n){ return Math.floor(Math.random()*n); }
+function pick(a){ return a[rnd(a.length)]; }
+function mischen(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=rnd(i+1),x=a[i];a[i]=a[j];a[j]=x; } return a; }
+function uniq(a){ var s={},o=[]; a.forEach(function(x){ if(x!=null&&!s[x]){ s[x]=1;o.push(x); } }); return o; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function lsGet(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+/* ---------- Text mit Tiefstellung: F_G, E_{pot}; | = weiche Trennstelle ---------- */
+function teile(t){
+  var out=[],cur='',i=0; t=String(t);
+  while(i<t.length){
+    var ch=t[i];
+    if(ch==='_'){
+      if(cur){ out.push({s:cur,sub:false}); cur=''; }
+      if(t[i+1]==='{'){ var j=t.indexOf('}',i+2); if(j<0)j=t.length; out.push({s:t.slice(i+2,j),sub:true}); i=j+1; }
+      else { out.push({s:t[i+1]||'',sub:true}); i+=2; }
+      continue;
+    }
+    if(ch==='|'){ i++; continue; }
+    cur+=ch; i++;
+  }
+  if(cur) out.push({s:cur,sub:false});
+  return out;
+}
+function html(t, kursiv){
+  var parts=String(t).split('|').map(function(p){
+    return teile(p).map(function(s){
+      if(s.sub) return '<sub>'+esc(s.s)+'</sub>';
+      if(!kursiv) return esc(s.s);
+      var m=/^(Δ?)(.*)$/.exec(s.s); return esc(m[1])+(m[2]?'<i class="gs">'+esc(m[2])+'</i>':'');
+    }).join('');
+  });
+  return parts.join('&shy;');
+}
+function plain(t){ return teile(t).map(function(s){ return s.s; }).join(''); }
+
+/* =====================================================================
+   FRAGEN
+   ===================================================================== */
+function famVon(g){ return g.fam ? POOL.filter(function(o){ return o.fam===g.fam; }) : [g]; }
+function hatEinheit(g){ return !!g.es; }
+
+// zwei falsche Antworten: bevorzugt eine typische Falle, dazu eine andere
+function falsche(richtig, fallen, pool, verboten){
+  var verb={}; verboten.concat([richtig]).forEach(function(x){ if(x!=null) verb[plain(x)]=1; });
+  var ok=function(x){ return x!=null && x!=='' && !verb[plain(x)]; };
+  var f=mischen(uniq(fallen.filter(ok))), p=mischen(uniq(pool.filter(ok)));
+  var wahl=[];
+  if(f.length && Math.random()<0.85) wahl.push(f.shift());
+  var rest=mischen(p.concat(f));
+  while(wahl.length<2 && rest.length){ var x=rest.shift(); if(wahl.map(plain).indexOf(plain(x))<0) wahl.push(x); }
+  return wahl.length===2 ? wahl : null;
+}
+function bauFrage(typ,g,tag,prompt,richtig,falscheAntw,merk){
+  if(!falscheAntw) return null;
+  var antw=mischen([richtig].concat(falscheAntw));
+  return { typ:typ, gid:g.id, tag:tag, prompt:prompt, antw:antw, ok:antw.indexOf(richtig), merk:merk };
+}
+function merkG(g){
+  if(g.keineEinheit) return '<b>'+esc(g.name)+'</b> '+html(g.sym,true)+': hat keine Einheit.';
+  return '<b>'+esc(g.name)+'</b>: Größensymbol '+html(g.sym,true)+' · Einheit '+(g.ein?esc(g.ein)+' ('+html(g.es)+')':html(g.es));
+}
+var andere=function(g){ return POOL.filter(function(o){ return o!==g; }); };
+
+var MACHER = {
+  g2sym: function(g){
+    var verb=(g.nieSym||[]).concat(famVon(g).map(function(o){ return o.sym; }));
+    var fallen=(g.fallenSym||[]).concat(g.es && g.es!==g.sym ? [g.es] : []);
+    return bauFrage('g2sym',g,'Größe → Größensymbol',esc(g.name),g.sym,
+      falsche(g.sym,fallen,andere(g).map(function(o){ return o.sym; }),verb),merkG(g));
+  },
+  sym2g: function(g){
+    var verb=(g.nieName||[]).concat(famVon(g).map(function(o){ return o.name; }));
+    if(g.id==='th') verb.push('absolute Temperatur','Temperaturänderung');
+    var fallen=andere(g).filter(function(o){
+      return (o.es && o.es.toLowerCase()===g.sym.toLowerCase()) || o.sym.toLowerCase()===g.sym.toLowerCase() || (g.id==='D'&&o.id==='rho') || (g.id==='rho'&&o.id==='D');
+    }).map(function(o){ return o.name; });
+    return bauFrage('sym2g',g,'Größensymbol → Größe','<span class="gl">'+html(g.sym,true)+'</span>',g.name,
+      falsche(g.name,fallen,andere(g).map(function(o){ return o.name; }),verb),merkG(g));
+  },
+  g2es: function(g){
+    if(g.keineEinheit){
+      return bauFrage('g2es',g,'Größe → Einheitensymbol',esc(g.name)+' '+html(g.sym,true),'keine Einheit',
+        mischen(['J','W','N','Pa']).slice(0,2),merkG(g));
+    }
+    var verb=(g.altEs||[]).concat(g.nieEs||[]);
+    var fallen=(g.fallenEs||[]).concat(g.sym!==g.es ? [g.sym] : []);
+    return bauFrage('g2es',g,'Größe → Einheitensymbol',esc(g.name),g.es,
+      falsche(g.es,fallen,andere(g).filter(hatEinheit).map(function(o){ return o.es; }),verb),merkG(g));
+  },
+  g2ein: function(g){
+    if(g.keineEinheit){
+      return bauFrage('g2ein',g,'Größe → Einheit',esc(g.name)+' '+html(g.sym,true),'keine Einheit',
+        mischen(['Joule','Watt','Newton']).slice(0,2),merkG(g));
+    }
+    if(!g.ein) return null;
+    var verb=(g.altEin||[]).concat(g.nieEin||[]);
+    return bauFrage('g2ein',g,'Größe → Einheit',esc(g.name),g.ein,
+      falsche(g.ein,g.fallenEin||[],andere(g).filter(function(o){ return o.ein; }).map(function(o){ return o.ein; }),verb),merkG(g));
+  },
+  es2ein: function(g){
+    if(!g.es || !g.ein) return null;
+    var gleiche=POOL.filter(function(o){ return o.es===g.es; });
+    var fallen=[pick(gleiche).name].concat(POOL.filter(function(o){ return o.sym===g.es; }).map(function(o){ return o.name; }));
+    var pool=POOL.filter(function(o){ return o.ein && o.es!==g.es; }).map(function(o){ return o.ein; });
+    return bauFrage('es2ein',g,'Einheitensymbol → Einheit','<span class="gl es">'+html(g.es)+'</span>',g.ein,
+      falsche(g.ein,fallen,pool,g.altEin||[]),'<b>'+html(g.es)+'</b> steht für '+esc(g.ein)+' – z. B. bei der Größe '+esc(g.name)+'.');
+  },
+  ein2es: function(g){
+    if(!g.es || !g.ein) return null;
+    var syms=POOL.filter(function(o){ return o.es===g.es && o.sym!==g.es; }).map(function(o){ return o.sym; });
+    var fallen=(syms.length?[pick(syms)]:[]).concat(EINHEIT_FALLEN[g.es]||[]);
+    var pool=POOL.filter(function(o){ return o.es && o.es!==g.es; }).map(function(o){ return o.es; });
+    return bauFrage('ein2es',g,'Einheit → Einheitensymbol',esc(g.ein),g.es,
+      falsche(g.es,fallen,pool,g.altEs||[]),'<b>'+esc(g.ein)+'</b> kürzt man mit '+html(g.es)+' ab.');
+  },
+  es2g: function(g){
+    if(!g.es) return null;
+    var E=g.es;
+    var treffer=POOL.filter(function(o){ return o.es===E || (o.altEs||[]).indexOf(E)>=0; });
+    var verb=[]; treffer.forEach(function(o){ famVon(o).forEach(function(x){ verb.push(x.name); }); verb=verb.concat(o.nieName||[]); });
+    if(treffer.some(function(o){ return o.fam==='temp'; })) verb.push('Temperatur','absolute Temperatur','Temperaturänderung');
+    var fallen=POOL.filter(function(o){ return o.sym===E || o.sym.toLowerCase()===E.toLowerCase(); }).map(function(o){ return o.name; });
+    return bauFrage('es2g',g,'Einheitensymbol → Größe','<span class="gl es">'+html(E)+'</span>',g.name,
+      falsche(g.name,fallen,POOL.map(function(o){ return o.name; }),verb),
+      'Zu '+html(E)+' passt '+(treffer.length>1?'z. B. ':'')+'die Größe '+esc(g.name)+'.');
+  },
+  begriff: function(g){
+    if(!g.wert) return null;
+    var z=g.wert[0], es=g.wert[1], ein=g.wert[2];
+    var formen=[];
+    var gl=function(mark){
+      var a=html(g.sym,true), b=esc(z), c=html(es);
+      if(mark==='sym') a='<mark>'+a+'</mark>'; if(mark==='z') b='<mark>'+b+'</mark>'; if(mark==='es') c='<mark>'+c+'</mark>';
+      return '<span class="gl">'+a+' = '+b+' '+c+'</span>';
+    };
+    var plainGl=plain(g.sym)+' = '+z+' '+es;
+    formen.push({p:gl('sym'),r:'Größensymbol',teil:plain(g.sym),text:plainGl});
+    formen.push({p:gl('es'), r:'Einheitensymbol',teil:es,text:plainGl});
+    formen.push({p:gl('z'),  r:'Zahlenwert',teil:z,text:plainGl});
+    var nom=g.nom.split(' '), art=nom[0], nm=nom.slice(1).join(' ');
+    formen.push({p:'<span class="satz">'+esc(art)+' <mark>'+esc(nm)+'</mark> beträgt '+esc(z)+' '+html(es)+'.</span>',r:'Größe',teil:nm,text:g.nom+' beträgt '+z+' '+es+'.'});
+    if(ein){
+      formen.push({p:'<span class="satz">'+esc(g.nom)+' beträgt '+esc(z)+' <mark>'+esc(ein)+'</mark>.</span>',r:'Einheit',teil:ein,text:g.nom+' beträgt '+z+' '+ein+'.'});
+      formen.push({p:'<span class="satz">'+esc(g.nom)+' beträgt '+esc(z)+' <mark>'+html(es)+'</mark>.</span>',r:'Einheitensymbol',teil:es,text:g.nom+' beträgt '+z+' '+es+'.'});
+    }
+    var f=pick(formen);
+    var PARTNER={ 'Größe':['Größensymbol','Einheit'], 'Größensymbol':['Einheitensymbol','Größe'], 'Einheit':['Einheitensymbol','Größe'],
+                  'Einheitensymbol':['Einheit','Größensymbol'], 'Zahlenwert':['Einheit','Größensymbol'] };
+    var alle=['Größe','Größensymbol','Einheit','Einheitensymbol','Zahlenwert'];
+    var art2={ 'Größe':'die Größe','Größensymbol':'das Größensymbol','Einheit':'die Einheit','Einheitensymbol':'das Einheitensymbol','Zahlenwert':'der Zahlenwert' };
+    var fa=falsche(f.r,PARTNER[f.r],alle,[]);
+    var q=bauFrage('begriff',g,'Was ist das Markierte?',f.p,f.r,fa,'In „'+esc(f.text)+'“ ist „'+esc(f.teil)+'“ '+art2[f.r]+'.');
+    if(q) q.antw=q.antw.map(function(a){ return a.replace('Größensymbol','Größen|symbol').replace('Einheitensymbol','Einheiten|symbol'); });
+    return q;
+  }
+};
+
+var verlauf=[], wiederholen=[];
+function neueFrage(){
+  // falsch Beantwortetes kommt nach ein paar Toren wieder
+  for(var i=0;i<wiederholen.length;i++){
+    var d=wiederholen[i]; d.n--;
+    if(d.n<=0){ wiederholen.splice(i,1); var q0=MACHER[d.typ](GM[d.gid]) || MACHER.g2sym(GM[d.gid]); if(q0){ merkVerlauf(q0.gid); return q0; } break; }
+  }
+  var summe=ARTEN.reduce(function(s,a){ return s+a.w; },0);
+  for(var v=0; v<60; v++){
+    var r=Math.random()*summe, typ=ARTEN[0].typ;
+    for(var j=0;j<ARTEN.length;j++){ r-=ARTEN[j].w; if(r<=0){ typ=ARTEN[j].typ; break; } }
+    var kand=POOL.filter(function(g){ return verlauf.indexOf(g.id)<0; });
+    if(!kand.length) kand=POOL;
+    var g=pick(kand), q=null;
+    try{ q=MACHER[typ](g); }catch(e){ q=null; }
+    if(q && q.ok>=0 && q.antw.length===3){ merkVerlauf(q.gid); return q; }
+  }
+  return MACHER.g2sym(POOL[0]);
+}
+function merkVerlauf(id){ verlauf.push(id); var max=Math.min(6,Math.max(1,POOL.length-3)); while(verlauf.length>max) verlauf.shift(); }
+
+/* =====================================================================
+   SPIELZUSTAND
+   ===================================================================== */
+var cv=$('cv'), ctx=cv.getContext('2d');
+var W=0,H=0,DPR=1,cx=0,yh=0,yp=0,FY=1,FX=1, hintergrund=null;
+var modus='start';            // start | lauf | pause | vorbei
+var st=null, zeit=0;
+var SPEICHER='groessen-runner.v1.'+K;
+var daten=(function(){ try{ return JSON.parse(lsGet(SPEICHER))||{}; }catch(e){ return {}; } })();
+function speichern(){ lsSet(SPEICHER,JSON.stringify(daten)); }
+var tonAn=!!daten.ton;
+
+function neueRunde(){
+  verlauf=[]; wiederholen=[];
+  st={ punkte:0, leben:SPIEL.LEBEN, serie:0, besteSerie:0, richtig:0, falsch:0, v:SPIEL.V0, weg:0,
+       tore:[], energie:[], teilchen:[], popups:[], spur:0, px:0, frage:null, naechste:0.8,
+       wackeln:0, fehler:[], vorbeiNach:0, feedback:0 };
+}
+function stufe(){ return 1+Math.floor((st?st.richtig:0)/6); }
+
+/* ---------- Geometrie ---------- */
+function groesse(){
+  var r=$('app').getBoundingClientRect();
+  W=Math.max(200,r.width); H=Math.max(200,r.height);
+  DPR=Math.min(2,window.devicePixelRatio||1);
+  cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
+  var kb=0, hud=$('hud');
+  if(!hud.classList.contains('hidden')){ kb=$('karte').getBoundingClientRect().bottom-r.top; }
+  else kb=H*0.30;
+  yh=Math.min(H*0.58,Math.max(kb+18,H*0.36));
+  yp=H-Math.max(64,H*0.11);
+  cx=W/2;
+  FY=(yp-yh)*SPIEL.ZP/SPIEL.CAMH;
+  FX=Math.min(FY*0.6, W*0.30*SPIEL.ZP);
+  baueHintergrund();
+}
+function P(x,y,z){ return [cx+x*FX/z, yh+(SPIEL.CAMH*FY)/z - y*FX/z]; }
+function bodenY(z){ return yh+(SPIEL.CAMH*FY)/z; }
+
+/* ---------- Hintergrund (einmal pro Größe gezeichnet) ---------- */
+function baueHintergrund(){
+  hintergrund=document.createElement('canvas');
+  hintergrund.width=cv.width; hintergrund.height=Math.ceil((yh+4)*DPR);
+  var c=hintergrund.getContext('2d'); c.setTransform(DPR,0,0,DPR,0,0);
+  var g=c.createLinearGradient(0,0,0,yh);
+  g.addColorStop(0,'#060918'); g.addColorStop(0.55,'#170C2C'); g.addColorStop(0.85,'#4A1236'); g.addColorStop(1,'#8E2240');
+  c.fillStyle=g; c.fillRect(0,0,W,yh+4);
+  // Sterne
+  var seed=7; function zf(){ seed=(seed*9301+49297)%233280; return seed/233280; }
+  for(var i=0;i<Math.round(W*yh/2600);i++){ c.fillStyle='rgba(255,255,255,'+(0.25+zf()*0.6).toFixed(2)+')'; var s=zf()<0.12?1.8:1; c.fillRect(zf()*W,zf()*yh*0.75,s,s); }
+  // Sonne
+  var R=Math.min(W*0.2,yh*0.42), sy=yh-R*0.25;
+  var gs=c.createLinearGradient(0,sy-R,0,sy+R*0.3); gs.addColorStop(0,'#FFE08A'); gs.addColorStop(0.5,'#FF8A5C'); gs.addColorStop(1,'#E4464E');
+  c.save(); c.beginPath(); c.arc(cx,sy,R,0,Math.PI*2); c.clip();
+  c.fillStyle=gs; c.fillRect(cx-R,sy-R,2*R,2*R);
+  c.fillStyle='#4A1236';
+  for(var k=0;k<7;k++){ var yy=sy-R*0.05+k*R*0.16, hh=1.5+k*1.6; c.fillRect(cx-R,yy,2*R,hh); }
+  c.restore();
+  var glow=c.createRadialGradient(cx,sy,R*0.6,cx,sy,R*2.2); glow.addColorStop(0,'rgba(255,120,110,.22)'); glow.addColorStop(1,'rgba(255,120,110,0)');
+  c.fillStyle=glow; c.fillRect(0,0,W,yh);
+  // Skyline
+  seed=3; var x=0;
+  while(x<W){
+    var bw=14+zf()*38, bh=(0.08+zf()*0.22)*yh*(Math.abs(x+bw/2-cx)<R*1.1?0.45:1);
+    c.fillStyle='#14091F'; c.fillRect(x,yh-bh,bw,bh+2);
+    c.fillStyle='rgba(255,179,107,.55)';
+    for(var wy=yh-bh+5; wy<yh-6; wy+=7) for(var wx=x+3; wx<x+bw-4; wx+=6) if(zf()<0.13) c.fillRect(wx,wy,2,3);
+    x+=bw+1+zf()*6;
+  }
+  c.fillStyle='rgba(255,92,122,.75)'; c.fillRect(0,yh-1.5,W,1.5);
+}
+
+/* ---------- Zeichnen ---------- */
+function linie(x1,y1,x2,y2,farbe,breite){ ctx.strokeStyle=farbe; ctx.lineWidth=breite; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
+function sichtbar(z){ return Math.max(0,Math.min(1,(SPIEL.ZFERN+6-z)/14)); }
+
+function zeichneBoden(){
+  var g=ctx.createLinearGradient(0,yh,0,H); g.addColorStop(0,'#1A0B24'); g.addColorStop(0.25,'#0D0B1E'); g.addColorStop(1,'#070915');
+  ctx.fillStyle=g; ctx.fillRect(0,yh,W,H-yh);
+  var weg=st?st.weg:zeit*6;
+  // Gitter quer
+  var abst=4, off=weg%abst;
+  for(var n=1;n<26;n++){
+    var z=n*abst-off; if(z<0.8) continue;
+    var y=bodenY(z), a=Math.max(0,Math.min(1,(80-z)/60))*0.5;
+    linie(0,y,W,y,'rgba(228,70,78,'+a.toFixed(3)+')',z<8?1.5:1);
+  }
+  // Gitter längs
+  var xs=[-2.4,-3.6,-5,-7,-9.5,-13,-18,2.4,3.6,5,7,9.5,13,18];
+  for(var i=0;i<xs.length;i++){ var a1=P(xs[i],0,0.9), a2=P(xs[i],0,90); linie(a1[0],a1[1],a2[0],a2[1],'rgba(228,70,78,.28)',1); }
+  // Fahrbahn
+  var l1=P(-1.5,0,0.9), r1=P(1.5,0,0.9), l2=P(-1.5,0,90), r2=P(1.5,0,90);
+  var gb=ctx.createLinearGradient(0,yh,0,H); gb.addColorStop(0,'rgba(30,40,80,.5)'); gb.addColorStop(1,'rgba(22,30,62,.92)');
+  ctx.fillStyle=gb; ctx.beginPath(); ctx.moveTo(l1[0],l1[1]); ctx.lineTo(l2[0],l2[1]); ctx.lineTo(r2[0],r2[1]); ctx.lineTo(r1[0],r1[1]); ctx.closePath(); ctx.fill();
+  // Ränder (mit Schein)
+  [[-1.5],[1.5]].forEach(function(e){ var a=P(e[0],0,0.9), b=P(e[0],0,90);
+    linie(a[0],a[1],b[0],b[1],'rgba(255,92,122,.25)',7); linie(a[0],a[1],b[0],b[1],'#FF5C7A',2.2); });
+  // Spurmarkierung
+  var d=3, o=weg%d;
+  for(var m=0;m<30;m++){
+    var z1=m*d-o+1.2, z2=z1+1.3; if(z2<1) continue; if(z1<1) z1=1;
+    [-0.5,0.5].forEach(function(xx){ var p1=P(xx,0,z1), p2=P(xx,0,z2); linie(p1[0],p1[1],p2[0],p2[1],'rgba(63,208,212,'+(0.85*Math.min(1,(75-z1)/40)).toFixed(3)+')',Math.max(1,6/z1*1.5)); });
+  }
+  // Leuchtmasten
+  var mo=weg%8;
+  for(var q=12;q>=0;q--){
+    var z=q*8-mo+2; if(z<1.3) continue;
+    [-2.1,2.1].forEach(function(xx){
+      var f=P(xx,0,z), k=P(xx,1.5,z), a=sichtbar(z);
+      linie(f[0],f[1],k[0],k[1],'rgba(140,150,190,'+(0.6*a).toFixed(3)+')',Math.max(1,FX/z*0.04));
+      ctx.fillStyle='rgba(63,208,212,'+(0.95*a).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(k[0],k[1],Math.max(1.2,FX/z*0.07),0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(63,208,212,'+(0.18*a).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(k[0],k[1],Math.max(3,FX/z*0.22),0,Math.PI*2); ctx.fill();
+    });
+  }
+}
+
+/* Text auf Toren: kleiner werden, bei Bedarf zweizeilig */
+function textBreite(t,px){
+  var w=0; teile(t).forEach(function(s){ ctx.font=(s.sub?'800 '+(px*0.66).toFixed(1):'800 '+px.toFixed(1))+'px Nunito, sans-serif'; w+=ctx.measureText(s.s).width; }); return w;
+}
+function textZeile(t,x,y,px){
+  var w=textBreite(t,px), xx=x-w/2;
+  teile(t).forEach(function(s){
+    var sz=s.sub?px*0.66:px; ctx.font='800 '+sz.toFixed(1)+'px Nunito, sans-serif';
+    ctx.fillText(s.s,xx,y+(s.sub?px*0.22:0)); xx+=ctx.measureText(s.s).width;
+  });
+}
+function zeilenVarianten(t){
+  var v=[[t.replace(/\|/g,'')]];
+  if(t.indexOf('|')>=0){ var a=t.split('|'); v.push([a[0]+'-',a.slice(1).join('')]); }
+  var s=t.replace(/\|/g,''), mitte=s.length/2, best=-1;
+  for(var i=0;i<s.length;i++) if(s[i]===' ' && (best<0||Math.abs(i-mitte)<Math.abs(best-mitte))) best=i;
+  if(best>0) v.push([s.slice(0,best),s.slice(best+1)]);
+  return v;
+}
+function textImRahmen(t,x,y,bw,bh){
+  var basis=Math.min(bh*0.42,bw*0.32), beste=null;
+  zeilenVarianten(t).forEach(function(z){
+    var px=basis/(z.length===1?1:1.25);
+    var breit=Math.max.apply(null,z.map(function(l){ return textBreite(l,px); }));
+    if(breit>bw*0.88) px*=bw*0.88/breit;
+    if(z.length*px*1.15>bh*0.9) px=bh*0.9/(z.length*1.15);
+    if(!beste||px>beste.px+0.3) beste={z:z,px:px};
+  });
+  if(!beste||beste.px<5.5) return;
+  ctx.textBaseline='middle';
+  var hoehe=beste.z.length*beste.px*1.12, y0=y-hoehe/2+beste.px*0.56;
+  beste.z.forEach(function(l,i){ textZeile(l,x,y0+i*beste.px*1.12,beste.px); });
+}
+
+function zeichneTor(tor){
+  var z=tor.z; if(z<1.05) return;
+  var a=sichtbar(z)*Math.min(1,(z-1.05)/1.2+0.15);
+  for(var i=0;i<3;i++){
+    var xm=i-1, b=0.43;
+    var fl=P(xm-b,0,z), fr=P(xm+b,0,z), ol=P(xm-b,1.22,z), or=P(xm+b,1.22,z), ul=P(xm-b,0.6,z);
+    var farbe='63,208,212', fuell='rgba(10,24,44,'+(0.82*a).toFixed(3)+')';
+    if(tor.erledigt){
+      if(i===tor.ok){ farbe='47,208,127'; fuell='rgba(16,90,52,'+(0.85*a).toFixed(3)+')'; }
+      else if(i===tor.gewaehlt){ farbe='255,92,108'; fuell='rgba(120,20,36,'+(0.85*a).toFixed(3)+')'; }
+      else { farbe='120,130,160'; }
+    } else if(i===st.spur+1 && z<SPIEL.ZFERN*0.6){ farbe='120,240,244'; }
+    var lw=Math.max(1,FX/z*0.035);
+    // Pfosten
+    linie(fl[0],fl[1],ol[0],ol[1],'rgba('+farbe+','+a.toFixed(3)+')',lw);
+    linie(fr[0],fr[1],or[0],or[1],'rgba('+farbe+','+a.toFixed(3)+')',lw);
+    // Tafel
+    var bx=ol[0], by=ol[1], bw=or[0]-ol[0], bh=ul[1]-ol[1];
+    ctx.fillStyle=fuell; ctx.fillRect(bx,by,bw,bh);
+    ctx.strokeStyle='rgba('+farbe+','+(a*0.35).toFixed(3)+')'; ctx.lineWidth=lw*3.2; ctx.strokeRect(bx,by,bw,bh);
+    ctx.strokeStyle='rgba('+farbe+','+a.toFixed(3)+')'; ctx.lineWidth=lw; ctx.strokeRect(bx,by,bw,bh);
+    // Lichtvorhang
+    ctx.fillStyle='rgba('+farbe+','+(a*0.07).toFixed(3)+')'; ctx.fillRect(fl[0],ul[1],fr[0]-fl[0],fl[1]-ul[1]);
+    if(bh>9){ ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; textImRahmen(tor.q.antw[i],bx+bw/2,by+bh/2,bw,bh); }
+  }
+}
+
+function zeichneEnergie(e){
+  var z=e.z; if(z<1.2||e.weg) return;
+  var a=sichtbar(z), p=P(e.spur,0.38+0.06*Math.sin(zeit*4+e.z),z), r=Math.max(2,FX/z*0.13), s=Math.abs(Math.cos(zeit*3+e.z));
+  ctx.fillStyle='rgba(255,201,60,'+(0.18*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],r*2,0,Math.PI*2); ctx.fill();
+  ctx.save(); ctx.translate(p[0],p[1]); ctx.scale(0.35+0.65*s,1);
+  ctx.fillStyle='rgba(255,201,60,'+a.toFixed(3)+')';
+  ctx.beginPath(); ctx.moveTo(0,-r); ctx.lineTo(r*0.75,0); ctx.lineTo(0,r); ctx.lineTo(-r*0.75,0); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='rgba(60,36,0,'+(0.9*a).toFixed(3)+')';
+  ctx.beginPath(); ctx.moveTo(r*0.12,-r*0.6); ctx.lineTo(-r*0.28,r*0.08); ctx.lineTo(0,r*0.08); ctx.lineTo(-r*0.12,r*0.6); ctx.lineTo(r*0.28,-r*0.08); ctx.lineTo(0,-r*0.08); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function zeichneGleiter(){
+  var px=st?st.px:Math.sin(zeit*0.8)*0.35, spur=st?st.spur:0;
+  var u=FX/SPIEL.ZP, schweb=0.16+0.035*Math.sin(zeit*5.5);
+  var bo=P(px,0,SPIEL.ZP), p=P(px,schweb,SPIEL.ZP);
+  // Schatten / Leuchtfleck
+  var sg=ctx.createRadialGradient(bo[0],bo[1],1,bo[0],bo[1],u*0.5);
+  sg.addColorStop(0,'rgba(63,208,212,.55)'); sg.addColorStop(1,'rgba(63,208,212,0)');
+  ctx.fillStyle=sg; ctx.beginPath(); ctx.ellipse(bo[0],bo[1],u*0.48,u*0.12,0,0,Math.PI*2); ctx.fill();
+  ctx.save(); ctx.translate(p[0],p[1]); ctx.rotate((spur-px)*0.32);
+  var w=u*0.62, h=u*0.3;
+  // Düsenflammen
+  var fl=0.7+0.3*Math.sin(zeit*40);
+  [-0.28,0.28].forEach(function(dx){
+    var fg=ctx.createRadialGradient(dx*w,h*0.05,1,dx*w,h*0.05,w*0.22*fl);
+    fg.addColorStop(0,'rgba(220,255,255,.95)'); fg.addColorStop(0.4,'rgba(63,208,212,.7)'); fg.addColorStop(1,'rgba(63,208,212,0)');
+    ctx.fillStyle=fg; ctx.beginPath(); ctx.arc(dx*w,h*0.05,w*0.22*fl,0,Math.PI*2); ctx.fill();
+  });
+  // Flügel
+  ctx.fillStyle='#6E1A33';
+  ctx.beginPath(); ctx.moveTo(-w*0.5,-h*0.25); ctx.lineTo(-w*0.78,h*0.05); ctx.lineTo(-w*0.45,h*0.05); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(w*0.5,-h*0.25); ctx.lineTo(w*0.78,h*0.05); ctx.lineTo(w*0.45,h*0.05); ctx.closePath(); ctx.fill();
+  // Rumpf
+  var rg=ctx.createLinearGradient(0,-h*1.1,0,h*0.1); rg.addColorStop(0,'#FF7A84'); rg.addColorStop(0.5,'#E4464E'); rg.addColorStop(1,'#8E1F36');
+  ctx.fillStyle=rg;
+  ctx.beginPath();
+  ctx.moveTo(-w*0.5,0); ctx.lineTo(-w*0.42,-h*0.7); ctx.quadraticCurveTo(-w*0.36,-h*1.05,-w*0.18,-h*1.08);
+  ctx.lineTo(w*0.18,-h*1.08); ctx.quadraticCurveTo(w*0.36,-h*1.05,w*0.42,-h*0.7); ctx.lineTo(w*0.5,0); ctx.closePath(); ctx.fill();
+  // Kanzel
+  var kg=ctx.createLinearGradient(0,-h*1.05,0,-h*0.55); kg.addColorStop(0,'#D8FDFF'); kg.addColorStop(1,'#2BA9B8');
+  ctx.fillStyle=kg; ctx.beginPath(); ctx.ellipse(0,-h*0.78,w*0.22,h*0.24,0,0,Math.PI*2); ctx.fill();
+  // Rückleuchten und Streifen
+  ctx.fillStyle='#FFD23F'; ctx.fillRect(-w*0.44,-h*0.38,w*0.14,h*0.1); ctx.fillRect(w*0.30,-h*0.38,w*0.14,h*0.1);
+  ctx.fillStyle='rgba(255,255,255,.35)'; ctx.fillRect(-w*0.06,-h*0.5,w*0.12,h*0.45);
+  // Düsen
+  ctx.fillStyle='#1B1E33'; [-0.28,0.28].forEach(function(dx){ ctx.beginPath(); ctx.ellipse(dx*w,-h*0.02,w*0.1,h*0.1,0,0,Math.PI*2); ctx.fill(); });
+  ctx.restore();
+}
+
+function zeichneTeilchen(dt){
+  if(!st) return;
+  st.teilchen=st.teilchen.filter(function(t){ return t.l>0; });
+  st.teilchen.forEach(function(t){
+    t.l-=dt; t.x+=t.vx*dt; t.y+=t.vy*dt; t.vy+=320*dt;
+    ctx.fillStyle='rgba('+t.f+','+Math.max(0,t.l/t.l0).toFixed(3)+')'; ctx.fillRect(t.x-t.s/2,t.y-t.s/2,t.s,t.s);
+  });
+  st.popups=st.popups.filter(function(p){ return p.l>0; });
+  st.popups.forEach(function(p){
+    p.l-=dt; p.y-=40*dt; ctx.font='900 '+p.px+'px Unbounded, Nunito, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='rgba('+p.f+','+Math.min(1,p.l*2).toFixed(3)+')'; ctx.fillText(p.t,p.x,p.y); ctx.textAlign='left';
+  });
+}
+function funken(x,y,farbe,n){
+  for(var i=0;i<n && st.teilchen.length<140;i++){ var w=Math.random()*Math.PI*2, v=80+Math.random()*220;
+    st.teilchen.push({x:x,y:y,vx:Math.cos(w)*v,vy:Math.sin(w)*v-120,l:0.5+Math.random()*0.4,l0:0.9,s:2+Math.random()*3,f:farbe}); }
+}
+function popup(t,farbe){ var p=P(st.px,0.9,SPIEL.ZP); st.popups.push({t:t,x:p[0],y:p[1],l:0.9,f:farbe,px:Math.round(Math.max(16,Math.min(26,FX/SPIEL.ZP*0.2)))}); }
+
+function zeichne(dt){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  var wx=0,wy=0;
+  if(st && st.wackeln>0){ wx=(Math.random()-0.5)*10*st.wackeln; wy=(Math.random()-0.5)*8*st.wackeln; }
+  ctx.translate(wx,wy);
+  if(hintergrund) ctx.drawImage(hintergrund,0,0,W,hintergrund.height/DPR);
+  zeichneBoden();
+  if(st){
+    var objekte=st.tore.map(function(t){ return {z:t.z,f:function(){ zeichneTor(t); }}; })
+      .concat(st.energie.map(function(e){ return {z:e.z,f:function(){ zeichneEnergie(e); }}; }));
+    objekte.sort(function(a,b){ return b.z-a.z; });
+    var vorne=[];
+    objekte.forEach(function(o){ if(o.z>=SPIEL.ZP) o.f(); else vorne.push(o); });
+    zeichneGleiter();
+    vorne.forEach(function(o){ o.f(); });
+  } else zeichneGleiter();
+  zeichneTeilchen(dt);
+  ctx.setTransform(1,0,0,1,0,0);
+}
+
+/* =====================================================================
+   ABLAUF
+   ===================================================================== */
+function torErzeugen(){
+  var q=neueFrage();
+  var tor={ z:SPIEL.ZFERN, q:q, ok:q.ok, erledigt:false, gewaehlt:-1 };
+  st.tore.push(tor); st.frage=tor;
+  // Energie-Spur vor dem Tor
+  if(Math.random()<0.8){ var sp=rnd(3)-1; for(var i=0;i<4;i++) st.energie.push({ z:SPIEL.ZFERN-12-i*3.2, spur:sp, weg:false }); }
+  zeigeFrage(q);
+}
+function zeigeFrage(q){
+  $('karte').className='karte';
+  $('tag').textContent=q.tag;
+  $('stufe').textContent='· Stufe '+stufe();
+  $('prompt').innerHTML=q.prompt;
+  var chips=document.querySelectorAll('.chip');
+  for(var i=0;i<3;i++){ var n=plain(q.antw[i]).length; chips[i].className='chip'+(n>17?' lang':n>11?' mittel':n<=4?' kurz':''); chips[i].querySelector('.t').innerHTML=weich(html(q.antw[i])); }
+  passeChips();
+  markiereSpur(); toast('');
+}
+/* lange Wörter an Silbengrenzen trennbar machen, notfalls Schrift verkleinern */
+var TRENN=['Temperatur|änderung','Bewegungs|energie','Lage|energie','Auftriebs|kraft','Gewichts|kraft','Wirkungs|grad','Wärme|kapazität','Geschwin|digkeit','Strom|stärke','Feder|härte',
+  'Kilo|gramm','Kubik|meter','Quadrat|meter','Orts|faktor','Kilo|joule'];
+function weich(h){ TRENN.forEach(function(w){ h=h.split(w.replace('|','')).join(w.replace('|','&shy;')); }); return h; }
+function passeChips(){
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){
+    var t=c.querySelector('.t'); t.style.fontSize='';
+    var px=parseFloat(getComputedStyle(c).fontSize)||16;
+    for(var k=0;k<12 && (t.scrollWidth>t.clientWidth+1 || t.offsetHeight>c.clientHeight-4) && px>10.5;k++){ px-=1; t.style.fontSize=px+'px'; }
+  });
+}
+function markiereSpur(){
+  var chips=document.querySelectorAll('.chip');
+  if(!st||!st.frage||st.frage.erledigt) return;
+  for(var i=0;i<3;i++) chips[i].classList.toggle('hier',i===st.spur+1);
+}
+function auswerten(tor){
+  tor.erledigt=true; tor.gewaehlt=st.spur+1;
+  var richtig=tor.gewaehlt===tor.ok, chips=document.querySelectorAll('.chip');
+  for(var i=0;i<3;i++){ chips[i].classList.remove('hier'); if(i===tor.ok) chips[i].classList.add('richtig'); else if(i===tor.gewaehlt) chips[i].classList.add('falsch'); else chips[i].classList.add('blass'); }
+  var p=P(st.px,0.9,SPIEL.ZP);
+  if(richtig){
+    var mult=1+Math.min(4,Math.floor(st.serie/4)), plus=10*mult;
+    st.serie++; st.besteSerie=Math.max(st.besteSerie,st.serie); st.richtig++; st.punkte+=plus;
+    st.v=Math.min(SPIEL.VMAX,SPIEL.V0+SPIEL.VPLUS*st.richtig);
+    $('karte').className='karte ok'; popup('+'+plus,'140,255,190'); funken(p[0],p[1],'47,208,127',18);
+    var herz=false;
+    if(st.serie>0 && st.serie%SPIEL.HERZ_SERIE===0 && st.leben<SPIEL.LEBEN){ st.leben++; herz=true; }
+    toast(herz?'❤️ Herz zurück – '+st.serie+' in Serie!':pick(['Richtig!','Stark!','Genau!','Sauber!','Top!'])+(mult>1?' ×'+mult:''));
+    ton(660,0.09); setTimeout(function(){ ton(990,0.09); },70);
+    st.feedback=0.55;
+  } else {
+    st.serie=0; st.falsch++; st.leben--; st.wackeln=0.35;
+    $('karte').className='karte no'; funken(p[0],p[1],'255,92,108',14);
+    toast('Richtig wäre: '+html(tor.q.antw[tor.ok]));
+    if(st.fehler.map(function(f){ return f.merk; }).indexOf(tor.q.merk)<0) st.fehler.push({ merk:tor.q.merk });
+    wiederholen.push({ gid:tor.q.gid, typ:tor.q.typ, n:3 });
+    ton(180,0.22,'sawtooth'); try{ if(navigator.vibrate) navigator.vibrate(120); }catch(e){}
+    st.feedback=1.5;
+    if(st.leben<=0){ st.vorbeiNach=1.4; }
+  }
+  st.frage=null; st.naechste=st.feedback;
+  hudWerte();
+}
+function update(dt){
+  if(!st) return;
+  if(modus==='lauf' || modus==='vorbei'){
+    if(modus==='vorbei'){ st.v=Math.max(0,st.v-st.v*2.2*dt); }
+    st.weg+=st.v*dt;
+    st.px+=(st.spur-st.px)*Math.min(1,dt*14);
+    st.wackeln=Math.max(0,st.wackeln-dt);
+    st.tore.forEach(function(t){ t.z-=st.v*dt; if(!t.erledigt && t.z<=SPIEL.ZP && modus==='lauf') auswerten(t); });
+    st.tore=st.tore.filter(function(t){ return t.z>0.95; });
+    st.energie.forEach(function(e){
+      var z0=e.z; e.z-=st.v*dt;
+      if(!e.weg && z0>SPIEL.ZP && e.z<=SPIEL.ZP && modus==='lauf' && e.spur===st.spur){
+        e.weg=true; st.punkte+=2; var p=P(st.px,0.5,SPIEL.ZP); funken(p[0],p[1],'255,201,60',6); ton(1320,0.05); hudWerte();
+      }
+    });
+    st.energie=st.energie.filter(function(e){ return e.z>0.95; });
+    if(modus==='lauf'){
+      if(st.vorbeiNach>0){ st.vorbeiNach-=dt; if(st.vorbeiNach<=0) rundeEnde(); }
+      else if(!st.frage){ st.naechste-=dt; if(st.naechste<=0) torErzeugen(); }
+    }
+  }
+}
+
+/* ---------- HUD ---------- */
+function hudWerte(){
+  if(!st) return;
+  $('punkte').textContent=st.punkte;
+  var h=''; for(var i=0;i<SPIEL.LEBEN;i++) h+='<span'+(i>=st.leben?' class="weg"':'')+'>❤️</span>'; $('herzen').innerHTML=h;
+  var mult=1+Math.min(4,Math.floor(st.serie/4)), c=$('combo'); c.textContent='×'+mult; c.classList.toggle('an',mult>1);
+}
+var toastZeit=null;
+function toast(t){ var e=$('toast'); if(!t){ e.classList.remove('an'); return; } e.innerHTML=t; e.classList.add('an'); }
+
+/* ---------- Steuerung ---------- */
+function lenke(r){ if(modus!=='lauf'||!st) return; var n=Math.max(-1,Math.min(1,st.spur+r)); if(n!==st.spur){ st.spur=n; markiereSpur(); ton(440,0.03); } versteckeHinweis(); }
+function setzeSpur(i){ if(modus!=='lauf'||!st) return; st.spur=i-1; markiereSpur(); versteckeHinweis(); }
+var hinweisWeg=false;
+function versteckeHinweis(){ if(!hinweisWeg){ hinweisWeg=true; $('hinweis').style.opacity='0'; } }
+document.addEventListener('keydown',function(e){
+  var k=e.key;
+  if(modus==='lauf'){
+    if(k==='ArrowLeft'||k==='a'||k==='A'){ lenke(-1); e.preventDefault(); }
+    else if(k==='ArrowRight'||k==='d'||k==='D'){ lenke(1); e.preventDefault(); }
+    else if(k==='1'||k==='2'||k==='3'){ setzeSpur(+k-1); }
+    else if(k==='Escape'||k==='p'||k==='P'||k===' '){ pausieren(); e.preventDefault(); }
+  } else if(modus==='pause' && (k==='Escape'||k===' '||k==='Enter')){ fortsetzen(); e.preventDefault(); }
+  else if(modus==='start' && k==='Enter' && document.activeElement && document.activeElement.tagName!=='INPUT'){ start(); e.preventDefault(); }
+});
+var zeiger=null;
+cv.addEventListener('pointerdown',function(e){ zeiger={x:e.clientX,y:e.clientY,id:e.pointerId,zug:false}; try{ cv.setPointerCapture(e.pointerId); }catch(x){} });
+cv.addEventListener('pointermove',function(e){
+  if(!zeiger||zeiger.id!==e.pointerId) return;
+  var dx=e.clientX-zeiger.x;
+  if(Math.abs(dx)>28){ lenke(dx>0?1:-1); zeiger.x=e.clientX; zeiger.zug=true; }
+});
+cv.addEventListener('pointerup',function(e){
+  if(!zeiger||zeiger.id!==e.pointerId) return;
+  if(!zeiger.zug){ var r=cv.getBoundingClientRect(), x=e.clientX-r.left; lenke(x<r.width/2?-1:1); }
+  zeiger=null;
+});
+cv.addEventListener('pointercancel',function(){ zeiger=null; });
+Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){
+  c.addEventListener('click',function(){ setzeSpur(+c.getAttribute('data-l')); });
+});
+
+/* ---------- Ton (aus, bis man ihn einschaltet) ---------- */
+var ac=null;
+function ton(f,d,art){
+  if(!tonAn) return;
+  try{
+    if(!ac){ var A=window.AudioContext||window.webkitAudioContext; if(!A) return; ac=new A(); }
+    if(ac.state==='suspended') ac.resume();
+    var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime;
+    o.type=art||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.12,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d+0.02);
+  }catch(e){}
+}
+function tonKnopf(){ var b=$('tonKnopf'); b.textContent=tonAn?'🔊 Ton an':'🔇 Ton aus'; b.setAttribute('aria-pressed',tonAn?'true':'false'); }
+$('tonKnopf').onclick=function(){ tonAn=!tonAn; daten.ton=tonAn; speichern(); tonKnopf(); ton(660,0.08); };
+
+/* ---------- Bildschirme ---------- */
+function zeige(id){ ['start','pause','ende'].forEach(function(s){ $(s).classList.toggle('hidden',s!==id); }); }
+function start(){
+  neueRunde(); modus='lauf'; zeige(null);
+  $('hud').classList.remove('hidden'); $('hinweis').classList.remove('hidden'); hinweisWeg=false; $('hinweis').style.opacity='1';
+  $('karte').className='karte'; $('tag').textContent='Mach dich bereit …'; $('stufe').textContent=''; $('prompt').innerHTML='&nbsp;';
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){ c.className='chip'; c.querySelector('.t').innerHTML='&nbsp;'; });
+  toast(''); hudWerte(); groesse();
+}
+function pausieren(){ if(modus!=='lauf') return; modus='pause'; zeige('pause'); }
+function fortsetzen(){ if(modus!=='pause') return; modus='lauf'; zeige(null); letzte=0; }
+function rundeEnde(){
+  modus='vorbei';
+  setTimeout(function(){
+    if(modus!=='vorbei') return;
+    $('hud').classList.add('hidden'); $('hinweis').classList.add('hidden');
+    var neu=st.punkte>(daten.best||0);
+    if(neu){ daten.best=st.punkte; speichern(); }
+    $('endPunkte').textContent=st.punkte;
+    $('rekord').textContent=neu&&st.punkte>0?'★ Neuer Bestwert!':'Dein Bestwert: '+(daten.best||0);
+    $('wRichtig').textContent=st.richtig; $('wSerie').textContent=st.besteSerie; $('wStufe').textContent=stufe();
+    var m=$('merkPlatz');
+    if(st.fehler.length){
+      m.innerHTML='<details class="mehr" open><summary>Das nimmst du mit ('+st.fehler.length+')</summary><ul class="merke">'+st.fehler.slice(0,8).map(function(f){ return '<li>'+f.merk+'</li>'; }).join('')+'</ul></details>';
+    } else m.innerHTML='';
+    var bp=$('bestenPlatz'); bp.innerHTML=''; bp.appendChild(bestenBox(true));
+    zeige('ende'); groesse();
+  },300);
+}
+$('losKnopf').onclick=start;
+$('nochmalKnopf').onclick=start;
+$('pauseKnopf').onclick=pausieren;
+$('weiterKnopf').onclick=fortsetzen;
+$('abbruchKnopf').onclick=function(){ if(modus!=='pause') return; modus='lauf'; st.leben=0; st.vorbeiNach=0.01; zeige(null); };
+$('listeKnopf').onclick=function(){ var p=$('listePlatz'); if(p.firstChild){ p.innerHTML=''; return; } p.appendChild(bestenBox(false)); };
+document.addEventListener('visibilitychange',function(){ if(document.hidden) pausieren(); });
+window.addEventListener('blur',function(){ pausieren(); });
+
+/* =====================================================================
+   KLASSEN-BESTENLISTE (Supabase, derselbe Dienst wie bei den anderen Spielen)
+   score = Punkte, level = erreichte Stufe, ops = „x richtig“.
+   Spitzname 2–14 Zeichen; Wortfilter und Mengenbremse prüft die Datenbank.
+   ===================================================================== */
+var NET={ url:'https://sliitqxickadcoghewli.supabase.co/rest/v1/', key:'sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7', game:KL.game, klasse:KL.klasse };
+var NAME_KEY='quiz.spitzname', ANSICHT_KEY='bestenliste.ansicht.'+NET.game;
+function wochenStart(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-((d.getDay()+6)%7)); return d; }
+function netFetch(path,body,extra){
+  var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ctl) ctl.abort(); },7000);
+  var h={ apikey:NET.key, 'Content-Type':'application/json' }; if(extra) for(var k in extra) h[k]=extra[k];
+  return fetch(NET.url+path,{ method:'POST', headers:h, body:JSON.stringify(body), signal:ctl?ctl.signal:undefined })
+    .then(function(r){ clearTimeout(to); return r; },function(e){ clearTimeout(to); throw e; });
+}
+function nameOk(x){ return typeof x==='string' && x.length>=2 && x.length<=14 && /^[A-Za-zÄÖÜäöüß0-9 .\-_]+$/.test(x); }
+function bestenBox(mitEintrag){
+  var div=document.createElement('div'); div.className='besten';
+  var ansicht=lsGet(ANSICHT_KEY)==='gesamt'?'gesamt':'woche';
+  var punkte=st?st.punkte:0;
+  div.innerHTML='<h3>🏆 Bestenliste Klasse '+esc(NET.klasse)+'</h3>'+
+    (mitEintrag?'<div class="eintragen"><input type="text" maxlength="14" autocomplete="off" placeholder="Dein Spitzname" aria-label="Spitzname"><button type="button">Eintragen</button></div>'+
+    '<p class="klein" style="margin:6px 0">Nur Spitzname, kein echter Name! Gespeichert werden Spitzname, Punkte und Stufe. <a href="../datenschutz.html#bestenliste">Datenschutz</a></p>':'')+
+    '<div class="netstatus" role="status"></div>'+
+    '<div class="reiter" role="tablist"><button type="button" data-v="woche">Diese Woche</button><button type="button" data-v="gesamt">Gesamt</button></div>'+
+    '<ol class="rangliste"></ol>';
+  var stEl=div.querySelector('.netstatus'), ol=div.querySelector('.rangliste');
+  var status=function(art,t){ stEl.className='netstatus '+art; stEl.textContent=t; };
+  if(mitEintrag){
+    var inp=div.querySelector('input'), knopf=div.querySelector('.eintragen button');
+    inp.value=lsGet(NAME_KEY);
+    if(punkte<1){ knopf.disabled=true; inp.disabled=true; status('warn','Mit 0 Punkten gibt es noch keinen Eintrag.'); }
+    knopf.onclick=function(){
+      var x=inp.value.trim().replace(/\s+/g,' ');
+      if(!nameOk(x)){ status('warn','Der Spitzname braucht 2 bis 14 Zeichen: Buchstaben, Ziffern, Leerzeichen, Punkt oder Strich.'); return; }
+      knopf.disabled=true; status('','Wird eingetragen …');
+      netFetch('scores',{ game:NET.game, name:x, score:punkte, level:stufe(), ops:(st.richtig+' richtig').slice(0,24) },{ Prefer:'return=minimal' })
+        .then(function(r){ if(r.ok) return 'ok'; return r.text().then(function(t){ return /nicht erlaubt/.test(t)?'name':(/Zu viele/.test(t)?'viele':'fehler'); }); },function(){ return 'offline'; })
+        .then(function(res){
+          if(res==='ok'){ lsSet(NAME_KEY,x); knopf.textContent='Eingetragen ✓'; inp.disabled=true; status('ok','Du stehst jetzt in der Bestenliste.'); laden(); return; }
+          knopf.disabled=false;
+          if(res==='name') status('warn','Dieser Spitzname ist nicht erlaubt. Nimm bitte einen anderen.');
+          else if(res==='viele') status('warn','Gerade tragen sich sehr viele ein – probier es in einer Minute nochmal.');
+          else status('warn','Keine Verbindung zur Bestenliste. Probier es später nochmal.');
+        });
+    };
+  }
+  Array.prototype.forEach.call(div.querySelectorAll('.reiter button'),function(b){ b.onclick=function(){ ansicht=b.getAttribute('data-v'); lsSet(ANSICHT_KEY,ansicht); laden(); }; });
+  function laden(){
+    Array.prototype.forEach.call(div.querySelectorAll('.reiter button'),function(b){ b.setAttribute('aria-selected',b.getAttribute('data-v')===ansicht); });
+    var eigen=(lsGet(NAME_KEY)||'').toLowerCase();
+    ol.innerHTML='<li class="leer">Lädt …</li>';
+    netFetch('rpc/top_scores',{ p_game:NET.game, p_since:ansicht==='woche'?wochenStart().toISOString():null, p_limit:20 })
+      .then(function(r){ if(!r.ok) throw new Error('http'); return r.json(); })
+      .then(function(rows){
+        if(!rows.length){ ol.innerHTML='<li class="leer">'+(ansicht==='woche'?'Diese Woche noch kein Eintrag':'Noch kein Eintrag')+' – hol dir den ersten Platz!</li>'; return; }
+        ol.innerHTML='';
+        rows.forEach(function(z,i){
+          var mein=eigen && String(z.name).toLowerCase()===eigen;
+          if(i>=10 && !mein) return;
+          if(i>=10){ var l=document.createElement('li'); l.className='luecke'; l.textContent='…'; ol.appendChild(l); }
+          var li=document.createElement('li'); li.className=(mein?'mein':'')+(i<3?' p'+(i+1):'');
+          li.innerHTML='<span class="rg">'+(i+1)+'.</span><span class="nm"></span><span class="pk">'+(+z.score||0)+' P.</span>';
+          li.querySelector('.nm').textContent=z.name; ol.appendChild(li);
+        });
+      },function(){ ol.innerHTML='<li class="leer">Die Bestenliste ist gerade nicht erreichbar.</li>'; });
+  }
+  laden();
+  return div;
+}
+
+/* ---------- Schleife ---------- */
+var letzte=0;
+function schleife(t){
+  var dt=letzte?Math.min(0.05,Math.max(0,(t-letzte)/1000)):0.016; letzte=t;
+  zeit+=dt;
+  try{
+    if(modus!=='pause') update(dt);
+    zeichne(modus==='pause'?0:dt);
+  }catch(e){ if(window.console) console.error(e); }
+  requestAnimationFrame(schleife);
+}
+
+/* ---------- Start ---------- */
+$('klassenName').textContent=KL.titel;
+$('zurueck1').href=KL.zurueck; $('zurueck2').href=KL.zurueck;
+$('bestStart').textContent=daten.best||0;
+tonKnopf();
+groesse();
+window.addEventListener('resize',function(){ groesse(); passeChips(); });
+if(window.visualViewport) window.visualViewport.addEventListener('resize',function(){ groesse(); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ groesse(); });
+requestAnimationFrame(schleife);
+
+/* nur zum Testen */
+window.__runner={ neueFrage:neueFrage, MACHER:MACHER, POOL:POOL, GROESSEN:GROESSEN, KLASSEN:KLASSEN, plain:plain,
+  zustand:function(){ return { modus:modus, st:st }; }, zeigeFrage:zeigeFrage, update:update, setzeSpur:setzeSpur };
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+</body>
+</html>
