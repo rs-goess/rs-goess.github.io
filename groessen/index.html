@@ -49,16 +49,22 @@ i.gs{font-style:italic}
 .karte.no{border-color:var(--no);background:rgba(60,12,22,.9)}
 .karte.profi{border-color:#FF9AD0}
 .karte.polizei{border-color:#5AA9FF}
-.karte.verdeckt .anweisung,.karte.verdeckt .gegeben,.karte.verdeckt .prompt,.karte.verdeckt .chips,.karte.verdeckt .info{visibility:hidden}
-.anweisung{text-align:center;font-weight:900;font-size:22px;line-height:1.2;white-space:nowrap;overflow:hidden;color:#fff;padding:0 4px}
-.gegeben{text-align:center;font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);height:16px;margin-top:4px}
-.prompt{text-align:center;font-weight:900;font-size:28px;line-height:1.2;margin:0 4px 10px;min-height:2.2em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;text-wrap:balance}
-.prompt .gl{font-size:30px;letter-spacing:.01em;white-space:nowrap}
-.prompt .satz{font-size:20px;font-weight:800}
+.karte.verdeckt .anweisung,.karte.verdeckt .prompt,.karte.verdeckt .zeitbalken{visibility:hidden}
+#spuren.verdeckt .chip .t{visibility:hidden}
+.anweisung{text-align:center;font-weight:900;font-size:23px;line-height:1.2;white-space:nowrap;overflow:hidden;color:#fff;padding:0 4px}
+.prompt{text-align:center;font-weight:900;font-size:28px;line-height:1.2;margin:2px 4px 8px;height:2.5em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:.3em;text-wrap:balance;overflow:hidden}
+.prompt .zu{font-size:.64em;font-weight:800;color:var(--text2)}
+.b-groesse{color:#B9A6FF}.b-gsym{color:#7FE3E6}.b-einheit{color:#8CF0B4}.b-esym{color:#FF8FA0}.b-zahl{color:#FFC93C}
+.zeitbalken{height:5px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}
+.zeitbalken i{display:block;height:100%;width:100%;border-radius:5px;background:linear-gradient(90deg,#3FD0D4,#7FE3E6);transform-origin:left center;transition:background .3s}
+.zeitbalken.knapp i{background:linear-gradient(90deg,#FF5C6C,#FFB36B)}
+.prompt .gl{font-size:1.07em;letter-spacing:.01em;white-space:nowrap}
+.prompt .satz{font-size:.72em;font-weight:800}
 .prompt mark{background:none;color:var(--gelb);border-bottom:3px solid var(--gelb);padding:0 2px;border-radius:2px}
 .prompt .klein{font-size:17px;font-weight:800;color:var(--text2)}
-.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.chip{position:relative;height:62px;overflow:hidden;border-radius:14px;border:2px solid rgba(63,208,212,.35);background:rgba(8,26,40,.75);
+#spuren{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:640px;padding:6px 8px max(8px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,1fr);gap:8px;z-index:2}
+#spuren::before{content:"";position:absolute;inset:-14px 0 0;background:linear-gradient(180deg,rgba(7,9,21,0),rgba(7,9,21,.85) 40%);z-index:-1;pointer-events:none}
+.chip{position:relative;height:64px;cursor:pointer;touch-action:manipulation;color:#fff;overflow:hidden;border-radius:14px;border:2px solid rgba(63,208,212,.45);background:rgba(8,26,40,.92);
   display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 6px;font-weight:800;font-size:16px;line-height:1.15;
   hyphens:manual;overflow-wrap:normal;word-break:normal;transition:border-color .15s,background .15s,opacity .2s}
 .chip.kurz{font-size:24px}.chip.mittel{font-size:14.5px}.chip.lang{font-size:13px;line-height:1.1}
@@ -70,12 +76,10 @@ i.gs{font-style:italic}
 .chip .t{display:block;max-width:100%}
 .chip .pf{position:absolute;top:3px;font-size:10px;opacity:.55;font-weight:900}
 .chip:nth-child(1) .pf{left:7px}.chip:nth-child(3) .pf{right:7px}
-.karte.profi .chip{border-color:rgba(255,154,208,.45);background:rgba(40,10,34,.75)}
-.karte.profi .chip.hier{border-color:#FF9AD0;background:rgba(90,24,72,.9)}
-.karte.polizei .chip{border-color:rgba(90,169,255,.45);background:rgba(10,22,48,.8)}
-.karte.polizei .chip.hier{border-color:#7FB6FF;background:rgba(24,56,110,.92)}
-.info{height:62px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:15px;color:var(--text2);line-height:1.3;padding:0 8px}
-.info b{color:#fff}
+#spuren.profi .chip{border-color:rgba(255,154,208,.5);background:rgba(40,10,34,.92)}
+#spuren.profi .chip.hier{border-color:#FF9AD0;background:rgba(90,24,72,.95)}
+#spuren.polizei .chip{border-color:rgba(90,169,255,.5);background:rgba(10,22,48,.92)}
+#spuren.polizei .chip.hier{border-color:#7FB6FF;background:rgba(24,56,110,.95)}
 .zeile2{display:flex;align-items:center;gap:6px;margin-top:8px}
 .mission{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;background:var(--glas);border:1px solid var(--rand);border-radius:999px;padding:4px 10px;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .mission.fertig{border-color:var(--ok);color:#B5F5D2}
@@ -84,7 +88,7 @@ i.gs{font-style:italic}
 .toast{margin-top:6px;text-align:center;font-weight:800;font-size:16px;min-height:1.4em;opacity:0;transition:opacity .25s;text-shadow:0 2px 6px #000}
 .toast.an{opacity:1}
 .toast .gs{font-style:italic}
-.hinweis{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));text-align:center;font-weight:800;font-size:14px;color:var(--text2);pointer-events:none;transition:opacity .6s;text-shadow:0 2px 6px #000;padding:0 10px}
+.hinweis{position:absolute;left:0;right:0;bottom:90px;text-align:center;font-weight:900;font-size:15px;color:#fff;pointer-events:none;transition:opacity .6s;text-shadow:0 2px 6px #000;padding:0 10px}
 
 /* ---------- Bildschirme ---------- */
 .schirm{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -164,15 +168,14 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
 
 @media (min-width:700px){
   .anweisung{font-size:26px}
-  .prompt{font-size:32px}.prompt .gl{font-size:34px}.prompt .satz{font-size:23px}
-  .chip{font-size:18px;height:64px}.chip.kurz{font-size:28px}.chip.mittel{font-size:16px}.chip.lang{font-size:14.5px}
+  .prompt{font-size:32px}
+  .chip{font-size:18px;height:66px}.chip.kurz{font-size:28px}.chip.mittel{font-size:16px}.chip.lang{font-size:14.5px}
   h1{font-size:36px}
 }
 @media (max-height:620px){
   .anweisung{font-size:19px}
-  .prompt{font-size:22px;margin-bottom:6px}.prompt .gl{font-size:24px}.prompt .satz{font-size:17px}
-  .chip{height:50px;font-size:14.5px}.chip.kurz{font-size:20px}.chip.mittel{font-size:13px}.chip.lang{font-size:12px}
-  .info{height:50px;font-size:13.5px}
+  .prompt{font-size:23px;margin-bottom:6px}
+  .chip{height:54px;font-size:14.5px}.chip.kurz{font-size:20px}.chip.mittel{font-size:13px}.chip.lang{font-size:12px}
 }
 </style>
 </head>
@@ -189,19 +192,18 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
     </div>
     <div class="karte" id="karte">
       <div class="anweisung" id="anweisung">&nbsp;</div>
-      <div class="gegeben" id="gegeben"></div>
       <div class="prompt" id="prompt"></div>
-      <div class="chips" id="chips">
-        <div class="chip"><span class="pf">◀</span><span class="t"></span></div>
-        <div class="chip"><span class="t"></span></div>
-        <div class="chip"><span class="pf">▶</span><span class="t"></span></div>
-      </div>
-      <div class="info hidden" id="info"></div>
+      <div class="zeitbalken" id="zeitbalken"><i id="zeitI"></i></div>
     </div>
     <div class="zeile2"><span class="mission" id="mission"></span><span class="stufe" id="stufe">Stufe 1</span></div>
     <div class="toast" id="toast"></div>
   </div>
   <div class="hinweis hidden" id="hinweis"></div>
+  <div id="spuren" class="hidden" aria-label="Spur wählen">
+    <button class="chip" data-l="0"><span class="pf">◀</span><span class="t"></span></button>
+    <button class="chip" data-l="1"><span class="t"></span></button>
+    <button class="chip" data-l="2"><span class="pf">▶</span><span class="t"></span></button>
+  </div>
 
   <!-- Start -->
   <div class="schirm" id="start">
@@ -220,8 +222,8 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
         </dl>
       </div>
       <div class="steuer">
-        <div><b>Wischen</b>nach links oder rechts: lenken</div>
-        <div><b>Tippen</b>aufs Spielfeld: schießen</div>
+        <div><b>Antwort antippen</b>unten – oder Spur antippen bzw. wischen</div>
+        <div><b>Oben aufs Ziel tippen</b>schießen (nur bei 🎯 und 🚨)</div>
         <div><b>Tastatur</b>◀ ▶ lenken, Leertaste schießen</div>
       </div>
       <ul class="regeln">
@@ -355,16 +357,16 @@ var ARTEN = [
 var SPIEL = { V0:11, VPLUS:0.42, VMAX:18.5, ZFERN:70, ZP:5, CAMH:1.4, LEBEN:3, HERZ_SERIE:8,
   POLIZEI_AB:3, POLIZEI_ALLE:8, PROFI_AB:6, PROFI_ALLE:3, KUGEL_CHANCE:0.2, GOLD_CHANCE:0.12 };
 
-/* Große Anweisung oben auf der Karte und was gegeben ist */
+/* Frage als Satz: „Nenne das Größensymbol / zur Größe Dichte“ – [gesucht, gegeben] */
 var ANW = {
-  g2sym:  ['Nenne das Größensymbol.', 'Größe'],
-  sym2g:  ['Nenne die Größe.', 'Größensymbol'],
-  g2es:   ['Nenne das Einheitensymbol.', 'Größe'],
-  g2ein:  ['Nenne die Einheit.', 'Größe'],
-  es2ein: ['Nenne die Einheit.', 'Einheitensymbol'],
-  ein2es: ['Nenne das Einheitensymbol.', 'Einheit'],
-  es2g:   ['Nenne die Größe.', 'Einheitensymbol'],
-  begriff:['Was ist das Unterstrichene?', '']
+  g2sym:['Größensymbol','Größe'], sym2g:['Größe','Größensymbol'], g2es:['Einheitensymbol','Größe'], g2ein:['Einheit','Größe'],
+  es2ein:['Einheit','Einheitensymbol'], ein2es:['Einheitensymbol','Einheit'], es2g:['Größe','Einheitensymbol']
+};
+var BEGRIFF = {
+  'Größe':          { art:'die', zu:'zur', cls:'b-groesse' },
+  'Größensymbol':   { art:'das', zu:'zum', cls:'b-gsym' },
+  'Einheit':        { art:'die', zu:'zur', cls:'b-einheit' },
+  'Einheitensymbol':{ art:'das', zu:'zum', cls:'b-esym' }
 };
 
 /* Einheiten-Polizei: richtig und falsch geschriebene Einheitensymbole (zu = zugehörige richtige Einheit) */
@@ -613,7 +615,9 @@ daten.missionen=+daten.missionen||0;
 function speichern(){ lsSet(SPEICHER,JSON.stringify(daten)); }
 var tonAn=!!daten.ton;
 var TOUCH=!!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
-var STEUER_TEXT=TOUCH?'Wischen = lenken · Tippen = schießen':'◀ ▶ = lenken · Leertaste = schießen';
+var STEUER_TEXT=TOUCH?'Antwort unten antippen · zum Schießen oben aufs Ziel tippen':'◀ ▶ lenken · Leertaste schießen · oder anklicken';
+var HINWEIS_LENKEN=TOUCH?'⬇ Tippe unten auf die richtige Antwort':'⬇ Antwort unten anklicken oder ◀ ▶ drücken';
+var HINWEIS_SCHIESSEN=TOUCH?'🎯 Tippe oben aufs Ziel – dann wird geschossen':'🎯 Leertaste = schießen (oder oben aufs Ziel klicken)';
 
 function skinAktuell(){ var s=SKINS.filter(function(x){ return x.id===daten.skin; })[0]; if(!s||(daten.best||0)<s.ab) s=SKINS[0]; return s; }
 
@@ -641,7 +645,12 @@ function groesse(){
   var kb, hud=$('hud');
   if(!hud.classList.contains('hidden')) kb=$('karte').getBoundingClientRect().bottom-r.top; else kb=H*0.30;
   yh=Math.min(H*0.58,Math.max(kb+18,H*0.36));
-  yp=H-Math.max(64,H*0.11);
+  var sp=$('spuren');
+  if(!sp.classList.contains('hidden')){
+    var bt=sp.getBoundingClientRect().top-r.top;
+    yp=bt-Math.max(30,H*0.04);
+    $('hinweis').style.bottom=Math.round(H-bt+8)+'px';
+  } else yp=H-Math.max(64,H*0.11);
   cx=W/2;
   FY=(yp-yh)*SPIEL.ZP/SPIEL.CAMH;
   FX=Math.min(FY*0.6, W*0.30*SPIEL.ZP);
@@ -875,6 +884,16 @@ function zeichneZielhilfe(){
   ctx.restore();
 }
 
+function zeichneSchussZone(){
+  if(modus!=='lauf' || !schussAufgabe()) return;
+  var gy=schussGrenze();
+  ctx.save(); ctx.setLineDash([8,8]);
+  linie(12,gy,W-12,gy,'rgba(255,154,208,.45)',1.5);
+  ctx.restore();
+  ctx.font='800 13px Nunito, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillStyle='rgba(255,200,235,.85)'; ctx.fillText(TOUCH?'▲ hier oben antippen = schießen':'▲ Leertaste oder hier oben klicken = schießen',W/2,gy-4);
+  ctx.textAlign='left';
+}
 function zeichneGleiter(){
   var px=st?st.px:Math.sin(zeit*0.8)*0.35, spur=st?st.spur:0, sk=skinAktuell();
   var u=FX/SPIEL.ZP, schweb=0.16+0.035*Math.sin(zeit*5.5);
@@ -953,7 +972,7 @@ function zeichne(dt){
     st.fahnen.forEach(function(f){ o.push({z:f.z,f:function(){ zeichneFahne(f); }}); });
     st.schuesse.forEach(function(s){ o.push({z:s.z,f:function(){ zeichneSchuss(s); }}); });
     o.sort(function(a,b){ return b.z-a.z; });
-    zeichneZielhilfe();
+    zeichneZielhilfe(); zeichneSchussZone();
     var vorne=[];
     o.forEach(function(x){ if(x.z>=SPIEL.ZP) x.f(); else vorne.push(x); });
     zeichneGleiter();
@@ -1045,6 +1064,9 @@ function passeAnweisung(){
   var e=$('anweisung'); e.style.fontSize='';
   var px=parseFloat(getComputedStyle(e).fontSize)||22;
   for(var k=0;k<14 && e.scrollWidth>e.clientWidth+1 && px>12;k++){ px-=1; e.style.fontSize=px+'px'; }
+  var p=$('prompt'); p.style.fontSize='';
+  var pp=parseFloat(getComputedStyle(p).fontSize)||28;
+  for(var j=0;j<18 && (p.scrollHeight>p.clientHeight+1 || p.scrollWidth>p.clientWidth+1) && pp>13;j++){ pp-=1; p.style.fontSize=pp+'px'; }
 }
 function setzeChips(q,aus){
   var chips=document.querySelectorAll('.chip');
@@ -1054,32 +1076,35 @@ function setzeChips(q,aus){
     chips[i].querySelector('.t').innerHTML=weich(html(q.antw[i]));
   }
 }
+function begriffHTML(b){ var x=BEGRIFF[b]; return '<span class="'+x.cls+'">'+b+'</span>'; }
+function frageZeile(gesucht,gegeben,wert,verb){
+  var g=BEGRIFF[gesucht], h=BEGRIFF[gegeben];
+  $('anweisung').innerHTML=(verb||'Nenne')+' '+g.art+' '+begriffHTML(gesucht)+(verb==='Schieß'?' ab':'');
+  $('prompt').innerHTML='<span class="zu">'+h.zu+' '+begriffHTML(gegeben)+'</span><span>'+wert+'</span>';
+}
 function zeigeKarte(a){
-  var k=$('karte'), chipsEl=$('chips'), info=$('info');
+  var k=$('karte'), sp=$('spuren');
   k.className='karte'+(a.art==='doppel'?' profi':a.art==='polizei'?' polizei':'');
+  sp.className=a.art==='doppel'&&a.phase===1?'profi':a.art==='polizei'?'polizei':'';
   if(a.art==='polizei'){
-    $('anweisung').textContent='🚨 Schieß falsch geschriebene Einheiten ab!';
-    $('gegeben').textContent='Einheiten-Polizei · richtige durchlassen';
-    $('prompt').innerHTML='<span class="klein">Erwischt: <b style="color:#fff">'+a.erwischt+'</b> von '+a.falschZahl+'</span>';
-    chipsEl.classList.remove('hidden'); info.classList.add('hidden');
+    $('anweisung').innerHTML='🚨 Schieß <span class="b-esym">falsch geschriebene</span> Einheiten ab';
+    $('prompt').innerHTML='<span class="zu">Erwischt:</span><span>'+a.erwischt+' von '+a.falschZahl+'</span>';
     a.spurText=null; polizeiChips(a);
+  } else if(a.art==='doppel'){
+    var p1=a.phase===1;
+    if(p1) frageZeile('Einheitensymbol','Größe',esc(a.g.name),'Schieß');
+    else frageZeile('Größensymbol','Größe',esc(a.g.name),'Fahr durch');
+    setzeChips(p1?a.qz:a.qt, p1?-1:a.tor.aus);
   } else {
-    chipsEl.classList.remove('hidden'); info.classList.add('hidden');
-    if(a.art==='doppel'){
-      var p1=a.phase===1;
-      $('anweisung').textContent=p1?'🎯 Schieß das Einheitensymbol ab!':'Fahr durch das Größensymbol!';
-      $('gegeben').textContent='Größe';
-      $('prompt').innerHTML=esc(a.g.name);
-      setzeChips(p1?a.qz:a.qt, p1?-1:a.tor.aus);
-    } else {
-      var anw=ANW[a.q.typ]||['',''];
-      $('anweisung').textContent=anw[0]; $('gegeben').textContent=anw[1];
-      $('prompt').innerHTML=a.q.prompt;
-      setzeChips(a.q,a.tor.aus);
-    }
+    var anw=ANW[a.q.typ];
+    if(anw) frageZeile(anw[0],anw[1],a.q.prompt);
+    else { $('anweisung').innerHTML='Was ist das <span class="b-zahl">Unterstrichene</span>?'; $('prompt').innerHTML=a.q.prompt; }
+    setzeChips(a.q,a.tor.aus);
   }
   $('stufe').textContent='Stufe '+stufe();
-  markiereSpur(); passeChips(); toast(a.art==='polizei'?esc(STEUER_TEXT):'');
+  if((a.art==='polizei'||a.art==='doppel') && !st.schussHinweis){ st.schussHinweis=true; zeigeHinweis(HINWEIS_SCHIESSEN,'schiessen'); }
+  markiereSpur(); passeChips(); toast('');
+  zeitbalken(1);
 }
 /* Polizei: In den drei Spurfeldern steht die nächste Drohne der Spur */
 function polizeiChips(a){
@@ -1185,7 +1210,7 @@ function torAuswerten(t){
   var s=stufe();
   if(s>st.stufeAlt){
     st.stufeAlt=s; popup('Stufe '+s,'185,230,255',true);
-    if(s===SPIEL.PROFI_AB){ gib('profi'); toast('🧠 Profi-Stufe! Jetzt auch schießen – '+STEUER_TEXT); }
+    if(s===SPIEL.PROFI_AB){ gib('profi'); toast('🧠 Profi-Stufe! Erst schießen, dann fahren.'); }
     if(s===SPIEL.POLIZEI_AB) toast('🚨 Gleich kommt die Einheiten-Polizei!');
   }
   effekteZeigen(); hudWerte(); missionPruefen();
@@ -1246,7 +1271,7 @@ function kugelNehmen(k){
 function schiessen(){
   if(modus!=='lauf'||!st||st.cool>0||st.vorbeiNach>0) return;
   st.cool=0.22; st.schuesse.push({ spur:st.spur, z:SPIEL.ZP+0.4, weg:false });
-  ton(880,0.04,'square'); versteckeHinweis();
+  ton(880,0.04,'square'); versteckeHinweis('schiessen');
 }
 function bewegeSchuesse(dt){
   st.schuesse.forEach(function(s){
@@ -1312,7 +1337,25 @@ function update(dt){
     else if(!a){ st.naechste-=dt; if(st.naechste<=0) neueAufgabe(); }
     else if(a.art==='doppel' && a.phase===1 && a.wechsel>=0){ a.wechsel-=dt; if(a.wechsel<0){ a.phase=2; zeigeKarte(a); } }
     else if(a.art==='polizei'){ if(a.drohnen.every(function(x){ return x.erledigt; })) polizeiFertig(a); else polizeiChips(a); }
+    zeitbalkenAktualisieren();
   }
+}
+
+/* ---------- Zeitbalken: zeigt, wann das Tor (bzw. das Ziel) kommt ---------- */
+var zbAlt=-1;
+function zeitbalken(f){
+  f=Math.max(0,Math.min(1,f));
+  if(Math.abs(f-zbAlt)<0.004) return; zbAlt=f;
+  $('zeitI').style.transform='scaleX('+f.toFixed(3)+')';
+  $('zeitbalken').classList.toggle('knapp',f<0.3);
+}
+function zeitbalkenAktualisieren(){
+  var a=st&&st.aufgabe, z=null;
+  if(!a){ zeitbalken(0); return; }
+  if(a.art==='tor') z=a.tor.z;
+  else if(a.art==='doppel') z=a.phase===1?a.ziele.z:a.tor.z;
+  else { var offen=a.drohnen.filter(function(d){ return !d.erledigt; }); z=offen.length?Math.max.apply(null,offen.map(function(d){ return d.z; }))*(SPIEL.ZFERN/(SPIEL.ZFERN+70)):SPIEL.ZP; }
+  zeitbalken((z-SPIEL.ZP)/(SPIEL.ZFERN-SPIEL.ZP));
 }
 
 /* ---------- HUD ---------- */
@@ -1333,11 +1376,14 @@ function effekteZeigen(){
 }
 function toast(t){ var e=$('toast'); if(!t){ e.classList.remove('an'); return; } e.innerHTML=t; e.classList.add('an'); }
 
-/* ---------- Steuerung: Wischen lenkt, Tippen schießt ---------- */
-function lenke(r){ if(modus!=='lauf'||!st) return; var n=Math.max(-1,Math.min(1,st.spur+r)); if(n!==st.spur){ st.spur=n; markiereSpur(); ton(440,0.03); } versteckeHinweis(); }
-function setzeSpur(i){ if(modus!=='lauf'||!st) return; st.spur=Math.max(-1,Math.min(1,i-1)); markiereSpur(); versteckeHinweis(); }
-var hinweisWeg=false;
-function versteckeHinweis(){ if(!hinweisWeg){ hinweisWeg=true; $('hinweis').style.opacity='0'; } }
+/* ---------- Steuerung: Antwort unten antippen, Spur antippen, ein Wisch = eine Spur, oben aufs Ziel = schießen ---------- */
+function lenke(r){ if(modus!=='lauf'||!st) return; var n=Math.max(-1,Math.min(1,st.spur+r)); if(n!==st.spur){ st.spur=n; markiereSpur(); ton(440,0.03); } versteckeHinweis('lenken'); }
+function setzeSpur(i){ if(modus!=='lauf'||!st) return; var n=Math.max(-1,Math.min(1,i-1)); if(n!==st.spur) ton(440,0.03); st.spur=n; markiereSpur(); versteckeHinweis('lenken'); }
+var hinweisArt='';
+function zeigeHinweis(t,art){ var h=$('hinweis'); h.textContent=t; h.style.opacity='1'; hinweisArt=art; }
+function versteckeHinweis(art){ if(hinweisArt && (!art||art===hinweisArt)){ hinweisArt=''; $('hinweis').style.opacity='0'; } }
+function schussAufgabe(){ var a=st&&st.aufgabe; return !!a && (a.art==='polizei' || (a.art==='doppel' && a.phase===1)); }
+function schussGrenze(){ return yh+(yp-yh)*0.42; }
 document.addEventListener('keydown',function(e){
   var k=e.key;
   if(e.target && e.target.tagName==='INPUT') return;
@@ -1352,18 +1398,27 @@ document.addEventListener('keydown',function(e){
   else if(modus==='start' && k==='Enter'){ start(); e.preventDefault(); }
 });
 var zeiger=null;
+function spielTipp(cxp,cyp){
+  if(modus!=='lauf'||!st) return;
+  var r=cv.getBoundingClientRect(), x=cxp-r.left, y=cyp-r.top;
+  var spalte=x<r.width/3?0:(x>r.width*2/3?2:1);
+  setzeSpur(spalte);
+  if(schussAufgabe() && y<schussGrenze()) schiessen();
+}
 cv.addEventListener('pointerdown',function(e){ zeiger={ x:e.clientX, y:e.clientY, id:e.pointerId, zug:false }; try{ cv.setPointerCapture(e.pointerId); }catch(x){} });
 cv.addEventListener('pointermove',function(e){
-  if(!zeiger||zeiger.id!==e.pointerId) return;
-  var dx=e.clientX-zeiger.x;
-  if(Math.abs(dx)>28){ lenke(dx>0?1:-1); zeiger.x=e.clientX; zeiger.zug=true; }
+  if(!zeiger||zeiger.id!==e.pointerId||zeiger.zug) return;
+  var dx=e.clientX-zeiger.x, dy=e.clientY-zeiger.y;
+  if(Math.abs(dx)>30 && Math.abs(dx)>Math.abs(dy)*1.2){ lenke(dx>0?1:-1); zeiger.zug=true; }
 });
 cv.addEventListener('pointerup',function(e){
   if(!zeiger||zeiger.id!==e.pointerId) return;
-  var dy=e.clientY-zeiger.y;
-  if(!zeiger.zug && Math.abs(dy)<40) schiessen();
-  else if(!zeiger.zug && dy<-40) schiessen();
+  if(!zeiger.zug) spielTipp(e.clientX,e.clientY);
   zeiger=null;
+});
+Array.prototype.forEach.call(document.querySelectorAll('#spuren .chip'),function(c){
+  c.addEventListener('pointerdown',function(e){ e.preventDefault(); setzeSpur(+c.getAttribute('data-l')); });
+  c.addEventListener('click',function(e){ if(e.detail===0) setzeSpur(+c.getAttribute('data-l')); });
 });
 cv.addEventListener('pointercancel',function(){ zeiger=null; });
 
@@ -1413,10 +1468,9 @@ function zeigeAbzeichen(){
 function zeige(id){ ['start','pause','ende'].forEach(function(s){ $(s).classList.toggle('hidden',s!==id); }); }
 function start(){
   neueRunde(); modus='lauf'; zeige(null);
-  $('hud').classList.remove('hidden'); $('hinweis').classList.remove('hidden');
-  $('hinweis').textContent=STEUER_TEXT; hinweisWeg=false; $('hinweis').style.opacity='1';
-  $('karte').className='karte'; $('anweisung').textContent='Mach dich bereit …'; $('gegeben').textContent=''; $('prompt').innerHTML='&nbsp;';
-  $('chips').classList.remove('hidden'); $('info').classList.add('hidden');
+  $('hud').classList.remove('hidden'); $('hinweis').classList.remove('hidden'); $('spuren').classList.remove('hidden'); $('spuren').className='';
+  zeigeHinweis(HINWEIS_LENKEN,'lenken');
+  $('karte').className='karte'; $('anweisung').textContent='Mach dich bereit …'; $('prompt').innerHTML='&nbsp;'; zbAlt=-1; zeitbalken(1);
   Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){ c.className='chip'; c.querySelector('.t').innerHTML='&nbsp;'; });
   $('punkteBox').classList.remove('rekord');
   toast(''); hudWerte(); effekteZeigen(); missionZeigen(); $('stufe').textContent='Stufe 1'; groesse();
@@ -1439,15 +1493,14 @@ function abbrechenAufgabe(){
 function pausieren(){
   if(modus!=='lauf' && modus!=='countdown') return;
   if(modus==='lauf' && st.vorbeiNach<=0) abbrechenAufgabe();
-  modus='pause'; $('karte').classList.add('verdeckt'); toast(''); zeige('pause');
+  modus='pause'; $('karte').classList.add('verdeckt'); $('spuren').classList.add('verdeckt'); toast(''); zeige('pause');
 }
 function fortsetzen(){
   if(modus!=='pause') return;
   if(st.vorbeiNach>0){ modus='lauf'; zeige(null); return; }
   zeige(null); modus='countdown'; countdown=3; letzte=0;
-  $('karte').className='karte'; $('anweisung').textContent='Gleich geht es weiter …'; $('gegeben').textContent='';
-  $('prompt').innerHTML='<span class="klein">Neue Frage · Serie wieder ×1</span>';
-  $('chips').classList.remove('hidden'); $('info').classList.add('hidden');
+  $('karte').className='karte'; $('spuren').className=''; $('anweisung').textContent='Gleich geht es weiter …';
+  $('prompt').innerHTML='<span class="zu">Neue Frage · Serie wieder ×1</span>'; zeitbalken(0);
   Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){ c.className='chip'; c.querySelector('.t').innerHTML='&nbsp;'; });
   passeAnweisung();
 }
@@ -1456,7 +1509,7 @@ function rundeEnde(){
   setTimeout(function(){
     if(modus!=='vorbei') return;
     gib('start');
-    $('hud').classList.add('hidden'); $('hinweis').classList.add('hidden');
+    $('hud').classList.add('hidden'); $('hinweis').classList.add('hidden'); $('spuren').classList.add('hidden');
     var alt=daten.best||0, neu=st.punkte>alt;
     if(neu){ daten.best=st.punkte; speichern(); }
     $('endPunkte').textContent=st.punkte;
