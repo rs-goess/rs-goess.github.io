@@ -36,6 +36,7 @@ body.playing canvas{cursor:none}
   display:grid;place-items:center;padding:0;margin-left:4px;cursor:pointer;color:var(--ink)}
 .ibtn svg{width:18px;height:18px;fill:currentColor}
 .ibtn.off{background:#ece7d8}
+#btnPause.verbraucht{background:#ece7d8;color:#a8a396;border-color:#a8a396}
 .ibtn:active{transform:translateY(2px)}
 #taskcard{grid-area:t;background:var(--paper);border:3px solid var(--ink);border-radius:22px;padding:4px 26px 10px;text-align:center;
   min-width:260px;box-shadow:0 6px 0 rgba(29,43,74,.25);transition:background .15s}
@@ -332,7 +333,7 @@ body:not(.playing) #foehnTipp{display:none}
 <section class="screen" id="pause" hidden>
   <div class="card" style="max-width:380px;text-align:center">
     <p class="over-title">Pause</p>
-    <p class="how">Kurz durchatmen. Danach geht es mit einer neuen Aufgabe weiter.</p>
+    <p class="how" id="pauseText">Kurz durchatmen. Danach geht es mit einer neuen Aufgabe weiter.</p>
     <div class="row">
       <button class="btn" id="btnResume">Weiter</button>
       <button class="btn sec" id="btnQuit">Zum Menü</button>
@@ -1438,6 +1439,7 @@ function updateSound(){ var b=$('#btnSound'); b.innerHTML=S.sound?SND_ON:SND_OFF
 function startGame(){
   G.ops=S.ops.slice(); if(!G.ops.length) return;
   G.state='play'; G.score=0; G.lives=LIVES; G.level=S.start||1; G.correct=0; G.streak=0; G.best=0;
+  G.pausen=1; G.pausedInTask=false; updatePauseBtn();
   G.misses=[]; G.boards=[]; G.deco=[]; G.parts=[]; G.floats=[]; G.tracers=[]; G.lastQ=''; G.shake=0;
   $('#menu').hidden=true; $('#over').hidden=true; $('#pause').hidden=true; $('#hud').hidden=false;
   G.ruhe=(S.modus==='ruhe'); document.body.classList.toggle('ruhe',G.ruhe);
@@ -1694,7 +1696,22 @@ function gameOver(){
   G.lastEntry=entry; netAfterGame(entry);
   $('#over').hidden=false;
 }
-function pause(){ if(G.state!=='play') return; G.state='pause'; G.pausedInTask=(G.phase==='fall'); document.body.classList.remove('playing'); document.body.classList.add('pausiert'); $('#pause').hidden=false; }
+/* Pause: nur EINMAL pro Spiel per Knopf/Taste (danach neue Aufgabe). Automatisches Anhalten beim App-/Tab-Wechsel
+   zählt nicht, geht danach aber mit DERSELBEN Aufgabe weiter – so lassen sich Aufgaben nicht wegdrücken. (25.11.2026) */
+function updatePauseBtn(){ var b=$('#btnPause'), weg=G.pausen<=0; b.classList.toggle('verbraucht',weg);
+  b.setAttribute('aria-label',weg?'Pause schon verbraucht':'Pause (nur einmal pro Spiel)'); b.title=weg?'Pause schon verbraucht':'Pause (nur einmal pro Spiel)'; }
+function pause(auto){
+  if(G.state!=='play') return;
+  if(auto!==true){
+    if(G.pausen<=0){ toast('Pause verbraucht','Nur eine Pause pro Spiel.'); sfx.wrong(); return; }
+    G.pausen--; G.pausedInTask=(G.phase==='fall');
+    $('#pauseText').textContent='Kurz durchatmen. Danach geht es mit einer neuen Aufgabe weiter. Das war deine einzige Pause in diesem Spiel.';
+  } else {
+    G.pausedInTask=false;
+    $('#pauseText').textContent='Spiel angehalten. Danach geht es mit derselben Aufgabe weiter.';
+  }
+  G.state='pause'; updatePauseBtn(); document.body.classList.remove('playing'); document.body.classList.add('pausiert'); $('#pause').hidden=false;
+}
 function resume(){ if(G.state!=='pause') return; G.state='play'; document.body.classList.add('playing'); document.body.classList.remove('pausiert'); $('#pause').hidden=true; if(G.pausedInTask){ G.pausedInTask=false; nextTask(); } }
 
 /* ================= Menü-Logik ================= */
@@ -1721,7 +1738,7 @@ $('#btnAgain').addEventListener('click',startGame);
 $('#btnMenu').addEventListener('click',showMenu);
 $('#btnResume').addEventListener('click',resume);
 $('#btnQuit').addEventListener('click',function(){ document.body.classList.remove('pausiert'); showMenu(); });
-$('#btnPause').addEventListener('click',pause);
+$('#btnPause').addEventListener('click',function(){ pause(false); });
 $('#btnSound').addEventListener('click',function(){ S.sound=!S.sound; saveSettings(); updateSound(); if(S.sound) sfx.hit(); });
 $('#btnClear').addEventListener('click',function(){
   if(this.dataset.sure){ store.set(hsKey(),[]); showMenu(); }
@@ -1740,9 +1757,9 @@ cv.addEventListener('pointerleave',function(){ G.mouse=null; });
 cv.addEventListener('contextmenu',function(e){ e.preventDefault(); });
 document.addEventListener('keydown',function(e){
   if(e.target===nameIn) return;
-  if(e.key==='Escape'||e.key==='p'||e.key==='P'){ if(G.state==='play') pause(); else if(G.state==='pause') resume(); }
+  if(e.key==='Escape'||e.key==='p'||e.key==='P'){ if(G.state==='play') pause(false); else if(G.state==='pause') resume(); }
 });
-document.addEventListener('visibilitychange',function(){ if(document.hidden) pause(); });
+document.addEventListener('visibilitychange',function(){ if(document.hidden) pause(true); });
 window.addEventListener('resize',resize);
 window.addEventListener('orientationchange',function(){ setTimeout(resize,200); });
 
