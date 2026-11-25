@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151C" media="(prefers-color-scheme: dark)">
+<title>Wechselwirkungs-Labor – Wer schubst hier wen?</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23C2185B'/%3E%3Cpath d='M30 32H10M16 25l-7 7 7 7' stroke='%23fff' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M34 32h20M48 25l7 7-7 7' stroke='%23FFD23F' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#FFF9F0; --karte:#fff; --text:#1B1F2A; --text2:#6B6252; --linie:#EDE3D1; --leise:#9A8F7C;
+  --blau:#2F5FB3; --blau-hell:#E7F0F8; --blau-text:#285B85; --rot:#E11D48; --magenta:#C2185B; --magenta-hell:#FCE4EF;
+  --akzent:#C2185B; --schatten:0 10px 24px -14px rgba(60,40,10,.35); --r:22px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#12151C; --karte:#1C212B; --text:#F2F4F8; --text2:#A8B1C2; --linie:#2B3240; --leise:#7F899B;
+    --blau-hell:#1E3247; --blau-text:#9CC6EA; --magenta-hell:#3A1A2A; --akzent:#FF8FB8; --schatten:0 10px 24px -14px rgba(0,0,0,.7); }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-weight:500;font-size:16.5px;line-height:1.45}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.seite{max-width:920px;margin:0 auto;padding:14px 14px 40px}
+.zurueck{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:var(--text2);text-decoration:none;
+  background:var(--karte);border:1px solid var(--linie);border-radius:999px;padding:8px 14px 8px 10px;min-height:40px}
+.zurueck svg{width:18px;height:18px}
+.kopf{margin:14px 2px 14px}
+.kopf .ober{font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--akzent)}
+.kopf h1{margin:2px 0 4px;font-size:clamp(25px,6vw,34px);line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.kopf p{margin:0;color:var(--text2);max-width:38em}
+
+/* Stationen */
+.stationen{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.st{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 9px;border-radius:16px;background:var(--karte);
+  border:2px solid var(--linie);min-height:44px;font-weight:800;font-size:14px;line-height:1.15;text-align:center}
+.st .nr{width:26px;height:26px;border-radius:50%;background:var(--linie);color:var(--text2);display:grid;place-items:center;font-size:14px}
+.st small{font-weight:600;font-size:12px;color:var(--text2)}
+.st[aria-pressed="true"]{border-color:var(--magenta);background:var(--magenta-hell)}
+.st[aria-pressed="true"] .nr{background:var(--magenta);color:#fff}
+@media (max-width:480px){.st{font-size:12.5px}.st small{display:none}}
+
+/* Bühne */
+.buehne{position:relative;border-radius:var(--r) var(--r) 0 0;overflow:hidden;height:clamp(300px,52vw,430px);background:#CDEBFF;
+  box-shadow:var(--schatten);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.buehne canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;left:10px;top:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.chip{background:rgba(10,14,24,.62);color:#fff;border-radius:999px;padding:5px 11px;font-size:13.5px;font-weight:700;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);white-space:nowrap}
+.chip.wert{background:#FFD23F;color:#3A2A00;display:none}
+.chip.wert.an{display:inline-block}
+@media (max-width:480px){.chip{font-size:12.5px;padding:4px 9px}}
+
+/* Einstellungen unter der Bühne */
+.einst{background:var(--karte);border:1px solid var(--linie);border-top:0;border-radius:0 0 var(--r) var(--r);padding:10px 12px 12px}
+.reihe{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0}
+.reihe > span{font-size:13px;font-weight:800;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;min-width:92px}
+.wahl{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.wahl button{min-height:40px;border-radius:12px;border:2px solid var(--linie);padding:5px 11px;font-weight:700;font-size:14.5px;background:var(--bg)}
+.wahl button small{display:block;font-size:11.5px;font-weight:600;color:var(--text2)}
+.wahl button[aria-pressed="true"]{border-color:var(--blau);background:var(--blau-hell);color:var(--blau-text)}
+.wahl button[aria-pressed="true"] small{color:var(--blau-text)}
+
+.steuer{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:12px}
+.knopf{min-height:56px;border-radius:18px;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--karte);border:1px solid var(--linie);box-shadow:var(--schatten)}
+.knopf svg{width:24px;height:24px;flex:none}
+.knopf.los{background:linear-gradient(135deg,#E0457B,#C2185B);color:#fff;border:0}
+.knopf:active{transform:scale(.97)}
+.knopf[disabled]{opacity:.5}
+.schalter{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.schalter button{flex:1 1 0;min-height:44px;border-radius:14px;background:var(--karte);border:1px solid var(--linie);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;gap:6px;font-size:14.5px;font-weight:700;padding:6px 10px;white-space:nowrap}
+.schalter button.an{border-color:var(--blau);background:var(--blau-hell);color:var(--blau-text)}
+.schalter svg{width:19px;height:19px;flex:none}
+.tasten{margin:6px 4px 0;font-size:13px;color:var(--leise)}
+@media (hover:none){.tasten{display:none}}
+
+/* Karten */
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:var(--r);padding:16px 16px;margin-top:14px;box-shadow:var(--schatten)}
+.karte h2{margin:0 0 8px;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text2)}
+.auftrag{border-left:5px solid var(--magenta)}
+.auftrag p{margin:0 0 6px}
+.auftrag ol{margin:4px 0 0;padding-left:22px}
+.auftrag li{margin:3px 0}
+.kraefte{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.kraefte{grid-template-columns:1fr}}
+.kraft{border-radius:16px;padding:10px 12px;border:2px solid}
+.kraft b{display:block;font-size:20px}
+.kraft span{font-size:14.5px;color:var(--text2)}
+.k1{border-color:#E11D48}.k1 b{color:#E11D48}
+.k2{border-color:#2F5FB3}.k2 b{color:#2F5FB3}
+@media (prefers-color-scheme: dark){.k2 b{color:#8DB4FF}.k1 b{color:#FF7A9A}}
+.ergebnis{margin:10px 0 0;font-weight:700}
+.tabelle{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:480px}
+th,td{padding:8px 8px;text-align:left;border-bottom:1px solid var(--linie)}
+th{font-size:12.5px;color:var(--text2);font-weight:800;letter-spacing:.03em}
+td.leer{color:var(--leise)}
+.zeile{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
+.klein{font-size:14px;font-weight:700;color:var(--blau-text);padding:8px 10px;border-radius:12px;min-height:40px}
+details{border:1px solid var(--linie);border-radius:16px;padding:0 14px;margin-top:8px}
+summary{cursor:pointer;font-weight:700;padding:12px 0;list-style:none;display:flex;gap:10px;align-items:flex-start}
+summary::-webkit-details-marker{display:none}
+summary .nr{flex:none;width:26px;height:26px;border-radius:50%;background:var(--magenta);color:#fff;font-size:14px;display:grid;place-items:center;margin-top:-1px}
+details p{margin:0 0 12px 36px;color:var(--text2)}
+details[open] summary{color:var(--akzent)}
+.hinweis{font-size:14px;color:var(--text2);margin:0}
+</style>
+</head>
+<body>
+<div class="seite">
+<a class="zurueck" id="zurueck" href="../p7/"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg><span id="zurueckText">Physik 7a</span></a>
+<header class="kopf">
+  <div class="ober" id="ober">Physik 7a · Wechselwirkungsprinzip</div>
+  <h1>Wechselwirkungs-Labor</h1>
+  <p>Wer schubst hier eigentlich wen? Probiere die vier Stationen aus, schalte die Kraftpfeile ein und vergleiche: Was passiert mit <b>beiden</b> Körpern?</p>
+</header>
+
+<div class="stationen" id="stationen" role="group" aria-label="Station wählen"></div>
+
+<div class="buehne" id="buehne">
+  <canvas id="cv" aria-label="Simulation zum Wechselwirkungsprinzip"></canvas>
+  <div class="hud"><span class="chip" id="hudTitel"></span><span class="chip wert" id="wert"></span></div>
+</div>
+<div class="einst" id="einst"></div>
+
+<div class="steuer">
+  <button class="knopf los" id="bLos"></button>
+  <button class="knopf" id="bNeu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg>Neu</button>
+</div>
+<div class="schalter">
+  <button id="bPfeil" class="an" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12H3M6 9l-3 3 3 3"/><path d="M14 12h7M18 9l3 3-3 3"/></svg>Kraftpfeile</button>
+  <button id="bLupe" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>Zeitlupe</button>
+</div>
+<p class="tasten">Am PC: Leertaste = Start · N = neu · 1–4 = Station wechseln</p>
+
+<section class="karte auftrag" id="auftrag"></section>
+
+<section class="karte" aria-live="polite">
+  <h2>Die beiden Kräfte</h2>
+  <div class="kraefte">
+    <div class="kraft k1"><b id="f1Wert">–</b><span id="f1Text">Starte den Versuch.</span></div>
+    <div class="kraft k2"><b id="f2Wert">–</b><span id="f2Text">Starte den Versuch.</span></div>
+  </div>
+  <p class="ergebnis" id="ergebnis"></p>
+</section>
+
+<section class="karte">
+  <div class="zeile"><h2>Dein Protokoll</h2><button class="klein" id="bTabWeg">Tabelle leeren</button></div>
+  <div class="tabelle"><table>
+    <thead><tr><th>Station</th><th>Einstellung</th><th>Kraft (je Körper)</th><th>Ergebnis</th></tr></thead>
+    <tbody id="tab"></tbody>
+  </table></div>
+  <p class="hinweis" style="margin-top:8px">Jeder Versuch landet hier – übertrage die wichtigen Werte auf dein Arbeitsblatt.</p>
+</section>
+
+<section class="karte">
+  <h2>Beobachten und erklären</h2>
+  <div id="fragen"></div>
+</section>
+
+<section class="karte">
+  <h2>So rechnet die Simulation</h2>
+  <p class="hinweis">Beim Abstoßen wirken beide Kräfte gleich lang (0,3 s; beim Auto 0,2 s). Die Kraftpfeile sind maßstäblich – in jeder Station gilt derselbe Maßstab für beide Pfeile. Das Skateboard rollt mit sehr wenig Reibung aus, das Boot wird vom Wasser langsam abgebremst, Bürostühle und Brett rollen fast ohne Reibung. Ole und Lena wiegen 40 bzw. 50 kg, Anna und Ben kannst du einstellen. Wie schnell sich ein Körper danach bewegt, hängt von seiner Masse ab – das schauen wir uns bei der Trägheit noch genauer an.</p>
+</section>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- Klasse ---------- */
+var KLASSEN = { p7:{name:'Physik 7a', link:'../p7/'}, p8:{name:'Physik 8b', link:'../p8/'} };
+var k = 'p7';
+try { var q = new URLSearchParams(location.search).get('k'); if (KLASSEN[q]) k = q; } catch(e){}
+document.getElementById('zurueck').href = KLASSEN[k].link;
+document.getElementById('zurueckText').textContent = KLASSEN[k].name;
+document.getElementById('ober').textContent = KLASSEN[k].name + ' · Wechselwirkungsprinzip';
+var SPEICHER = 'wechselwirkung-' + k;
+var protokoll = [];
+try { protokoll = JSON.parse(localStorage.getItem(SPEICHER) || '[]') || []; } catch(e){ protokoll = []; }
+function speichern(){ try { localStorage.setItem(SPEICHER, JSON.stringify(protokoll)); } catch(e){} }
+
+function z(x, d){ return x.toLocaleString('de-DE', { minimumFractionDigits:d, maximumFractionDigits:d }); }
+function N(f){ return z(Math.round(f), 0) + ' N'; }
+function weg(m){ return m < 1 ? z(Math.round(m * 100), 0) + ' cm' : z(m, 2) + ' m'; }
+function tempo(v){ return z(v, 2) + ' m/s'; }
+var G = 9.81;
+
+/* ---------- Stationen ---------- */
+var STATIONEN = [
+  { id:'wurf', name:'Skateboard', kurz:'Ole wirft', knopf:'Werfen!',
+    titel:'Ole (40 kg) steht auf dem Skateboard',
+    optionen:[{ id:'ding', label:'Ole wirft …', werte:[
+      { id:'tennis', t:'Tennisball', s:'60 g', m:0.06, v:20 },
+      { id:'basket', t:'Basketball', s:'600 g', m:0.6, v:10 },
+      { id:'medizin', t:'Medizinball', s:'3 kg', m:3, v:4 },
+      { id:'kugel', t:'Kugel', s:'5 kg', m:5, v:3 },
+      { id:'wand', t:'Hand an Wand', s:'abstoßen', wand:true, p:18 } ], std:'medizin' }],
+    auftrag:['Lass Ole nacheinander den Tennisball, den Medizinball und die Kugel werfen. Vergleiche die beiden Kräfte und wie weit Ole zurückrollt.',
+             'Lass Ole sich zum Schluss an der Wand abstoßen. Wer drückt hier wen?'],
+    fragen:[
+      ['Vergleiche die beiden Kraftpfeile beim Werfen. Was fällt dir auf?',
+       'Die beiden Pfeile sind immer gleich lang, zeigen aber in entgegengesetzte Richtungen: Ole drückt den Ball nach vorne – der Ball drückt Ole genauso stark nach hinten. Die eine Kraft wirkt auf den Ball, die andere auf Ole.'],
+      ['Warum rollt Ole beim Medizinball viel weiter zurück als beim Tennisball?',
+       'Den schweren Medizinball muss Ole viel kräftiger wegdrücken als den leichten Tennisball (40 N statt 4 N). Dann drückt auch der Ball viel stärker auf Ole zurück – und Ole rollt weiter.'],
+      ['Ole stößt sich an der Wand ab. Die Wand bewegt sich nicht. Wirkt trotzdem eine Kraft auf sie?',
+       'Ja! Ole drückt mit 60 N auf die Wand. Die Wand drückt mit 60 N auf Ole zurück – deshalb rollt Ole los. Die Wand bewegt sich nicht, weil sie fest mit dem Haus und der riesigen Erde verbunden ist.']
+    ] },
+  { id:'boot', name:'Boot', kurz:'Lena springt', knopf:'Springen!',
+    titel:'Lena (50 kg) springt aus dem Boot auf den Steg',
+    optionen:[{ id:'boot', label:'Lena steht auf …', werte:[
+      { id:'ruder', t:'Ruderboot', s:'150 kg', m:150 },
+      { id:'kajak', t:'Kajak', s:'25 kg', m:25 },
+      { id:'matte', t:'Luftmatratze', s:'5 kg', m:5 },
+      { id:'fest', t:'Ruderboot', s:'am Steg festgebunden', fest:true } ], std:'ruder' }],
+    auftrag:['Lass Lena aus dem Ruderboot, aus dem Kajak und von der Luftmatratze springen. Wohin bewegt sich das Boot? Wo landet Lena?',
+             'Binde das Ruderboot am Steg fest und lass Lena noch einmal springen.'],
+    fragen:[
+      ['Warum fährt das Boot nach hinten, wenn Lena nach vorne springt?',
+       'Lena drückt sich mit den Füßen am Boot ab: Sie drückt das Boot nach hinten. Das Boot drückt Lena gleich stark nach vorne – zum Steg. Zwei Kräfte, zwei Körper, entgegengesetzte Richtungen.'],
+      ['Warum landet Lena beim Kajak im Wasser?',
+       'Das leichte Kajak weicht beim Abdrücken schnell nach hinten aus. Lena kann sich deshalb nicht richtig abstoßen – die Kraft auf das Boot und damit auch die Kraft auf Lena bleibt klein (167 N statt 375 N). Sie springt zu kurz. Platsch!'],
+      ['Was ändert sich, wenn das Boot festgebunden ist?',
+       'Das Boot kann nicht mehr ausweichen. Lena kann sich mit voller Kraft abdrücken (500 N) und springt am weitesten. Ihre Kraft wirkt jetzt über das Seil auf den Steg und die Erde – die sind so schwer, dass man keine Bewegung sieht. Darum: Beim Aussteigen das Boot festhalten!']
+    ] },
+  { id:'seil', name:'Bürostühle', kurz:'Seil ziehen', knopf:'Ziehen!',
+    titel:'Anna und Ben sitzen auf Bürostühlen mit Rollen',
+    optionen:[
+      { id:'anna', label:'Anna wiegt', werte:[ {id:'a30',t:'30 kg',m:30},{id:'a45',t:'45 kg',m:45},{id:'a60',t:'60 kg',m:60},{id:'a90',t:'90 kg',m:90} ], std:'a30' },
+      { id:'ben', label:'Ben wiegt', werte:[ {id:'b30',t:'30 kg',m:30},{id:'b45',t:'45 kg',m:45},{id:'b60',t:'60 kg',m:60},{id:'b90',t:'90 kg',m:90} ], std:'b60' },
+      { id:'wer', label:'Wer zieht?', werte:[ {id:'anna',t:'nur Anna',F:60},{id:'ben',t:'nur Ben',F:60},{id:'beide',t:'beide',F:100} ], std:'anna' } ],
+    auftrag:['Stelle Anna auf 30 kg und Ben auf 60 kg. Lass zuerst nur Anna ziehen, dann nur Ben, dann beide. Wo treffen sie sich? Was zeigt der Kraftmesser im Seil?',
+             'Mach Anna und Ben gleich schwer. Was ändert sich?'],
+    fragen:[
+      ['Nur Anna zieht, Ben hält das Seil nur fest. Warum rollt Ben trotzdem los?',
+       'Anna zieht über das Seil an Ben. Gleichzeitig zieht Ben (über das Seil) genauso stark an Anna – auch wenn er nur festhält. Beide Kräfte sind gleich groß: Beide rollen aufeinander zu.'],
+      ['Spielt es eine Rolle, wer zieht?',
+       'Nein! Egal, wer zieht: Beide werden gleich stark gezogen und treffen sich immer an derselben Stelle. Ziehen beide, sind die Kräfte größer und alles geht schneller – der Treffpunkt bleibt gleich.'],
+      ['Warum rollt Anna (30 kg) weiter als Ben (60 kg)?',
+       'Auf beide wirkt dieselbe Kraft. Anna hat aber nur die halbe Masse – sie lässt sich leichter in Bewegung setzen und rollt doppelt so weit wie Ben.']
+    ] },
+  { id:'auto', name:'Spielzeugauto', kurz:'Auto auf Brett', knopf:'Losfahren!',
+    titel:'Ein Spielzeugauto (500 g) steht auf einem Brett auf Rollen',
+    optionen:[{ id:'brett', label:'Das Brett …', werte:[
+      { id:'leicht', t:'leichtes Brett', s:'250 g', m:0.25 },
+      { id:'schwer', t:'schweres Brett', s:'2 kg', m:2 },
+      { id:'fest', t:'festgeklebt', s:'wie eine Straße', fest:true } ], std:'leicht' }],
+    auftrag:['Starte das Auto auf dem leichten Brett, dann auf dem schweren. Beobachte Auto und Brett.',
+             'Klebe das Brett fest. Woher bekommt das Auto jetzt seine Kraft?'],
+    fragen:[
+      ['Warum rollt das Brett nach hinten, wenn das Auto losfährt?',
+       'Die Räder drücken das Brett nach hinten. Das Brett drückt die Räder – und damit das Auto – gleich stark nach vorne. Ohne diese Kraft vom Brett käme das Auto nicht vom Fleck.'],
+      ['Wie kommt ein echtes Auto auf der Straße vorwärts?',
+       'Genauso: Die Reifen drücken die Straße nach hinten, die Straße drückt das Auto nach vorne. Die Straße ist mit der riesigen Erde verbunden – deshalb sieht man nicht, dass auch sie geschoben wird.'],
+      ['Warum kommt das Auto auf Glatteis kaum vom Fleck?',
+       'Auf Eis rutschen die Reifen durch. Sie können kaum auf die Straße drücken – also drückt auch die Straße kaum auf das Auto zurück.']
+    ] }
+];
+var ST = {}; STATIONEN.forEach(function(s){ ST[s.id] = s; });
+
+/* ---------- Zustand ---------- */
+var station = ST.wurf, wahl = {}, pfeile = true, lupe = false, sim = null, standbild = 0, standbildFertig = false;
+STATIONEN.forEach(function(s){ wahl[s.id] = {}; s.optionen.forEach(function(o){ wahl[s.id][o.id] = o.std; }); });
+try {
+  var gs = JSON.parse(localStorage.getItem(SPEICHER + '-wahl') || 'null');
+  if (gs && gs.wahl) STATIONEN.forEach(function(s){ if (gs.wahl[s.id]) s.optionen.forEach(function(o){
+    if (o.werte.some(function(w){ return w.id === gs.wahl[s.id][o.id]; })) wahl[s.id][o.id] = gs.wahl[s.id][o.id]; }); });
+  if (gs && ST[gs.station]) station = ST[gs.station];
+} catch(e){}
+function merkeWahl(){ try { localStorage.setItem(SPEICHER + '-wahl', JSON.stringify({ station:station.id, wahl:wahl })); } catch(e){} }
+function wert(sid, oid){ var o = ST[sid].optionen.filter(function(x){ return x.id === oid; })[0];
+  return o.werte.filter(function(w){ return w.id === wahl[sid][oid]; })[0]; }
+
+/* ---------- Oberfläche ---------- */
+var elSt = document.getElementById('stationen'), elEinst = document.getElementById('einst'), bLos = document.getElementById('bLos');
+STATIONEN.forEach(function(s, i){
+  var b = document.createElement('button'); b.className = 'st'; b.dataset.id = s.id;
+  b.innerHTML = '<span class="nr">' + (i + 1) + '</span>' + s.name + '<small>' + s.kurz + '</small>';
+  b.addEventListener('click', function(){ waehleStation(s.id); });
+  elSt.appendChild(b);
+});
+function waehleStation(id){ station = ST[id]; merkeWahl(); aufbauen(); neu(); }
+function aufbauen(){
+  Array.prototype.forEach.call(elSt.children, function(b){ b.setAttribute('aria-pressed', b.dataset.id === station.id); });
+  document.getElementById('hudTitel').textContent = station.titel;
+  elEinst.innerHTML = '';
+  station.optionen.forEach(function(o){
+    var r = document.createElement('div'); r.className = 'reihe';
+    r.innerHTML = '<span>' + o.label + '</span>';
+    var w = document.createElement('div'); w.className = 'wahl';
+    o.werte.forEach(function(v){
+      var b = document.createElement('button');
+      b.innerHTML = v.t + (v.s ? '<small>' + v.s + '</small>' : '');
+      b.setAttribute('aria-pressed', wahl[station.id][o.id] === v.id);
+      b.addEventListener('click', function(){ wahl[station.id][o.id] = v.id; merkeWahl(); aufbauen(); neu(); });
+      w.appendChild(b);
+    });
+    r.appendChild(w); elEinst.appendChild(r);
+  });
+  bLos.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>' + station.knopf;
+  var a = document.getElementById('auftrag');
+  a.innerHTML = '<h2>Station ' + (STATIONEN.indexOf(station) + 1) + ' · ' + station.name + '</h2><ol>' +
+    station.auftrag.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ol>';
+  document.getElementById('fragen').innerHTML = station.fragen.map(function(f, i){
+    return '<details><summary><span class="nr">' + (i + 1) + '</span>' + f[0] + '</summary><p>' + f[1] + '</p></details>'; }).join('');
+}
+function schalter(id, setze){
+  var b = document.getElementById(id);
+  b.addEventListener('click', function(){ var an = !b.classList.contains('an'); b.classList.toggle('an', an); b.setAttribute('aria-pressed', an); setze(an); });
+}
+schalter('bPfeil', function(an){ pfeile = an; });
+schalter('bLupe', function(an){ lupe = an; });
+bLos.addEventListener('click', start);
+document.getElementById('bNeu').addEventListener('click', neu);
+document.getElementById('bTabWeg').addEventListener('click', function(){ protokoll = []; speichern(); tabelle(); });
+window.addEventListener('keydown', function(e){
+  if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.code === 'Space'){ e.preventDefault(); start(); }
+  else if (e.key === 'n' || e.key === 'N') neu();
+  else if (/^[1-4]$/.test(e.key)) waehleStation(STATIONEN[+e.key - 1].id);
+});
+var wertEl = document.getElementById('wert');
+function zeige(html){ wertEl.innerHTML = html; wertEl.classList.add('an'); }
+function kraefte(f, t1, t2){
+  document.getElementById('f1Wert').textContent = f == null ? '–' : N(f);
+  document.getElementById('f2Wert').textContent = f == null ? '–' : N(f);
+  document.getElementById('f1Text').textContent = t1; document.getElementById('f2Text').textContent = t2;
+}
+function ergebnis(t){ document.getElementById('ergebnis').textContent = t; }
+function tabelle(){
+  var tb = document.getElementById('tab');
+  if (!protokoll.length){ tb.innerHTML = '<tr><td class="leer" colspan="4">Noch keine Versuche.</td></tr>'; return; }
+  tb.innerHTML = protokoll.map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>'; }).join('');
+}
+function eintragen(r){
+  protokoll = protokoll.filter(function(x){ return !(x[0] === r[0] && x[1] === r[1]); });
+  protokoll.push(r); if (protokoll.length > 30) protokoll.shift(); speichern(); tabelle();
+}
+
+/* ---------- Physik: Versuch vorbereiten ---------- */
+var DT_STOSS = 0.3;
+function neu(){
+  sim = { t:0, phase:'bereit', station:station.id };
+  standbild = 0; standbildFertig = false;
+  var s = station.id;
+  if (s === 'wurf'){
+    var d = wert('wurf', 'ding');
+    sim.mP = 40; sim.ding = d; sim.xP = 0; sim.vP = 0;
+    sim.ball = d.wand ? null : { x:0.55, y:1.15, vx:0, vy:0, fliegt:false, m:d.m };
+  } else if (s === 'boot'){
+    var b = wert('boot', 'boot');
+    sim.b = b; sim.mL = 50; sim.xB = 0; sim.vB = 0; sim.L = { x:0, y:0, vx:0, vy:0, auf:'boot' };
+  } else if (s === 'seil'){
+    sim.mA = wert('seil', 'anna').m; sim.mB = wert('seil', 'ben').m; sim.wer = wert('seil', 'wer');
+    sim.xA = -2.0; sim.xB = 2.0; sim.vA = 0; sim.vB = 0;
+  } else {
+    var br = wert('auto', 'brett');
+    sim.br = br; sim.mC = 0.5; sim.xBrett = 0; sim.xRel = -0.35; sim.vC = 0; sim.vBr = 0;
+  }
+  wertEl.classList.remove('an');
+  kraefte(null, 'Starte den Versuch.', 'Starte den Versuch.'); ergebnis('');
+  bLos.disabled = false;
+}
+function start(){
+  if (!sim || sim.phase !== 'bereit'){ neu(); }
+  var s = station.id; sim.phase = 'stoss'; sim.t = 0; bLos.disabled = true;
+  if (s === 'wurf'){
+    var d = sim.ding;
+    var p = d.wand ? d.p : d.m * d.v;
+    sim.F = p / DT_STOSS; sim.vZiel = p / sim.mP;
+    sim.a = 0.005 * G;                       // Rollreibung Skateboard (sehr klein)
+    sim.weg = sim.vZiel * sim.vZiel / (2 * sim.a);
+    kraefte(sim.F, d.wand ? 'Kraft von Ole auf die Wand' : 'Kraft von Ole auf den ' + d.t,
+                   d.wand ? 'Kraft von der Wand auf Ole' : 'Kraft vom ' + d.t + ' auf Ole');
+  } else if (s === 'boot'){
+    var b = sim.b, u = 3.0, mL = sim.mL;
+    sim.vLZiel = b.fest ? u : u * b.m / (mL + b.m);
+    sim.vBZiel = b.fest ? 0 : -u * mL / (mL + b.m);
+    sim.F = mL * sim.vLZiel / DT_STOSS;
+    sim.vy = 2.2; sim.flug = 2 * sim.vy / G;
+    sim.sprung = sim.vLZiel * sim.flug; sim.luecke = 0.8;
+    sim.trifft = sim.sprung >= sim.luecke;
+    kraefte(sim.F, 'Kraft von Lena auf das Boot', 'Kraft vom Boot auf Lena');
+  } else if (s === 'seil'){
+    sim.F = sim.wer.F;
+    var spiel = 4.0 - 1.3;
+    sim.wegA = spiel * sim.mB / (sim.mA + sim.mB); sim.wegB = spiel * sim.mA / (sim.mA + sim.mB);
+    kraefte(sim.F, 'Kraft auf Anna (vom Seil, also von Ben)', 'Kraft auf Ben (vom Seil, also von Anna)');
+  } else {
+    var br = sim.br, u2 = 0.6, mC = sim.mC;
+    sim.vCZiel = br.fest ? u2 : u2 * br.m / (mC + br.m);
+    sim.vBrZiel = br.fest ? 0 : -u2 * mC / (mC + br.m);
+    sim.F = mC * sim.vCZiel / 0.2; sim.stossDauer = 0.2;
+    sim.relWeg = 0.7;
+    kraefte(sim.F, 'Kraft der Räder auf das Brett', 'Kraft vom Brett auf die Räder (das Auto)');
+  }
+}
+
+/* ---------- Physik: Schritt ---------- */
+function schritt(dt){
+  if (!sim || sim.phase === 'bereit' || sim.phase === 'fertig') return;
+  if (standbild > 0){ standbild -= dt; return; }
+  sim.t += dt;
+  var s = sim.station;
+  if (s === 'wurf'){
+    if (sim.phase === 'stoss'){
+      var f = Math.min(1, sim.t / DT_STOSS);
+      sim.vP = -sim.vZiel * f; sim.xP += sim.vP * dt;
+      if (sim.ball){ var vb = sim.ding.v * f; sim.ball.x = sim.xP + 0.55 + 0.35 * f; sim.ball.vx = vb * Math.cos(0.26); sim.ball.vy = vb * Math.sin(0.26); }
+      pruefeStandbild(f);
+      if (sim.t >= DT_STOSS){ sim.phase = 'danach'; if (sim.ball) sim.ball.fliegt = true; }
+    } else {
+      if (sim.vP < 0){ sim.vP = Math.min(0, sim.vP + sim.a * dt); sim.xP += sim.vP * dt; }
+      if (sim.ball && sim.ball.fliegt){
+        sim.ball.vy -= G * dt; sim.ball.x += sim.ball.vx * dt; sim.ball.y += sim.ball.vy * dt;
+        if (sim.ball.y <= 0.12){ sim.ball.y = 0.12; sim.ball.vy = -sim.ball.vy * 0.35; sim.ball.vx *= 0.6; if (Math.abs(sim.ball.vy) < 0.4){ sim.ball.vy = 0; sim.ball.fliegt = false; } }
+      }
+      if (sim.vP === 0 && !(sim.ball && sim.ball.fliegt)) fertigWurf();
+    }
+  } else if (s === 'boot'){
+    var L = sim.L;
+    if (sim.phase === 'stoss'){
+      var f2 = Math.min(1, sim.t / DT_STOSS);
+      sim.vB = sim.vBZiel * f2; sim.xB += sim.vB * dt;
+      L.x += (sim.vLZiel * f2 + sim.vB * 0) * dt * 0.5; L.y = 0.05 * f2;
+      pruefeStandbild(f2);
+      if (sim.t >= DT_STOSS){ sim.phase = 'danach'; L.vx = sim.vLZiel; L.vy = sim.vy; L.auf = 'luft'; L.x0 = L.x; }
+    } else {
+      sim.vB *= Math.exp(-dt / 1.5); sim.xB += sim.vB * dt;
+      if (L.auf === 'luft'){
+        L.vy -= G * dt; L.x += L.vx * dt; L.y += L.vy * dt;
+        var stegKante = 0.8;
+        if (L.vy < 0 && L.y <= 0.05){
+          if (L.x >= stegKante){ L.y = 0.05; L.auf = 'steg'; L.vx = 0; }
+          else { L.auf = 'wasser'; }
+        }
+      } else if (L.auf === 'wasser'){
+        L.vx *= Math.exp(-dt * 3); L.x += L.vx * dt; L.y = Math.max(-0.95, L.y - 1.6 * dt);
+      }
+      if (Math.abs(sim.vB) < 0.01 && L.auf !== 'luft' && sim.t > 1.2) fertigBoot();
+    }
+  } else if (s === 'seil'){
+    var aA = sim.F / sim.mA, aB = sim.F / sim.mB;
+    sim.vA += aA * dt; sim.vB -= aB * dt; sim.xA += sim.vA * dt; sim.xB += sim.vB * dt;
+    pruefeStandbild(Math.min(1, sim.t / 0.6));
+    if (sim.xB - sim.xA <= 1.3){
+      var ueber = 1.3 - (sim.xB - sim.xA), summe = sim.mA + sim.mB;
+      sim.xA -= ueber * sim.mB / summe; sim.xB += ueber * sim.mA / summe;
+      sim.vA = 0; sim.vB = 0; fertigSeil();
+    }
+  } else {
+    if (sim.phase === 'stoss'){
+      var f3 = Math.min(1, sim.t / sim.stossDauer);
+      sim.vC = sim.vCZiel * f3; sim.vBr = sim.vBrZiel * f3;
+      pruefeStandbild(f3);
+      if (sim.t >= sim.stossDauer) sim.phase = 'danach';
+    }
+    sim.xBrett += sim.vBr * dt; sim.xRel += (sim.vC - sim.vBr) * dt;
+    if (sim.xRel >= -0.35 + sim.relWeg){ sim.xRel = -0.35 + sim.relWeg; sim.vC = 0; sim.vBr = 0; fertigAuto(); }
+  }
+}
+function pruefeStandbild(f){
+  if (pfeile && !standbildFertig && f >= 0.5){ standbildFertig = true; standbild = 1.6; }
+}
+function fertig(){ sim.phase = 'fertig'; bLos.disabled = false; }
+function fertigWurf(){
+  fertig(); var d = sim.ding;
+  var txt = 'Ole rollt ' + weg(sim.weg) + ' zurück';
+  zeige(txt); ergebnis(txt + (d.wand ? ' – die Wand bewegt sich nicht.' : ', der ' + d.t + ' fliegt nach vorne.'));
+  eintragen(['1 Skateboard', d.wand ? 'Hand an Wand' : d.t + ' (' + d.s + ')', N(sim.F), txt]);
+}
+function fertigBoot(){
+  fertig(); var b = sim.b, L = sim.L;
+  var ort = L.auf === 'steg' ? 'Lena landet auf dem Steg' : 'Platsch! Lena landet im Wasser';
+  var boot = b.fest ? 'das Boot bleibt am Steg' : 'das Boot treibt ' + weg(-sim.vBZiel * 1.5) + ' zurück';
+  zeige(L.auf === 'steg' ? 'Auf dem Steg!' : 'Platsch!');
+  ergebnis(ort + ', ' + boot + '.');
+  eintragen(['2 Boot', b.t + (b.fest ? ' (festgebunden)' : ' (' + b.s + ')'), N(sim.F), ort.replace('Platsch! ', '') + '; ' + boot]);
+}
+function fertigSeil(){
+  fertig();
+  var txt = 'Anna rollt ' + weg(sim.wegA) + ', Ben rollt ' + weg(sim.wegB);
+  zeige('Treffpunkt erreicht'); ergebnis(txt + '. Der Kraftmesser im Seil zeigt ' + N(sim.F) + '.');
+  eintragen(['3 Bürostühle', 'Anna ' + sim.mA + ' kg, Ben ' + sim.mB + ' kg, ' + sim.wer.t, N(sim.F), txt]);
+}
+function fertigAuto(){
+  fertig(); var br = sim.br;
+  var wegC = br.fest ? sim.relWeg : sim.relWeg * br.m / (sim.mC + br.m);
+  var wegB = br.fest ? 0 : sim.relWeg * sim.mC / (sim.mC + br.m);
+  var txt = 'Auto fährt ' + weg(wegC) + ' nach vorne, Brett rollt ' + (br.fest ? 'gar nicht' : weg(wegB) + ' nach hinten');
+  zeige(br.fest ? 'Brett bleibt stehen' : 'Brett rollt zurück'); ergebnis(txt + '.');
+  eintragen(['4 Spielzeugauto', br.t + (br.s ? ' (' + br.s + ')' : ''), z(sim.F, 1) + ' N', txt]);
+}
+
+/* ---------- Zeichnen ---------- */
+var cv = document.getElementById('cv'), ctx = cv.getContext('2d'), buehne = document.getElementById('buehne');
+var W = 0, H = 0, DPR = 1, BODEN = 54, cam = { x0:-3, x1:3, s:100 };
+function groesse(){
+  DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  W = buehne.clientWidth; H = buehne.clientHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+}
+window.addEventListener('resize', groesse);
+var ANSICHT = { wurf:[-3.6, 5.6, 2.6, 0], boot:[-5.2, 3.2, 3.0, -0.9], seil:[-3.0, 3.0, 2.1, 0], auto:[-1.15, 0.95, 0.42, 0] };
+var ANSICHT_HANDY = { wurf:[-2.0, 2.6, 2.4, 0], boot:[-3.4, 2.4, 3.0, -0.9], seil:[-2.7, 2.7, 2.1, 0], auto:[-1.1, 0.8, 0.42, 0] };
+function kamera(){
+  var a = (W < 560 ? ANSICHT_HANDY : ANSICHT)[station.id], nutzH = H - BODEN - 46;
+  cam.s = Math.min(W / (a[1] - a[0]), nutzH / a[2]); cam.cx = (a[0] + a[1]) / 2; cam.y0 = a[3];
+}
+function sx(x){ return W / 2 + (x - cam.cx) * cam.s; }
+function sy(y){ return H - BODEN - (y - (cam.y0 || 0)) * cam.s; }
+function rr(x, y, w, h, r, farbe, linie){
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  if (farbe){ ctx.fillStyle = farbe; ctx.fill(); } if (linie){ ctx.strokeStyle = linie; ctx.lineWidth = 2; ctx.stroke(); }
+}
+function hintergrund(drinnen){
+  var gB = H - BODEN, gr = ctx.createLinearGradient(0, 0, 0, gB);
+  if (drinnen){ gr.addColorStop(0, '#F4EBDD'); gr.addColorStop(1, '#E8DCC8'); }
+  else { gr.addColorStop(0, '#5DB2EE'); gr.addColorStop(1, '#D6F0FF'); }
+  ctx.fillStyle = gr; ctx.fillRect(0, 0, W, gB + 1);
+}
+function fussboden(farbe1, farbe2){
+  var gB = H - BODEN; ctx.fillStyle = farbe1; ctx.fillRect(0, gB, W, BODEN);
+  ctx.fillStyle = farbe2; ctx.fillRect(0, gB, W, 4);
+}
+/* Strichmännchen: Füße bei (x,y) in m, Größe h in m, Pose */
+function person(x, y, h, farbe, pose, blick, haar){
+  var s = cam.s * h / 1.6, X = sx(x), Y = sy(y), b = blick || 1;
+  ctx.save(); ctx.translate(X, Y); ctx.scale(b * s / 100, s / 100);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = farbe; ctx.lineWidth = 11;
+  var huefte = [0, -78], schulter = [0, -122], kopf = [0, -142];
+  if (pose === 'sitzen'){ huefte = [0, -48]; schulter = [-4, -94]; kopf = [-4, -114]; }
+  if (pose === 'hocke'){ huefte = [-6, -60]; schulter = [8, -102]; kopf = [12, -121]; }
+  // Beine
+  ctx.beginPath();
+  if (pose === 'sitzen'){ ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(26, -50); ctx.lineTo(26, -4); }
+  else if (pose === 'hocke'){ ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(16, -34); ctx.lineTo(0, 0); ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(8, -30); ctx.lineTo(-12, 0); }
+  else if (pose === 'springen'){ ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(18, -40); ctx.lineTo(4, -8); ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(-14, -42); ctx.lineTo(-30, -14); }
+  else { ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(-10, -38); ctx.lineTo(-12, 0); ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(10, -38); ctx.lineTo(12, 0); }
+  ctx.stroke();
+  // Rumpf
+  ctx.lineWidth = 14; ctx.beginPath(); ctx.moveTo(huefte[0], huefte[1]); ctx.lineTo(schulter[0], schulter[1]); ctx.stroke();
+  // Arme
+  ctx.lineWidth = 9; ctx.beginPath();
+  if (pose === 'werfen' || pose === 'sitzen' || pose === 'druecken'){ ctx.moveTo(schulter[0], schulter[1] + 4); ctx.lineTo(28, schulter[1] + 6); ctx.lineTo(54, schulter[1] + 2);
+    ctx.moveTo(schulter[0], schulter[1] + 6); ctx.lineTo(26, schulter[1] + 14); ctx.lineTo(52, schulter[1] + 10); }
+  else if (pose === 'springen'){ ctx.moveTo(schulter[0], schulter[1] + 4); ctx.lineTo(26, schulter[1] - 16); ctx.lineTo(42, schulter[1] - 40);
+    ctx.moveTo(schulter[0], schulter[1] + 4); ctx.lineTo(-22, schulter[1] - 14); ctx.lineTo(-34, schulter[1] - 36); }
+  else if (pose === 'hocke'){ ctx.moveTo(schulter[0], schulter[1] + 4); ctx.lineTo(-14, schulter[1] + 30); ctx.lineTo(-30, schulter[1] + 44);
+    ctx.moveTo(schulter[0], schulter[1] + 4); ctx.lineTo(-4, schulter[1] + 32); ctx.lineTo(-24, schulter[1] + 48); }
+  else { ctx.moveTo(schulter[0], schulter[1] + 4); ctx.lineTo(-14, schulter[1] + 40); ctx.moveTo(schulter[0], schulter[1] + 4); ctx.lineTo(14, schulter[1] + 40); }
+  ctx.stroke();
+  // Kopf
+  ctx.fillStyle = '#F2C9A0'; ctx.beginPath(); ctx.arc(kopf[0], kopf[1], 17, 0, 7); ctx.fill();
+  ctx.fillStyle = haar || '#5B3A1E'; ctx.beginPath(); ctx.arc(kopf[0], kopf[1] - 3, 17.5, Math.PI * 1.05, Math.PI * 1.95); ctx.fill();
+  if (haar === '#C98A2E'){ ctx.beginPath(); ctx.ellipse(kopf[0] - 18, kopf[1] + 4, 6, 16, 0.2, 0, 7); ctx.fill(); }
+  ctx.fillStyle = '#222'; ctx.beginPath(); ctx.arc(kopf[0] + 7, kopf[1] - 2, 2.2, 0, 7); ctx.fill();
+  ctx.restore();
+}
+/* Kraftpfeil: Angriffspunkt (x,y) in m, Richtung +1/-1, Länge in px */
+function pfeil(x, y, dir, laenge, farbe, text, unten){
+  var X = sx(x), Y = sy(y), L = Math.max(22, laenge), X2 = X + dir * L;
+  ctx.save(); ctx.strokeStyle = farbe; ctx.fillStyle = farbe; ctx.lineWidth = 5; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(X2 - dir * 12, Y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(X2, Y); ctx.lineTo(X2 - dir * 16, Y - 9); ctx.lineTo(X2 - dir * 16, Y + 9); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.arc(X, Y, 5, 0, 7); ctx.fill();
+  if (text){
+    ctx.font = '800 13px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.textBaseline = 'middle';
+    var tw = ctx.measureText(text).width, tx = dir > 0 ? X + 4 : X2 - 4 - (tw + 12) + 4;
+    tx = Math.max(4, Math.min(W - tw - 16, Math.min(X, X2) + Math.abs(X2 - X) / 2 - (tw + 12) / 2));
+    var ty = unten ? Y + 10 : Y - 30;
+    rr(tx, ty, tw + 12, 22, 8, 'rgba(255,255,255,.92)');
+    ctx.fillStyle = farbe; ctx.fillText(text, tx + 6, ty + 11);
+  }
+  ctx.restore();
+}
+var ROT = '#E11D48', BLAU = '#2F5FB3';
+function zeigePfeile(){
+  if (!pfeile || !sim) return false;
+  if (sim.station === 'seil') return sim.phase === 'stoss';
+  return sim.phase === 'stoss';
+}
+function kurz(lang, k){ return W < 560 ? k : lang; }
+function pfeilLaenge(F, Fmax){ return 26 + 120 * Math.min(1, F / Fmax) * Math.min(1, W / 700); }
+function schild(txt, x, y, farbe){
+  ctx.font = '800 14px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.textBaseline = 'middle';
+  var tw = ctx.measureText(txt).width, X = Math.max(4, Math.min(W - tw - 20, x - tw / 2 - 8));
+  rr(X, y - 13, tw + 16, 26, 10, farbe || 'rgba(10,14,24,.72)'); ctx.fillStyle = '#fff'; ctx.fillText(txt, X + 8, y);
+}
+
+function zeichneWurf(){
+  hintergrund(false);
+  var gB = H - BODEN;
+  // Wand rechts bei Option Wand, sonst Bäume in der Ferne
+  ctx.fillStyle = '#8FCB7A'; ctx.beginPath(); ctx.ellipse(sx(4.5), gB, 160, 40, 0, Math.PI, 2 * Math.PI); ctx.fill();
+  fussboden('#9AA3AE', '#6C7682');
+  // Startlinie und Maßband
+  ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 2;
+  for (var m = -3; m <= 0; m++){ ctx.beginPath(); ctx.moveTo(sx(m), gB + 6); ctx.lineTo(sx(m), gB + 16); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = '700 12px system-ui'; ctx.textAlign = 'center'; ctx.fillText(m === 0 ? 'Start' : z(-m, 0) + ' m', sx(m), gB + 30); }
+  ctx.textAlign = 'left';
+  var d = sim.ding, xP = sim.xP;
+  if (d.wand){
+    ctx.fillStyle = '#B5653A'; ctx.fillRect(sx(0.9), sy(2.5), sx(1.3) - sx(0.9), sy(0) - sy(2.5));
+    ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = 1;
+    for (var r = 0; r < 12; r++){ var yy = sy(r * 0.21); ctx.beginPath(); ctx.moveTo(sx(0.9), yy); ctx.lineTo(sx(1.3), yy); ctx.stroke(); }
+  }
+  // Skateboard
+  var bx = sx(xP - 0.4), bw = 0.8 * cam.s, by = sy(0.1);
+  rr(bx, by - 0.035 * cam.s, bw, 0.035 * cam.s, 4, '#2D3748');
+  ctx.fillStyle = '#F6AD55';
+  [0.12, 0.68].forEach(function(o){ ctx.beginPath(); ctx.arc(sx(xP - 0.4 + o), sy(0.04), 0.04 * cam.s, 0, 7); ctx.fill(); });
+  var drueckt = sim.phase === 'stoss' || (sim.phase === 'bereit' && d.wand);
+  person(xP, 0.1, 1.55, '#2F5FB3', (sim.phase === 'bereit' || sim.phase === 'stoss') ? 'werfen' : 'stehen', 1, '#3B2A1A');
+  schild('Ole', sx(xP) - (W < 560 ? 20 : 0), sy(1.9));
+  // Ball
+  if (sim.ball){
+    var bR = { tennis:0.04, basket:0.12, medizin:0.14, kugel:0.07 }[d.id], fb = { tennis:'#D4E157', basket:'#E8772E', medizin:'#6D4C41', kugel:'#5F6B78' }[d.id];
+    var bx2 = sim.phase === 'bereit' ? xP + 0.55 : sim.ball.x, by2 = sim.phase === 'bereit' ? 1.15 : sim.ball.y;
+    ctx.fillStyle = fb; ctx.beginPath(); ctx.arc(sx(bx2), sy(by2), Math.max(4, bR * cam.s), 0, 7); ctx.fill();
+    if (d.id === 'basket'){ ctx.strokeStyle = '#4A2511'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(sx(bx2), sy(by2), bR * cam.s, 0, 7); ctx.moveTo(sx(bx2) - bR * cam.s, sy(by2)); ctx.lineTo(sx(bx2) + bR * cam.s, sy(by2)); ctx.stroke(); }
+  }
+  if (zeigePfeile()){
+    var Lp = pfeilLaenge(sim.F, 60);
+    if (d.wand){ pfeil(0.9, 1.2, 1, Lp, ROT, kurz('Ole → Wand ', 'Wand ') + N(sim.F)); pfeil(xP + 0.55, 1.0, -1, Lp, BLAU, kurz('Wand → Ole ', 'Ole ') + N(sim.F), true); }
+    else { pfeil(sim.ball.x, sim.ball.y + 0.05, 1, Lp, ROT, kurz('auf den Ball ', 'Ball ') + N(sim.F)); pfeil(xP + 0.3, 0.95, -1, Lp, BLAU, kurz('auf Ole ', 'Ole ') + N(sim.F), true); }
+  }
+  if (sim.phase === 'fertig'){
+    ctx.strokeStyle = BLAU; ctx.setLineDash([6, 5]); ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(sx(0), gB - 6); ctx.lineTo(sx(xP), gB - 6); ctx.stroke(); ctx.setLineDash([]);
+    schild(weg(sim.weg) + ' zurück', (sx(0) + sx(xP)) / 2, gB - 22, BLAU);
+  }
+}
+
+function zeichneBoot(){
+  hintergrund(false);
+  var gB = H - BODEN, wasserY = sy(-0.35);
+  // Wasser
+  var gw = ctx.createLinearGradient(0, wasserY, 0, H);
+  gw.addColorStop(0, '#2C8FD6'); gw.addColorStop(1, '#0D4E8A');
+  ctx.fillStyle = gw; ctx.fillRect(0, wasserY, W, H - wasserY);
+  ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 2;
+  var t = performance.now() / 1000;
+  for (var i = 0; i < W; i += 46){ ctx.beginPath(); ctx.arc(i + (t * 12) % 46, wasserY + 8, 10, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke(); }
+  // Steg
+  var kante = 0.8;
+  ctx.fillStyle = '#8B5A2B'; ctx.fillRect(sx(kante), sy(0.05), W - sx(kante), 0.16 * cam.s);
+  ctx.fillStyle = '#6B4220';
+  for (var p = kante + 0.25; p < 4; p += 1.1) ctx.fillRect(sx(p), sy(-0.1), 0.12 * cam.s, H);
+  schild('Steg', sx(2.0), sy(0.05) + 26, '#6B4220');
+  var b = sim.b, xB = sim.xB;
+  // Seil beim festgebundenen Boot
+  if (b.fest){ ctx.strokeStyle = '#E2C08D'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(sx(xB + 0.35), sy(-0.05)); ctx.quadraticCurveTo(sx(0.6), sy(-0.3), sx(kante + 0.15), sy(0.02)); ctx.stroke(); }
+  // Boot
+  var lang = { ruder:2.6, kajak:3.0, matte:1.9, fest:2.6 }[b.id] , hoch = { ruder:0.42, kajak:0.26, matte:0.14, fest:0.42 }[b.id];
+  var farbe = { ruder:'#C0392B', kajak:'#F1C40F', matte:'#E91E63', fest:'#C0392B' }[b.id];
+  var x0 = xB - lang + 0.35, x1 = xB + 0.35;
+  ctx.fillStyle = farbe; ctx.beginPath();
+  if (b.id === 'matte'){ rr(sx(x0), sy(-0.22 + hoch), (x1 - x0) * cam.s, hoch * cam.s, 10, farbe); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2;
+    for (var q = 1; q < 6; q++){ ctx.beginPath(); ctx.moveTo(sx(x0 + q * (x1 - x0) / 6), sy(-0.2 + hoch)); ctx.lineTo(sx(x0 + q * (x1 - x0) / 6), sy(-0.2)); ctx.stroke(); } }
+  else { ctx.moveTo(sx(x0 - 0.15), sy(-0.05)); ctx.lineTo(sx(x1 + 0.15), sy(-0.05)); ctx.lineTo(sx(x1 - 0.15), sy(-0.05 - hoch)); ctx.lineTo(sx(x0 + 0.15), sy(-0.05 - hoch)); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(sx(x0), sy(-0.05), (x1 - x0) * cam.s, 4); }
+  schild(b.t, sx((x0 + x1) / 2 - 0.6), sy(-0.62), 'rgba(10,14,24,.6)');
+  // Lena
+  var L = sim.L, lx, ly, pose;
+  if (L.auf === 'boot'){ lx = xB + 0.05 + (sim.phase === 'stoss' ? L.x : 0); ly = -0.05; pose = sim.phase === 'stoss' ? 'hocke' : 'stehen'; }
+  else { lx = xB * 0 + L.x + (L.x0 === undefined ? 0 : 0); ly = L.y; pose = L.auf === 'luft' ? 'springen' : 'stehen'; }
+  if (L.auf !== 'boot'){ lx = L.x + 0.05; }
+  if (L.auf === 'wasser'){ ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, wasserY + 2); ctx.clip(); person(lx, ly - 0.35, 1.6, '#C2185B', 'springen', 1, '#C98A2E'); ctx.restore();
+    if (sim.phase === 'fertig' || L.y < -0.4){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(sx(lx), wasserY, 18, Math.PI, 2 * Math.PI); ctx.stroke(); } }
+  else person(lx, ly, 1.6, '#C2185B', pose, 1, '#C98A2E');
+  if (L.auf !== 'wasser') schild('Lena', sx(lx), sy(ly + 1.85));
+  if (zeigePfeile()){
+    var Lp = pfeilLaenge(sim.F, 500);
+    pfeil(xB + 0.05, -0.12, -1, Lp, ROT, kurz('auf das Boot ', 'Boot ') + N(sim.F), true);
+    pfeil(lx, 0.75, 1, Lp, BLAU, kurz('auf Lena ', 'Lena ') + N(sim.F));
+  }
+}
+
+function stuhl(x, blick, farbe){
+  var X = sx(x), sitz = sy(0.48), fuss = sy(0.06);
+  ctx.strokeStyle = '#333'; ctx.lineWidth = Math.max(3, 0.04 * cam.s);
+  ctx.beginPath(); ctx.moveTo(X, sitz); ctx.lineTo(X, fuss); ctx.moveTo(X - 0.26 * cam.s, fuss); ctx.lineTo(X + 0.26 * cam.s, fuss); ctx.stroke();
+  ctx.fillStyle = '#222'; [-0.26, 0, 0.26].forEach(function(o){ ctx.beginPath(); ctx.arc(X + o * cam.s, sy(0.035), 0.035 * cam.s, 0, 7); ctx.fill(); });
+  rr(X - 0.24 * cam.s, sitz - 0.08 * cam.s, 0.48 * cam.s, 0.08 * cam.s, 5, farbe);
+  rr(X - blick * 0.26 * cam.s - 0.04 * cam.s, sy(1.05), 0.08 * cam.s, sitz - sy(1.05), 5, farbe);
+}
+function zeichneSeil(){
+  hintergrund(true);
+  var gB = H - BODEN;
+  fussboden('#C9B79C', '#A8957A');
+  for (var m = -2; m <= 2; m++){ ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(sx(m) - 1, gB + 5, 2, 10);
+    ctx.font = '700 12px system-ui'; ctx.textAlign = 'center'; ctx.fillText(z(m, 0) + ' m', sx(m), gB + 30); }
+  ctx.textAlign = 'left';
+  var xA = sim.xA, xB = sim.xB;
+  stuhl(xA, 1, '#2F5FB3'); stuhl(xB, -1, '#C2185B');
+  person(xA, 0.48, 1.45, '#2F5FB3', 'sitzen', 1, '#C98A2E');
+  person(xB, 0.48, 1.45, '#C2185B', 'sitzen', -1, '#3B2A1A');
+  // Seil mit Kraftmesser
+  var hA = sx(xA + 0.5), hB = sx(xB - 0.5), hy = sy(1.13);
+  var gespannt = sim.phase === 'stoss';
+  ctx.strokeStyle = '#B7791F'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(hA, hy);
+  if (gespannt || sim.phase === 'bereit') ctx.lineTo(hB, hy); else ctx.quadraticCurveTo((hA + hB) / 2, hy + 40, hB, hy);
+  ctx.stroke();
+  var km = (hA + hB) / 2, kw = 64;
+  if (hB - hA > kw + 10){
+    rr(km - kw / 2, hy - 11, kw, 22, 6, '#F5F5F5', '#555');
+    ctx.fillStyle = '#111'; ctx.font = '800 12px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(sim.phase === 'stoss' ? N(sim.F) : '0 N', km, hy + 1); ctx.textAlign = 'left';
+  }
+  schild('Anna ' + sim.mA + ' kg', sx(xA), sy(1.75)); schild('Ben ' + sim.mB + ' kg', sx(xB), sy(1.75));
+  if (sim.phase === 'bereit' || sim.phase === 'stoss'){
+    var wer = sim.wer.id; ctx.font = '800 13px system-ui'; ctx.fillStyle = '#7A2E8E'; ctx.textAlign = 'center';
+    if (wer !== 'ben') ctx.fillText('zieht!', sx(xA), sy(1.98));
+    if (wer !== 'anna') ctx.fillText('zieht!', sx(xB), sy(1.98));
+    if (wer === 'anna') ctx.fillText('hält nur fest', sx(xB), sy(1.98));
+    if (wer === 'ben') ctx.fillText('hält nur fest', sx(xA), sy(1.98));
+    ctx.textAlign = 'left';
+  }
+  if (zeigePfeile()){
+    var Lp = pfeilLaenge(sim.F, 100);
+    pfeil(xA + 0.45, 0.85, 1, Lp, BLAU, kurz('auf Anna ', 'Anna ') + N(sim.F));
+    pfeil(xB - 0.45, 0.65, -1, Lp, ROT, kurz('auf Ben ', 'Ben ') + N(sim.F), true);
+  }
+  if (sim.phase === 'fertig'){
+    ctx.setLineDash([6, 5]); ctx.lineWidth = 2.5;
+    ctx.strokeStyle = BLAU; ctx.beginPath(); ctx.moveTo(sx(-2), gB - 8); ctx.lineTo(sx(xA), gB - 8); ctx.stroke();
+    ctx.strokeStyle = ROT; ctx.beginPath(); ctx.moveTo(sx(2), gB - 8); ctx.lineTo(sx(xB), gB - 8); ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+
+function zeichneAuto(){
+  hintergrund(true);
+  var gB = H - BODEN;
+  fussboden('#B9A385', '#9C8668');
+  var br = sim.br, xb = sim.xBrett, r = 0.022, bh = 0.02;
+  var y0 = br.fest ? 0 : 2 * r;
+  // Rollen
+  if (!br.fest){
+    for (var i = -0.5; i <= 0.5; i += 0.25){
+      var rx = xb / 2 + i * 0.95;
+      ctx.fillStyle = '#C8A26A'; ctx.beginPath(); ctx.arc(sx(rx), sy(r), r * cam.s, 0, 7); ctx.fill();
+      ctx.strokeStyle = '#7A5A2E'; ctx.lineWidth = 1.5; var wkl = -xb / r;
+      ctx.beginPath(); ctx.moveTo(sx(rx), sy(r)); ctx.lineTo(sx(rx) + Math.cos(wkl) * r * cam.s, sy(r) + Math.sin(wkl) * r * cam.s); ctx.stroke();
+    }
+  } else {
+    ctx.fillStyle = '#E5E7EB'; [-0.55, 0.55].forEach(function(o){ ctx.fillRect(sx(xb + o) - 14, sy(bh) - 6, 28, bh * cam.s + 8); });
+  }
+  // Brett
+  var dick = br.id === 'schwer' ? 0.04 : bh;
+  ctx.fillStyle = br.id === 'schwer' ? '#7B5230' : '#D9B37A';
+  ctx.fillRect(sx(xb - 0.6), sy(y0 + dick), 1.2 * cam.s, dick * cam.s);
+  if (br.fest){ ctx.fillStyle = '#6B7280'; ctx.font = '700 12px system-ui'; ctx.textAlign = 'center'; ctx.fillText('Klebeband', sx(xb + 0.55), sy(0) + 18); ctx.textAlign = 'left'; }
+  // Auto
+  var xc = xb + sim.xRel, oben = y0 + dick, aw = 0.26, ah = 0.07;
+  rr(sx(xc - aw / 2), sy(oben + 0.025 + ah), aw * cam.s, ah * cam.s, 6, '#E11D48');
+  rr(sx(xc - 0.06), sy(oben + 0.025 + ah + 0.045), 0.1 * cam.s, 0.05 * cam.s, 5, '#9FD3F2');
+  ctx.fillStyle = '#1F2937';
+  [-0.08, 0.08].forEach(function(o){ ctx.beginPath(); ctx.arc(sx(xc + o), sy(oben + 0.022), 0.022 * cam.s, 0, 7); ctx.fill(); });
+  schild('Auto', sx(xc), sy(oben + 0.26)); schild(br.t, sx(xb + 0.3), sy(0) + 28, 'rgba(10,14,24,.6)');
+  if (zeigePfeile()){
+    var Lp = pfeilLaenge(sim.F, 1.5);
+    pfeil(xc - 0.08, oben - 0.005, -1, Lp, ROT, 'auf das Brett ' + z(sim.F, 1) + ' N', true);
+    pfeil(xc + 0.04, oben + 0.13, 1, Lp, BLAU, 'auf das Auto ' + z(sim.F, 1) + ' N');
+  }
+}
+
+function zeichne(){
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  if (!sim) return;
+  kamera();
+  var s = sim.station;
+  if (s === 'wurf') zeichneWurf(); else if (s === 'boot') zeichneBoot(); else if (s === 'seil') zeichneSeil(); else zeichneAuto();
+  if (standbild > 0){ schild(kurz('Standbild: Beide Kräfte wirken gleichzeitig', 'Standbild: beide Kräfte gleichzeitig'), W / 2, 62, '#7A2E8E'); }
+}
+
+/* ---------- Schleife ---------- */
+var letzte = performance.now();
+function loop(jetzt){
+  var dtReal = Math.min(0.05, (jetzt - letzte) / 1000); letzte = jetzt;
+  var dt = dtReal * (lupe ? 0.2 : 1), n = 4;
+  for (var i = 0; i < n; i++) schritt(dt / n);
+  zeichne();
+  requestAnimationFrame(loop);
+}
+groesse(); aufbauen(); neu(); tabelle();
+requestAnimationFrame(loop);
+})();
+</script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
