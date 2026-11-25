@@ -9,7 +9,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23BB283F'/%3E%3Cpath d='M14 50L28 14h8l14 36' fill='none' stroke='%23fff' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M32 22v28' stroke='%23FFD23F' stroke-width='4' stroke-dasharray='5 5'/%3E%3C/svg%3E">
 <style>
 :root{
-  --nacht:#070B1A; --glas:rgba(12,16,36,.80); --rand:rgba(255,255,255,.14);
+  --nacht:#070B1A; --glas:rgba(12,16,36,.82); --rand:rgba(255,255,255,.14);
   --text:#F3F5FB; --text2:#AEB6CC; --rot:#E4464E; --rot2:#BB283F; --cyan:#3FD0D4; --gelb:#FFC93C; --orange:#FFB36B;
   --ok:#2FD07F; --no:#FF5C6C;
 }
@@ -30,49 +30,73 @@ i.gs{font-style:italic}
 .leiste{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .rund{pointer-events:auto;flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--glas);border:1px solid var(--rand);text-decoration:none}
 .rund svg{width:18px;height:18px}
-.herzen{display:flex;gap:3px;font-size:20px;line-height:1;padding:0 4px}
+.herzen{display:flex;gap:3px;font-size:20px;line-height:1;padding:0 2px}
 .herzen span{transition:opacity .3s,transform .3s}
 .herzen span.weg{opacity:.18;transform:scale(.8);filter:grayscale(1)}
-.punkte{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--glas);border:1px solid var(--rand);border-radius:999px;padding:5px 12px 5px 14px;min-height:42px}
-.punkte b{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;min-width:2.2em;text-align:right}
+.effekte{display:flex;gap:4px}
+.effekte span{display:grid;place-items:center;min-width:34px;height:34px;padding:0 6px;border-radius:12px;background:var(--glas);border:1px solid var(--rand);font-size:16px;font-weight:900}
+.effekte span.schild{border-color:#7FB6FF}.effekte span.fifty{border-color:#FF9AD0}.effekte span.zeit{border-color:#B9A6FF}
+.punkte{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--glas);border:1px solid var(--rand);border-radius:999px;padding:3px 14px 3px 14px;min-height:42px;transition:border-color .3s}
+.punkte.rekord{border-color:var(--gelb);box-shadow:0 0 0 2px rgba(255,201,60,.25)}
+.punkte .zahl{display:flex;flex-direction:column;align-items:flex-end;line-height:1.05}
+.punkte b{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em}
+.punkte small{font-size:11px;font-weight:800;color:var(--text2);white-space:nowrap}
+.punkte.rekord small{color:var(--gelb)}
 .combo{display:none;font-weight:900;font-size:13px;color:#241600;background:var(--gelb);border-radius:8px;padding:1px 6px}
 .combo.an{display:inline-block}
 .karte{background:var(--glas);border:1px solid var(--rand);border-radius:20px;padding:10px 10px 10px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 18px 40px -24px #000;transition:border-color .2s,background .2s}
-.karte.ok{border-color:var(--ok);background:rgba(10,48,32,.86)}
-.karte.no{border-color:var(--no);background:rgba(60,12,22,.88)}
-.tag{display:flex;justify-content:center;align-items:center;gap:6px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);text-align:center}
-.tag .stufe{color:var(--text2);font-weight:800;letter-spacing:.04em}
-.prompt{text-align:center;font-weight:900;font-size:26px;line-height:1.2;margin:4px 4px 10px;min-height:2.5em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;text-wrap:balance}
-.prompt .gl{font-size:28px;letter-spacing:.01em;white-space:nowrap}
+.karte.ok{border-color:var(--ok);background:rgba(10,48,32,.88)}
+.karte.no{border-color:var(--no);background:rgba(60,12,22,.9)}
+.karte.profi{border-color:#FF9AD0}
+.karte.polizei{border-color:#5AA9FF}
+.karte.verdeckt .anweisung,.karte.verdeckt .gegeben,.karte.verdeckt .prompt,.karte.verdeckt .chips,.karte.verdeckt .info{visibility:hidden}
+.anweisung{text-align:center;font-weight:900;font-size:22px;line-height:1.2;white-space:nowrap;overflow:hidden;color:#fff;padding:0 4px}
+.gegeben{text-align:center;font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);height:16px;margin-top:4px}
+.prompt{text-align:center;font-weight:900;font-size:28px;line-height:1.2;margin:0 4px 10px;min-height:2.2em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;text-wrap:balance}
+.prompt .gl{font-size:30px;letter-spacing:.01em;white-space:nowrap}
 .prompt .satz{font-size:20px;font-weight:800}
 .prompt mark{background:none;color:var(--gelb);border-bottom:3px solid var(--gelb);padding:0 2px;border-radius:2px}
-.prompt .es{font-family:Nunito,sans-serif}
+.prompt .klein{font-size:17px;font-weight:800;color:var(--text2)}
 .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.chip{pointer-events:auto;position:relative;height:62px;overflow:hidden;border-radius:14px;border:2px solid rgba(63,208,212,.35);background:rgba(8,26,40,.75);
+.chip{position:relative;height:62px;overflow:hidden;border-radius:14px;border:2px solid rgba(63,208,212,.35);background:rgba(8,26,40,.75);
   display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 6px;font-weight:800;font-size:16px;line-height:1.15;
-  hyphens:manual;overflow-wrap:normal;word-break:normal;transition:border-color .15s,background .15s,transform .15s}
+  hyphens:manual;overflow-wrap:normal;word-break:normal;transition:border-color .15s,background .15s,opacity .2s}
 .chip.kurz{font-size:24px}.chip.mittel{font-size:14.5px}.chip.lang{font-size:13px;line-height:1.1}
 .chip.hier{border-color:var(--cyan);background:rgba(18,70,86,.9);box-shadow:0 0 0 2px rgba(63,208,212,.25)}
 .chip.richtig{border-color:var(--ok);background:rgba(20,110,64,.9)}
 .chip.falsch{border-color:var(--no);background:rgba(140,26,44,.9)}
 .chip.blass{opacity:.45}
+.chip.aus{opacity:.3;text-decoration:line-through;text-decoration-thickness:2px}
 .chip .t{display:block;max-width:100%}
 .chip .pf{position:absolute;top:3px;font-size:10px;opacity:.55;font-weight:900}
 .chip:nth-child(1) .pf{left:7px}.chip:nth-child(3) .pf{right:7px}
-.toast{margin-top:8px;text-align:center;font-weight:800;font-size:15px;min-height:1.4em;opacity:0;transition:opacity .25s;text-shadow:0 2px 6px #000}
+.karte.profi .chip{border-color:rgba(255,154,208,.45);background:rgba(40,10,34,.75)}
+.karte.profi .chip.hier{border-color:#FF9AD0;background:rgba(90,24,72,.9)}
+.karte.polizei .chip{border-color:rgba(90,169,255,.45);background:rgba(10,22,48,.8)}
+.karte.polizei .chip.hier{border-color:#7FB6FF;background:rgba(24,56,110,.92)}
+.info{height:62px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:15px;color:var(--text2);line-height:1.3;padding:0 8px}
+.info b{color:#fff}
+.zeile2{display:flex;align-items:center;gap:6px;margin-top:8px}
+.mission{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;background:var(--glas);border:1px solid var(--rand);border-radius:999px;padding:4px 10px;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mission.fertig{border-color:var(--ok);color:#B5F5D2}
+.mission.vorbei{opacity:.5}
+.stufe{margin-left:auto;flex:none;font-size:13px;font-weight:900;background:var(--glas);border:1px solid var(--rand);border-radius:999px;padding:4px 10px;color:var(--text2)}
+.toast{margin-top:6px;text-align:center;font-weight:800;font-size:16px;min-height:1.4em;opacity:0;transition:opacity .25s;text-shadow:0 2px 6px #000}
 .toast.an{opacity:1}
 .toast .gs{font-style:italic}
-.hinweis{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));text-align:center;font-weight:800;font-size:14px;color:var(--text2);pointer-events:none;transition:opacity .6s;text-shadow:0 2px 6px #000}
+.hinweis{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));text-align:center;font-weight:800;font-size:14px;color:var(--text2);pointer-events:none;transition:opacity .6s;text-shadow:0 2px 6px #000;padding:0 10px}
 
 /* ---------- Bildschirme ---------- */
 .schirm{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:max(14px,env(safe-area-inset-top)) 12px max(24px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,11,26,.55),rgba(7,11,26,.88) 60%)}
-.panel{width:100%;max-width:480px;margin:auto 0;background:rgba(14,18,38,.92);border:1px solid var(--rand);border-radius:26px;padding:20px 18px 18px;box-shadow:0 24px 60px -30px #000}
+#pause{background:rgba(7,11,26,.97)}
+.panel{width:100%;max-width:480px;margin:auto 0;background:rgba(14,18,38,.94);border:1px solid var(--rand);border-radius:26px;padding:20px 18px 18px;box-shadow:0 24px 60px -30px #000}
 .oben{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .ober{font-size:12.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--orange)}
 h1{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:30px;line-height:1.05;letter-spacing:-.02em;margin:4px 0 8px;
   background:linear-gradient(90deg,#fff,#FFC7CC 60%,#FF8A95);-webkit-background-clip:text;background-clip:text;color:transparent}
 h2{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:20px;margin:0 0 6px}
+h3.ab{font-size:15px;margin:16px 0 6px;font-weight:900;letter-spacing:.02em}
 .panel p{margin:6px 0;color:var(--text2)}
 .bsp{margin:14px 0 12px;border-radius:18px;padding:12px 12px 10px;background:rgba(255,255,255,.04);border:1px solid var(--rand)}
 .bsp .gl{text-align:center;font-size:30px;font-weight:900;letter-spacing:.02em;margin:0 0 8px}
@@ -84,6 +108,8 @@ h2{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:20px;margin
 .steuer{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:10px 0 4px}
 .steuer div{border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--rand);padding:8px 6px;text-align:center;font-size:13px;color:var(--text2);line-height:1.25}
 .steuer b{display:block;color:var(--text);font-size:15px;margin-bottom:2px}
+.regeln{margin:8px 0 0;padding:0;list-style:none;font-size:14px;color:var(--text2)}
+.regeln li{margin:3px 0}
 .knopf{display:block;width:100%;margin-top:14px;min-height:56px;border-radius:18px;font-weight:900;font-size:19px;color:#fff;
   background:linear-gradient(135deg,#E4464E,#BB283F);box-shadow:0 12px 26px -14px #E4464E}
 .knopf:active{transform:scale(.98)}
@@ -93,11 +119,23 @@ h2{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:20px;margin
 .bestwert{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:15px;color:var(--text2)}
 .bestwert b{color:var(--gelb);font-family:Unbounded,Nunito,sans-serif;font-weight:700}
 .klein{font-size:13px;color:var(--text2)}
+.skins{display:flex;gap:8px;flex-wrap:wrap}
+.skin{width:46px;height:46px;border-radius:50%;border:2px solid var(--rand);position:relative;display:grid;place-items:center;font-size:11px;font-weight:900;color:#fff}
+.skin.an{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+.skin.zu{filter:grayscale(.9) brightness(.55);cursor:default}
+.skin.zu::after{content:"🔒";position:absolute;font-size:15px}
+.skinname{font-size:13px;color:var(--text2);margin-top:6px;min-height:1.3em}
+.abz{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.abz button{height:46px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--rand);font-size:22px}
+.abz button.zu{filter:grayscale(1);opacity:.35}
+.abztext{font-size:13px;color:var(--text2);margin-top:6px;min-height:1.3em}
 .gross{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:56px;letter-spacing:-.03em;text-align:center;margin:4px 0 0;line-height:1.05}
 .rekord{text-align:center;font-weight:900;color:var(--gelb);min-height:1.3em;margin:4px 0}
 .werte{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
 .werte div{text-align:center;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--rand);padding:8px 4px;font-size:12.5px;color:var(--text2)}
 .werte b{display:block;font-size:20px;color:var(--text);font-family:Unbounded,Nunito,sans-serif;font-weight:700}
+.neu-liste{list-style:none;margin:8px 0 0;padding:0}
+.neu-liste li{border-radius:12px;background:rgba(255,201,60,.1);border:1px solid rgba(255,201,60,.45);padding:7px 10px;margin:6px 0;font-weight:800}
 .merke{list-style:none;margin:8px 0 0;padding:0;font-size:15px}
 .merke li{border-left:4px solid var(--orange);background:rgba(255,179,107,.08);border-radius:10px;padding:7px 10px;margin:6px 0;color:var(--text)}
 .merke .gs{font-style:italic}
@@ -125,13 +163,16 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
 .rangliste li.luecke{display:block;text-align:center;background:none;color:var(--text2)}
 
 @media (min-width:700px){
-  .prompt{font-size:30px}.prompt .gl{font-size:32px}.prompt .satz{font-size:23px}
-  .chip{font-size:18px;height:64px}.chip.mittel{font-size:16px}.chip.lang{font-size:14.5px}
+  .anweisung{font-size:26px}
+  .prompt{font-size:32px}.prompt .gl{font-size:34px}.prompt .satz{font-size:23px}
+  .chip{font-size:18px;height:64px}.chip.kurz{font-size:28px}.chip.mittel{font-size:16px}.chip.lang{font-size:14.5px}
   h1{font-size:36px}
 }
 @media (max-height:620px){
-  .prompt{font-size:21px;margin-bottom:6px}.prompt .gl{font-size:23px}.prompt .satz{font-size:17px}
-  .chip{height:50px;font-size:14.5px}.chip.mittel{font-size:13px}.chip.lang{font-size:12px}
+  .anweisung{font-size:19px}
+  .prompt{font-size:22px;margin-bottom:6px}.prompt .gl{font-size:24px}.prompt .satz{font-size:17px}
+  .chip{height:50px;font-size:14.5px}.chip.kurz{font-size:20px}.chip.mittel{font-size:13px}.chip.lang{font-size:12px}
+  .info{height:50px;font-size:13.5px}
 }
 </style>
 </head>
@@ -143,20 +184,24 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
     <div class="leiste">
       <button class="rund" id="pauseKnopf" aria-label="Pause"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="3.4" height="12" rx="1"/><rect x="11.6" y="4" width="3.4" height="12" rx="1"/></svg></button>
       <div class="herzen" id="herzen" aria-label="Leben"></div>
-      <div class="punkte"><span class="combo" id="combo">×2</span><b id="punkte">0</b></div>
+      <div class="effekte" id="effekte"></div>
+      <div class="punkte" id="punkteBox"><span class="combo" id="combo">×2</span><span class="zahl"><b id="punkte">0</b><small id="rekordKlein"></small></span></div>
     </div>
     <div class="karte" id="karte">
-      <div class="tag"><span id="tag">Größe → Größensymbol</span><span class="stufe" id="stufe"></span></div>
+      <div class="anweisung" id="anweisung">&nbsp;</div>
+      <div class="gegeben" id="gegeben"></div>
       <div class="prompt" id="prompt"></div>
       <div class="chips" id="chips">
-        <button class="chip" data-l="0"><span class="pf">◀</span><span class="t"></span></button>
-        <button class="chip" data-l="1"><span class="t"></span></button>
-        <button class="chip" data-l="2"><span class="pf">▶</span><span class="t"></span></button>
+        <div class="chip"><span class="pf">◀</span><span class="t"></span></div>
+        <div class="chip"><span class="t"></span></div>
+        <div class="chip"><span class="pf">▶</span><span class="t"></span></div>
       </div>
+      <div class="info hidden" id="info"></div>
     </div>
+    <div class="zeile2"><span class="mission" id="mission"></span><span class="stufe" id="stufe">Stufe 1</span></div>
     <div class="toast" id="toast"></div>
   </div>
-  <div class="hinweis hidden" id="hinweis">Wischen, Pfeiltasten oder Antwort antippen</div>
+  <div class="hinweis hidden" id="hinweis"></div>
 
   <!-- Start -->
   <div class="schirm" id="start">
@@ -175,13 +220,25 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
         </dl>
       </div>
       <div class="steuer">
-        <div><b>◀ ▶</b>Pfeiltasten oder A / D</div>
-        <div><b>Wischen</b>nach links oder rechts</div>
-        <div><b>Antippen</b>die Antwort oben</div>
+        <div><b>Wischen</b>nach links oder rechts: lenken</div>
+        <div><b>Tippen</b>aufs Spielfeld: schießen</div>
+        <div><b>Tastatur</b>◀ ▶ lenken, Leertaste schießen</div>
       </div>
-      <p class="klein">3 Leben · richtige Tore in Serie geben ×2 bis ×5 · ⚡ sammeln gibt Extrapunkte · alle 8 richtigen in Serie ein Herz zurück.</p>
+      <ul class="regeln">
+        <li>❤️ 3 Leben · richtige Tore in Serie geben ×2 bis ×5 · alle 8 in Serie ein Herz zurück</li>
+        <li>⚡ +2 · Gold-⚡ +10 · ganze Reihe +5 · 🎯 jede Runde eine Mission</li>
+        <li>Power-ups: 🛡 Schild · ✂️ 50:50 · ⏳ Zeitlupe</li>
+        <li>Ab Stufe 3: 🚨 Einheiten-Polizei · ab Stufe 6: 🧠 Profi – schießen und fahren</li>
+        <li>Pause verdeckt die Frage und kostet die Serie.</li>
+      </ul>
       <div class="bestwert"><span>Dein Bestwert</span><b id="bestStart">0</b></div>
       <button class="knopf" id="losKnopf">Los geht's</button>
+      <h3 class="ab">Dein Gleiter</h3>
+      <div class="skins" id="skins"></div>
+      <div class="skinname" id="skinName"></div>
+      <h3 class="ab">Abzeichen <span class="klein" id="abzZahl"></span></h3>
+      <div class="abz" id="abzeichen"></div>
+      <div class="abztext" id="abzText">Tippe auf ein Abzeichen.</div>
       <div class="zeile">
         <button class="knopf zweit" id="tonKnopf" aria-pressed="false">🔇 Ton aus</button>
         <button class="knopf zweit" id="listeKnopf">🏆 Bestenliste</button>
@@ -194,7 +251,7 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
   <div class="schirm hidden" id="pause">
     <div class="panel">
       <h2>Pause</h2>
-      <p>Die Runde wartet auf dich.</p>
+      <p>Die Frage ist verdeckt. Wenn du weitermachst, kommt eine neue Frage – deine Serie fängt wieder bei ×1 an.</p>
       <button class="knopf" id="weiterKnopf">Weiter</button>
       <button class="knopf zweit" id="abbruchKnopf">Runde beenden</button>
     </div>
@@ -211,6 +268,7 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
         <div><b id="wSerie">0</b>beste Serie</div>
         <div><b id="wStufe">1</b>Stufe</div>
       </div>
+      <div id="neuPlatz"></div>
       <div id="merkPlatz"></div>
       <div id="bestenPlatz"></div>
       <button class="knopf" id="nochmalKnopf">Nochmal</button>
@@ -231,7 +289,7 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
      fallenSym/fallenEs/fallenEin: typische Verwechslungen (werden gern als falsche Antwort genommen).
      nieSym/nieEs/nieName: darf nie als falsche Antwort auftauchen (wäre mehrdeutig).
      fam: Familie (z. B. alle Kräfte) – innerhalb der Familie wird nicht gegeneinander gefragt.
-     wert: Beispielwert für „Was ist das Markierte?“ – [Zahl, Einheitensymbol, Einheit ausgeschrieben].
+     wert: Beispielwert für „Was ist das Unterstrichene?“ – [Zahl, Einheitensymbol, Einheit ausgeschrieben].
    KLASSEN: welche Größen eine Klasse kennt (?k=p9 usw.) und welche Bestenliste sie nutzt.
    ===================================================================== */
 var GROESSEN = [
@@ -284,7 +342,7 @@ var KLASSEN = {
 
 /* Fragearten und wie oft sie kommen (Gewicht) */
 var ARTEN = [
-  { typ:'begriff', w:26 },   // „Was ist das Markierte?“ – Größe / Größensymbol / Einheit / Einheitensymbol / Zahlenwert
+  { typ:'begriff', w:26 },   // „Was ist das Unterstrichene?“ – Größe / Größensymbol / Einheit / Einheitensymbol / Zahlenwert
   { typ:'g2sym',   w:13 },   // Größe → Größensymbol
   { typ:'sym2g',   w:12 },   // Größensymbol → Größe
   { typ:'g2es',    w:14 },   // Größe → Einheitensymbol
@@ -294,7 +352,65 @@ var ARTEN = [
   { typ:'es2g',    w:10 }    // Einheitensymbol → Größe
 ];
 
-var SPIEL = { V0:11, VPLUS:0.42, VMAX:18.5, ZFERN:70, ZP:5, CAMH:1.4, LEBEN:3, HERZ_SERIE:8 };
+var SPIEL = { V0:11, VPLUS:0.42, VMAX:18.5, ZFERN:70, ZP:5, CAMH:1.4, LEBEN:3, HERZ_SERIE:8,
+  POLIZEI_AB:3, POLIZEI_ALLE:8, PROFI_AB:6, PROFI_ALLE:3, KUGEL_CHANCE:0.2, GOLD_CHANCE:0.12 };
+
+/* Große Anweisung oben auf der Karte und was gegeben ist */
+var ANW = {
+  g2sym:  ['Nenne das Größensymbol.', 'Größe'],
+  sym2g:  ['Nenne die Größe.', 'Größensymbol'],
+  g2es:   ['Nenne das Einheitensymbol.', 'Größe'],
+  g2ein:  ['Nenne die Einheit.', 'Größe'],
+  es2ein: ['Nenne die Einheit.', 'Einheitensymbol'],
+  ein2es: ['Nenne das Einheitensymbol.', 'Einheit'],
+  es2g:   ['Nenne die Größe.', 'Einheitensymbol'],
+  begriff:['Was ist das Unterstrichene?', '']
+};
+
+/* Einheiten-Polizei: richtig und falsch geschriebene Einheitensymbole (zu = zugehörige richtige Einheit) */
+var POLIZEI = {
+  richtig: ['m','s','kg','N','J','W','Pa','K','°C','A','m³','m²','m/s','km/h','kJ','h','min','g','bar','hPa','cm³','kW'],
+  falsch: [ {t:'M',zu:'m'}, {t:'sek',zu:'s'}, {t:'sec',zu:'s'}, {t:'Kg',zu:'kg'}, {t:'KG',zu:'kg'}, {t:'n',zu:'N'}, {t:'j',zu:'J'},
+    {t:'w',zu:'W'}, {t:'pa',zu:'Pa'}, {t:'PA',zu:'Pa'}, {t:'°K',zu:'K'}, {t:'K°',zu:'K'}, {t:'°c',zu:'°C'}, {t:'C°',zu:'°C'},
+    {t:'Amp',zu:'A'}, {t:'m3',zu:'m³'}, {t:'qm',zu:'m²'}, {t:'m2',zu:'m²'}, {t:'ms',zu:'m/s'}, {t:'kmh',zu:'km/h'}, {t:'Km/h',zu:'km/h'},
+    {t:'KJ',zu:'kJ'}, {t:'Std',zu:'h'}, {t:'Min',zu:'min'}, {t:'gr',zu:'g'}, {t:'Bar',zu:'bar'}, {t:'hpa',zu:'hPa'}, {t:'ccm',zu:'cm³'}, {t:'KW',zu:'kW'} ]
+};
+
+/* Gleiter-Farben: werden mit dem Bestwert freigeschaltet */
+var SKINS = [
+  { id:'rot',    name:'Feuerrot', ab:0,    c:['#FF7A84','#E4464E','#8E1F36'], f:'#6E1A33' },
+  { id:'petrol', name:'Petrol',   ab:300,  c:['#7FF0EE','#15A0A2','#0B5566'], f:'#0B3B47' },
+  { id:'lila',   name:'Ultraviolett', ab:600, c:['#D7A6FF','#8E3BA6','#4A1F6E'], f:'#3A1656' },
+  { id:'gold',   name:'Gold',     ab:1000, c:['#FFF1A8','#F2B417','#9A6A00'], f:'#6E4A00' },
+  { id:'neon',   name:'Neon',     ab:1500, c:['#B8FFD6','#2FD07F','#0E6B3E'], f:'#0B4A2C' },
+  { id:'nacht',  name:'Tarnkappe', ab:2500, c:['#9AA4BF','#3B435C','#151A2B'], f:'#0B0E18' }
+];
+
+/* Abzeichen (bleiben auf dem Gerät gespeichert) */
+var ABZEICHEN = [
+  { id:'start',    i:'🚀', name:'Erster Start',     text:'Spiele deine erste Runde.' },
+  { id:'kelvin',   i:'🌡️', name:'Kelvin-Kenner',    text:'5 Fragen zu Temperaturen in einer Runde richtig.' },
+  { id:'einheit',  i:'📏', name:'Einheiten-Profi',  text:'10 Fragen zu Einheiten in einer Runde richtig.' },
+  { id:'schuetze', i:'🎯', name:'Scharfschütze',    text:'5 richtige Treffer in einer Runde.' },
+  { id:'polizei',  i:'🚨', name:'Polizei-Chef',     text:'Eine Einheiten-Polizei-Welle ohne Fehler.' },
+  { id:'serie',    i:'🔥', name:'Unaufhaltsam',     text:'Eine 15er-Serie.' },
+  { id:'profi',    i:'🧠', name:'Profi',            text:'Stufe 6 erreichen.' },
+  { id:'tausend',  i:'💯', name:'Tausender',        text:'1000 Punkte in einer Runde.' },
+  { id:'perfekt',  i:'✨', name:'Perfekte Reihe',   text:'Eine ⚡-Reihe komplett einsammeln.' },
+  { id:'mission',  i:'🏅', name:'Missionar',        text:'5 Missionen schaffen (insgesamt).' }
+];
+
+/* Missionen: zu Beginn jeder Runde wird eine gezogen */
+var MISSIONEN = [
+  { id:'energie', text:'Sammle 20 ⚡',                       ziel:20 },
+  { id:'einheit', text:'5 Fragen zu Einheiten richtig',      ziel:5 },
+  { id:'symbol',  text:'5 Fragen zu Größensymbolen richtig', ziel:5 },
+  { id:'begriff', text:'4× „Was ist das Unterstrichene?“ richtig', ziel:4 },
+  { id:'serie',   text:'Schaffe eine 8er-Serie',             ziel:8 },
+  { id:'fehlerfrei', text:'Erreiche Stufe 3 ohne Fehler',    ziel:3 },
+  { id:'kugel',   text:'Sammle 2 Power-ups',                 ziel:2 },
+  { id:'gold',    text:'Sammle ein Gold-⚡',                 ziel:1 }
+];
 
 /* ===================================================================== */
 var K = (function(){ var m=/[?&]k=([a-z0-9]+)/i.exec(location.search); var k=m&&m[1].toLowerCase(); return KLASSEN[k]?k:'p9'; })();
@@ -456,7 +572,7 @@ var MACHER = {
     var alle=['Größe','Größensymbol','Einheit','Einheitensymbol','Zahlenwert'];
     var art2={ 'Größe':'die Größe','Größensymbol':'das Größensymbol','Einheit':'die Einheit','Einheitensymbol':'das Einheitensymbol','Zahlenwert':'der Zahlenwert' };
     var fa=falsche(f.r,PARTNER[f.r],alle,[]);
-    var q=bauFrage('begriff',g,'Was ist das Markierte?',f.p,f.r,fa,'In „'+esc(f.text)+'“ ist „'+esc(f.teil)+'“ '+art2[f.r]+'.');
+    var q=bauFrage('begriff',g,'Was ist das Unterstrichene?',f.p,f.r,fa,'In „'+esc(f.text)+'“ ist „'+esc(f.teil)+'“ '+art2[f.r]+'.');
     if(q) q.antw=q.antw.map(function(a){ return a.replace('Größensymbol','Größen|symbol').replace('Einheitensymbol','Einheiten|symbol'); });
     return q;
   }
@@ -488,20 +604,33 @@ function merkVerlauf(id){ verlauf.push(id); var max=Math.min(6,Math.max(1,POOL.l
    ===================================================================== */
 var cv=$('cv'), ctx=cv.getContext('2d');
 var W=0,H=0,DPR=1,cx=0,yh=0,yp=0,FY=1,FX=1, hintergrund=null;
-var modus='start';            // start | lauf | pause | vorbei
-var st=null, zeit=0;
+var modus='start';            // start | lauf | pause | countdown | vorbei
+var st=null, zeit=0, countdown=0, aidZaehler=0, naechsteArt=null;
 var SPEICHER='groessen-runner.v1.'+K;
 var daten=(function(){ try{ return JSON.parse(lsGet(SPEICHER))||{}; }catch(e){ return {}; } })();
+if(!daten.abz||typeof daten.abz!=='object') daten.abz={};
+daten.missionen=+daten.missionen||0;
 function speichern(){ lsSet(SPEICHER,JSON.stringify(daten)); }
 var tonAn=!!daten.ton;
+var TOUCH=!!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+var STEUER_TEXT=TOUCH?'Wischen = lenken · Tippen = schießen':'◀ ▶ = lenken · Leertaste = schießen';
+
+function skinAktuell(){ var s=SKINS.filter(function(x){ return x.id===daten.skin; })[0]; if(!s||(daten.best||0)<s.ab) s=SKINS[0]; return s; }
 
 function neueRunde(){
   verlauf=[]; wiederholen=[];
-  st={ punkte:0, leben:SPIEL.LEBEN, serie:0, besteSerie:0, richtig:0, falsch:0, v:SPIEL.V0, weg:0,
-       tore:[], energie:[], teilchen:[], popups:[], spur:0, px:0, frage:null, naechste:0.8,
-       wackeln:0, fehler:[], vorbeiNach:0, feedback:0 };
+  var ms=MISSIONEN.filter(function(m){ return m.id!==daten.letzteMission; }), m=pick(ms);
+  daten.letzteMission=m.id; speichern();
+  st={ punkte:0, leben:SPIEL.LEBEN, serie:0, besteSerie:0, richtig:0, falsch:0, v:SPIEL.V0, weg:0, spur:0, px:0,
+       tore:[], ziele:[], drohnen:[], energie:[], kugeln:[], schuesse:[], fahnen:[], teilchen:[], popups:[],
+       aufgabe:null, naechste:0.8, wackeln:0, fehler:[], vorbeiNach:0, cool:0,
+       schild:false, fifty:false, zeitlupe:0, nr:0, seitPolizei:SPIEL.POLIZEI_ALLE, reihen:{}, reihenNr:0,
+       zaehl:{ energie:0, einheit:0, symbol:0, begriff:0, kugel:0, gold:0, temp:0, treffer:0 },
+       mission:{ def:m, stand:0, fertig:false, vorbei:false },
+       rekordAlt:daten.best||0, rekordGeknackt:false, neueAbz:[], stufeAlt:1, spurGold:0 };
 }
 function stufe(){ return 1+Math.floor((st?st.richtig:0)/6); }
+function multi(){ return 1+Math.min(4,Math.floor(st.serie/4)); }
 
 /* ---------- Geometrie ---------- */
 function groesse(){
@@ -509,9 +638,8 @@ function groesse(){
   W=Math.max(200,r.width); H=Math.max(200,r.height);
   DPR=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
-  var kb=0, hud=$('hud');
-  if(!hud.classList.contains('hidden')){ kb=$('karte').getBoundingClientRect().bottom-r.top; }
-  else kb=H*0.30;
+  var kb, hud=$('hud');
+  if(!hud.classList.contains('hidden')) kb=$('karte').getBoundingClientRect().bottom-r.top; else kb=H*0.30;
   yh=Math.min(H*0.58,Math.max(kb+18,H*0.36));
   yp=H-Math.max(64,H*0.11);
   cx=W/2;
@@ -530,10 +658,8 @@ function baueHintergrund(){
   var g=c.createLinearGradient(0,0,0,yh);
   g.addColorStop(0,'#060918'); g.addColorStop(0.55,'#170C2C'); g.addColorStop(0.85,'#4A1236'); g.addColorStop(1,'#8E2240');
   c.fillStyle=g; c.fillRect(0,0,W,yh+4);
-  // Sterne
   var seed=7; function zf(){ seed=(seed*9301+49297)%233280; return seed/233280; }
   for(var i=0;i<Math.round(W*yh/2600);i++){ c.fillStyle='rgba(255,255,255,'+(0.25+zf()*0.6).toFixed(2)+')'; var s=zf()<0.12?1.8:1; c.fillRect(zf()*W,zf()*yh*0.75,s,s); }
-  // Sonne
   var R=Math.min(W*0.2,yh*0.42), sy=yh-R*0.25;
   var gs=c.createLinearGradient(0,sy-R,0,sy+R*0.3); gs.addColorStop(0,'#FFE08A'); gs.addColorStop(0.5,'#FF8A5C'); gs.addColorStop(1,'#E4464E');
   c.save(); c.beginPath(); c.arc(cx,sy,R,0,Math.PI*2); c.clip();
@@ -543,7 +669,6 @@ function baueHintergrund(){
   c.restore();
   var glow=c.createRadialGradient(cx,sy,R*0.6,cx,sy,R*2.2); glow.addColorStop(0,'rgba(255,120,110,.22)'); glow.addColorStop(1,'rgba(255,120,110,0)');
   c.fillStyle=glow; c.fillRect(0,0,W,yh);
-  // Skyline
   seed=3; var x=0;
   while(x<W){
     var bw=14+zf()*38, bh=(0.08+zf()*0.22)*yh*(Math.abs(x+bw/2-cx)<R*1.1?0.45:1);
@@ -555,55 +680,53 @@ function baueHintergrund(){
   c.fillStyle='rgba(255,92,122,.75)'; c.fillRect(0,yh-1.5,W,1.5);
 }
 
-/* ---------- Zeichnen ---------- */
+/* =====================================================================
+   ZEICHNEN
+   ===================================================================== */
 function linie(x1,y1,x2,y2,farbe,breite){ ctx.strokeStyle=farbe; ctx.lineWidth=breite; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
 function sichtbar(z){ return Math.max(0,Math.min(1,(SPIEL.ZFERN+6-z)/14)); }
+function rundRechteck(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); }
 
 function zeichneBoden(){
   var g=ctx.createLinearGradient(0,yh,0,H); g.addColorStop(0,'#1A0B24'); g.addColorStop(0.25,'#0D0B1E'); g.addColorStop(1,'#070915');
   ctx.fillStyle=g; ctx.fillRect(0,yh,W,H-yh);
   var weg=st?st.weg:zeit*6;
-  // Gitter quer
   var abst=4, off=weg%abst;
   for(var n=1;n<26;n++){
     var z=n*abst-off; if(z<0.8) continue;
     var y=bodenY(z), a=Math.max(0,Math.min(1,(80-z)/60))*0.5;
     linie(0,y,W,y,'rgba(228,70,78,'+a.toFixed(3)+')',z<8?1.5:1);
   }
-  // Gitter längs
   var xs=[-2.4,-3.6,-5,-7,-9.5,-13,-18,2.4,3.6,5,7,9.5,13,18];
   for(var i=0;i<xs.length;i++){ var a1=P(xs[i],0,0.9), a2=P(xs[i],0,90); linie(a1[0],a1[1],a2[0],a2[1],'rgba(228,70,78,.28)',1); }
-  // Fahrbahn
   var l1=P(-1.5,0,0.9), r1=P(1.5,0,0.9), l2=P(-1.5,0,90), r2=P(1.5,0,90);
   var gb=ctx.createLinearGradient(0,yh,0,H); gb.addColorStop(0,'rgba(30,40,80,.5)'); gb.addColorStop(1,'rgba(22,30,62,.92)');
   ctx.fillStyle=gb; ctx.beginPath(); ctx.moveTo(l1[0],l1[1]); ctx.lineTo(l2[0],l2[1]); ctx.lineTo(r2[0],r2[1]); ctx.lineTo(r1[0],r1[1]); ctx.closePath(); ctx.fill();
-  // Ränder (mit Schein)
-  [[-1.5],[1.5]].forEach(function(e){ var a=P(e[0],0,0.9), b=P(e[0],0,90);
-    linie(a[0],a[1],b[0],b[1],'rgba(255,92,122,.25)',7); linie(a[0],a[1],b[0],b[1],'#FF5C7A',2.2); });
-  // Spurmarkierung
+  var rand=(st && st.serie>=10)?'255,201,60':'255,92,122';
+  [-1.5,1.5].forEach(function(e){ var a=P(e,0,0.9), b=P(e,0,90);
+    linie(a[0],a[1],b[0],b[1],'rgba('+rand+',.25)',7); linie(a[0],a[1],b[0],b[1],'rgb('+rand+')',2.2); });
   var d=3, o=weg%d;
   for(var m=0;m<30;m++){
     var z1=m*d-o+1.2, z2=z1+1.3; if(z2<1) continue; if(z1<1) z1=1;
     [-0.5,0.5].forEach(function(xx){ var p1=P(xx,0,z1), p2=P(xx,0,z2); linie(p1[0],p1[1],p2[0],p2[1],'rgba(63,208,212,'+(0.85*Math.min(1,(75-z1)/40)).toFixed(3)+')',Math.max(1,6/z1*1.5)); });
   }
-  // Leuchtmasten
   var mo=weg%8;
   for(var q=12;q>=0;q--){
-    var z=q*8-mo+2; if(z<1.3) continue;
+    var zz=q*8-mo+2; if(zz<1.3) continue;
     [-2.1,2.1].forEach(function(xx){
-      var f=P(xx,0,z), k=P(xx,1.5,z), a=sichtbar(z);
-      linie(f[0],f[1],k[0],k[1],'rgba(140,150,190,'+(0.6*a).toFixed(3)+')',Math.max(1,FX/z*0.04));
+      var f=P(xx,0,zz), k=P(xx,1.5,zz), a=sichtbar(zz);
+      linie(f[0],f[1],k[0],k[1],'rgba(140,150,190,'+(0.6*a).toFixed(3)+')',Math.max(1,FX/zz*0.04));
       ctx.fillStyle='rgba(63,208,212,'+(0.95*a).toFixed(3)+')';
-      ctx.beginPath(); ctx.arc(k[0],k[1],Math.max(1.2,FX/z*0.07),0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(k[0],k[1],Math.max(1.2,FX/zz*0.07),0,Math.PI*2); ctx.fill();
       ctx.fillStyle='rgba(63,208,212,'+(0.18*a).toFixed(3)+')';
-      ctx.beginPath(); ctx.arc(k[0],k[1],Math.max(3,FX/z*0.22),0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(k[0],k[1],Math.max(3,FX/zz*0.22),0,Math.PI*2); ctx.fill();
     });
   }
 }
 
-/* Text auf Toren: kleiner werden, bei Bedarf zweizeilig */
+/* Text auf Toren und Zielen: kleiner werden, bei Bedarf zweizeilig */
 function textBreite(t,px){
-  var w=0; teile(t).forEach(function(s){ ctx.font=(s.sub?'800 '+(px*0.66).toFixed(1):'800 '+px.toFixed(1))+'px Nunito, sans-serif'; w+=ctx.measureText(s.s).width; }); return w;
+  var w=0; teile(t).forEach(function(s){ ctx.font='800 '+(s.sub?px*0.66:px).toFixed(1)+'px Nunito, sans-serif'; w+=ctx.measureText(s.s).width; }); return w;
 }
 function textZeile(t,x,y,px){
   var w=textBreite(t,px), xx=x-w/2;
@@ -631,84 +754,161 @@ function textImRahmen(t,x,y,bw,bh){
   });
   if(!beste||beste.px<5.5) return;
   ctx.textBaseline='middle';
-  var hoehe=beste.z.length*beste.px*1.12, y0=y-hoehe/2+beste.px*0.56;
+  var y0=y-beste.z.length*beste.px*1.12/2+beste.px*0.56;
   beste.z.forEach(function(l,i){ textZeile(l,x,y0+i*beste.px*1.12,beste.px); });
 }
 
 function zeichneTor(tor){
-  var z=tor.z; if(z<1.05) return;
+  var z=tor.z; if(z<1.05 || z>SPIEL.ZFERN+6) return;
   var a=sichtbar(z)*Math.min(1,(z-1.05)/1.2+0.15);
   for(var i=0;i<3;i++){
     var xm=i-1, b=0.43;
     var fl=P(xm-b,0,z), fr=P(xm+b,0,z), ol=P(xm-b,1.22,z), or=P(xm+b,1.22,z), ul=P(xm-b,0.6,z);
-    var farbe='63,208,212', fuell='rgba(10,24,44,'+(0.82*a).toFixed(3)+')';
+    var farbe='63,208,212', fuell='rgba(10,24,44,'+(0.82*a).toFixed(3)+')', ta=1;
     if(tor.erledigt){
       if(i===tor.ok){ farbe='47,208,127'; fuell='rgba(16,90,52,'+(0.85*a).toFixed(3)+')'; }
       else if(i===tor.gewaehlt){ farbe='255,92,108'; fuell='rgba(120,20,36,'+(0.85*a).toFixed(3)+')'; }
-      else { farbe='120,130,160'; }
-    } else if(i===st.spur+1 && z<SPIEL.ZFERN*0.6){ farbe='120,240,244'; }
+      else farbe='120,130,160';
+    } else if(i===tor.aus){ farbe='90,100,120'; ta=0.3; }
+    else if(i===st.spur+1 && z<SPIEL.ZFERN*0.6){ farbe='120,240,244'; }
     var lw=Math.max(1,FX/z*0.035);
-    // Pfosten
     linie(fl[0],fl[1],ol[0],ol[1],'rgba('+farbe+','+a.toFixed(3)+')',lw);
     linie(fr[0],fr[1],or[0],or[1],'rgba('+farbe+','+a.toFixed(3)+')',lw);
-    // Tafel
     var bx=ol[0], by=ol[1], bw=or[0]-ol[0], bh=ul[1]-ol[1];
     ctx.fillStyle=fuell; ctx.fillRect(bx,by,bw,bh);
     ctx.strokeStyle='rgba('+farbe+','+(a*0.35).toFixed(3)+')'; ctx.lineWidth=lw*3.2; ctx.strokeRect(bx,by,bw,bh);
     ctx.strokeStyle='rgba('+farbe+','+a.toFixed(3)+')'; ctx.lineWidth=lw; ctx.strokeRect(bx,by,bw,bh);
-    // Lichtvorhang
     ctx.fillStyle='rgba('+farbe+','+(a*0.07).toFixed(3)+')'; ctx.fillRect(fl[0],ul[1],fr[0]-fl[0],fl[1]-ul[1]);
-    if(bh>9){ ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; textImRahmen(tor.q.antw[i],bx+bw/2,by+bh/2,bw,bh); }
+    if(bh>9){ ctx.fillStyle='rgba(255,255,255,'+(a*ta).toFixed(3)+')'; textImRahmen(tor.q.antw[i],bx+bw/2,by+bh/2,bw,bh); }
+    if(i===tor.aus && !tor.erledigt){ linie(bx+bw*0.15,by+bh*0.15,bx+bw*0.85,by+bh*0.85,'rgba(255,92,108,'+(a*0.8).toFixed(3)+')',lw*1.5); linie(bx+bw*0.85,by+bh*0.15,bx+bw*0.15,by+bh*0.85,'rgba(255,92,108,'+(a*0.8).toFixed(3)+')',lw*1.5); }
   }
+}
+
+function zeichneZiele(r){
+  var z=r.z; if(z<1.2 || z>SPIEL.ZFERN+6) return;
+  var a=sichtbar(z);
+  for(var i=0;i<3;i++){
+    if(r.erledigt && i===r.getroffen) continue;
+    var schweb=0.06*Math.sin(zeit*3+i*2);
+    var p=P(i-1,1.55+schweb,z), rad=FX/z*0.34;
+    var farbe='255,154,208';
+    if(r.erledigt) farbe=(i===r.ok)?'47,208,127':'120,130,160';
+    else if(i===st.spur+1) farbe='255,200,235';
+    ctx.fillStyle='rgba('+farbe+','+(0.14*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],rad*1.35,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(30,8,28,'+(0.85*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],rad,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba('+farbe+','+a.toFixed(3)+')'; ctx.lineWidth=Math.max(1,rad*0.09);
+    ctx.beginPath(); ctx.arc(p[0],p[1],rad,0,Math.PI*2); ctx.stroke();
+    ctx.lineWidth=Math.max(0.6,rad*0.04); ctx.beginPath(); ctx.arc(p[0],p[1],rad*0.82,0,Math.PI*2); ctx.stroke();
+    // Fadenkreuz-Striche
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){ linie(p[0]+d[0]*rad*0.9,p[1]+d[1]*rad*0.9,p[0]+d[0]*rad*1.18,p[1]+d[1]*rad*1.18,'rgba('+farbe+','+a.toFixed(3)+')',Math.max(1,rad*0.07)); });
+    if(rad>7){ ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; textImRahmen(r.q.antw[i],p[0],p[1],rad*1.5,rad*1.15); }
+  }
+}
+
+function zeichneDrohne(d){
+  var z=d.z; if(z<1.2 || d.erledigt&&d.getroffen || z>SPIEL.ZFERN+6) return;
+  var a=sichtbar(z), schweb=0.05*Math.sin(zeit*4+d.z);
+  var ol=P(d.spur-0.45,1.08+schweb,z), ur=P(d.spur+0.45,0.5+schweb,z);
+  var x=ol[0], y=ol[1], w=ur[0]-ol[0], h=ur[1]-ol[1], r=Math.min(w,h)*0.22;
+  var schatten=P(d.spur,0,z);
+  ctx.fillStyle='rgba(90,169,255,'+(0.18*a).toFixed(3)+')'; ctx.beginPath(); ctx.ellipse(schatten[0],schatten[1],w*0.45,w*0.09,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(10,18,40,'+(0.9*a).toFixed(3)+')'; rundRechteck(x,y,w,h,r); ctx.fill();
+  ctx.strokeStyle='rgba(90,169,255,'+a.toFixed(3)+')'; ctx.lineWidth=Math.max(1,w*0.03); rundRechteck(x,y,w,h,r); ctx.stroke();
+  var an=Math.floor(zeit*5)%2===0, lr=Math.max(1.5,w*0.07);
+  ctx.fillStyle=an?'rgba(255,70,90,'+a.toFixed(3)+')':'rgba(255,70,90,'+(0.25*a).toFixed(3)+')';
+  ctx.beginPath(); ctx.arc(x+w*0.18,y-lr*0.6,lr,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=!an?'rgba(80,150,255,'+a.toFixed(3)+')':'rgba(80,150,255,'+(0.25*a).toFixed(3)+')';
+  ctx.beginPath(); ctx.arc(x+w*0.82,y-lr*0.6,lr,0,Math.PI*2); ctx.fill();
+  if(h>8){ ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; textImRahmen(d.t,x+w/2,y+h/2,w,h); }
+}
+
+var KUGEL_FARBE={ schild:'127,182,255', fifty:'255,154,208', zeit:'185,166,255' };
+var KUGEL_ICON={ schild:'🛡', fifty:'✂️', zeit:'⏳' };
+function zeichneKugel(k){
+  var z=k.z; if(z<1.2||k.weg) return;
+  var a=sichtbar(z), p=P(k.spur,0.5+0.07*Math.sin(zeit*4+z),z), r=Math.max(2.5,FX/z*0.2), f=KUGEL_FARBE[k.typ];
+  ctx.fillStyle='rgba('+f+','+(0.2*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],r*1.8,0,Math.PI*2); ctx.fill();
+  var g=ctx.createRadialGradient(p[0]-r*0.3,p[1]-r*0.3,1,p[0],p[1],r);
+  g.addColorStop(0,'rgba(255,255,255,'+(0.95*a).toFixed(3)+')'); g.addColorStop(1,'rgba('+f+','+(0.9*a).toFixed(3)+')');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p[0],p[1],r,0,Math.PI*2); ctx.fill();
+  if(r>6){ ctx.globalAlpha=a; ctx.font=Math.round(r*1.05)+'px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(KUGEL_ICON[k.typ],p[0],p[1]+r*0.05); ctx.textAlign='left'; ctx.globalAlpha=1; }
 }
 
 function zeichneEnergie(e){
   var z=e.z; if(z<1.2||e.weg) return;
-  var a=sichtbar(z), p=P(e.spur,0.38+0.06*Math.sin(zeit*4+e.z),z), r=Math.max(2,FX/z*0.13), s=Math.abs(Math.cos(zeit*3+e.z));
-  ctx.fillStyle='rgba(255,201,60,'+(0.18*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],r*2,0,Math.PI*2); ctx.fill();
+  var a=sichtbar(z), p=P(e.spur,0.38+0.06*Math.sin(zeit*4+e.z),z), r=Math.max(2,FX/z*(e.gold?0.17:0.13)), s=Math.abs(Math.cos(zeit*3+e.z));
+  var f=e.gold?'255,236,140':'255,201,60';
+  ctx.fillStyle='rgba('+f+','+((e.gold?0.35:0.18)*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],r*2.1,0,Math.PI*2); ctx.fill();
   ctx.save(); ctx.translate(p[0],p[1]); ctx.scale(0.35+0.65*s,1);
-  ctx.fillStyle='rgba(255,201,60,'+a.toFixed(3)+')';
+  ctx.fillStyle=e.gold?'rgba(255,240,170,'+a.toFixed(3)+')':'rgba(255,201,60,'+a.toFixed(3)+')';
   ctx.beginPath(); ctx.moveTo(0,-r); ctx.lineTo(r*0.75,0); ctx.lineTo(0,r); ctx.lineTo(-r*0.75,0); ctx.closePath(); ctx.fill();
+  if(e.gold){ ctx.strokeStyle='rgba(255,255,255,'+a.toFixed(3)+')'; ctx.lineWidth=Math.max(1,r*0.12); ctx.stroke(); }
   ctx.fillStyle='rgba(60,36,0,'+(0.9*a).toFixed(3)+')';
   ctx.beginPath(); ctx.moveTo(r*0.12,-r*0.6); ctx.lineTo(-r*0.28,r*0.08); ctx.lineTo(0,r*0.08); ctx.lineTo(-r*0.12,r*0.6); ctx.lineTo(r*0.28,-r*0.08); ctx.lineTo(0,-r*0.08); ctx.closePath(); ctx.fill();
   ctx.restore();
 }
 
+function zeichneFahne(f){
+  var z=f.z; if(z<1.1) return;
+  var a=sichtbar(z), lw=Math.max(1.5,FX/z*0.05);
+  var lb=P(-1.6,0,z), lt=P(-1.6,2.0,z), rb=P(1.6,0,z), rt=P(1.6,2.0,z), bu=P(-1.6,1.55,z);
+  linie(lb[0],lb[1],lt[0],lt[1],'rgba(255,201,60,'+a.toFixed(3)+')',lw);
+  linie(rb[0],rb[1],rt[0],rt[1],'rgba(255,201,60,'+a.toFixed(3)+')',lw);
+  ctx.fillStyle='rgba(80,52,0,'+(0.85*a).toFixed(3)+')'; ctx.fillRect(lt[0],lt[1],rt[0]-lt[0],bu[1]-lt[1]);
+  ctx.strokeStyle='rgba(255,201,60,'+a.toFixed(3)+')'; ctx.lineWidth=lw; ctx.strokeRect(lt[0],lt[1],rt[0]-lt[0],bu[1]-lt[1]);
+  ctx.fillStyle='rgba(255,230,150,'+a.toFixed(3)+')'; textImRahmen('★ NEUER REKORD ★',(lt[0]+rt[0])/2,(lt[1]+bu[1])/2,rt[0]-lt[0],bu[1]-lt[1]);
+}
+
+function zeichneSchuss(s){
+  if(s.z<1.2) return;
+  var x=s.spur, a=P(x,0.55,s.z), b=P(x,0.55,s.z+1.8), lw=Math.max(1.5,FX/s.z*0.06);
+  linie(a[0],a[1],b[0],b[1],'rgba(127,240,255,.35)',lw*3);
+  linie(a[0],a[1],b[0],b[1],'#E8FFFF',lw);
+}
+
+function zeichneZielhilfe(){
+  var a=st&&st.aufgabe; if(!a||modus!=='lauf') return;
+  if(!(a.art==='polizei'||(a.art==='doppel'&&a.phase===1))) return;
+  ctx.save(); ctx.setLineDash([6,8]);
+  var p1=P(st.px,0.55,SPIEL.ZP+0.8), p2=P(st.px,0.55,SPIEL.ZP+30);
+  linie(p1[0],p1[1],p2[0],p2[1],'rgba(127,240,255,.35)',2);
+  ctx.restore();
+}
+
 function zeichneGleiter(){
-  var px=st?st.px:Math.sin(zeit*0.8)*0.35, spur=st?st.spur:0;
+  var px=st?st.px:Math.sin(zeit*0.8)*0.35, spur=st?st.spur:0, sk=skinAktuell();
   var u=FX/SPIEL.ZP, schweb=0.16+0.035*Math.sin(zeit*5.5);
   var bo=P(px,0,SPIEL.ZP), p=P(px,schweb,SPIEL.ZP);
-  // Schatten / Leuchtfleck
+  var schild=st&&st.schild;
   var sg=ctx.createRadialGradient(bo[0],bo[1],1,bo[0],bo[1],u*0.5);
   sg.addColorStop(0,'rgba(63,208,212,.55)'); sg.addColorStop(1,'rgba(63,208,212,0)');
   ctx.fillStyle=sg; ctx.beginPath(); ctx.ellipse(bo[0],bo[1],u*0.48,u*0.12,0,0,Math.PI*2); ctx.fill();
   ctx.save(); ctx.translate(p[0],p[1]); ctx.rotate((spur-px)*0.32);
   var w=u*0.62, h=u*0.3;
-  // Düsenflammen
   var fl=0.7+0.3*Math.sin(zeit*40);
   [-0.28,0.28].forEach(function(dx){
     var fg=ctx.createRadialGradient(dx*w,h*0.05,1,dx*w,h*0.05,w*0.22*fl);
     fg.addColorStop(0,'rgba(220,255,255,.95)'); fg.addColorStop(0.4,'rgba(63,208,212,.7)'); fg.addColorStop(1,'rgba(63,208,212,0)');
     ctx.fillStyle=fg; ctx.beginPath(); ctx.arc(dx*w,h*0.05,w*0.22*fl,0,Math.PI*2); ctx.fill();
   });
-  // Flügel
-  ctx.fillStyle='#6E1A33';
+  ctx.fillStyle=sk.f;
   ctx.beginPath(); ctx.moveTo(-w*0.5,-h*0.25); ctx.lineTo(-w*0.78,h*0.05); ctx.lineTo(-w*0.45,h*0.05); ctx.closePath(); ctx.fill();
   ctx.beginPath(); ctx.moveTo(w*0.5,-h*0.25); ctx.lineTo(w*0.78,h*0.05); ctx.lineTo(w*0.45,h*0.05); ctx.closePath(); ctx.fill();
-  // Rumpf
-  var rg=ctx.createLinearGradient(0,-h*1.1,0,h*0.1); rg.addColorStop(0,'#FF7A84'); rg.addColorStop(0.5,'#E4464E'); rg.addColorStop(1,'#8E1F36');
+  var rg=ctx.createLinearGradient(0,-h*1.1,0,h*0.1); rg.addColorStop(0,sk.c[0]); rg.addColorStop(0.5,sk.c[1]); rg.addColorStop(1,sk.c[2]);
   ctx.fillStyle=rg;
   ctx.beginPath();
   ctx.moveTo(-w*0.5,0); ctx.lineTo(-w*0.42,-h*0.7); ctx.quadraticCurveTo(-w*0.36,-h*1.05,-w*0.18,-h*1.08);
   ctx.lineTo(w*0.18,-h*1.08); ctx.quadraticCurveTo(w*0.36,-h*1.05,w*0.42,-h*0.7); ctx.lineTo(w*0.5,0); ctx.closePath(); ctx.fill();
-  // Kanzel
   var kg=ctx.createLinearGradient(0,-h*1.05,0,-h*0.55); kg.addColorStop(0,'#D8FDFF'); kg.addColorStop(1,'#2BA9B8');
   ctx.fillStyle=kg; ctx.beginPath(); ctx.ellipse(0,-h*0.78,w*0.22,h*0.24,0,0,Math.PI*2); ctx.fill();
-  // Rückleuchten und Streifen
   ctx.fillStyle='#FFD23F'; ctx.fillRect(-w*0.44,-h*0.38,w*0.14,h*0.1); ctx.fillRect(w*0.30,-h*0.38,w*0.14,h*0.1);
   ctx.fillStyle='rgba(255,255,255,.35)'; ctx.fillRect(-w*0.06,-h*0.5,w*0.12,h*0.45);
-  // Düsen
   ctx.fillStyle='#1B1E33'; [-0.28,0.28].forEach(function(dx){ ctx.beginPath(); ctx.ellipse(dx*w,-h*0.02,w*0.1,h*0.1,0,0,Math.PI*2); ctx.fill(); });
+  if(schild){
+    ctx.strokeStyle='rgba(127,182,255,'+(0.55+0.25*Math.sin(zeit*6)).toFixed(3)+')'; ctx.lineWidth=Math.max(2,w*0.05);
+    ctx.beginPath(); ctx.ellipse(0,-h*0.45,w*0.72,h*1.05,0,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle='rgba(127,182,255,.10)'; ctx.fill();
+  }
   ctx.restore();
 }
 
@@ -716,20 +916,25 @@ function zeichneTeilchen(dt){
   if(!st) return;
   st.teilchen=st.teilchen.filter(function(t){ return t.l>0; });
   st.teilchen.forEach(function(t){
-    t.l-=dt; t.x+=t.vx*dt; t.y+=t.vy*dt; t.vy+=320*dt;
+    t.l-=dt; t.x+=t.vx*dt; t.y+=t.vy*dt; if(t.g!==0) t.vy+=320*dt;
     ctx.fillStyle='rgba('+t.f+','+Math.max(0,t.l/t.l0).toFixed(3)+')'; ctx.fillRect(t.x-t.s/2,t.y-t.s/2,t.s,t.s);
   });
   st.popups=st.popups.filter(function(p){ return p.l>0; });
   st.popups.forEach(function(p){
     p.l-=dt; p.y-=40*dt; ctx.font='900 '+p.px+'px Unbounded, Nunito, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    var hb=ctx.measureText(p.t).width/2+8; p.x=Math.max(hb,Math.min(W-hb,p.x));
+    ctx.lineWidth=4; ctx.strokeStyle='rgba(7,11,26,'+Math.min(0.8,p.l*1.6).toFixed(3)+')'; ctx.strokeText(p.t,p.x,p.y);
     ctx.fillStyle='rgba('+p.f+','+Math.min(1,p.l*2).toFixed(3)+')'; ctx.fillText(p.t,p.x,p.y); ctx.textAlign='left';
   });
 }
 function funken(x,y,farbe,n){
-  for(var i=0;i<n && st.teilchen.length<140;i++){ var w=Math.random()*Math.PI*2, v=80+Math.random()*220;
+  for(var i=0;i<n && st.teilchen.length<180;i++){ var w=Math.random()*Math.PI*2, v=80+Math.random()*220;
     st.teilchen.push({x:x,y:y,vx:Math.cos(w)*v,vy:Math.sin(w)*v-120,l:0.5+Math.random()*0.4,l0:0.9,s:2+Math.random()*3,f:farbe}); }
 }
-function popup(t,farbe){ var p=P(st.px,0.9,SPIEL.ZP); st.popups.push({t:t,x:p[0],y:p[1],l:0.9,f:farbe,px:Math.round(Math.max(16,Math.min(26,FX/SPIEL.ZP*0.2)))}); }
+function popup(t,farbe,gross){
+  var p=P(st.px,0.9,SPIEL.ZP), px=Math.round(Math.max(15,Math.min(24,FX/SPIEL.ZP*0.18))*(gross?1.15:1));
+  st.popups.push({t:t,x:p[0],y:p[1]-st.popups.length%3*px*1.2,l:1.0,f:farbe,px:px});
+}
 
 function zeichne(dt){
   ctx.setTransform(DPR,0,0,DPR,0,0);
@@ -739,40 +944,92 @@ function zeichne(dt){
   if(hintergrund) ctx.drawImage(hintergrund,0,0,W,hintergrund.height/DPR);
   zeichneBoden();
   if(st){
-    var objekte=st.tore.map(function(t){ return {z:t.z,f:function(){ zeichneTor(t); }}; })
-      .concat(st.energie.map(function(e){ return {z:e.z,f:function(){ zeichneEnergie(e); }}; }));
-    objekte.sort(function(a,b){ return b.z-a.z; });
+    var o=[];
+    st.tore.forEach(function(t){ o.push({z:t.z,f:function(){ zeichneTor(t); }}); });
+    st.ziele.forEach(function(r){ o.push({z:r.z,f:function(){ zeichneZiele(r); }}); });
+    st.drohnen.forEach(function(d){ o.push({z:d.z,f:function(){ zeichneDrohne(d); }}); });
+    st.energie.forEach(function(e){ o.push({z:e.z,f:function(){ zeichneEnergie(e); }}); });
+    st.kugeln.forEach(function(k){ o.push({z:k.z,f:function(){ zeichneKugel(k); }}); });
+    st.fahnen.forEach(function(f){ o.push({z:f.z,f:function(){ zeichneFahne(f); }}); });
+    st.schuesse.forEach(function(s){ o.push({z:s.z,f:function(){ zeichneSchuss(s); }}); });
+    o.sort(function(a,b){ return b.z-a.z; });
+    zeichneZielhilfe();
     var vorne=[];
-    objekte.forEach(function(o){ if(o.z>=SPIEL.ZP) o.f(); else vorne.push(o); });
+    o.forEach(function(x){ if(x.z>=SPIEL.ZP) x.f(); else vorne.push(x); });
     zeichneGleiter();
-    vorne.forEach(function(o){ o.f(); });
+    vorne.forEach(function(x){ x.f(); });
   } else zeichneGleiter();
   zeichneTeilchen(dt);
+  if(modus==='countdown'){
+    var n=Math.ceil(countdown), f=countdown-Math.floor(countdown);
+    ctx.font='700 '+Math.round(Math.min(W,H)*0.22*(0.8+0.3*f))+'px Unbounded, Nunito, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(255,255,255,'+(0.4+0.6*f).toFixed(3)+')'; ctx.fillText(String(n),W/2,(yh+H)/2); ctx.textAlign='left';
+  }
   ctx.setTransform(1,0,0,1,0,0);
 }
 
 /* =====================================================================
-   ABLAUF
+   AUFGABEN
    ===================================================================== */
-function torErzeugen(){
-  var q=neueFrage();
-  var tor={ z:SPIEL.ZFERN, q:q, ok:q.ok, erledigt:false, gewaehlt:-1 };
-  st.tore.push(tor); st.frage=tor;
-  // Energie-Spur vor dem Tor
-  if(Math.random()<0.8){ var sp=rnd(3)-1; for(var i=0;i<4;i++) st.energie.push({ z:SPIEL.ZFERN-12-i*3.2, spur:sp, weg:false }); }
-  zeigeFrage(q);
+function einheitBekannt(e){ return POOL.some(function(g){ return g.es===e || (g.altEs||[]).indexOf(e)>=0; }); }
+function polizeiListen(){
+  return { r:POLIZEI.richtig.filter(einheitBekannt), f:POLIZEI.falsch.filter(function(x){ return einheitBekannt(x.zu); }) };
 }
-function zeigeFrage(q){
-  $('karte').className='karte';
-  $('tag').textContent=q.tag;
-  $('stufe').textContent='· Stufe '+stufe();
-  $('prompt').innerHTML=q.prompt;
-  var chips=document.querySelectorAll('.chip');
-  for(var i=0;i<3;i++){ var n=plain(q.antw[i]).length; chips[i].className='chip'+(n>17?' lang':n>11?' mittel':n<=4?' kurz':''); chips[i].querySelector('.t').innerHTML=weich(html(q.antw[i])); }
-  passeChips();
-  markiereSpur(); toast('');
+function macheTor(q,z,aid){
+  var t={ aid:aid, z:z, q:q, ok:q.ok, erledigt:false, gewaehlt:-1, aus:-1 };
+  if(st.fifty){ t.aus=pick([0,1,2].filter(function(i){ return i!==q.ok; })); st.fifty=false; effekteZeigen(); }
+  return t;
 }
-/* lange Wörter an Silbengrenzen trennbar machen, notfalls Schrift verkleinern */
+function starteTor(){
+  var q=neueFrage(), a={ art:'tor', aid:++aidZaehler, phase:2, q:q };
+  a.tor=macheTor(q,SPIEL.ZFERN,a.aid); st.tore.push(a.tor); return a;
+}
+function starteDoppel(){
+  var kand=POOL.filter(function(g){ return g.es && !g.keineEinheit && verlauf.indexOf(g.id)<0; });
+  if(!kand.length) kand=POOL.filter(function(g){ return g.es && !g.keineEinheit; });
+  var g,qz,qt;
+  for(var v=0;v<12;v++){ g=pick(kand); qz=MACHER.g2es(g); qt=MACHER.g2sym(g); if(qz&&qt) break; }
+  if(!qz||!qt) return null;
+  merkVerlauf(g.id);
+  var a={ art:'doppel', aid:++aidZaehler, phase:1, g:g, qz:qz, qt:qt, zielOk:null, wechsel:-1 };
+  a.ziele={ aid:a.aid, z:SPIEL.ZFERN, q:qz, ok:qz.ok, erledigt:false, getroffen:-1 };
+  a.tor=macheTor(qt,SPIEL.ZFERN+30,a.aid);
+  st.ziele.push(a.ziele); st.tore.push(a.tor);
+  return a;
+}
+function startePolizei(){
+  var L=polizeiListen(); if(L.r.length<3||L.f.length<3) return null;
+  var art=mischen([true,true,true,false,false,false]), fl=mischen(L.f), rl=mischen(L.r);
+  var a={ art:'polizei', aid:++aidZaehler, drohnen:[], erwischt:0, falschZahl:3, fehler:0 }, letzte=9;
+  for(var i=0;i<art.length;i++){
+    var spur=rnd(3)-1; if(spur===letzte && Math.random()<0.6) spur=((spur+2)%3)-1; letzte=spur;
+    var d=art[i]?{ t:fl[i].t, zu:fl[i].zu, falsch:true }:{ t:rl[i].replace(/\|/g,''), falsch:false };
+    d.aid=a.aid; d.spur=spur; d.z=SPIEL.ZFERN+i*14; d.erledigt=false; d.getroffen=false;
+    a.drohnen.push(d); st.drohnen.push(d);
+  }
+  return a;
+}
+function energieUndKugel(){
+  var sp=rnd(3)-1, id=++st.reihenNr, gold=Math.random()<SPIEL.GOLD_CHANCE?rnd(4):-1;
+  if(Math.random()<0.85){
+    st.reihen[id]={ n:4, vorbei:0, got:0 };
+    for(var i=0;i<4;i++) st.energie.push({ z:SPIEL.ZFERN-12-i*3.2, spur:sp, weg:false, reihe:id, gold:i===gold });
+  }
+  if(Math.random()<SPIEL.KUGEL_CHANCE){
+    var typen=['schild','fifty','zeit'].filter(function(t){ return !(t==='schild'&&st.schild) && !(t==='fifty'&&st.fifty) && !(t==='zeit'&&st.zeitlupe>0); });
+    if(typen.length){ var ks=((sp+1+1+rnd(2))%3)-1; st.kugeln.push({ z:SPIEL.ZFERN-28, spur:ks, typ:pick(typen), weg:false }); }
+  }
+}
+function neueAufgabe(){
+  st.nr++; var stf=stufe(), a=null, art=naechsteArt; naechsteArt=null;
+  if(art==='polizei' || (!art && stf>=SPIEL.POLIZEI_AB && st.seitPolizei>=SPIEL.POLIZEI_ALLE)) a=startePolizei();
+  if(!a && (art==='doppel' || (!art && stf>=SPIEL.PROFI_AB && st.nr%SPIEL.PROFI_ALLE===0))) a=starteDoppel();
+  if(!a) a=starteTor();
+  if(a.art==='polizei') st.seitPolizei=0; else { st.seitPolizei++; energieUndKugel(); }
+  st.aufgabe=a; zeigeKarte(a);
+}
+
+/* ---------- Karte oben ---------- */
 var TRENN=['Temperatur|änderung','Bewegungs|energie','Lage|energie','Auftriebs|kraft','Gewichts|kraft','Wirkungs|grad','Wärme|kapazität','Geschwin|digkeit','Strom|stärke','Feder|härte',
   'Kilo|gramm','Kubik|meter','Quadrat|meter','Orts|faktor','Kilo|joule'];
 function weich(h){ TRENN.forEach(function(w){ h=h.split(w.replace('|','')).join(w.replace('|','&shy;')); }); return h; }
@@ -782,60 +1039,279 @@ function passeChips(){
     var px=parseFloat(getComputedStyle(c).fontSize)||16;
     for(var k=0;k<12 && (t.scrollWidth>t.clientWidth+1 || t.offsetHeight>c.clientHeight-4) && px>10.5;k++){ px-=1; t.style.fontSize=px+'px'; }
   });
+  passeAnweisung();
+}
+function passeAnweisung(){
+  var e=$('anweisung'); e.style.fontSize='';
+  var px=parseFloat(getComputedStyle(e).fontSize)||22;
+  for(var k=0;k<14 && e.scrollWidth>e.clientWidth+1 && px>12;k++){ px-=1; e.style.fontSize=px+'px'; }
+}
+function setzeChips(q,aus){
+  var chips=document.querySelectorAll('.chip');
+  for(var i=0;i<3;i++){
+    var n=plain(q.antw[i]).length;
+    chips[i].className='chip'+(n>17?' lang':n>11?' mittel':n<=4?' kurz':'')+(i===aus?' aus':'');
+    chips[i].querySelector('.t').innerHTML=weich(html(q.antw[i]));
+  }
+}
+function zeigeKarte(a){
+  var k=$('karte'), chipsEl=$('chips'), info=$('info');
+  k.className='karte'+(a.art==='doppel'?' profi':a.art==='polizei'?' polizei':'');
+  if(a.art==='polizei'){
+    $('anweisung').textContent='🚨 Schieß falsch geschriebene Einheiten ab!';
+    $('gegeben').textContent='Einheiten-Polizei · richtige durchlassen';
+    $('prompt').innerHTML='<span class="klein">Erwischt: <b style="color:#fff">'+a.erwischt+'</b> von '+a.falschZahl+'</span>';
+    chipsEl.classList.remove('hidden'); info.classList.add('hidden');
+    a.spurText=null; polizeiChips(a);
+  } else {
+    chipsEl.classList.remove('hidden'); info.classList.add('hidden');
+    if(a.art==='doppel'){
+      var p1=a.phase===1;
+      $('anweisung').textContent=p1?'🎯 Schieß das Einheitensymbol ab!':'Fahr durch das Größensymbol!';
+      $('gegeben').textContent='Größe';
+      $('prompt').innerHTML=esc(a.g.name);
+      setzeChips(p1?a.qz:a.qt, p1?-1:a.tor.aus);
+    } else {
+      var anw=ANW[a.q.typ]||['',''];
+      $('anweisung').textContent=anw[0]; $('gegeben').textContent=anw[1];
+      $('prompt').innerHTML=a.q.prompt;
+      setzeChips(a.q,a.tor.aus);
+    }
+  }
+  $('stufe').textContent='Stufe '+stufe();
+  markiereSpur(); passeChips(); toast(a.art==='polizei'?esc(STEUER_TEXT):'');
+}
+/* Polizei: In den drei Spurfeldern steht die nächste Drohne der Spur */
+function polizeiChips(a){
+  var txt=[0,1,2].map(function(i){
+    var n=null; a.drohnen.forEach(function(d){ if(!d.erledigt && d.spur===i-1 && d.z>SPIEL.ZP && d.z<SPIEL.ZFERN+4 && (!n||d.z<n.z)) n=d; });
+    return n?n.t:'';
+  });
+  var key=txt.join('|')+'#'+st.spur;
+  if(a.spurText===key) return; a.spurText=key;
+  var chips=document.querySelectorAll('.chip');
+  for(var i=0;i<3;i++){
+    var t=txt[i], n=t.length;
+    chips[i].className='chip'+(t?(n>4?' mittel':' kurz'):' blass')+(i===st.spur+1?' hier':'');
+    chips[i].querySelector('.t').innerHTML=t?esc(t):'–';
+  }
 }
 function markiereSpur(){
+  var a=st&&st.aufgabe; if(!a) return;
+  if(a.art==='polizei'){ polizeiChips(a); return; }
+  var offen=a.art==='doppel'&&a.phase===1 ? !a.ziele.erledigt : !a.tor.erledigt;
+  if(!offen) return;
   var chips=document.querySelectorAll('.chip');
-  if(!st||!st.frage||st.frage.erledigt) return;
   for(var i=0;i<3;i++) chips[i].classList.toggle('hier',i===st.spur+1);
 }
-function auswerten(tor){
-  tor.erledigt=true; tor.gewaehlt=st.spur+1;
-  var richtig=tor.gewaehlt===tor.ok, chips=document.querySelectorAll('.chip');
-  for(var i=0;i<3;i++){ chips[i].classList.remove('hier'); if(i===tor.ok) chips[i].classList.add('richtig'); else if(i===tor.gewaehlt) chips[i].classList.add('falsch'); else chips[i].classList.add('blass'); }
-  var p=P(st.px,0.9,SPIEL.ZP);
-  if(richtig){
-    var mult=1+Math.min(4,Math.floor(st.serie/4)), plus=10*mult;
-    st.serie++; st.besteSerie=Math.max(st.besteSerie,st.serie); st.richtig++; st.punkte+=plus;
-    st.v=Math.min(SPIEL.VMAX,SPIEL.V0+SPIEL.VPLUS*st.richtig);
-    $('karte').className='karte ok'; popup('+'+plus,'140,255,190'); funken(p[0],p[1],'47,208,127',18);
-    var herz=false;
-    if(st.serie>0 && st.serie%SPIEL.HERZ_SERIE===0 && st.leben<SPIEL.LEBEN){ st.leben++; herz=true; }
-    toast(herz?'❤️ Herz zurück – '+st.serie+' in Serie!':pick(['Richtig!','Stark!','Genau!','Sauber!','Top!'])+(mult>1?' ×'+mult:''));
-    ton(660,0.09); setTimeout(function(){ ton(990,0.09); },70);
-    st.feedback=0.55;
-  } else {
-    st.serie=0; st.falsch++; st.leben--; st.wackeln=0.35;
-    $('karte').className='karte no'; funken(p[0],p[1],'255,92,108',14);
-    toast('Richtig wäre: '+html(tor.q.antw[tor.ok]));
-    if(st.fehler.map(function(f){ return f.merk; }).indexOf(tor.q.merk)<0) st.fehler.push({ merk:tor.q.merk });
-    wiederholen.push({ gid:tor.q.gid, typ:tor.q.typ, n:3 });
-    ton(180,0.22,'sawtooth'); try{ if(navigator.vibrate) navigator.vibrate(120); }catch(e){}
-    st.feedback=1.5;
-    if(st.leben<=0){ st.vorbeiNach=1.4; }
+function faerbeChips(ok,gewaehlt){
+  var chips=document.querySelectorAll('.chip');
+  for(var i=0;i<3;i++){ chips[i].classList.remove('hier'); if(i===ok) chips[i].classList.add('richtig'); else if(i===gewaehlt) chips[i].classList.add('falsch'); else chips[i].classList.add('blass'); }
+}
+
+/* ---------- Punkte, Missionen, Abzeichen ---------- */
+function punkteDazu(n){
+  st.punkte+=n;
+  if(!st.rekordGeknackt && st.rekordAlt>0 && st.punkte>st.rekordAlt){
+    st.rekordGeknackt=true; st.fahnen.push({ z:24 }); $('punkteBox').classList.add('rekord');
   }
-  st.frage=null; st.naechste=st.feedback;
+  if(st.punkte>=1000) gib('tausend');
   hudWerte();
+}
+function zaehleRichtig(q){
+  var t=q.typ;
+  if(['g2es','g2ein','es2ein','ein2es'].indexOf(t)>=0) st.zaehl.einheit++;
+  if(['g2sym','sym2g'].indexOf(t)>=0) st.zaehl.symbol++;
+  if(t==='begriff') st.zaehl.begriff++;
+  var g=GM[q.gid]; if(g && g.fam==='temp') st.zaehl.temp++;
+  if(st.zaehl.temp>=5) gib('kelvin');
+  if(st.zaehl.einheit>=10) gib('einheit');
+}
+function missionPruefen(){
+  var m=st.mission; if(m.fertig||m.vorbei){ missionZeigen(); return; }
+  var z=st.zaehl, id=m.def.id;
+  if(id==='fehlerfrei'){ if(st.falsch>0){ m.vorbei=true; missionZeigen(); return; } m.stand=stufe(); }
+  else if(id==='serie') m.stand=st.besteSerie;
+  else m.stand=z[id]||0;
+  if(m.stand>=m.def.ziel){
+    m.fertig=true; m.stand=m.def.ziel; daten.missionen++; speichern();
+    punkteDazu(50); popup('🎯 Mission +50','140,255,190',true); ton(784,0.1); setTimeout(function(){ ton(1046,0.14); },90);
+    if(daten.missionen>=5) gib('mission');
+  }
+  missionZeigen();
+}
+function missionZeigen(){
+  var m=st.mission, e=$('mission');
+  e.className='mission'+(m.fertig?' fertig':m.vorbei?' vorbei':'');
+  e.textContent=(m.fertig?'✓ ':m.vorbei?'✗ ':'🎯 ')+m.def.text+(m.fertig?' · +50':m.vorbei?'':' · '+Math.min(m.stand,m.def.ziel)+'/'+m.def.ziel);
+}
+function gib(id){
+  if(daten.abz[id]) return;
+  var a=ABZEICHEN.filter(function(x){ return x.id===id; })[0]; if(!a) return;
+  daten.abz[id]=Date.now(); speichern();
+  if(st){ st.neueAbz.push(id); if(modus==='lauf') popup(a.i+' '+a.name,'255,220,120',true); }
+}
+
+/* ---------- Auswerten ---------- */
+function torAuswerten(t){
+  t.erledigt=true; t.gewaehlt=st.spur+1;
+  var a=st.aufgabe, aktiv=a && a.aid===t.aid, ok=t.gewaehlt===t.ok, p=P(st.px,0.9,SPIEL.ZP);
+  if(aktiv) faerbeChips(t.ok,t.gewaehlt);
+  if(ok){
+    var mult=multi(), plus=10*mult;
+    st.serie++; st.besteSerie=Math.max(st.besteSerie,st.serie); st.richtig++;
+    punkteDazu(plus); zaehleRichtig(t.q);
+    $('karte').className='karte ok'; popup('+'+plus,'140,255,190'); funken(p[0],p[1],'47,208,127',18);
+    var msg=pick(['Richtig!','Stark!','Genau!','Sauber!','Top!'])+(mult>1?' ×'+mult:'');
+    var SER={5:'5er-Serie! ×2',10:'🔥 Unaufhaltsam!',15:'🔥 15er-Serie!',20:'⚡ Physik-Legende!',25:'👑 25 in Serie!',30:'👑 Unglaublich!'};
+    if(SER[st.serie]) msg=SER[st.serie];
+    if(st.serie>=15) gib('serie');
+    if(st.serie>0 && st.serie%SPIEL.HERZ_SERIE===0 && st.leben<SPIEL.LEBEN){ st.leben++; msg='❤️ Herz zurück – '+st.serie+' in Serie!'; }
+    if(aktiv && a.art==='doppel' && a.zielOk){ punkteDazu(20); msg='🧠 Doppelt richtig! +20'; popup('+20 Bonus','255,154,208',true); }
+    toast(msg); ton(660,0.09); setTimeout(function(){ ton(990,0.09); },70);
+  } else {
+    st.serie=0; st.falsch++;
+    var rettung=st.schild;
+    if(rettung){ st.schild=false; } else { st.leben--; st.wackeln=0.35; }
+    $('karte').className='karte no'; funken(p[0],p[1],'255,92,108',14);
+    toast((rettung?'🛡 Schild hat dich gerettet! ':'')+'Richtig wäre: '+html(t.q.antw[t.ok]));
+    fehlerMerk(t.q.merk);
+    wiederholen.push({ gid:t.q.gid, typ:t.q.typ, n:3 });
+    ton(180,0.22,'sawtooth'); try{ if(!rettung && navigator.vibrate) navigator.vibrate(120); }catch(e){}
+    if(st.leben<=0) st.vorbeiNach=1.4;
+  }
+  if(st.zeitlupe>0) st.zeitlupe--;
+  if(aktiv){ st.aufgabe=null; st.naechste=ok?0.55:1.5; }
+  var s=stufe();
+  if(s>st.stufeAlt){
+    st.stufeAlt=s; popup('Stufe '+s,'185,230,255',true);
+    if(s===SPIEL.PROFI_AB){ gib('profi'); toast('🧠 Profi-Stufe! Jetzt auch schießen – '+STEUER_TEXT); }
+    if(s===SPIEL.POLIZEI_AB) toast('🚨 Gleich kommt die Einheiten-Polizei!');
+  }
+  effekteZeigen(); hudWerte(); missionPruefen();
+}
+function fehlerMerk(m){ if(st.fehler.indexOf(m)<0) st.fehler.push(m); }
+function zielErledigt(r,idx){
+  r.erledigt=true; r.getroffen=idx;
+  var a=st.aufgabe, aktiv=a && a.aid===r.aid, ok=idx===r.ok;
+  if(aktiv) faerbeChips(r.ok,idx);
+  if(idx>=0){ var p=P(idx-1,1.55,Math.max(r.z,SPIEL.ZP+0.5)); funken(p[0],p[1],ok?'47,208,127':'255,92,108',24); }
+  if(ok){
+    var plus=10*multi(); punkteDazu(plus); st.zaehl.treffer++; st.zaehl.einheit++;
+    if(st.zaehl.treffer>=5) gib('schuetze');
+    popup('🎯 +'+plus,'255,190,230'); toast('Treffer! Jetzt durchs Größensymbol fahren.'); ton(1175,0.08,'square');
+  } else {
+    toast((idx<0?'Nicht geschossen':'Daneben')+' – richtig wäre: '+html(r.q.antw[r.ok]));
+    fehlerMerk(r.q.merk); wiederholen.push({ gid:r.q.gid, typ:'g2es', n:3 }); ton(220,0.15,'sawtooth');
+  }
+  if(aktiv){ a.zielOk=ok; a.wechsel=0.35; $('karte').className='karte profi '+(ok?'ok':'no'); }
+  missionPruefen();
+}
+function drohneErledigt(d,getroffen){
+  d.erledigt=true; d.getroffen=getroffen;
+  var a=st.aufgabe, aktiv=a && a.aid===d.aid;
+  if(getroffen){
+    var p=P(d.spur,0.75,Math.max(d.z,SPIEL.ZP+0.5));
+    funken(p[0],p[1],d.falsch?'90,169,255':'255,92,108',22);
+    if(d.falsch){
+      punkteDazu(15); st.zaehl.treffer++; if(aktiv) a.erwischt++;
+      if(st.zaehl.treffer>=5) gib('schuetze');
+      popup('🚨 +15','140,200,255'); toast('Erwischt! Nicht „'+esc(d.t)+'“, sondern '+esc(d.zu)+'.'); ton(1175,0.08,'square');
+    } else {
+      if(aktiv) a.fehler++; st.serie=0;
+      toast('„'+esc(d.t)+'“ war richtig geschrieben!'); fehlerMerk('„'+esc(d.t)+'“ ist richtig geschrieben – nicht abschießen.'); ton(220,0.15,'sawtooth');
+    }
+  } else if(d.falsch){
+    if(aktiv) a.fehler++;
+    toast('Durchgerutscht: „'+esc(d.t)+'“ – richtig ist '+esc(d.zu)+'.'); fehlerMerk('Nicht „'+esc(d.t)+'“, sondern '+esc(d.zu)+'.');
+  }
+  if(aktiv) $('prompt').innerHTML='<span class="klein">Erwischt: <b style="color:#fff">'+a.erwischt+'</b> von '+a.falschZahl+'</span>';
+  hudWerte(); missionPruefen();
+}
+function polizeiFertig(a){
+  if(a.fehler===0){ punkteDazu(25); gib('polizei'); toast('🚨 Welle sauber gelöst! +25'); popup('+25','140,200,255',true); $('karte').className='karte ok'; }
+  else { toast('Welle vorbei: '+a.erwischt+' von '+a.falschZahl+' erwischt.'); $('karte').className='karte'; }
+  st.aufgabe=null; st.naechste=1.1;
+}
+function kugelNehmen(k){
+  k.weg=true; st.zaehl.kugel++;
+  if(k.typ==='schild'){ st.schild=true; popup('🛡 Schild!','127,182,255',true); }
+  else if(k.typ==='fifty'){ st.fifty=true; popup('✂️ 50:50 fürs nächste Tor','255,154,208',true); }
+  else { st.zeitlupe=3; popup('⏳ Zeitlupe!','185,166,255',true); }
+  var p=P(k.spur,0.5,SPIEL.ZP); funken(p[0],p[1],KUGEL_FARBE[k.typ],16); ton(988,0.08); setTimeout(function(){ ton(1318,0.1); },60);
+  effekteZeigen(); missionPruefen();
+}
+
+/* ---------- Schießen ---------- */
+function schiessen(){
+  if(modus!=='lauf'||!st||st.cool>0||st.vorbeiNach>0) return;
+  st.cool=0.22; st.schuesse.push({ spur:st.spur, z:SPIEL.ZP+0.4, weg:false });
+  ton(880,0.04,'square'); versteckeHinweis();
+}
+function bewegeSchuesse(dt){
+  st.schuesse.forEach(function(s){
+    if(s.weg) return;
+    s.z+=75*dt;
+    st.ziele.forEach(function(r){ if(!s.weg && !r.erledigt && r.z<=s.z && r.z>SPIEL.ZP && r.z<SPIEL.ZFERN+2){ s.weg=true; zielErledigt(r,s.spur+1); } });
+    if(s.weg) return;
+    var best=null;
+    st.drohnen.forEach(function(d){ if(!d.erledigt && d.spur===s.spur && d.z<=s.z && d.z>SPIEL.ZP && d.z<SPIEL.ZFERN+2 && (!best||d.z<best.z)) best=d; });
+    if(best){ s.weg=true; drohneErledigt(best,true); }
+    if(s.z>SPIEL.ZFERN+8) s.weg=true;
+  });
+  st.schuesse=st.schuesse.filter(function(s){ return !s.weg; });
+}
+
+/* ---------- Ablauf je Bild ---------- */
+function vSoll(){
+  var v=Math.min(SPIEL.VMAX,SPIEL.V0+SPIEL.VPLUS*st.richtig), a=st.aufgabe;
+  if(st.zeitlupe>0) v*=0.65;
+  if(a&&a.art==='doppel') v*=0.8;
+  if(a&&a.art==='polizei') v*=0.8;
+  return v;
 }
 function update(dt){
   if(!st) return;
-  if(modus==='lauf' || modus==='vorbei'){
-    if(modus==='vorbei'){ st.v=Math.max(0,st.v-st.v*2.2*dt); }
-    st.weg+=st.v*dt;
-    st.px+=(st.spur-st.px)*Math.min(1,dt*14);
-    st.wackeln=Math.max(0,st.wackeln-dt);
-    st.tore.forEach(function(t){ t.z-=st.v*dt; if(!t.erledigt && t.z<=SPIEL.ZP && modus==='lauf') auswerten(t); });
-    st.tore=st.tore.filter(function(t){ return t.z>0.95; });
-    st.energie.forEach(function(e){
-      var z0=e.z; e.z-=st.v*dt;
-      if(!e.weg && z0>SPIEL.ZP && e.z<=SPIEL.ZP && modus==='lauf' && e.spur===st.spur){
-        e.weg=true; st.punkte+=2; var p=P(st.px,0.5,SPIEL.ZP); funken(p[0],p[1],'255,201,60',6); ton(1320,0.05); hudWerte();
+  if(modus!=='lauf' && modus!=='vorbei') return;
+  if(modus==='vorbei') st.v=Math.max(0,st.v-st.v*2.2*dt); else st.v+=(vSoll()-st.v)*Math.min(1,dt*1.5);
+  var d=st.v*dt; st.weg+=d;
+  st.px+=(st.spur-st.px)*Math.min(1,dt*14);
+  st.wackeln=Math.max(0,st.wackeln-dt); st.cool-=dt;
+  var lauf=modus==='lauf';
+  if(lauf) bewegeSchuesse(dt);
+  st.tore.forEach(function(t){ t.z-=d; if(!t.erledigt && t.z<=SPIEL.ZP && lauf) torAuswerten(t); });
+  st.ziele.forEach(function(r){ r.z-=d; if(!r.erledigt && r.z<=SPIEL.ZP && lauf) zielErledigt(r,-1); });
+  st.drohnen.forEach(function(x){ x.z-=d; if(!x.erledigt && x.z<=SPIEL.ZP && lauf) drohneErledigt(x,false); });
+  st.energie.forEach(function(e){
+    var z0=e.z; e.z-=d;
+    if(z0>SPIEL.ZP && e.z<=SPIEL.ZP && lauf){
+      var r=st.reihen[e.reihe];
+      if(e.spur===st.spur){
+        e.weg=true; st.zaehl.energie++; if(r) r.got++;
+        if(e.gold){ st.zaehl.gold++; punkteDazu(10); popup('Gold +10','255,236,140',true); ton(1568,0.08); }
+        else { punkteDazu(2); ton(1320,0.05); }
+        var p=P(st.px,0.5,SPIEL.ZP); funken(p[0],p[1],'255,201,60',e.gold?14:6);
       }
-    });
-    st.energie=st.energie.filter(function(e){ return e.z>0.95; });
-    if(modus==='lauf'){
-      if(st.vorbeiNach>0){ st.vorbeiNach-=dt; if(st.vorbeiNach<=0) rundeEnde(); }
-      else if(!st.frage){ st.naechste-=dt; if(st.naechste<=0) torErzeugen(); }
+      if(r){ r.vorbei++; if(r.vorbei===r.n){ if(r.got===r.n){ punkteDazu(5); popup('✨ Perfekte Reihe +5','255,230,150'); gib('perfekt'); } delete st.reihen[e.reihe]; } }
+      missionPruefen();
     }
+  });
+  st.kugeln.forEach(function(k){ var z0=k.z; k.z-=d; if(!k.weg && z0>SPIEL.ZP && k.z<=SPIEL.ZP && lauf && k.spur===st.spur) kugelNehmen(k); });
+  st.fahnen.forEach(function(f){ var z0=f.z; f.z-=d; if(z0>SPIEL.ZP && f.z<=SPIEL.ZP && lauf){ toast('★ Neuer Rekord!'); var p=P(0,1.2,SPIEL.ZP); funken(p[0],p[1],'255,201,60',40); ton(784,0.1); setTimeout(function(){ ton(1046,0.1); },100); setTimeout(function(){ ton(1318,0.18); },200); } });
+  var weg=function(o){ return o.z>0.95; };
+  st.tore=st.tore.filter(weg); st.ziele=st.ziele.filter(weg); st.drohnen=st.drohnen.filter(weg);
+  st.energie=st.energie.filter(weg); st.kugeln=st.kugeln.filter(weg); st.fahnen=st.fahnen.filter(weg);
+  if(st.serie>=10 && lauf){
+    st.spurGold-=dt;
+    if(st.spurGold<=0){ st.spurGold=0.035; var p=P(st.px,0.12,SPIEL.ZP), u=FX/SPIEL.ZP;
+      st.teilchen.push({ x:p[0]+(Math.random()-0.5)*u*0.35, y:p[1], vx:(Math.random()-0.5)*30, vy:70+Math.random()*60, l:0.45, l0:0.45, s:3, f:'255,201,60', g:0 }); }
+  }
+  if(lauf){
+    var a=st.aufgabe;
+    if(st.vorbeiNach>0){ st.vorbeiNach-=dt; if(st.vorbeiNach<=0) rundeEnde(); }
+    else if(!a){ st.naechste-=dt; if(st.naechste<=0) neueAufgabe(); }
+    else if(a.art==='doppel' && a.phase===1 && a.wechsel>=0){ a.wechsel-=dt; if(a.wechsel<0){ a.phase=2; zeigeKarte(a); } }
+    else if(a.art==='polizei'){ if(a.drohnen.every(function(x){ return x.erledigt; })) polizeiFertig(a); else polizeiChips(a); }
   }
 }
 
@@ -844,28 +1320,39 @@ function hudWerte(){
   if(!st) return;
   $('punkte').textContent=st.punkte;
   var h=''; for(var i=0;i<SPIEL.LEBEN;i++) h+='<span'+(i>=st.leben?' class="weg"':'')+'>❤️</span>'; $('herzen').innerHTML=h;
-  var mult=1+Math.min(4,Math.floor(st.serie/4)), c=$('combo'); c.textContent='×'+mult; c.classList.toggle('an',mult>1);
+  var mult=multi(), c=$('combo'); c.textContent='×'+mult; c.classList.toggle('an',mult>1);
+  $('rekordKlein').textContent=st.rekordGeknackt?'Neuer Rekord!':(st.rekordAlt>0?'Rekord '+st.rekordAlt:'');
 }
-var toastZeit=null;
+function effekteZeigen(){
+  if(!st) return;
+  var h='';
+  if(st.schild) h+='<span class="schild" title="Schild">🛡</span>';
+  if(st.fifty) h+='<span class="fifty" title="50:50">✂️</span>';
+  if(st.zeitlupe>0) h+='<span class="zeit" title="Zeitlupe">⏳'+st.zeitlupe+'</span>';
+  $('effekte').innerHTML=h;
+}
 function toast(t){ var e=$('toast'); if(!t){ e.classList.remove('an'); return; } e.innerHTML=t; e.classList.add('an'); }
 
-/* ---------- Steuerung ---------- */
+/* ---------- Steuerung: Wischen lenkt, Tippen schießt ---------- */
 function lenke(r){ if(modus!=='lauf'||!st) return; var n=Math.max(-1,Math.min(1,st.spur+r)); if(n!==st.spur){ st.spur=n; markiereSpur(); ton(440,0.03); } versteckeHinweis(); }
-function setzeSpur(i){ if(modus!=='lauf'||!st) return; st.spur=i-1; markiereSpur(); versteckeHinweis(); }
+function setzeSpur(i){ if(modus!=='lauf'||!st) return; st.spur=Math.max(-1,Math.min(1,i-1)); markiereSpur(); versteckeHinweis(); }
 var hinweisWeg=false;
 function versteckeHinweis(){ if(!hinweisWeg){ hinweisWeg=true; $('hinweis').style.opacity='0'; } }
 document.addEventListener('keydown',function(e){
   var k=e.key;
+  if(e.target && e.target.tagName==='INPUT') return;
   if(modus==='lauf'){
     if(k==='ArrowLeft'||k==='a'||k==='A'){ lenke(-1); e.preventDefault(); }
     else if(k==='ArrowRight'||k==='d'||k==='D'){ lenke(1); e.preventDefault(); }
     else if(k==='1'||k==='2'||k==='3'){ setzeSpur(+k-1); }
-    else if(k==='Escape'||k==='p'||k==='P'||k===' '){ pausieren(); e.preventDefault(); }
-  } else if(modus==='pause' && (k==='Escape'||k===' '||k==='Enter')){ fortsetzen(); e.preventDefault(); }
-  else if(modus==='start' && k==='Enter' && document.activeElement && document.activeElement.tagName!=='INPUT'){ start(); e.preventDefault(); }
+    else if(k===' '||k==='ArrowUp'||k==='w'||k==='W'){ if(!e.repeat) schiessen(); e.preventDefault(); }
+    else if(k==='Escape'||k==='p'||k==='P'){ pausieren(); e.preventDefault(); }
+  } else if(modus==='countdown'){ if(k==='Escape'||k==='p'||k==='P') pausieren(); if(k===' ') e.preventDefault(); }
+  else if(modus==='pause' && (k==='Escape'||k==='Enter'||k==='p'||k==='P')){ fortsetzen(); e.preventDefault(); }
+  else if(modus==='start' && k==='Enter'){ start(); e.preventDefault(); }
 });
 var zeiger=null;
-cv.addEventListener('pointerdown',function(e){ zeiger={x:e.clientX,y:e.clientY,id:e.pointerId,zug:false}; try{ cv.setPointerCapture(e.pointerId); }catch(x){} });
+cv.addEventListener('pointerdown',function(e){ zeiger={ x:e.clientX, y:e.clientY, id:e.pointerId, zug:false }; try{ cv.setPointerCapture(e.pointerId); }catch(x){} });
 cv.addEventListener('pointermove',function(e){
   if(!zeiger||zeiger.id!==e.pointerId) return;
   var dx=e.clientX-zeiger.x;
@@ -873,13 +1360,12 @@ cv.addEventListener('pointermove',function(e){
 });
 cv.addEventListener('pointerup',function(e){
   if(!zeiger||zeiger.id!==e.pointerId) return;
-  if(!zeiger.zug){ var r=cv.getBoundingClientRect(), x=e.clientX-r.left; lenke(x<r.width/2?-1:1); }
+  var dy=e.clientY-zeiger.y;
+  if(!zeiger.zug && Math.abs(dy)<40) schiessen();
+  else if(!zeiger.zug && dy<-40) schiessen();
   zeiger=null;
 });
 cv.addEventListener('pointercancel',function(){ zeiger=null; });
-Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){
-  c.addEventListener('click',function(){ setzeSpur(+c.getAttribute('data-l')); });
-});
 
 /* ---------- Ton (aus, bis man ihn einschaltet) ---------- */
 var ac=null;
@@ -889,47 +1375,110 @@ function ton(f,d,art){
     if(!ac){ var A=window.AudioContext||window.webkitAudioContext; if(!A) return; ac=new A(); }
     if(ac.state==='suspended') ac.resume();
     var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime;
-    o.type=art||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.12,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.type=art||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(art==='square'?0.05:0.12,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
     o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d+0.02);
   }catch(e){}
 }
 function tonKnopf(){ var b=$('tonKnopf'); b.textContent=tonAn?'🔊 Ton an':'🔇 Ton aus'; b.setAttribute('aria-pressed',tonAn?'true':'false'); }
 $('tonKnopf').onclick=function(){ tonAn=!tonAn; daten.ton=tonAn; speichern(); tonKnopf(); ton(660,0.08); };
 
+/* ---------- Startseite: Gleiter und Abzeichen ---------- */
+function zeigeSkins(){
+  var box=$('skins'), best=daten.best||0, akt=skinAktuell(); box.innerHTML='';
+  SKINS.forEach(function(s){
+    var b=document.createElement('button'), frei=best>=s.ab;
+    b.className='skin'+(s.id===akt.id?' an':'')+(frei?'':' zu');
+    b.style.background='linear-gradient(160deg,'+s.c[0]+','+s.c[1]+' 55%,'+s.c[2]+')';
+    b.setAttribute('aria-label',s.name+(frei?'':' – ab '+s.ab+' Punkten'));
+    b.onclick=function(){
+      if(!frei){ $('skinName').textContent='🔒 '+s.name+': ab '+s.ab+' Punkten Bestwert'; return; }
+      daten.skin=s.id; speichern(); zeigeSkins();
+    };
+    box.appendChild(b);
+  });
+  $('skinName').textContent='Aktiv: '+akt.name;
+}
+function zeigeAbzeichen(){
+  var box=$('abzeichen'); box.innerHTML=''; var n=0;
+  ABZEICHEN.forEach(function(a){
+    var b=document.createElement('button'), hat=!!daten.abz[a.id]; if(hat) n++;
+    b.className=hat?'':'zu'; b.textContent=a.i; b.setAttribute('aria-label',a.name);
+    b.onclick=function(){ $('abzText').textContent=(hat?a.i+' ':'🔒 ')+a.name+': '+a.text; };
+    box.appendChild(b);
+  });
+  $('abzZahl').textContent=n+' von '+ABZEICHEN.length;
+}
+
 /* ---------- Bildschirme ---------- */
 function zeige(id){ ['start','pause','ende'].forEach(function(s){ $(s).classList.toggle('hidden',s!==id); }); }
 function start(){
   neueRunde(); modus='lauf'; zeige(null);
-  $('hud').classList.remove('hidden'); $('hinweis').classList.remove('hidden'); hinweisWeg=false; $('hinweis').style.opacity='1';
-  $('karte').className='karte'; $('tag').textContent='Mach dich bereit …'; $('stufe').textContent=''; $('prompt').innerHTML='&nbsp;';
+  $('hud').classList.remove('hidden'); $('hinweis').classList.remove('hidden');
+  $('hinweis').textContent=STEUER_TEXT; hinweisWeg=false; $('hinweis').style.opacity='1';
+  $('karte').className='karte'; $('anweisung').textContent='Mach dich bereit …'; $('gegeben').textContent=''; $('prompt').innerHTML='&nbsp;';
+  $('chips').classList.remove('hidden'); $('info').classList.add('hidden');
   Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){ c.className='chip'; c.querySelector('.t').innerHTML='&nbsp;'; });
-  toast(''); hudWerte(); groesse();
+  $('punkteBox').classList.remove('rekord');
+  toast(''); hudWerte(); effekteZeigen(); missionZeigen(); $('stufe').textContent='Stufe 1'; groesse();
 }
-function pausieren(){ if(modus!=='lauf') return; modus='pause'; zeige('pause'); }
-function fortsetzen(){ if(modus!=='pause') return; modus='lauf'; zeige(null); letzte=0; }
+/* Pause-Schutz: Frage verdeckt, offene Aufgabe wird verworfen (kommt später wieder), Serie weg, Countdown */
+function abbrechenAufgabe(){
+  var a=st.aufgabe;
+  st.serie=0;
+  if(a){
+    var fremd=function(o){ return o.aid!==a.aid; };
+    st.tore=st.tore.filter(fremd); st.ziele=st.ziele.filter(fremd); st.drohnen=st.drohnen.filter(fremd);
+    if(a.art==='tor') wiederholen.push({ gid:a.q.gid, typ:a.q.typ, n:2 });
+    else if(a.art==='doppel') wiederholen.push({ gid:a.g.id, typ:'g2es', n:2 });
+    else st.seitPolizei=Math.max(0,SPIEL.POLIZEI_ALLE-3);
+    st.aufgabe=null;
+  }
+  st.naechste=0.3; st.schuesse=[];
+  hudWerte();
+}
+function pausieren(){
+  if(modus!=='lauf' && modus!=='countdown') return;
+  if(modus==='lauf' && st.vorbeiNach<=0) abbrechenAufgabe();
+  modus='pause'; $('karte').classList.add('verdeckt'); toast(''); zeige('pause');
+}
+function fortsetzen(){
+  if(modus!=='pause') return;
+  if(st.vorbeiNach>0){ modus='lauf'; zeige(null); return; }
+  zeige(null); modus='countdown'; countdown=3; letzte=0;
+  $('karte').className='karte'; $('anweisung').textContent='Gleich geht es weiter …'; $('gegeben').textContent='';
+  $('prompt').innerHTML='<span class="klein">Neue Frage · Serie wieder ×1</span>';
+  $('chips').classList.remove('hidden'); $('info').classList.add('hidden');
+  Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){ c.className='chip'; c.querySelector('.t').innerHTML='&nbsp;'; });
+  passeAnweisung();
+}
 function rundeEnde(){
   modus='vorbei';
   setTimeout(function(){
     if(modus!=='vorbei') return;
+    gib('start');
     $('hud').classList.add('hidden'); $('hinweis').classList.add('hidden');
-    var neu=st.punkte>(daten.best||0);
+    var alt=daten.best||0, neu=st.punkte>alt;
     if(neu){ daten.best=st.punkte; speichern(); }
     $('endPunkte').textContent=st.punkte;
     $('rekord').textContent=neu&&st.punkte>0?'★ Neuer Bestwert!':'Dein Bestwert: '+(daten.best||0);
     $('wRichtig').textContent=st.richtig; $('wSerie').textContent=st.besteSerie; $('wStufe').textContent=stufe();
-    var m=$('merkPlatz');
-    if(st.fehler.length){
-      m.innerHTML='<details class="mehr" open><summary>Das nimmst du mit ('+st.fehler.length+')</summary><ul class="merke">'+st.fehler.slice(0,8).map(function(f){ return '<li>'+f.merk+'</li>'; }).join('')+'</ul></details>';
-    } else m.innerHTML='';
+    var neuL=[];
+    var m=st.mission; neuL.push((m.fertig?'🎯 Mission geschafft: ':'🎯 Mission nicht geschafft: ')+esc(m.def.text));
+    st.neueAbz.forEach(function(id){ var a=ABZEICHEN.filter(function(x){ return x.id===id; })[0]; if(a) neuL.push(a.i+' Neues Abzeichen: '+esc(a.name)); });
+    SKINS.forEach(function(s){ if(s.ab>alt && s.ab<=(daten.best||0)) neuL.push('🚀 Neuer Gleiter freigeschaltet: '+esc(s.name)); });
+    $('neuPlatz').innerHTML='<ul class="neu-liste">'+neuL.map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>';
+    var mp=$('merkPlatz');
+    mp.innerHTML=st.fehler.length?'<details class="mehr" open><summary>Das nimmst du mit ('+st.fehler.length+')</summary><ul class="merke">'+st.fehler.slice(0,10).map(function(f){ return '<li>'+f+'</li>'; }).join('')+'</ul></details>':'';
     var bp=$('bestenPlatz'); bp.innerHTML=''; bp.appendChild(bestenBox(true));
     zeige('ende'); groesse();
   },300);
 }
+function zurStartseite(){ $('bestStart').textContent=daten.best||0; zeigeSkins(); zeigeAbzeichen(); }
 $('losKnopf').onclick=start;
-$('nochmalKnopf').onclick=start;
+$('nochmalKnopf').onclick=function(){ zurStartseite(); start(); };
 $('pauseKnopf').onclick=pausieren;
 $('weiterKnopf').onclick=fortsetzen;
-$('abbruchKnopf').onclick=function(){ if(modus!=='pause') return; modus='lauf'; st.leben=0; st.vorbeiNach=0.01; zeige(null); };
+$('abbruchKnopf').onclick=function(){ if(modus!=='pause') return; zeige(null); modus='lauf'; st.leben=0; st.vorbeiNach=0.01; };
 $('listeKnopf').onclick=function(){ var p=$('listePlatz'); if(p.firstChild){ p.innerHTML=''; return; } p.appendChild(bestenBox(false)); };
 document.addEventListener('visibilitychange',function(){ if(document.hidden) pausieren(); });
 window.addEventListener('blur',function(){ pausieren(); });
@@ -937,7 +1486,6 @@ window.addEventListener('blur',function(){ pausieren(); });
 /* =====================================================================
    KLASSEN-BESTENLISTE (Supabase, derselbe Dienst wie bei den anderen Spielen)
    score = Punkte, level = erreichte Stufe, ops = „x richtig“.
-   Spitzname 2–14 Zeichen; Wortfilter und Mengenbremse prüft die Datenbank.
    ===================================================================== */
 var NET={ url:'https://sliitqxickadcoghewli.supabase.co/rest/v1/', key:'sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7', game:KL.game, klasse:KL.klasse };
 var NAME_KEY='quiz.spitzname', ANSICHT_KEY='bestenliste.ansicht.'+NET.game;
@@ -1010,6 +1558,7 @@ function schleife(t){
   var dt=letzte?Math.min(0.05,Math.max(0,(t-letzte)/1000)):0.016; letzte=t;
   zeit+=dt;
   try{
+    if(modus==='countdown'){ countdown-=dt; if(countdown<=0){ countdown=0; modus='lauf'; } }
     if(modus!=='pause') update(dt);
     zeichne(modus==='pause'?0:dt);
   }catch(e){ if(window.console) console.error(e); }
@@ -1019,7 +1568,7 @@ function schleife(t){
 /* ---------- Start ---------- */
 $('klassenName').textContent=KL.titel;
 $('zurueck1').href=KL.zurueck; $('zurueck2').href=KL.zurueck;
-$('bestStart').textContent=daten.best||0;
+zurStartseite();
 tonKnopf();
 groesse();
 window.addEventListener('resize',function(){ groesse(); passeChips(); });
@@ -1028,8 +1577,9 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 requestAnimationFrame(schleife);
 
 /* nur zum Testen */
-window.__runner={ neueFrage:neueFrage, MACHER:MACHER, POOL:POOL, GROESSEN:GROESSEN, KLASSEN:KLASSEN, plain:plain,
-  zustand:function(){ return { modus:modus, st:st }; }, zeigeFrage:zeigeFrage, update:update, setzeSpur:setzeSpur };
+window.__runner={ neueFrage:neueFrage, MACHER:MACHER, POOL:POOL, plain:plain, update:update, setzeSpur:setzeSpur, schiessen:schiessen,
+  pausieren:pausieren, fortsetzen:fortsetzen, erzwinge:function(a){ naechsteArt=a; },
+  zustand:function(){ return { modus:modus, st:st, countdown:countdown }; }, countdownTick:function(dt){ if(modus==='countdown'){ countdown-=dt; if(countdown<=0){ countdown=0; modus='lauf'; } } } };
 })();
 </script>
 <script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
