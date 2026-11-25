@@ -171,9 +171,9 @@ h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;c
   .tpic{width:84px;height:84px}
   #tlabel{font-size:12px}
 }
-.op-kuerzen{--c:#e5484d}.op-bilder{--c:#14a89a}.op-plus{--c:#2fa866}.op-mal{--c:#ff8a3d}.op-geteilt{--c:#8e5bd6}.op-gemischt{--c:#2f86d6}
-.ops{grid-template-columns:repeat(6,minmax(0,1fr))}
-@media (max-width:560px){.ops{grid-template-columns:repeat(3,minmax(0,1fr));grid-gap:14px 10px}}
+.op-kuerzen{--c:#e5484d}.op-bilder{--c:#14a89a}.op-plus{--c:#2fa866}.op-mal{--c:#ff8a3d}.op-geteilt{--c:#8e5bd6}.op-gemischt{--c:#2f86d6}.op-dezimal{--c:#e0508f}.op-dplus{--c:#d48806}
+.ops{grid-template-columns:repeat(4,minmax(0,1fr));grid-gap:14px 10px}
+.op-dezimal .tile b.dz,.op-dplus .tile b.dz{height:40px;display:flex;align-items:center;justify-content:center;font-size:22px;letter-spacing:-.5px}
 .tile b .gzt{font-size:.62em;margin-right:.06em}
 .tile b .br{font-size:.5em;line-height:1}
 .tile b svg{width:40px;height:40px;display:block;margin:0 auto}
@@ -292,6 +292,8 @@ body:not(.playing) #foehnTipp{display:none}
           <label class="op op-mal"><input type="checkbox" value="mal"><span class="tile"><b>·</b><span>Mal</span></span></label>
           <label class="op op-geteilt"><input type="checkbox" value="geteilt"><span class="tile"><b>:</b><span>Geteilt</span></span></label>
           <label class="op op-gemischt"><input type="checkbox" value="gemischt"><span class="tile"><b><span class="gzt">2</span><span class="br"><span>1</span><span>3</span></span></b><span>Gemischt</span></span></label>
+          <label class="op op-dezimal"><input type="checkbox" value="dezimal"><span class="tile"><b class="dz">0,5</b><span>Dezimal</span></span></label>
+          <label class="op op-dplus"><input type="checkbox" value="dplus"><span class="tile"><b class="dz">±0,1</b><span>Dezimal ±</span></span></label>
         </div>
         <p id="opsinfo"></p>
         <p class="warn" id="warn" hidden>Wähle mindestens einen Bereich aus.</p>
@@ -405,12 +407,14 @@ function dispVal(d){
   if(d.t==='f') return F(d.n,d.d);
   if(d.t==='m') return F((d.neg?-1:1)*(d.w*d.d+d.n), d.d);
   if(d.t==='p') return d.pic.val;
+  if(d.t==='z') return d.val;
 }
 var UID=0;
 function dkey(d){
   if(d.t==='i') return 'i'+d.v;
   if(d.t==='f') return 'f'+d.n+'/'+d.d;
   if(d.t==='m') return 'm'+(d.neg?'-':'')+d.w+'_'+d.n+'/'+d.d;
+  if(d.t==='z') return 'z'+d.s;
   return 'p'+(++UID);
 }
 function C(v,disp,hint,partial){ return {val:F(v.n,v.d), disp:disp, hint:hint||'', partial:!!partial}; }
@@ -420,6 +424,7 @@ function CI(v,hint){ return C(F(v,1),DI(v),hint); }
 function brH(top,bot){ return '<span class="br"><span>'+top+'</span><span>'+bot+'</span></span>'; }
 var LUECKE='<span class="lu">?</span>';
 function dispHTML(d,paren){
+  if(d.t==='z') return '<span class="zahl">'+d.s.replace('-','<span class="vz">−</span>')+'</span>';
   var neg=(d.t==='i'&&d.v<0)||(d.t==='f'&&d.n<0)||(d.t==='m'&&d.neg), h='';
   if(neg) h+='<span class="vz">−</span>';
   if(d.t==='i') h+=String(Math.abs(d.v));
@@ -446,7 +451,8 @@ function chooseWrongs(ans,cands,n,opt){
     var lim=opt.lim||99;
     if(d.t==='f'){ if(d.d<=1||d.n===0||Math.abs(d.n)===d.d||Math.abs(d.n)>lim||d.d>lim) return false; }
     if(d.t==='i'){ if(Math.abs(d.v)>999) return false; if(opt.noNeg&&d.v<=0) return false; }
-    if(d.t==='m'&&(d.n===0||d.w>30||d.d>30)) return false;
+    if(d.t==='m'&&(d.n===0||d.w>30||d.d>(opt.lim||30))) return false;
+    if(d.t==='z'&&(d.s.length>7||d.s==='0')) return false;
     if(seenD[dkey(d)]) return false;
     var vk=fkey(c.val);
     if(c.partial){ if(vk!==ak||hasPartial) return false; }
@@ -933,13 +939,269 @@ function genGemischt(L){
   return t;
 }
 
-var GEN={kuerzen:genKuerzen,bilder:genBilder,plus:genPlus,mal:genMal,geteilt:genGeteilt,gemischt:genGemischt};
+/* =============== 7) Brüche und Dezimalzahlen umwandeln (nur endliche Dezimalzahlen) =============== */
+function p10(k){ return Math.pow(10,k); }
+function decStellen(v){ v=F(v.n,v.d); var k=0; while(k<6 && (Math.abs(v.n)*p10(k))%v.d!==0) k++; return k; }
+function decStr(v){                        // gekürzter, endlicher Bruch -> '0,25'
+  v=F(v.n,v.d); var neg=v.n<0, k=decStellen(v), N=Math.abs(v.n)*p10(k)/v.d, s=String(N);
+  if(k>0){ while(s.length<=k) s='0'+s; s=s.slice(0,s.length-k)+','+s.slice(s.length-k); }
+  return (neg?'-':'')+s;
+}
+function DZ(v,s){ v=F(v.n,v.d); return {t:'z',s:s||decStr(v),val:v}; }      // Dezimalzahl; s = abweichende Schreibweise (z. B. '3,10')
+function CZ(v,h){ return C(v,DZ(v),h); }
+function CZs(s,h){ var p=s.split(','), k=p[1]?p[1].length:0; return C(F(parseInt(p[0]+(p[1]||''),10),p10(k)),DZ(F(parseInt(p[0]+(p[1]||''),10),p10(k)),s),h); }
+var STELLEN_TIPP={10:'Zehntel: 1 Stelle nach dem Komma!',100:'Hundertstel: 2 Stellen nach dem Komma!',1000:'Tausendstel: 3 Stellen nach dem Komma!'};
+var EINS_DURCH={2:'Ein Halb ist 0,5!',3:'Ein Drittel ist nicht 0,3!',4:'Ein Viertel ist 0,25!',5:'Ein Fünftel ist 0,2!',6:'Ein Sechstel ist nicht 0,6!',
+                7:'Ein Siebtel ist nicht 0,7!',8:'Ein Achtel ist 0,125!',9:'Ein Neuntel ist nicht 0,9!'};
+function zehnerPot(d){ var m=0; while(m<4 && p10(m)%d!==0) m++; return m; }   // kleinste Zehnerpotenz, die d teilt
+function fbDec(v){                         // Ersatz-Tafeln: letzte Stelle leicht daneben
+  var k=Math.max(1,decStellen(v)), D=p10(k), N=Math.round(fnum(v)*D);
+  return function(j){ var s=(j%2?1:-1)*Math.ceil(j/2); return CZ(F(N+s,D)); };
+}
+function dzNenner(L){                      // Nenner, die sich auf 10, 100 oder 1000 erweitern lassen
+  if(L<=3) return [2,4,5,20,25,50];
+  if(L<=4) return [2,4,5,20,25,50,2,4,5];
+  return [2,4,5,8,20,25,40,50,200,8];
+}
+function dzEcht(L){ var ds=dzNenner(L), d, n, t=0; do{ d=pick(ds); n=ri(1,d-1); t++; }while((gcd(n,d)!==1 || (d>=40 && n>9 && Math.random()<.7)) && t<200); return {n:n,d:d}; }
+
+/* a) Zehnerbruch -> Dezimalzahl (3/10 = 0,3; 7/100 = 0,07) */
+function dzF2ZZehner(L){
+  var d=L<=1?10:(L<=5?pick([10,100,100]):pick([10,100,100,1000])), n, t=0;
+  do{ n=ri(1,d-1); t++; }while(d>10 && n%10===0 && Math.random()<.75 && t<50);
+  if(d===100 && L<=3 && n>=10 && Math.random()<.3) n=ri(1,9);               // 0,0n als Stolperstein
+  var v=F(n,d), q=dispHTML(DF(n,d)), ans=CZ(v), c=[];
+  c.push(CZ(F(n,d*10),STELLEN_TIPP[d])); if(d>10) c.push(CZ(F(n,d/10),STELLEN_TIPP[d]));
+  if(d<=100) c.push(CZs(n+','+d,'Nicht Zähler Komma Nenner!'));
+  c.push(CZ(F(n+1,d))); c.push(CZ(F(n-1,d))); if(d>10){ c.push(CZ(F(n+10,d))); c.push(CZ(F(n-10,d))); }
+  return {op:'dezimal',label:'Schreibe als Dezimalzahl',q:q,ans:ans,cands:c,ask:1,rev:q+opH('=')+dispHTML(ans.disp),
+          fb:fbDec(v),noNeg:true,limD:1000,extra:d===1000?1:0,chk:{exp:n/d,form:'z'}};
+}
+/* b) Dezimalzahl -> Zehnerbruch (0,3 = 3/10; 0,07 = 7/100) – nicht kürzen */
+function dzZ2FZehner(L){
+  var k=L<=1?1:(L<=5?pick([1,2,2]):pick([1,2,2,3])), D=p10(k), n, t=0;
+  do{ n=ri(1,D-1); t++; }while(n%10===0 && t<50);
+  var v=F(n,D), z=DZ(v), q=dispHTML(z), ans=C(v,DF(n,D)), c=[];
+  function U(nn,dd,h){ if(nn<1||dd<2) return null; return C(F(nn,dd),DF(nn,dd),h); }
+  c.push(U(n,D*10,'Zähl die Stellen nach dem Komma!')); if(D>10) c.push(U(n,D/10,'Zähl die Stellen nach dem Komma!'));
+  if(n<10 && EINS_DURCH[n]) c.push(U(1,n,EINS_DURCH[n]));
+  if(k>=2 && n<10) c.push(U(n,10,'Die Null nach dem Komma zählt mit!'));
+  c.push(U(n+1,D)); c.push(U(n-1,D)); c.push(U(D,n,'Zähler und Nenner vertauscht!'));
+  return {op:'dezimal',label:'Schreibe als Zehnerbruch',q:q,ans:ans,cands:c.filter(Boolean),ask:1,rev:q+opH('=')+dispHTML(ans.disp),
+          fb:function(j){ var s=(j%2?1:-1)*Math.ceil(j/2); return U(n+s,D); },noNeg:true,limD:1000,extra:k===3?1:0,chk:{exp:n/D,form:'f'}};
+}
+/* c) Lücke: 0,35 = ?/100 bzw. 0,07 = 7/? */
+function dzLueckeZ(L){
+  var k=L<=3?pick([1,2,2]):pick([1,2,2,3]), D=p10(k), n, t=0;
+  do{ n=ri(1,D-1); t++; }while(n%10===0 && t<50);
+  var z=dispHTML(DZ(F(n,D))), full=z+opH('=')+dispHTML(DF(n,D)), c;
+  if(Math.random()<.55){
+    c=[CI(n*10,STELLEN_TIPP[D]),CI(n+1),CI(n-1),CI(n+2)];
+    if(n>=10){ var rz=parseInt(String(n).split('').reverse().join(''),10); if(rz!==n) c.push(CI(rz,'Ziffern vertauscht!')); c.push(CI(Math.floor(n/10),STELLEN_TIPP[D])); }
+    return {op:'dezimal',label:'Ergänze die Lücke',q:z+opH('=')+brH(LUECKE,D),ans:CI(n),cands:c,rev:full,fb:fbInt(n),noNeg:true,extra:.5,chk:{exp:n,form:'i'}};
+  }
+  c=[CI(D*10,'Zähl die Stellen nach dem Komma!'),CI(n,'Das ist der Zähler!')];
+  if(D>10) c.push(CI(D/10,'Zähl die Stellen nach dem Komma!')); else c.push(CI(1000,'Zähl die Stellen nach dem Komma!'));
+  if(k>=2 && n<10) c.push(CI(n*10)); c.push(CI(D+1)); c.push(CI(D-1));
+  return {op:'dezimal',label:'Ergänze die Lücke',q:z+opH('=')+brH(n,LUECKE),ans:CI(D),cands:c,rev:full,fb:fbInt(D),noNeg:true,extra:.5,chk:{exp:D,form:'i'}};
+}
+/* d) Bruch erweitern -> Dezimalzahl (3/4 = 75/100 = 0,75) */
+function dzF2ZErw(L){
+  var b=dzEcht(L), n=b.n, d=b.d, m=zehnerPot(d), D=p10(m), k=D/d, N=n*k, v=F(n,d), ans=CZ(v), c=[];
+  var q=dispHTML(DF(n,d));
+  c.push(CZs(n+','+d,'Nicht Zähler Komma Nenner!'));
+  c.push(CZ(F(n,10),'Erst auf '+D+' erweitern!'));
+  if(D>=100) c.push(CZ(F(n,D),'Auch den Zähler erweitern!'));
+  c.push(CZ(F(N,D*10),'Stellen nach dem Komma prüfen!')); if(D>=100) c.push(CZ(F(N,D/10),'Stellen nach dem Komma prüfen!'));
+  if(n===1 && d<10) c.push(CZ(F(d,10),'Nicht den Nenner hinters Komma!'));
+  c.push(CZ(F(N+1,D))); c.push(CZ(F(N-1,D))); if(D>=100){ c.push(CZ(F(N+10,D))); c.push(CZ(F(N-10,D))); }
+  var rv=q+opH('=')+(D===d?'':dispHTML(DF(N,D))+opH('='))+dispHTML(ans.disp);
+  return {op:'dezimal',label:'Schreibe als Dezimalzahl',q:q,ans:ans,cands:c,ask:1,rev:rv,fb:fbDec(v),noNeg:true,limD:1000,
+          extra:1.5+(D===1000?1:0),chk:{exp:n/d,form:'z'}};
+}
+/* e) Lücke beim Erweitern: 3/4 = ?/100 */
+function dzLueckeErw(L){
+  var b=dzEcht(Math.min(L,4)), n=b.n, d=b.d, m=zehnerPot(d), D=p10(m), k=D/d, N=n*k;
+  var q=dispHTML(DF(n,d))+opH('=')+brH(LUECKE,D), rv=dispHTML(DF(n,d))+opH('=')+dispHTML(DF(N,D))+opH('=')+dispHTML(DZ(F(n,d)));
+  var c=[CI(n+(D-d),'Mal, nicht plus!'),CI(k,'Das ist nur der Faktor!'),CI(N+1),CI(N-1),CI(N*10,'Wie oft passt '+d+' in '+D+'?'),CI(n*(k+1)),CI(N+k),CI(N-k)];
+  if(n<10 && d<10) c.push(CI(n*10+d,'Nicht einfach nebeneinander schreiben!'));
+  return {op:'dezimal',label:'Ergänze die Lücke',q:q,ans:CI(N),cands:c,rev:rv,fb:fbInt(N),noNeg:true,extra:1,chk:{exp:n*D/d,form:'i'}};
+}
+/* f) Dezimalzahl -> Bruch, vollständig gekürzt (0,75 = 75/100 = 3/4) */
+function dzZ2FKurz(L){
+  var v, t=0;
+  if(Math.random()<.2){ var kk=pick([1,2]), DD=p10(kk), nn; do{ nn=ri(1,DD-1); }while(gcd(nn,DD)!==1 && ++t<80); v=F(nn,DD); }   // geht nicht zu kürzen
+  else { var b=dzEcht(L); v=F(b.n,b.d); }
+  var m=decStellen(v), D=p10(m), N=v.n*D/v.d, z=DZ(v), q=dispHTML(z), ans=C(v,DF(v.n,v.d)), c=[];
+  function U(nn,dd,h,part){ if(nn<1||dd<2) return null; var w=F(nn,dd); return C(w,part?DF(nn,dd):show(w,false),h,part); }
+  if(N!==v.n) c.push(U(N,D,'Da geht noch mehr!',true));
+  var ziff=String(N); if(ziff.length===2 && +ziff[1]>1 && ziff[0]!==ziff[1]) c.push(C(F(+ziff[0],+ziff[1]),DF(+ziff[0],+ziff[1]),'Nicht die Ziffern als Bruch!'));
+  if(N<10 && EINS_DURCH[N]) c.push(U(1,N,EINS_DURCH[N]));
+  c.push(U(N,D*10,'Zähl die Stellen nach dem Komma!')); if(D>10) c.push(U(N,D/10,'Zähl die Stellen nach dem Komma!'));
+  c.push(U(v.n+1,v.d)); c.push(U(v.n,v.d+1)); if(v.n>1) c.push(U(v.n-1,v.d)); if(v.d>2) c.push(U(v.n,v.d-1));
+  c.push(U(v.d,v.n,'Zähler und Nenner vertauscht!'));
+  var rv=q+opH('=')+dispHTML(DF(N,D))+(N!==v.n?opH('=')+dispHTML(ans.disp):'');
+  return {op:'dezimal',label:'Schreibe als Bruch, vollständig gekürzt',q:q,ans:ans,cands:c.filter(Boolean),ask:1,rev:rv,
+          fb:fbFrac(ans,false),noNeg:true,limD:1000,kuerzen:N!==v.n,extra:(N!==v.n?3:0)+(m===3?1:0),chk:{exp:fnum(v),reduced:true,form:'f'}};
+}
+/* g) Bruch, der erst gekürzt werden muss -> Dezimalzahl (9/12 = 3/4 = 0,75) */
+function dzF2ZKurz(L){
+  var b, k, t=0;
+  do{ b=dzEcht(Math.min(L,4)); k=pick([2,3,4,6]); t++; }while((b.d*k>60 || p10(zehnerPot(b.d*k))===b.d*k) && t<100);
+  var n=b.n, d=b.d, NN=n*k, DD=d*k, m=zehnerPot(d), D=p10(m), N=n*D/d, v=F(n,d), ans=CZ(v), c=[];
+  var q=dispHTML(DF(NN,DD));
+  c.push(CZs(NN+','+DD,'Nicht Zähler Komma Nenner!'));
+  c.push(CZ(F(NN,100),'Erst kürzen, dann erweitern!')); c.push(CZ(F(n,10),'Erst auf '+D+' erweitern!'));
+  c.push(CZ(F(N,D*10),'Stellen nach dem Komma prüfen!')); if(D>=100) c.push(CZ(F(N,D/10),'Stellen nach dem Komma prüfen!'));
+  c.push(CZ(F(N+1,D))); c.push(CZ(F(N-1,D)));
+  var rv=q+opH('=')+dispHTML(DF(n,d))+opH('=')+(D===d?'':dispHTML(DF(N,D))+opH('='))+dispHTML(ans.disp);
+  return {op:'dezimal',label:'Schreibe als Dezimalzahl',q:q,ans:ans,cands:c,ask:1,rev:rv,fb:fbDec(v),noNeg:true,limD:1000,
+          kuerzen:true,extra:3,chk:{exp:n/d,form:'z'}};
+}
+/* h) Werte über 1: unechter Bruch bzw. gemischte Zahl -> Dezimalzahl (7/4 = 1,75; 2 3/5 = 2,6) */
+function dzF2ZGross(L){
+  var b=dzEcht(Math.min(L,4)), w=ri(1,L>=8?9:5), n=b.n, d=b.d, m=zehnerPot(d), D=p10(m), N=n*D/d, v=F(w*d+n,d), ans=CZ(v), c=[], q, rv;
+  var gem=Math.random()<.5 || w*d+n>60;
+  c.push(CZ(F(n,d),'Die Ganzen nicht vergessen!'));
+  c.push(CZ(fadd(v,F(1,1)),'Die Ganzen prüfen!')); c.push(CZ(fsub(v,F(1,1)),'Die Ganzen prüfen!'));
+  c.push(CZ(F(w*D*10+N,D*10),'Stellen nach dem Komma prüfen!'));
+  if(gem){
+    q=dispHTML(DM(w,n,d));
+    if(n<10 && d<10) c.push(CZs(w+','+n+d,'Nicht einfach nebeneinander schreiben!'));
+    if(d!==10) c.push(CZ(fadd(F(w,1),F(n,10)),'Erst auf '+D+' erweitern!'));
+    rv=q+opH('=')+w+opH('+')+(D===d?'':dispHTML(DF(N,D))+opH('=')+w+opH('+'))+dispHTML(DZ(F(n,d)))+opH('=')+dispHTML(ans.disp);
+  } else {
+    var U=w*d+n; q=dispHTML(DF(U,d));
+    if(d<=50) c.push(CZs(U+','+d,'Nicht Zähler Komma Nenner!'));
+    rv=q+opH('=')+dispHTML(DF(U*D/d,D))+opH('=')+dispHTML(ans.disp);
+  }
+  c.push(CZ(fadd(v,F(1,D)))); c.push(CZ(fsub(v,F(1,D))));
+  return {op:'dezimal',label:'Schreibe als Dezimalzahl',q:q,ans:ans,cands:c,ask:1,rev:rv,fb:fbDec(v),noNeg:true,limD:1000,
+          extra:2.5,chk:{exp:fnum(v),form:'z'}};
+}
+/* i) Dezimalzahl über 1 -> gemischte Zahl, vollständig gekürzt (1,25 = 1 1/4) */
+function dzZ2FGross(L){
+  var b=dzEcht(Math.min(L,4)), w=ri(1,L>=8?9:5), n=b.n, d=b.d, m=zehnerPot(d), D=p10(m), N=n*D/d, v=F(w*d+n,d), q=dispHTML(DZ(v)), c=[];
+  function M(ww,nn,dd,h,part){ if(ww<1||nn<1||dd<2) return null; var f=part?{n:nn,d:dd}:F(nn,dd); if(f.n>=f.d) return null; return C(F(ww*f.d+f.n,f.d),DM(ww,f.n,f.d),h,part); }
+  var ans=C(v,DM(w,n,d));
+  if(N!==n) c.push(M(w,N,D,'Da geht noch mehr!',true));
+  c.push(C(F(n,d),DF(n,d),'Die Ganzen nicht vergessen!'));
+  c.push(M(w+1,n,d,'Die Ganzen prüfen!')); c.push(M(w-1,n,d,'Die Ganzen prüfen!'));
+  if(N<10 && EINS_DURCH[N]) c.push(M(w,1,N,EINS_DURCH[N]));
+  var ziff=String(N); if(ziff.length===2 && +ziff[1]>+ziff[0] && +ziff[0]>0) c.push(M(w,+ziff[0],+ziff[1],'Nicht die Ziffern als Bruch!',true));
+  c.push(M(w,N,D*10,'Zähl die Stellen nach dem Komma!'));
+  c.push(M(w,n+1,d)); c.push(M(w,n,d+1)); if(n>1) c.push(M(w,n-1,d));
+  var rv=q+opH('=')+'<span class="zahl"><span class="gz">'+w+'</span>'+brH(N,D)+'</span>'+(N!==n?opH('=')+dispHTML(ans.disp):'');
+  return {op:'dezimal',label:'Gemischte Zahl, vollständig gekürzt',q:q,ans:ans,cands:c.filter(Boolean),ask:1,rev:rv,
+          fb:fbFrac(ans,true),noNeg:true,limD:1000,kuerzen:N!==n,extra:(N!==n?3:1)+1,chk:{exp:fnum(v),reduced:true,form:'m'}};
+}
+function genDezimal(L){
+  var t=null, n=0;
+  while(!t && n++<300) t=pickSub(L,[[1,dzF2ZZehner],[1,dzZ2FZehner],[2,dzLueckeZ],[3,dzF2ZErw],[3,dzLueckeErw],[4,dzZ2FKurz],[4,dzF2ZErw],
+                                     [5,dzF2ZKurz],[5,dzZ2FKurz],[6,dzF2ZGross],[6,dzZ2FGross]])(L);
+  return t;
+}
+
+/* =============== 8) Dezimalzahlen addieren und subtrahieren =============== */
+function zsPad(N,k,K){                     // N/10^k als Text mit genau K Nachkommastellen (K >= k), z. B. 0,50
+  var s=String(N*p10(K-k)); if(!K) return s; while(s.length<=K) s='0'+s; return s.slice(0,s.length-K)+','+s.slice(s.length-K);
+}
+function dpZahl(k,wMin,wMax){              // Dezimalzahl mit genau k Nachkommastellen (letzte Stelle ≠ 0)
+  var D=p10(k), w=ri(wMin,wMax), f; if(!k) return {N:Math.max(1,w),k:0};
+  do{ f=ri(1,D-1); }while(f%10===0); return {N:w*D+f,k:k};
+}
+function dpZiffern(A,B,K,sg){              // typische Fehler: ziffernweise ohne Übertrag bzw. „kleine minus große“
+  var r=0, m=1;
+  while(A>0||B>0){ var x=A%10, y=B%10; r+=(sg>0?(x+y)%10:Math.abs(x-y))*m; m*=10; A=Math.floor(A/10); B=Math.floor(B/10); }
+  return r;
+}
+function dpTask(a,b,sg,L,o){
+  o=o||{};
+  var K=Math.max(a.k,b.k), D=p10(K), A=a.N*p10(K-a.k), B=b.N*p10(K-b.k), R=sg>0?A+B:A-B;
+  if(R<=0) return null;
+  var va=F(a.N,p10(a.k)), vb=F(b.N,p10(b.k)), res=F(R,D), ans=CZ(res), c=(o.cands||[]).slice();
+  var opS=sg>0?'+':'−';
+  if(a.k!==b.k){ var Rr=sg>0?a.N+b.N:a.N-b.N; if(Rr>0) c.push(CZ(F(Rr,D),'Komma unter Komma!')); }
+  var Z=dpZiffern(A,B,K,sg); if(Z>0 && Z!==R) c.push(CZ(F(Z,D),sg>0?'Übertrag beachten!':'Entbündeln nicht vergessen!'));
+  var fa=A%D, fb=B%D;
+  if(sg>0 && K>=1 && fa+fb>=D) c.push(CZs((Math.floor(A/D)+Math.floor(B/D))+','+(fa+fb),'Übertrag beachten!'));
+  if(sg<0) c.push(CZ(F(A+B,D),'Minus, nicht plus!')); else if(A>B) c.push(CZ(F(A-B,D),'Plus, nicht minus!'));
+  c.push(CZ(F(R+D,D),'Die Ganzen prüfen!')); if(R>D) c.push(CZ(F(R-D,D),'Die Ganzen prüfen!'));
+  c.push(CZ(F(R+1,D))); c.push(CZ(F(R-1,D))); if(K>=2){ c.push(CZ(F(R+10,D))); c.push(CZ(F(R-10,D))); }
+  var q=(o.qa||dispHTML(DZ(va)))+opH(opS)+dispHTML(DZ(vb));
+  var rv=q+opH('=');
+  if(o.qa || a.k!==b.k) rv+=dispHTML(DZ(va,zsPad(a.N,a.k,K)))+opH(opS)+dispHTML(DZ(vb,zsPad(b.N,b.k,K)))+opH('=');
+  rv+=dispHTML(ans.disp);
+  return {op:'dplus',label:o.label||'Rechne',q:q,ans:ans,cands:c,ask:1,rev:rv,fb:fbDec(res),noNeg:true,
+          extra:(a.k!==b.k?1:0)+(Z!==R?1:0)+(K>=2?.5:0)+(o.extra||0),chk:{exp:sg>0?fnum(va)+fnum(vb):fnum(va)-fnum(vb),form:'z'}};
+}
+/* Stufe 1: Zehntel ohne Übertrag */
+function dp1(L){
+  var sg=Math.random()<.55?1:-1, a=dpZahl(1,0,2), b=dpZahl(1,0,1), fa=a.N%10, fb=b.N%10;
+  if(sg>0 && fa+fb>=10) return null;
+  if(sg<0 && (fa<fb || Math.floor(a.N/10)<Math.floor(b.N/10) || a.N===b.N)) return null;
+  return dpTask(a,b,sg,L);
+}
+/* Stufe 2: Zehntel mit Übertrag bzw. Entbündeln */
+function dp2(L){
+  var sg=Math.random()<.5?1:-1, a=dpZahl(1,0,5), b=dpZahl(1,0,3), fa=a.N%10, fb=b.N%10;
+  if(sg>0 && fa+fb<10) return null;
+  if(sg<0 && fa>=fb) return null;
+  return dpTask(a,b,sg,L);
+}
+/* Stufe 3: Hundertstel */
+function dp3(L){ return dpTask(dpZahl(2,0,3),dpZahl(2,0,2),Math.random()<.5?1:-1,L); }
+/* Stufe 4: verschieden viele Stellen nach dem Komma (0,5 + 0,25; 1 − 0,35; 3 + 0,4) */
+function dp4(L){
+  var kk=pick([[1,2],[2,1],[1,2],[2,1],[0,1],[0,2],[1,0]]), sg=Math.random()<.5?1:-1;
+  var a=dpZahl(kk[0],kk[0]?0:1,kk[0]?4:3), b=dpZahl(kk[1],kk[1]?0:1,kk[1]?2:3);
+  if(kk[0]===0 && sg<0) b=dpZahl(kk[1],0,a.N-1);
+  return dpTask(a,b,sg,L);
+}
+/* Stufe 5: größere Zahlen, gemischte Stellenzahl (ab Stufe 8 auch Tausendstel) */
+function dp5(L){
+  var ks=L>=8?[1,2,2,3]:[1,2,2], a=dpZahl(pick(ks),1,20), b=dpZahl(pick(ks),0,9);
+  return dpTask(a,b,Math.random()<.5?1:-1,L,{extra:.5});
+}
+/* Stufe 6: Ergänzen zu 1, 2, 5 oder 10 (0,35 + ? = 1) */
+function dpLuecke(L){
+  var c=pick(L>=8?[1,1,2,5,10]:[1,1,1,2,10]), k=pick([1,2,2]), D=p10(k), a=dpZahl(k,0,c-1);
+  if(a.N>=c*D) return null;
+  var R=c*D-a.N, res=F(R,D), ans=CZ(res), cs=[];
+  var s=String(a.N%D); while(s.length<k) s='0'+s;                  // Fehler: jede Stelle zu 10 ergänzt
+  var z=0; for(var i=0;i<k;i++){ var d=+s[i]; z=z*10+(d?10-d:0); }
+  var zw=c-1-Math.floor(a.N/D); if(zw>=0 && z>0){ var v10=F(zw*D+z,D); if(!feq(v10,res)) cs.push(C(v10,DZ(v10),'Zusammen genau '+c+'?')); }
+  cs.push(CZ(F(c*D+a.N,D),'Minus, nicht plus!')); cs.push(CZ(F(R+D,D),'Nur bis '+c+' ergänzen!')); if(R>D) cs.push(CZ(F(R-D,D),'Die Ganzen prüfen!'));
+  cs.push(CZ(F(R+1,D))); cs.push(CZ(F(R-1,D))); if(k>=2){ cs.push(CZ(F(R+10,D))); cs.push(CZ(F(R-10,D))); }
+  var qa=dispHTML(DZ(F(a.N,D)));
+  return {op:'dplus',label:'Ergänze die Lücke',q:qa+opH('+')+LUECKE+opH('=')+c,ans:ans,cands:cs,
+          rev:qa+opH('+')+dispHTML(ans.disp)+opH('=')+c,fb:fbDec(res),noNeg:true,extra:1.5,chk:{exp:c-a.N/D,form:'z'}};
+}
+/* Stufe 7: Bruch plus/minus Dezimalzahl (1/4 + 0,5 = 0,25 + 0,5 = 0,75) */
+function dpBruch(L){
+  var fr=pick([[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[3,10],[7,10],[1,20],[3,20],[1,25],[1,2],[1,4],[3,4]]);
+  var fv=F(fr[0],fr[1]), fk=decStellen(fv), a={N:fv.n*p10(fk)/fv.d,k:fk}, b=dpZahl(pick([1,2]),0,2), sg=Math.random()<.6?1:-1;
+  var cands=[], K=Math.max(fk,b.k), D=p10(K), Bk=b.N*p10(K-b.k);
+  function falsch(v,h){ var A2=Math.round(fnum(v)*D); var R2=sg>0?A2+Bk:A2-Bk; if(R2>0 && Number.isInteger(A2)) cands.push(CZ(F(R2,D),h)); }
+  if(fr[0]<10 && fr[1]<100) falsch(F(fr[0]*p10(String(fr[1]).length)+fr[1],p10(String(fr[1]).length)),'Nicht Zähler Komma Nenner!');
+  if(fr[0]===1 && EINS_DURCH[fr[1]]) falsch(F(fr[1],10),EINS_DURCH[fr[1]]);
+  else falsch(F(fr[0],10),'Erst richtig umwandeln!');
+  var t=dpTask(a,b,sg,L,{qa:dispHTML(DF(fr[0],fr[1])),cands:cands,label:'Rechne – Ergebnis als Dezimalzahl',extra:2});
+  return t;
+}
+function genDplus(L){
+  var t=null, n=0;
+  while(!t && n++<300) t=pickSub(L,[[1,dp1],[2,dp2],[3,dp3],[4,dp4],[5,dp5],[6,dpLuecke],[7,dpBruch]])(L);
+  return t;
+}
+
+var GEN={kuerzen:genKuerzen,bilder:genBilder,plus:genPlus,mal:genMal,geteilt:genGeteilt,gemischt:genGemischt,dezimal:genDezimal,dplus:genDplus};
 /* Aufgabe samt Tafeln (Anzahl n) erzeugen */
 function makeRound(op,L,n,nPic){
   for(var t=0;t<40;t++){
     var task=GEN[op](L); if(!task) continue;
     var nn=(task.mode==='f2p'&&nPic)?nPic:n;
-    var wr=chooseWrongs(task.ans,task.cands,nn-1,{noNeg:task.noNeg,max:task.max,fallback:task.fb});
+    var wr=chooseWrongs(task.ans,task.cands,nn-1,{noNeg:task.noNeg,max:task.max,lim:task.limD,fallback:task.fb});
     if(wr.length<nn-1) continue;
     task.wrongs=wr; return task;
   }
@@ -958,13 +1220,13 @@ var store = {
 var HS_KEY='bruchjagd.bestenliste.v1', HS_KEY_RUHE='bruchjagd.bestenliste.ruhe.v1', SET_KEY='bruchjagd.einstellungen.v1';
 function hsKey(){ return S.modus==='ruhe'?HS_KEY_RUHE:HS_KEY; }
 
-var OPS = { kuerzen:{sym:'Kürzen',name:'Kürzen & Erweitern'}, bilder:{sym:'Bilder',name:'Bruchteile in Bildern'}, plus:{sym:'±',name:'Plus & Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'}, gemischt:{sym:'Gemischt',name:'Gemischte Zahlen umwandeln'} };
-var OP_ORDER = ['kuerzen','bilder','plus','mal','geteilt','gemischt'];
+var OPS = { kuerzen:{sym:'Kürzen',name:'Kürzen & Erweitern'}, bilder:{sym:'Bilder',name:'Bruchteile in Bildern'}, plus:{sym:'±',name:'Plus & Minus'}, mal:{sym:'·',name:'Mal'}, geteilt:{sym:':',name:'Geteilt'}, gemischt:{sym:'Gemischt',name:'Gemischte Zahlen umwandeln'}, dezimal:{sym:'Dezimal',name:'Brüche & Dezimalzahlen'}, dplus:{sym:'D±',name:'Dezimalzahlen plus & minus'} };
+var OP_ORDER = ['kuerzen','bilder','plus','mal','geteilt','gemischt','dezimal','dplus'];
 var LIVES = 5, PER_LEVEL = 5;
 /* Zusatzzeit (s), wenn man erst rechnen und dann noch kürzen muss */
 var KUERZ_EXTRA = { plus:5, mal:6, geteilt:6, gemischt:4 };
 /* Fallzeit in Sekunden: [Start, Minimum] – Bruchaufgaben brauchen mehr Zeit als Einmaleins */
-var FALL = { kuerzen:[13,6.5], bilder:[12.5,6.5], plus:[16,8.5], mal:[15,8], geteilt:[16,8.5], gemischt:[17,9] };
+var FALL = { kuerzen:[13,6.5], bilder:[12.5,6.5], plus:[16,8.5], mal:[15,8], geteilt:[16,8.5], gemischt:[17,9], dezimal:[14,7.5], dplus:[15,8] };
 function fallTime(t,L){ var f=FALL[t.op]; return Math.max(f[1], f[0]*Math.pow(.95,L-1)) + (t.extra||0); }
 var FONT = '"Baloo 2","Fredoka","Nunito",ui-rounded,"SF Pro Rounded","Segoe UI Rounded","Arial Rounded MT Bold","Trebuchet MS","Segoe UI",system-ui,sans-serif';
 var CHUTES = [['#e5484d','#ff8f8f'],['#ffb020','#ffe08a'],['#2f86d6','#8cc4f5'],['#8e5bd6','#c7a8f2'],['#f0609e','#ffb1d0'],['#14a89a','#86e0d4']];
@@ -972,14 +1234,15 @@ var CHALK = {line:'#fdfdf5', fill:'#ffd23f', empty:'rgba(255,255,255,.07)', lw:.
 var PAPER = {line:'#1d2b4a', fill:'#ff8a3d', empty:'#ffffff', lw:.022};
 
 /* ================= Einstellungen ================= */
-var S = store.get(SET_KEY, {ops:['kuerzen','bilder','plus','mal'], start:1, name:'', sound:false, modus:'zeit'});
+var S = store.get(SET_KEY, {ops:['kuerzen','bilder','plus','mal','dezimal'], start:1, name:'', sound:false, modus:'zeit', dez:1});
+if(!S.dez){ S.dez=1; if(S.ops && S.ops.indexOf('dezimal')<0) S.ops.push('dezimal'); }   // neuer Bereich „Dezimal“ einmalig für alle eingeschaltet (25.11.2026)
 if(S.modus!=='ruhe') S.modus='zeit';
 S.ops=(S.ops||[]).filter(function(o){ return OPS[o]; });
-if(!S.ops.length) S.ops = ['kuerzen','bilder','plus','mal'];
+if(!S.ops.length) S.ops = ['kuerzen','bilder','plus','mal','dezimal'];
 (function(){ // Voreinstellung per Link, z. B. ?ops=bilder oder ?ops=kuerzen,plus
   var q=''; try{ q=new URLSearchParams(location.search).get('ops')||''; }catch(e){}
   if(!q) return;
-  var alias={kuerzen:'kuerzen','kürzen':'kuerzen',erweitern:'kuerzen',bilder:'bilder',bild:'bilder',plus:'plus',minus:'plus',mal:'mal',geteilt:'geteilt',durch:'geteilt',gemischt:'gemischt',gemischte:'gemischt',umwandeln:'gemischt'};
+  var alias={kuerzen:'kuerzen','kürzen':'kuerzen',erweitern:'kuerzen',bilder:'bilder',bild:'bilder',plus:'plus',minus:'plus',mal:'mal',geteilt:'geteilt',durch:'geteilt',gemischt:'gemischt',gemischte:'gemischt',umwandeln:'gemischt',dezimal:'dezimal',dezimalzahl:'dezimal',dezimalzahlen:'dezimal',komma:'dezimal',kommazahlen:'dezimal',dplus:'dplus','dezimal±':'dplus',dezimalplus:'dplus',dezimalminus:'dplus',kommaplus:'dplus'};
   var list=[]; q.toLowerCase().split(/[,; ]+/).forEach(function(k){ var o=alias[k]; if(o&&list.indexOf(o)<0) list.push(o); });
   if(list.length) S.ops=list;
 })();
@@ -1009,6 +1272,7 @@ function drawPic(g,p,cx,cy,size,st){
 }
 function dispParts(d){
   if(d.t==='i') return {sign:d.v<0, whole:Math.abs(d.v), n:null};
+  if(d.t==='z') return {sign:false, whole:d.s, n:null};
   if(d.t==='f') return {sign:d.n<0, whole:null, n:Math.abs(d.n), d:d.d};
   return {sign:d.neg, whole:d.w, n:d.n, d:d.d};
 }
@@ -1076,7 +1340,7 @@ function rr(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.lineTo(x+w-r,y); g.q
   g.quadraticCurveTo(x+w,y+h,x+w-r,y+h); g.lineTo(x+r,y+h); g.quadraticCurveTo(x,y+h,x,y+h-r); g.lineTo(x,y+r); g.quadraticCurveTo(x,y,x+r,y); g.closePath(); }
 function sizeBoard(b,n){
   var lane=W/n, k=b.disp.t, base=clamp(Math.min(lane*.8,H*(k==='p'?.21:.19)),62,k==='p'?170:150);
-  b.bw=base*(k==='m'?1.08:1); b.bh=base*(k==='i'?.6:(k==='p'?.94:.8));
+  b.bw=base*(k==='m'?1.08:(k==='z'?1.1:1)); b.bh=base*(k==='i'||k==='z'?.6:(k==='p'?.94:.8));
 }
 function hill(g,base,amp,f,ph,col){
   g.beginPath(); g.moveTo(0,H);
@@ -1324,7 +1588,7 @@ function drawBoard(b){
   var f=bw*.065; ctx.fillStyle='#2f5d50'; rr(ctx,-bw/2+f,top+f,bw-2*f,bh-2*f,bw*.045); ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.07)'; rr(ctx,-bw/2+f,top+f,bw-2*f,(bh-2*f)*.42,bw*.045); ctx.fill();
   if(b.disp.t==='p') drawPic(ctx,b.disp.pic,0,0,Math.min(bw-2*f,bh-2*f)*.84,CHALK);
-  else drawDisp(ctx,b.disp,0,b.disp.t==='i'?bh*.02:0,bw*.78,(bh-2*f)*.92,'#fdfdf5');
+  else drawDisp(ctx,b.disp,0,b.disp.t==='i'||b.disp.t==='z'?bh*.02:0,bw*.8,(bh-2*f)*.92,'#fdfdf5');
   ctx.restore();
 }
 function drawCloud(c){
@@ -1416,7 +1680,7 @@ function showMenu(){
   var bc=$('#btnClear'); bc.textContent='Bestenliste löschen'; bc.dataset.sure='';
   renderBoard('menu');
 }
-function opsLabel(ops){ return ops.length===1?OPS[ops[0]].sym:OP_ORDER.filter(function(o){return ops.indexOf(o)>=0;}).map(function(o){return o==='kuerzen'?'K':(o==='bilder'?'B':(o==='gemischt'?'G':OPS[o].sym));}).join(' '); }
+function opsLabel(ops){ return ops.length===1?OPS[ops[0]].sym:OP_ORDER.filter(function(o){return ops.indexOf(o)>=0;}).map(function(o){return o==='kuerzen'?'K':(o==='bilder'?'B':(o==='gemischt'?'G':(o==='dezimal'?'D':(o==='dplus'?'D±':OPS[o].sym))));}).join(' '); }
 function gameOver(){
   G.state='over'; G.boards=[]; document.body.classList.remove('playing'); $('#hud').hidden=true; sfx.over();
   var entry={n:S.name||'Anonym',s:G.score,l:G.level,o:opsLabel(G.ops),t:Date.now()};
