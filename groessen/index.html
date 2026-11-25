@@ -53,7 +53,7 @@ i.gs{font-style:italic}
 .karte.verdeckt .anweisung,.karte.verdeckt .prompt,.karte.verdeckt .zeitbalken{visibility:hidden}
 #spuren.verdeckt .chip .t{visibility:hidden}
 .anweisung{text-align:center;font-weight:900;font-size:23px;line-height:1.2;white-space:nowrap;overflow:hidden;color:#fff;padding:0 4px}
-.prompt{text-align:center;font-weight:900;font-size:28px;line-height:1.2;margin:2px 4px 8px;height:2.5em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:.3em;text-wrap:balance;overflow:hidden}
+.prompt{text-align:center;font-weight:900;font-size:28px;line-height:1.2;margin:2px 4px 6px;height:2.3em;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:.3em;text-wrap:balance;overflow:hidden}
 .prompt .zu{font-size:.64em;font-weight:800;color:var(--text2)}
 .b-groesse{color:#B9A6FF}.b-gsym{color:#7FE3E6}.b-einheit{color:#8CF0B4}.b-esym{color:#FF8FA0}.b-zahl{color:#FFC93C}
 .zeitbalken{height:5px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}
@@ -63,8 +63,11 @@ i.gs{font-style:italic}
 .prompt .satz{font-size:.72em;font-weight:800}
 .prompt mark{background:none;color:var(--gelb);border-bottom:3px solid var(--gelb);padding:0 2px;border-radius:2px}
 .prompt .klein{font-size:17px;font-weight:800;color:var(--text2)}
-#spuren{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:640px;padding:6px 8px max(8px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,1fr);gap:8px;z-index:2}
-#spuren::before{content:"";position:absolute;inset:-14px 0 0;background:linear-gradient(180deg,rgba(7,9,21,0),rgba(7,9,21,.85) 40%);z-index:-1;pointer-events:none}
+/* Unten: Antwort-Tasten und darunter die Frage – der Blick bleibt unten */
+#unten{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:640px;padding:0 8px max(8px,env(safe-area-inset-bottom));z-index:2}
+#unten::before{content:"";position:absolute;inset:-18px -100vw 0;background:linear-gradient(180deg,rgba(7,9,21,0),rgba(7,9,21,.9) 26%);z-index:-1;pointer-events:none}
+#spuren{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:6px 0 8px}
+#unten .karte{padding:8px 10px 9px}
 .chip{position:relative;height:64px;cursor:pointer;touch-action:manipulation;color:#fff;overflow:hidden;border-radius:14px;border:2px solid rgba(63,208,212,.45);background:rgba(8,26,40,.92);
   display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 6px;font-weight:800;font-size:16px;line-height:1.15;
   hyphens:manual;overflow-wrap:normal;word-break:normal;transition:border-color .15s,background .15s,opacity .2s}
@@ -87,7 +90,7 @@ i.gs{font-style:italic}
 .mission.fertig{border-color:var(--ok);color:#B5F5D2}
 .mission.vorbei{opacity:.5}
 .stufe{margin-left:auto;flex:none;font-size:13px;font-weight:900;background:var(--glas);border:1px solid var(--rand);border-radius:999px;padding:4px 10px;color:var(--text2)}
-.toast{margin-top:6px;text-align:center;font-weight:800;font-size:16px;min-height:1.4em;opacity:0;transition:opacity .25s;text-shadow:0 2px 6px #000}
+.toast{position:absolute;left:0;right:0;bottom:200px;padding:0 10px;pointer-events:none;z-index:2;text-align:center;font-weight:800;font-size:16px;min-height:1.4em;opacity:0;transition:opacity .25s;text-shadow:0 2px 6px #000}
 .toast.an{opacity:1}
 .toast .gs{font-style:italic}
 .hinweis{position:absolute;left:0;right:0;bottom:90px;text-align:center;font-weight:900;font-size:15px;color:#fff;pointer-events:none;transition:opacity .6s;text-shadow:0 2px 6px #000;padding:0 10px}
@@ -192,19 +195,21 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
       <div class="effekte" id="effekte"></div>
       <div class="punkte" id="punkteBox"><span class="combo" id="combo">×2</span><span class="zahl"><b id="punkte">0</b><small id="rekordKlein"></small></span></div>
     </div>
+    <div class="zeile2"><span class="mission" id="mission"></span><span class="stufe" id="stufe">Stufe 1</span></div>
+  </div>
+  <div class="hinweis hidden" id="hinweis"></div>
+  <div class="toast" id="toast"></div>
+  <div id="unten" class="hidden">
+    <div id="spuren" aria-label="Antwort wählen">
+      <button class="chip" data-l="0"><span class="pf">◀</span><span class="t"></span></button>
+      <button class="chip" data-l="1"><span class="t"></span></button>
+      <button class="chip" data-l="2"><span class="pf">▶</span><span class="t"></span></button>
+    </div>
     <div class="karte" id="karte">
       <div class="anweisung" id="anweisung">&nbsp;</div>
       <div class="prompt" id="prompt"></div>
       <div class="zeitbalken" id="zeitbalken"><i id="zeitI"></i></div>
     </div>
-    <div class="zeile2"><span class="mission" id="mission"></span><span class="stufe" id="stufe">Stufe 1</span></div>
-    <div class="toast" id="toast"></div>
-  </div>
-  <div class="hinweis hidden" id="hinweis"></div>
-  <div id="spuren" class="hidden" aria-label="Spur wählen">
-    <button class="chip" data-l="0"><span class="pf">◀</span><span class="t"></span></button>
-    <button class="chip" data-l="1"><span class="t"></span></button>
-    <button class="chip" data-l="2"><span class="pf">▶</span><span class="t"></span></button>
   </div>
 
   <!-- Start -->
@@ -676,19 +681,26 @@ function groesse(){
   W=Math.max(200,r.width); H=Math.max(200,r.height);
   DPR=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
-  var kb, hud=$('hud');
-  if(!hud.classList.contains('hidden')) kb=$('karte').getBoundingClientRect().bottom-r.top; else kb=H*0.30;
+  var hud=$('hud'), un=$('unten');
+  var kb=!hud.classList.contains('hidden') ? hud.getBoundingClientRect().bottom-r.top : H*0.12;
   kartenUnten=kb;
-  yh=Math.min(H*0.58,Math.max(kb+18,H*0.36));
-  var sp=$('spuren');
-  if(!sp.classList.contains('hidden')){
-    var bt=sp.getBoundingClientRect().top-r.top;
-    yp=bt-Math.max(30,H*0.04);
-    $('hinweis').style.bottom=Math.round(H-bt+8)+'px';
-  } else yp=H-Math.max(64,H*0.11);
+  yh=Math.min(H*0.5,Math.max(kb+24,H*0.27));
   cx=W/2;
-  FY=(yp-yh)*SPIEL.ZP/SPIEL.CAMH;
-  FX=Math.min(FY*0.6, W*0.30*SPIEL.ZP);
+  for(var runde=0;runde<2;runde++){
+    if(!un.classList.contains('hidden')){
+      var bt=un.getBoundingClientRect().top-r.top;
+      yp=bt-Math.max(26,H*0.035);
+    } else yp=H-Math.max(64,H*0.11);
+    FY=(yp-yh)*SPIEL.ZP/SPIEL.CAMH;
+    FX=Math.min(FY*0.6, W*0.30*SPIEL.ZP);
+    // Antwort-Tasten so breit wie die Fahrbahn (Tablet quer: nicht breiter als nötig)
+    // Rückmeldung und Hinweis über dem Gleiter, nicht auf ihm
+    var tb=Math.round(H-yp+FX/SPIEL.ZP*0.55+6);
+    $('toast').style.bottom=tb+'px'; $('hinweis').style.bottom=(tb+28)+'px';
+    var breite=Math.round(Math.max(340,Math.min(640,FX/SPIEL.ZP*3.7)));
+    if(un.style.maxWidth===breite+'px') break;
+    un.style.maxWidth=breite+'px';
+  }
   baueHintergrund();
 }
 function P(x,y,z){ return [cx+x*FX/z, yh+(SPIEL.CAMH*FY)/z - y*FX/z]; }
@@ -1394,7 +1406,14 @@ function spielTipp(cxp,cyp){
   var r=cv.getBoundingClientRect(), x=cxp-r.left, y=cyp-r.top;
   var b=bombeBeiPunkt(x,y);
   if(b>=0){ schiesseBombe(b); return; }
-  setzeSpur(x<r.width/3?0:(x>r.width*2/3?2:1));
+  setzeSpur(spurBeiPunkt(x,y)+1);
+}
+/* Welche Spur liegt unter dem Finger? Aus der Perspektive gerechnet, damit es auch im Querformat stimmt */
+function spurBeiPunkt(x,y){
+  var z=y>yh+4 ? (SPIEL.CAMH*FY)/(y-yh) : 40;
+  z=Math.max(SPIEL.ZP*0.6,Math.min(40,z));
+  var xw=(x-cx)*z/FX;
+  return xw<-0.5?-1:(xw>0.5?1:0);
 }
 cv.addEventListener('pointerdown',function(e){ zeiger={ x:e.clientX, y:e.clientY, id:e.pointerId, zug:false }; try{ cv.setPointerCapture(e.pointerId); }catch(x){} });
 cv.addEventListener('pointermove',function(e){
@@ -1459,7 +1478,7 @@ function zeigeAbzeichen(){
 function zeige(id){ ['start','pause','ende'].forEach(function(s){ $(s).classList.toggle('hidden',s!==id); }); }
 function start(){
   neueRunde(); modus='lauf'; zeige(null);
-  $('hud').classList.remove('hidden'); $('hinweis').classList.remove('hidden'); $('spuren').classList.remove('hidden'); $('spuren').className='';
+  $('hud').classList.remove('hidden'); $('hinweis').classList.remove('hidden'); $('unten').classList.remove('hidden'); $('spuren').className='';
   zeigeHinweis(HINWEIS_LENKEN,'lenken');
   $('karte').className='karte'; $('anweisung').textContent='Mach dich bereit …'; $('prompt').innerHTML='&nbsp;'; zbAlt=-1; zeitbalken(1);
   Array.prototype.forEach.call(document.querySelectorAll('.chip'),function(c){ c.className='chip'; c.querySelector('.t').innerHTML='&nbsp;'; });
@@ -1498,7 +1517,7 @@ function rundeEnde(){
   setTimeout(function(){
     if(modus!=='vorbei') return;
     gib('start');
-    $('hud').classList.add('hidden'); $('hinweis').classList.add('hidden'); $('spuren').classList.add('hidden');
+    $('hud').classList.add('hidden'); $('hinweis').classList.add('hidden'); $('unten').classList.add('hidden'); toast('');
     var alt=daten.best||0, neu=st.punkte>alt;
     if(neu){ daten.best=st.punkte; speichern(); }
     $('endPunkte').textContent=st.punkte;
@@ -1619,7 +1638,7 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 requestAnimationFrame(schleife);
 
 /* nur zum Testen */
-window.__runner={ neueFrage:neueFrage, MACHER:MACHER, POOL:POOL, plain:plain, update:update, setzeSpur:setzeSpur, schiesseBombe:schiesseBombe, antwortTaste:antwortTaste, bombenPlatz:bombenPlatz,
+window.__runner={ spurBeiPunkt:spurBeiPunkt, geo:function(){ return {W:W,H:H,yh:yh,yp:yp,FX:FX,FY:FY,cx:cx}; }, P:P, neueFrage:neueFrage, MACHER:MACHER, POOL:POOL, plain:plain, update:update, setzeSpur:setzeSpur, schiesseBombe:schiesseBombe, antwortTaste:antwortTaste, bombenPlatz:bombenPlatz,
   pausieren:pausieren, fortsetzen:fortsetzen, erzwinge:function(a){ naechsteArt=a; },
   zustand:function(){ return { modus:modus, st:st, countdown:countdown }; }, countdownTick:function(dt){ if(modus==='countdown'){ countdown-=dt; if(countdown<=0){ countdown=0; modus='lauf'; } } } };
 })();
