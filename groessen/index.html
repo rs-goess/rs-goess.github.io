@@ -48,6 +48,7 @@ i.gs{font-style:italic}
 .karte.ok{border-color:var(--ok);background:rgba(10,48,32,.88)}
 .karte.no{border-color:var(--no);background:rgba(60,12,22,.9)}
 .karte.profi{border-color:#FF9AD0}
+.karte.bombe{border-color:#FFB36B}
 .karte.polizei{border-color:#5AA9FF}
 .karte.verdeckt .anweisung,.karte.verdeckt .prompt,.karte.verdeckt .zeitbalken{visibility:hidden}
 #spuren.verdeckt .chip .t{visibility:hidden}
@@ -76,6 +77,7 @@ i.gs{font-style:italic}
 .chip .t{display:block;max-width:100%}
 .chip .pf{position:absolute;top:3px;font-size:10px;opacity:.55;font-weight:900}
 .chip:nth-child(1) .pf{left:7px}.chip:nth-child(3) .pf{right:7px}
+#spuren.bombe .chip{border-color:rgba(255,179,107,.6);background:rgba(44,24,8,.94)}
 #spuren.profi .chip{border-color:rgba(255,154,208,.5);background:rgba(40,10,34,.92)}
 #spuren.profi .chip.hier{border-color:#FF9AD0;background:rgba(90,24,72,.95)}
 #spuren.polizei .chip{border-color:rgba(90,169,255,.5);background:rgba(10,22,48,.92)}
@@ -211,26 +213,24 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
       <div class="oben"><a class="rund" id="zurueck1" href="../" aria-label="Zurück zur Klassenseite"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg></a><span class="ober" id="klassenName">Physik</span></div>
       <h1>Größen-Runner</h1>
       <p>Steuere deinen Gleiter durch das Tor mit der richtigen Antwort. Je länger du durchhältst, desto schneller wird es.</p>
-      <div class="bsp" aria-label="Beispiel: Kraft F = 35 N">
-        <div class="gl"><span class="k1"><i>F</i></span> = <span class="k2">35</span> <span class="k3">N</span></div>
+      <div class="bsp" aria-label="Beispiel: Die Kraft beträgt 35 N">
+        <div class="gl" style="font-size:24px">Die <span class="k4">Kraft</span> beträgt <span class="k2">35</span> <span class="k5">N</span>.</div>
         <dl>
-          <dt class="k4">Größe</dt><dd>Kraft</dd>
-          <dt class="k1">Größensymbol</dt><dd><i>F</i> (kursiv)</dd>
-          <dt class="k2">Zahlenwert</dt><dd>35</dd>
-          <dt class="k5">Einheit</dt><dd>Newton</dd>
-          <dt class="k3">Einheitensymbol</dt><dd>N</dd>
+          <dt class="k4">Größe</dt><dd>Kraft – was gemessen wird</dd>
+          <dt class="k2">Zahlenwert</dt><dd>35 – wie viel</dd>
+          <dt class="k5">Einheit</dt><dd>N (Newton) – worin gemessen wird</dd>
         </dl>
       </div>
       <div class="steuer">
         <div><b>Antwort antippen</b>unten – oder Spur antippen bzw. wischen</div>
-        <div><b>Oben aufs Ziel tippen</b>schießen (nur bei 🎯 und 🚨)</div>
-        <div><b>Tastatur</b>◀ ▶ lenken, Leertaste schießen</div>
+        <div><b>💣 Bombe antippen</b>bevor die Zündschnur abgebrannt ist</div>
+        <div><b>Tastatur</b>◀ ▶ lenken, 1 2 3 Antwort</div>
       </div>
       <ul class="regeln">
-        <li>❤️ 3 Leben · richtige Tore in Serie geben ×2 bis ×5 · alle 8 in Serie ein Herz zurück</li>
-        <li>⚡ +2 · Gold-⚡ +10 · ganze Reihe +5 · 🎯 jede Runde eine Mission</li>
-        <li>Power-ups: 🛡 Schild · ✂️ 50:50 · ⏳ Zeitlupe</li>
-        <li>Ab Stufe 3: 🚨 Einheiten-Polizei · ab Stufe 6: 🧠 Profi – schießen und fahren</li>
+        <li>Ordne zu: <b>Größe ↔ Einheit</b> – und erkenne Größe, Zahlenwert und Einheit im Satz.</li>
+        <li>❤️ 3 Leben · richtige Antworten in Serie geben ×2 bis ×5 · alle 8 in Serie ein Herz zurück</li>
+        <li>💣 Ab Stufe 2 schweben Bomben über der Fahrbahn: die richtige abschießen, bevor sie explodiert. Unten kannst du dabei ⚡ und Power-ups einsammeln (🛡 Schild · ✂️ 50:50 · ⏳ Zeitlupe).</li>
+        <li>🚨 Einheiten-Polizei: die falsch geschriebene Einheit abschießen · 🎯 jede Runde eine Mission</li>
         <li>Pause verdeckt die Frage und kostet die Serie.</li>
       </ul>
       <div class="bestwert"><span>Dein Bestwert</span><b id="bestStart">0</b></div>
@@ -344,29 +344,21 @@ var KLASSEN = {
 
 /* Fragearten und wie oft sie kommen (Gewicht) */
 var ARTEN = [
-  { typ:'begriff', w:26 },   // „Was ist das Unterstrichene?“ – Größe / Größensymbol / Einheit / Einheitensymbol / Zahlenwert
-  { typ:'g2sym',   w:13 },   // Größe → Größensymbol
-  { typ:'sym2g',   w:12 },   // Größensymbol → Größe
-  { typ:'g2es',    w:14 },   // Größe → Einheitensymbol
-  { typ:'g2ein',   w:9 },    // Größe → Einheit
-  { typ:'es2ein',  w:8 },    // Einheitensymbol → Einheit
-  { typ:'ein2es',  w:8 },    // Einheit → Einheitensymbol
-  { typ:'es2g',    w:10 }    // Einheitensymbol → Größe
+  { typ:'einheit', w:44 },   // Nenne die Einheit zur Größe …
+  { typ:'groesse', w:38 },   // Nenne die Größe zur Einheit …
+  { typ:'begriff', w:18 }    // Was ist das Unterstrichene? – Größe / Einheit / Zahlenwert
 ];
 
-var SPIEL = { V0:11, VPLUS:0.42, VMAX:18.5, ZFERN:70, ZP:5, CAMH:1.4, LEBEN:3, HERZ_SERIE:8,
-  POLIZEI_AB:3, POLIZEI_ALLE:8, PROFI_AB:6, PROFI_ALLE:3, KUGEL_CHANCE:0.2, GOLD_CHANCE:0.12 };
+var SPIEL = { V0:8.5, VPLUS:0.3, VMAX:14, ZFERN:70, ZP:5, CAMH:1.4, LEBEN:3, HERZ_SERIE:8,
+  BOMBE_AB:2, BOMBE_ALLE:3, PROFI_AB:6, BOMBE_ALLE_PROFI:2,   // ab Stufe 2 jede 3. Aufgabe eine Bomben-Runde, ab Stufe 6 jede 2.
+  ZUENDER:9, ZUENDER_MIN:6,                                   // Sekunden bis die Bomben explodieren
+  KUGEL_CHANCE:0.35, GOLD_CHANCE:0.15 };
 
-/* Frage als Satz: „Nenne das Größensymbol / zur Größe Dichte“ – [gesucht, gegeben] */
-var ANW = {
-  g2sym:['Größensymbol','Größe'], sym2g:['Größe','Größensymbol'], g2es:['Einheitensymbol','Größe'], g2ein:['Einheit','Größe'],
-  es2ein:['Einheit','Einheitensymbol'], ein2es:['Einheitensymbol','Einheit'], es2g:['Größe','Einheitensymbol']
-};
+/* Frage als Satz: „Nenne die Einheit / zur Größe Druck“ – [gesucht, gegeben] */
+var ANW = { einheit:['Einheit','Größe'], groesse:['Größe','Einheit'] };
 var BEGRIFF = {
-  'Größe':          { art:'die', zu:'zur', cls:'b-groesse' },
-  'Größensymbol':   { art:'das', zu:'zum', cls:'b-gsym' },
-  'Einheit':        { art:'die', zu:'zur', cls:'b-einheit' },
-  'Einheitensymbol':{ art:'das', zu:'zum', cls:'b-esym' }
+  'Größe':   { art:'die', zu:'zur', cls:'b-groesse' },
+  'Einheit': { art:'die', zu:'zur', cls:'b-einheit' }
 };
 
 /* Einheiten-Polizei: richtig und falsch geschriebene Einheitensymbole (zu = zugehörige richtige Einheit) */
@@ -392,9 +384,9 @@ var SKINS = [
 var ABZEICHEN = [
   { id:'start',    i:'🚀', name:'Erster Start',     text:'Spiele deine erste Runde.' },
   { id:'kelvin',   i:'🌡️', name:'Kelvin-Kenner',    text:'5 Fragen zu Temperaturen in einer Runde richtig.' },
-  { id:'einheit',  i:'📏', name:'Einheiten-Profi',  text:'10 Fragen zu Einheiten in einer Runde richtig.' },
-  { id:'schuetze', i:'🎯', name:'Scharfschütze',    text:'5 richtige Treffer in einer Runde.' },
-  { id:'polizei',  i:'🚨', name:'Polizei-Chef',     text:'Eine Einheiten-Polizei-Welle ohne Fehler.' },
+  { id:'einheit',  i:'📏', name:'Einheiten-Profi',  text:'10× die richtige Einheit in einer Runde.' },
+  { id:'schuetze', i:'💣', name:'Bombenentschärfer', text:'5 Bomben in einer Runde richtig getroffen.' },
+  { id:'polizei',  i:'🚨', name:'Polizei-Chef',     text:'3 falsch geschriebene Einheiten in einer Runde erwischt.' },
   { id:'serie',    i:'🔥', name:'Unaufhaltsam',     text:'Eine 15er-Serie.' },
   { id:'profi',    i:'🧠', name:'Profi',            text:'Stufe 6 erreichen.' },
   { id:'tausend',  i:'💯', name:'Tausender',        text:'1000 Punkte in einer Runde.' },
@@ -404,12 +396,13 @@ var ABZEICHEN = [
 
 /* Missionen: zu Beginn jeder Runde wird eine gezogen */
 var MISSIONEN = [
-  { id:'energie', text:'Sammle 20 ⚡',                       ziel:20 },
-  { id:'einheit', text:'5 Fragen zu Einheiten richtig',      ziel:5 },
-  { id:'symbol',  text:'5 Fragen zu Größensymbolen richtig', ziel:5 },
-  { id:'begriff', text:'4× „Was ist das Unterstrichene?“ richtig', ziel:4 },
+  { id:'energie', text:'Sammle 15 ⚡',                       ziel:15 },
+  { id:'einheit', text:'6× die richtige Einheit',            ziel:6 },
+  { id:'groesse', text:'6× die richtige Größe',              ziel:6 },
+  { id:'begriff', text:'3× „Was ist das Unterstrichene?“ richtig', ziel:3 },
   { id:'serie',   text:'Schaffe eine 8er-Serie',             ziel:8 },
   { id:'fehlerfrei', text:'Erreiche Stufe 3 ohne Fehler',    ziel:3 },
+  { id:'bombe',   text:'Triff 3 Bomben richtig',             ziel:3 },
   { id:'kugel',   text:'Sammle 2 Power-ups',                 ziel:2 },
   { id:'gold',    text:'Sammle ein Gold-⚡',                 ziel:1 }
 ];
@@ -481,12 +474,53 @@ function bauFrage(typ,g,tag,prompt,richtig,falscheAntw,merk){
   return { typ:typ, gid:g.id, tag:tag, prompt:prompt, antw:antw, ok:antw.indexOf(richtig), merk:merk };
 }
 function merkG(g){
-  if(g.keineEinheit) return '<b>'+esc(g.name)+'</b> '+html(g.sym,true)+': hat keine Einheit.';
-  return '<b>'+esc(g.name)+'</b>: Größensymbol '+html(g.sym,true)+' · Einheit '+(g.ein?esc(g.ein)+' ('+html(g.es)+')':html(g.es));
+  if(g.keineEinheit) return '<b>'+esc(g.name)+'</b> hat keine Einheit.';
+  return '<b>'+esc(g.name)+'</b>: Einheit '+html(g.es)+(g.ein?' ('+esc(g.ein)+')':'');
 }
+/* Einheiten: Fallen nur aus Einheiten, nicht aus Größensymbolen */
+var ALLE_EINHEITEN=(function(){ var s={}; GROESSEN.forEach(function(g){ if(g.es) s[g.es]=1; (g.altEs||[]).forEach(function(e){ s[e]=1; }); }); return s; })();
+var ALLE_SYMBOLE=(function(){ var s={}; GROESSEN.forEach(function(g){ s[plain(g.sym)]=1; }); return s; })();
+function nurEinheiten(liste){ return (liste||[]).filter(function(e){ return ALLE_EINHEITEN[e] || !ALLE_SYMBOLE[e]; }); }
+function einheitText(g){ return g.es; }
 var andere=function(g){ return POOL.filter(function(o){ return o!==g; }); };
 
 var MACHER = {
+  einheit: function(g){
+    if(g.keineEinheit){
+      return bauFrage('einheit',g,'',esc(g.name),'keine Einheit',mischen(['J','W','N','Pa']).slice(0,2),merkG(g));
+    }
+    var verb=(g.altEs||[]).concat(g.nieEs||[]);
+    return bauFrage('einheit',g,'',esc(g.name),g.es,
+      falsche(g.es,nurEinheiten(g.fallenEs),andere(g).filter(hatEinheit).map(function(o){ return o.es; }),verb),merkG(g));
+  },
+  groesse: function(g){
+    if(!g.es) return null;
+    var E=g.es;
+    var treffer=POOL.filter(function(o){ return o.es===E || (o.altEs||[]).indexOf(E)>=0; });
+    var verb=[]; treffer.forEach(function(o){ famVon(o).forEach(function(x){ verb.push(x.name); }); verb=verb.concat(o.nieName||[]); });
+    if(treffer.some(function(o){ return o.fam==='temp'; })) verb.push('Temperatur','absolute Temperatur','Temperaturänderung');
+    var fallen=POOL.filter(function(o){ return o.sym===E || o.sym.toLowerCase()===E.toLowerCase(); }).map(function(o){ return o.name; });
+    var prompt='<span class="gl es">'+html(E)+'</span>'+(g.ein?' <span class="zu">('+esc(g.ein)+')</span>':'');
+    return bauFrage('groesse',g,'',prompt,g.name,
+      falsche(g.name,fallen,POOL.map(function(o){ return o.name; }),verb),
+      html(E)+(g.ein?' ('+esc(g.ein)+')':'')+' ist die Einheit '+(treffer.length>1?'z. B. ':'')+'der Größe <b>'+esc(g.name)+'</b>.');
+  },
+  begriffNeu: function(g){
+    if(!g.wert) return null;
+    var z=g.wert[0], es=g.wert[1], ein=g.wert[2];
+    var nom=g.nom.split(' '), art=nom[0], nm=nom.slice(1).join(' ');
+    var formen=[
+      { w:3, p:esc(art)+' <mark>'+esc(nm)+'</mark> beträgt '+esc(z)+'\u202F'+html(es)+'.', r:'Größe', teil:nm, text:g.nom+' beträgt '+z+' '+es+'.' },
+      { w:2, p:esc(g.nom)+' beträgt <mark>'+esc(z)+'</mark>\u202F'+html(es)+'.', r:'Zahlenwert', teil:z, text:g.nom+' beträgt '+z+' '+es+'.' },
+      { w:3, p:esc(g.nom)+' beträgt '+esc(z)+'\u202F<mark>'+html(es)+'</mark>.', r:'Einheit', teil:es, text:g.nom+' beträgt '+z+' '+es+'.' }
+    ];
+    if(ein) formen.push({ w:2, p:esc(g.nom)+' beträgt '+esc(z)+' <mark>'+esc(ein)+'</mark>.', r:'Einheit', teil:ein, text:g.nom+' beträgt '+z+' '+ein+'.' });
+    var summe=formen.reduce(function(s,x){ return s+x.w; },0), r=Math.random()*summe, f=formen[0];
+    for(var i=0;i<formen.length;i++){ r-=formen[i].w; if(r<=0){ f=formen[i]; break; } }
+    var art2={ 'Größe':'die Größe','Einheit':'die Einheit','Zahlenwert':'der Zahlenwert' };
+    var antw=mischen(['Größe','Einheit','Zahlenwert']);
+    return { typ:'begriff', gid:g.id, tag:'', prompt:'<span class="satz">'+f.p+'</span>', antw:antw, ok:antw.indexOf(f.r), merk:'In „'+esc(f.text)+'“ ist „'+esc(f.teil)+'“ '+art2[f.r]+'.' };
+  },
   g2sym: function(g){
     var verb=(g.nieSym||[]).concat(famVon(g).map(function(o){ return o.sym; }));
     var fallen=(g.fallenSym||[]).concat(g.es && g.es!==g.sym ? [g.es] : []);
@@ -585,7 +619,7 @@ function neueFrage(){
   // falsch Beantwortetes kommt nach ein paar Toren wieder
   for(var i=0;i<wiederholen.length;i++){
     var d=wiederholen[i]; d.n--;
-    if(d.n<=0){ wiederholen.splice(i,1); var q0=MACHER[d.typ](GM[d.gid]) || MACHER.g2sym(GM[d.gid]); if(q0){ merkVerlauf(q0.gid); return q0; } break; }
+    if(d.n<=0){ wiederholen.splice(i,1); var mk=MACHER[d.typ==='begriff'?'begriffNeu':d.typ]||MACHER.einheit; var q0=mk(GM[d.gid]) || MACHER.einheit(GM[d.gid]) || MACHER.groesse(GM[d.gid]); if(q0){ merkVerlauf(q0.gid); return q0; } break; }
   }
   var summe=ARTEN.reduce(function(s,a){ return s+a.w; },0);
   for(var v=0; v<60; v++){
@@ -594,10 +628,10 @@ function neueFrage(){
     var kand=POOL.filter(function(g){ return verlauf.indexOf(g.id)<0; });
     if(!kand.length) kand=POOL;
     var g=pick(kand), q=null;
-    try{ q=MACHER[typ](g); }catch(e){ q=null; }
+    try{ q=MACHER[typ==='begriff'?'begriffNeu':typ](g); }catch(e){ q=null; }
     if(q && q.ok>=0 && q.antw.length===3){ merkVerlauf(q.gid); return q; }
   }
-  return MACHER.g2sym(POOL[0]);
+  return MACHER.einheit(POOL[0]);
 }
 function merkVerlauf(id){ verlauf.push(id); var max=Math.min(6,Math.max(1,POOL.length-3)); while(verlauf.length>max) verlauf.shift(); }
 
@@ -615,9 +649,9 @@ daten.missionen=+daten.missionen||0;
 function speichern(){ lsSet(SPEICHER,JSON.stringify(daten)); }
 var tonAn=!!daten.ton;
 var TOUCH=!!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
-var STEUER_TEXT=TOUCH?'Antwort unten antippen · zum Schießen oben aufs Ziel tippen':'◀ ▶ lenken · Leertaste schießen · oder anklicken';
 var HINWEIS_LENKEN=TOUCH?'⬇ Tippe unten auf die richtige Antwort':'⬇ Antwort unten anklicken oder ◀ ▶ drücken';
-var HINWEIS_SCHIESSEN=TOUCH?'🎯 Tippe oben aufs Ziel – dann wird geschossen':'🎯 Leertaste = schießen (oder oben aufs Ziel klicken)';
+var HINWEIS_BOMBE=TOUCH?'💣 Tippe die richtige Bombe an, bevor sie explodiert':'💣 Richtige Bombe anklicken oder Taste 1 / 2 / 3';
+var kartenUnten=0;
 
 function skinAktuell(){ var s=SKINS.filter(function(x){ return x.id===daten.skin; })[0]; if(!s||(daten.best||0)<s.ab) s=SKINS[0]; return s; }
 
@@ -626,10 +660,10 @@ function neueRunde(){
   var ms=MISSIONEN.filter(function(m){ return m.id!==daten.letzteMission; }), m=pick(ms);
   daten.letzteMission=m.id; speichern();
   st={ punkte:0, leben:SPIEL.LEBEN, serie:0, besteSerie:0, richtig:0, falsch:0, v:SPIEL.V0, weg:0, spur:0, px:0,
-       tore:[], ziele:[], drohnen:[], energie:[], kugeln:[], schuesse:[], fahnen:[], teilchen:[], popups:[],
-       aufgabe:null, naechste:0.8, wackeln:0, fehler:[], vorbeiNach:0, cool:0,
-       schild:false, fifty:false, zeitlupe:0, nr:0, seitPolizei:SPIEL.POLIZEI_ALLE, reihen:{}, reihenNr:0,
-       zaehl:{ energie:0, einheit:0, symbol:0, begriff:0, kugel:0, gold:0, temp:0, treffer:0 },
+       tore:[], energie:[], kugeln:[], fahnen:[], teilchen:[], popups:[], laser:null, bombeWeg:null,
+       aufgabe:null, naechste:0.8, wackeln:0, fehler:[], vorbeiNach:0,
+       schild:false, fifty:false, zeitlupe:0, nr:0, seitBombe:0, bombenNr:0, reihen:{}, reihenNr:0, bombenHinweis:false,
+       zaehl:{ energie:0, einheit:0, groesse:0, begriff:0, kugel:0, gold:0, temp:0, bombe:0, polizei:0 },
        mission:{ def:m, stand:0, fertig:false, vorbei:false },
        rekordAlt:daten.best||0, rekordGeknackt:false, neueAbz:[], stufeAlt:1, spurGold:0 };
 }
@@ -644,6 +678,7 @@ function groesse(){
   cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
   var kb, hud=$('hud');
   if(!hud.classList.contains('hidden')) kb=$('karte').getBoundingClientRect().bottom-r.top; else kb=H*0.30;
+  kartenUnten=kb;
   yh=Math.min(H*0.58,Math.max(kb+18,H*0.36));
   var sp=$('spuren');
   if(!sp.classList.contains('hidden')){
@@ -793,44 +828,69 @@ function zeichneTor(tor){
   }
 }
 
-function zeichneZiele(r){
-  var z=r.z; if(z<1.2 || z>SPIEL.ZFERN+6) return;
-  var a=sichtbar(z);
+/* Bomben schweben über der Fahrbahn – gleiche Größe, feste Plätze, Zündschnur als Countdown */
+function zeichneBomben(){
+  var a=st&&st.aufgabe, bw=st&&st.bombeWeg;
+  if(a && a.art==='bombe') zeichneBombenSatz(a);
+  if(bw && bw!==a) zeichneBombenSatz(bw);
+}
+function zeichneBombenSatz(a){
+  var anteil=a.rest/a.zeit, knapp=anteil<0.3, blink=knapp && Math.floor(zeit*8)%2===0;
   for(var i=0;i<3;i++){
-    if(r.erledigt && i===r.getroffen) continue;
-    var schweb=0.06*Math.sin(zeit*3+i*2);
-    var p=P(i-1,1.55+schweb,z), rad=FX/z*0.34;
-    var farbe='255,154,208';
-    if(r.erledigt) farbe=(i===r.ok)?'47,208,127':'120,130,160';
-    else if(i===st.spur+1) farbe='255,200,235';
-    ctx.fillStyle='rgba('+farbe+','+(0.14*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],rad*1.35,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='rgba(30,8,28,'+(0.85*a).toFixed(3)+')'; ctx.beginPath(); ctx.arc(p[0],p[1],rad,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle='rgba('+farbe+','+a.toFixed(3)+')'; ctx.lineWidth=Math.max(1,rad*0.09);
-    ctx.beginPath(); ctx.arc(p[0],p[1],rad,0,Math.PI*2); ctx.stroke();
-    ctx.lineWidth=Math.max(0.6,rad*0.04); ctx.beginPath(); ctx.arc(p[0],p[1],rad*0.82,0,Math.PI*2); ctx.stroke();
-    // Fadenkreuz-Striche
-    [[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){ linie(p[0]+d[0]*rad*0.9,p[1]+d[1]*rad*0.9,p[0]+d[0]*rad*1.18,p[1]+d[1]*rad*1.18,'rgba('+farbe+','+a.toFixed(3)+')',Math.max(1,rad*0.07)); });
-    if(rad>7){ ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; textImRahmen(r.q.antw[i],p[0],p[1],rad*1.5,rad*1.15); }
+    var b=bombenPlatz(i), x=b.x, y=b.y, r=b.r;
+    if(a.erledigt){
+      var fade=Math.max(0,(a.boom||0.6)/0.6);
+      if(a.explodiert || i===a.gewaehlt){
+        // Explosion: Ring, der aufgeht
+        var w=1-Math.max(0,a.boom||0)/0.7;
+        ctx.strokeStyle='rgba(255,'+(a.explodiert?150:(i===a.q.ok?230:120))+',80,'+(0.8*(1-w)).toFixed(3)+')';
+        ctx.lineWidth=Math.max(2,r*0.25*(1-w)); ctx.beginPath(); ctx.arc(x,y,r*(0.8+w*1.2),0,Math.PI*2); ctx.stroke();
+        continue;
+      }
+      ctx.globalAlpha=Math.max(0.15,fade*0.6);
+    }
+    var aus=i===a.aus;
+    if(aus) ctx.globalAlpha=0.3;
+    // Schein
+    var schein=a.variante==='polizei'?'90,169,255':'255,140,60';
+    ctx.fillStyle='rgba('+schein+',.16)'; ctx.beginPath(); ctx.arc(x,y,r*1.32,0,Math.PI*2); ctx.fill();
+    // Zündschnur oben rechts
+    var zx=x+r*0.55, zy=y-r*0.62;
+    ctx.strokeStyle='#6B5A48'; ctx.lineWidth=Math.max(2,r*0.08); ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(zx,zy); ctx.quadraticCurveTo(zx+r*0.25,zy-r*0.35,zx+r*0.05,zy-r*0.55); ctx.stroke(); ctx.lineCap='butt';
+    if(!a.erledigt){
+      var fx=zx+r*0.05, fy=zy-r*0.55, fs=r*(0.12+0.06*Math.sin(zeit*30+i));
+      ctx.fillStyle='rgba(255,220,120,.95)'; ctx.beginPath(); ctx.arc(fx,fy,fs,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(255,120,40,.5)'; ctx.beginPath(); ctx.arc(fx,fy,fs*2,0,Math.PI*2); ctx.fill();
+    }
+    // Kappe
+    ctx.fillStyle='#2A3048'; rundRechteck(x+r*0.32,y-r*0.86,r*0.42,r*0.3,r*0.06); ctx.fill();
+    // Körper
+    var g=ctx.createRadialGradient(x-r*0.35,y-r*0.35,r*0.1,x,y,r);
+    g.addColorStop(0,blink?'#5A2230':'#3B4466'); g.addColorStop(1,blink?'#2A0A14':'#141A2E');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+    // Zeitring
+    ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=Math.max(3,r*0.1);
+    ctx.beginPath(); ctx.arc(x,y,r*0.9,0,Math.PI*2); ctx.stroke();
+    if(!a.erledigt){
+      ctx.strokeStyle=knapp?'#FF5C6C':(anteil<0.6?'#FFB36B':'#3FD0D4');
+      ctx.beginPath(); ctx.arc(x,y,r*0.9,-Math.PI/2,-Math.PI/2+Math.PI*2*anteil); ctx.stroke();
+    }
+    // Rand
+    ctx.strokeStyle=a.variante==='polizei'?'rgba(90,169,255,.9)':'rgba(255,179,107,.9)'; ctx.lineWidth=Math.max(1.5,r*0.04);
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke();
+    // Beschriftung
+    ctx.fillStyle='#fff'; textImRahmen(a.q.antw[i],x,y,r*1.5,r*1.05);
+    if(aus){ linie(x-r*0.6,y-r*0.6,x+r*0.6,y+r*0.6,'rgba(255,92,108,.9)',3); linie(x+r*0.6,y-r*0.6,x-r*0.6,y+r*0.6,'rgba(255,92,108,.9)',3); }
+    ctx.globalAlpha=1;
   }
 }
-
-function zeichneDrohne(d){
-  var z=d.z; if(z<1.2 || d.erledigt&&d.getroffen || z>SPIEL.ZFERN+6) return;
-  var a=sichtbar(z), schweb=0.05*Math.sin(zeit*4+d.z);
-  var ol=P(d.spur-0.45,1.08+schweb,z), ur=P(d.spur+0.45,0.5+schweb,z);
-  var x=ol[0], y=ol[1], w=ur[0]-ol[0], h=ur[1]-ol[1], r=Math.min(w,h)*0.22;
-  var schatten=P(d.spur,0,z);
-  ctx.fillStyle='rgba(90,169,255,'+(0.18*a).toFixed(3)+')'; ctx.beginPath(); ctx.ellipse(schatten[0],schatten[1],w*0.45,w*0.09,0,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='rgba(10,18,40,'+(0.9*a).toFixed(3)+')'; rundRechteck(x,y,w,h,r); ctx.fill();
-  ctx.strokeStyle='rgba(90,169,255,'+a.toFixed(3)+')'; ctx.lineWidth=Math.max(1,w*0.03); rundRechteck(x,y,w,h,r); ctx.stroke();
-  var an=Math.floor(zeit*5)%2===0, lr=Math.max(1.5,w*0.07);
-  ctx.fillStyle=an?'rgba(255,70,90,'+a.toFixed(3)+')':'rgba(255,70,90,'+(0.25*a).toFixed(3)+')';
-  ctx.beginPath(); ctx.arc(x+w*0.18,y-lr*0.6,lr,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle=!an?'rgba(80,150,255,'+a.toFixed(3)+')':'rgba(80,150,255,'+(0.25*a).toFixed(3)+')';
-  ctx.beginPath(); ctx.arc(x+w*0.82,y-lr*0.6,lr,0,Math.PI*2); ctx.fill();
-  if(h>8){ ctx.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')'; textImRahmen(d.t,x+w/2,y+h/2,w,h); }
+function zeichneLaser(){
+  var l=st&&st.laser; if(!l) return;
+  var a=Math.max(0,l.l/0.18);
+  linie(l.x1,l.y1,l.x2,l.y2,'rgba(127,240,255,'+(0.35*a).toFixed(3)+')',10);
+  linie(l.x1,l.y1,l.x2,l.y2,'rgba(232,255,255,'+a.toFixed(3)+')',3);
 }
-
 var KUGEL_FARBE={ schild:'127,182,255', fifty:'255,154,208', zeit:'185,166,255' };
 var KUGEL_ICON={ schild:'🛡', fifty:'✂️', zeit:'⏳' };
 function zeichneKugel(k){
@@ -868,32 +928,6 @@ function zeichneFahne(f){
   ctx.fillStyle='rgba(255,230,150,'+a.toFixed(3)+')'; textImRahmen('★ NEUER REKORD ★',(lt[0]+rt[0])/2,(lt[1]+bu[1])/2,rt[0]-lt[0],bu[1]-lt[1]);
 }
 
-function zeichneSchuss(s){
-  if(s.z<1.2) return;
-  var x=s.spur, a=P(x,0.55,s.z), b=P(x,0.55,s.z+1.8), lw=Math.max(1.5,FX/s.z*0.06);
-  linie(a[0],a[1],b[0],b[1],'rgba(127,240,255,.35)',lw*3);
-  linie(a[0],a[1],b[0],b[1],'#E8FFFF',lw);
-}
-
-function zeichneZielhilfe(){
-  var a=st&&st.aufgabe; if(!a||modus!=='lauf') return;
-  if(!(a.art==='polizei'||(a.art==='doppel'&&a.phase===1))) return;
-  ctx.save(); ctx.setLineDash([6,8]);
-  var p1=P(st.px,0.55,SPIEL.ZP+0.8), p2=P(st.px,0.55,SPIEL.ZP+30);
-  linie(p1[0],p1[1],p2[0],p2[1],'rgba(127,240,255,.35)',2);
-  ctx.restore();
-}
-
-function zeichneSchussZone(){
-  if(modus!=='lauf' || !schussAufgabe()) return;
-  var gy=schussGrenze();
-  ctx.save(); ctx.setLineDash([8,8]);
-  linie(12,gy,W-12,gy,'rgba(255,154,208,.45)',1.5);
-  ctx.restore();
-  ctx.font='800 13px Nunito, sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
-  ctx.fillStyle='rgba(255,200,235,.85)'; ctx.fillText(TOUCH?'▲ hier oben antippen = schießen':'▲ Leertaste oder hier oben klicken = schießen',W/2,gy-4);
-  ctx.textAlign='left';
-}
 function zeichneGleiter(){
   var px=st?st.px:Math.sin(zeit*0.8)*0.35, spur=st?st.spur:0, sk=skinAktuell();
   var u=FX/SPIEL.ZP, schweb=0.16+0.035*Math.sin(zeit*5.5);
@@ -965,18 +999,15 @@ function zeichne(dt){
   if(st){
     var o=[];
     st.tore.forEach(function(t){ o.push({z:t.z,f:function(){ zeichneTor(t); }}); });
-    st.ziele.forEach(function(r){ o.push({z:r.z,f:function(){ zeichneZiele(r); }}); });
-    st.drohnen.forEach(function(d){ o.push({z:d.z,f:function(){ zeichneDrohne(d); }}); });
     st.energie.forEach(function(e){ o.push({z:e.z,f:function(){ zeichneEnergie(e); }}); });
     st.kugeln.forEach(function(k){ o.push({z:k.z,f:function(){ zeichneKugel(k); }}); });
     st.fahnen.forEach(function(f){ o.push({z:f.z,f:function(){ zeichneFahne(f); }}); });
-    st.schuesse.forEach(function(s){ o.push({z:s.z,f:function(){ zeichneSchuss(s); }}); });
     o.sort(function(a,b){ return b.z-a.z; });
-    zeichneZielhilfe(); zeichneSchussZone();
     var vorne=[];
     o.forEach(function(x){ if(x.z>=SPIEL.ZP) x.f(); else vorne.push(x); });
     zeichneGleiter();
     vorne.forEach(function(x){ x.f(); });
+    zeichneBomben(); zeichneLaser();
   } else zeichneGleiter();
   zeichneTeilchen(dt);
   if(modus==='countdown'){
@@ -989,6 +1020,9 @@ function zeichne(dt){
 
 /* =====================================================================
    AUFGABEN
+   Tor: Antwort unten antippen bzw. Spur wählen und durchfahren.
+   Bombe: drei Bomben schweben über der Fahrbahn – die richtige antippen, bevor die Zündschnur abbrennt.
+          Unten läuft die Fahrbahn weiter, nur jetzt gibt es ⚡ und Power-ups zum Einsammeln.
    ===================================================================== */
 function einheitBekannt(e){ return POOL.some(function(g){ return g.es===e || (g.altEs||[]).indexOf(e)>=0; }); }
 function polizeiListen(){
@@ -1000,54 +1034,61 @@ function macheTor(q,z,aid){
   return t;
 }
 function starteTor(){
-  var q=neueFrage(), a={ art:'tor', aid:++aidZaehler, phase:2, q:q };
+  var q=neueFrage(), a={ art:'tor', aid:++aidZaehler, q:q };
   a.tor=macheTor(q,SPIEL.ZFERN,a.aid); st.tore.push(a.tor); return a;
 }
-function starteDoppel(){
-  var kand=POOL.filter(function(g){ return g.es && !g.keineEinheit && verlauf.indexOf(g.id)<0; });
-  if(!kand.length) kand=POOL.filter(function(g){ return g.es && !g.keineEinheit; });
-  var g,qz,qt;
-  for(var v=0;v<12;v++){ g=pick(kand); qz=MACHER.g2es(g); qt=MACHER.g2sym(g); if(qz&&qt) break; }
-  if(!qz||!qt) return null;
-  merkVerlauf(g.id);
-  var a={ art:'doppel', aid:++aidZaehler, phase:1, g:g, qz:qz, qt:qt, zielOk:null, wechsel:-1 };
-  a.ziele={ aid:a.aid, z:SPIEL.ZFERN, q:qz, ok:qz.ok, erledigt:false, getroffen:-1 };
-  a.tor=macheTor(qt,SPIEL.ZFERN+30,a.aid);
-  st.ziele.push(a.ziele); st.tore.push(a.tor);
-  return a;
-}
-function startePolizei(){
-  var L=polizeiListen(); if(L.r.length<3||L.f.length<3) return null;
-  var art=mischen([true,true,true,false,false,false]), fl=mischen(L.f), rl=mischen(L.r);
-  var a={ art:'polizei', aid:++aidZaehler, drohnen:[], erwischt:0, falschZahl:3, fehler:0 }, letzte=9;
-  for(var i=0;i<art.length;i++){
-    var spur=rnd(3)-1; if(spur===letzte && Math.random()<0.6) spur=((spur+2)%3)-1; letzte=spur;
-    var d=art[i]?{ t:fl[i].t, zu:fl[i].zu, falsch:true }:{ t:rl[i].replace(/\|/g,''), falsch:false };
-    d.aid=a.aid; d.spur=spur; d.z=SPIEL.ZFERN+i*14; d.erledigt=false; d.getroffen=false;
-    a.drohnen.push(d); st.drohnen.push(d);
+function zuenderZeit(){ return Math.max(SPIEL.ZUENDER_MIN, SPIEL.ZUENDER-0.4*(stufe()-SPIEL.BOMBE_AB)); }
+function starteBombe(variante){
+  var a={ art:'bombe', aid:++aidZaehler, variante:variante, erledigt:false, gewaehlt:-1, aus:-1, explodiert:false };
+  if(variante==='polizei'){
+    var L=polizeiListen(); if(L.r.length<2||!L.f.length) return null;
+    var f=pick(L.f), r=mischen(L.r.filter(function(x){ return x!==f.zu; })).slice(0,2);
+    var antw=mischen([f.t].concat(r));
+    a.q={ typ:'polizei', gid:null, antw:antw, ok:antw.indexOf(f.t), merk:'Nicht „'+esc(f.t)+'“, sondern <b>'+esc(f.zu)+'</b>.', falsch:f };
+  } else {
+    a.q=neueFrage();
   }
+  a.zeit=zuenderZeit(); a.rest=a.zeit;
+  if(st.fifty && variante!=='polizei'){ a.aus=pick([0,1,2].filter(function(i){ return i!==a.q.ok; })); st.fifty=false; effekteZeigen(); }
+  // Fahrbahn zum Einsammeln: zwei ⚡-Reihen und vielleicht ein Power-up
+  energieReihe(SPIEL.ZFERN*0.55); energieReihe(SPIEL.ZFERN+4);
+  if(Math.random()<SPIEL.KUGEL_CHANCE) kugelSetzen(SPIEL.ZFERN*0.85);
   return a;
 }
-function energieUndKugel(){
+function energieReihe(z){
   var sp=rnd(3)-1, id=++st.reihenNr, gold=Math.random()<SPIEL.GOLD_CHANCE?rnd(4):-1;
-  if(Math.random()<0.85){
-    st.reihen[id]={ n:4, vorbei:0, got:0 };
-    for(var i=0;i<4;i++) st.energie.push({ z:SPIEL.ZFERN-12-i*3.2, spur:sp, weg:false, reihe:id, gold:i===gold });
-  }
-  if(Math.random()<SPIEL.KUGEL_CHANCE){
-    var typen=['schild','fifty','zeit'].filter(function(t){ return !(t==='schild'&&st.schild) && !(t==='fifty'&&st.fifty) && !(t==='zeit'&&st.zeitlupe>0); });
-    if(typen.length){ var ks=((sp+1+1+rnd(2))%3)-1; st.kugeln.push({ z:SPIEL.ZFERN-28, spur:ks, typ:pick(typen), weg:false }); }
-  }
+  st.reihen[id]={ n:4, vorbei:0, got:0 };
+  for(var i=0;i<4;i++) st.energie.push({ z:z+i*3.2, spur:sp, weg:false, reihe:id, gold:i===gold });
+}
+function kugelSetzen(z){
+  var typen=['schild','fifty','zeit'].filter(function(t){ return !(t==='schild'&&st.schild) && !(t==='fifty'&&st.fifty) && !(t==='zeit'&&st.zeitlupe>0); });
+  if(typen.length) st.kugeln.push({ z:z, spur:rnd(3)-1, typ:pick(typen), weg:false });
 }
 function neueAufgabe(){
   st.nr++; var stf=stufe(), a=null, art=naechsteArt; naechsteArt=null;
-  if(art==='polizei' || (!art && stf>=SPIEL.POLIZEI_AB && st.seitPolizei>=SPIEL.POLIZEI_ALLE)) a=startePolizei();
-  if(!a && (art==='doppel' || (!art && stf>=SPIEL.PROFI_AB && st.nr%SPIEL.PROFI_ALLE===0))) a=starteDoppel();
+  var alle=stf>=SPIEL.PROFI_AB?SPIEL.BOMBE_ALLE_PROFI:SPIEL.BOMBE_ALLE;
+  var bombe=art==='bombe'||art==='polizei'||(!art && stf>=SPIEL.BOMBE_AB && st.seitBombe>=alle-1);
+  if(bombe){
+    st.bombenNr++;
+    a=starteBombe(art==='polizei'||(art!=='bombe' && st.bombenNr%2===0)?'polizei':'zuordnung');
+  }
   if(!a) a=starteTor();
-  if(a.art==='polizei') st.seitPolizei=0; else { st.seitPolizei++; energieUndKugel(); }
+  if(a.art==='bombe') st.seitBombe=0; else st.seitBombe++;
   st.aufgabe=a; zeigeKarte(a);
 }
 
+/* Bomben: feste Plätze über der Fahrbahn, immer gleich groß */
+function bombenPlatz(i){
+  var r=Math.max(30,Math.min(W*0.135,62,(yp-yh)*0.2));
+  var y=Math.max(kartenUnten+r+16, yh+(yp-yh)*0.2);
+  var abst=Math.min(W*0.31,r*3.1);
+  return { x:W/2+(i-1)*abst, y:y+Math.sin(zeit*2.2+i*1.7)*4, r:r };
+}
+function bombeBeiPunkt(x,y){
+  var a=st&&st.aufgabe; if(!a||a.art!=='bombe'||a.erledigt) return -1;
+  for(var i=0;i<3;i++){ var b=bombenPlatz(i); if(Math.hypot(x-b.x,y-b.y)<=b.r*1.35) return i; }
+  return -1;
+}
 /* ---------- Karte oben ---------- */
 var TRENN=['Temperatur|änderung','Bewegungs|energie','Lage|energie','Auftriebs|kraft','Gewichts|kraft','Wirkungs|grad','Wärme|kapazität','Geschwin|digkeit','Strom|stärke','Feder|härte',
   'Kilo|gramm','Kubik|meter','Quadrat|meter','Orts|faktor','Kilo|joule'];
@@ -1079,53 +1120,30 @@ function setzeChips(q,aus){
 function begriffHTML(b){ var x=BEGRIFF[b]; return '<span class="'+x.cls+'">'+b+'</span>'; }
 function frageZeile(gesucht,gegeben,wert,verb){
   var g=BEGRIFF[gesucht], h=BEGRIFF[gegeben];
-  $('anweisung').innerHTML=(verb||'Nenne')+' '+g.art+' '+begriffHTML(gesucht)+(verb==='Schieß'?' ab':'');
+  $('anweisung').innerHTML=(verb==='Schieß'?'💣 Schieß ':'Nenne ')+g.art+' '+begriffHTML(gesucht)+(verb==='Schieß'?' ab':'');
   $('prompt').innerHTML='<span class="zu">'+h.zu+' '+begriffHTML(gegeben)+'</span><span>'+wert+'</span>';
 }
 function zeigeKarte(a){
-  var k=$('karte'), sp=$('spuren');
-  k.className='karte'+(a.art==='doppel'?' profi':a.art==='polizei'?' polizei':'');
-  sp.className=a.art==='doppel'&&a.phase===1?'profi':a.art==='polizei'?'polizei':'';
-  if(a.art==='polizei'){
-    $('anweisung').innerHTML='🚨 Schieß <span class="b-esym">falsch geschriebene</span> Einheiten ab';
-    $('prompt').innerHTML='<span class="zu">Erwischt:</span><span>'+a.erwischt+' von '+a.falschZahl+'</span>';
-    a.spurText=null; polizeiChips(a);
-  } else if(a.art==='doppel'){
-    var p1=a.phase===1;
-    if(p1) frageZeile('Einheitensymbol','Größe',esc(a.g.name),'Schieß');
-    else frageZeile('Größensymbol','Größe',esc(a.g.name),'Fahr durch');
-    setzeChips(p1?a.qz:a.qt, p1?-1:a.tor.aus);
+  var k=$('karte'), sp=$('spuren'), bombe=a.art==='bombe';
+  k.className='karte'+(bombe?' bombe':'');
+  sp.className=bombe?'bombe':'';
+  var q=a.q;
+  if(bombe && a.variante==='polizei'){
+    $('anweisung').innerHTML='🚨 Schieß die <span class="b-esym">falsch geschriebene</span> Einheit ab';
+    $('prompt').innerHTML='<span class="zu">Zwei sind richtig geschrieben.</span>';
+  } else if(ANW[q.typ]){
+    frageZeile(ANW[q.typ][0],ANW[q.typ][1],q.prompt,bombe?'Schieß':'Nenne');
   } else {
-    var anw=ANW[a.q.typ];
-    if(anw) frageZeile(anw[0],anw[1],a.q.prompt);
-    else { $('anweisung').innerHTML='Was ist das <span class="b-zahl">Unterstrichene</span>?'; $('prompt').innerHTML=a.q.prompt; }
-    setzeChips(a.q,a.tor.aus);
+    $('anweisung').innerHTML=(bombe?'💣 ':'')+'Was ist das <span class="b-zahl">Unterstrichene</span>?'; $('prompt').innerHTML=q.prompt;
   }
+  setzeChips(q,bombe?a.aus:a.tor.aus);
   $('stufe').textContent='Stufe '+stufe();
-  if((a.art==='polizei'||a.art==='doppel') && !st.schussHinweis){ st.schussHinweis=true; zeigeHinweis(HINWEIS_SCHIESSEN,'schiessen'); }
+  if(bombe && !st.bombenHinweis){ st.bombenHinweis=true; zeigeHinweis(HINWEIS_BOMBE,'bombe'); }
   markiereSpur(); passeChips(); toast('');
   zeitbalken(1);
 }
-/* Polizei: In den drei Spurfeldern steht die nächste Drohne der Spur */
-function polizeiChips(a){
-  var txt=[0,1,2].map(function(i){
-    var n=null; a.drohnen.forEach(function(d){ if(!d.erledigt && d.spur===i-1 && d.z>SPIEL.ZP && d.z<SPIEL.ZFERN+4 && (!n||d.z<n.z)) n=d; });
-    return n?n.t:'';
-  });
-  var key=txt.join('|')+'#'+st.spur;
-  if(a.spurText===key) return; a.spurText=key;
-  var chips=document.querySelectorAll('.chip');
-  for(var i=0;i<3;i++){
-    var t=txt[i], n=t.length;
-    chips[i].className='chip'+(t?(n>4?' mittel':' kurz'):' blass')+(i===st.spur+1?' hier':'');
-    chips[i].querySelector('.t').innerHTML=t?esc(t):'–';
-  }
-}
 function markiereSpur(){
-  var a=st&&st.aufgabe; if(!a) return;
-  if(a.art==='polizei'){ polizeiChips(a); return; }
-  var offen=a.art==='doppel'&&a.phase===1 ? !a.ziele.erledigt : !a.tor.erledigt;
-  if(!offen) return;
+  var a=st&&st.aufgabe; if(!a||a.art!=='tor'||a.tor.erledigt) return;
   var chips=document.querySelectorAll('.chip');
   for(var i=0;i<3;i++) chips[i].classList.toggle('hier',i===st.spur+1);
 }
@@ -1133,7 +1151,6 @@ function faerbeChips(ok,gewaehlt){
   var chips=document.querySelectorAll('.chip');
   for(var i=0;i<3;i++){ chips[i].classList.remove('hier'); if(i===ok) chips[i].classList.add('richtig'); else if(i===gewaehlt) chips[i].classList.add('falsch'); else chips[i].classList.add('blass'); }
 }
-
 /* ---------- Punkte, Missionen, Abzeichen ---------- */
 function punkteDazu(n){
   st.punkte+=n;
@@ -1145,10 +1162,10 @@ function punkteDazu(n){
 }
 function zaehleRichtig(q){
   var t=q.typ;
-  if(['g2es','g2ein','es2ein','ein2es'].indexOf(t)>=0) st.zaehl.einheit++;
-  if(['g2sym','sym2g'].indexOf(t)>=0) st.zaehl.symbol++;
+  if(t==='einheit') st.zaehl.einheit++;
+  if(t==='groesse') st.zaehl.groesse++;
   if(t==='begriff') st.zaehl.begriff++;
-  var g=GM[q.gid]; if(g && g.fam==='temp') st.zaehl.temp++;
+  var g=q.gid&&GM[q.gid]; if(g && g.fam==='temp') st.zaehl.temp++;
   if(st.zaehl.temp>=5) gib('kelvin');
   if(st.zaehl.einheit>=10) gib('einheit');
 }
@@ -1178,121 +1195,96 @@ function gib(id){
 }
 
 /* ---------- Auswerten ---------- */
+function richtigGeantwortet(q,extra){
+  var mult=multi(), plus=10*mult+(extra||0);
+  st.serie++; st.besteSerie=Math.max(st.besteSerie,st.serie); st.richtig++;
+  punkteDazu(plus); zaehleRichtig(q);
+  $('karte').className='karte ok';
+  var msg=pick(['Richtig!','Stark!','Genau!','Sauber!','Top!'])+(mult>1?' ×'+mult:'');
+  var SER={5:'5er-Serie! ×2',10:'🔥 Unaufhaltsam!',15:'🔥 15er-Serie!',20:'⚡ Physik-Legende!',25:'👑 25 in Serie!',30:'👑 Unglaublich!'};
+  if(SER[st.serie]) msg=SER[st.serie];
+  if(st.serie>=15) gib('serie');
+  if(st.serie>0 && st.serie%SPIEL.HERZ_SERIE===0 && st.leben<SPIEL.LEBEN){ st.leben++; msg='❤️ Herz zurück – '+st.serie+' in Serie!'; }
+  toast(msg); ton(660,0.09); setTimeout(function(){ ton(990,0.09); },70);
+  return plus;
+}
+function falschGeantwortet(q,text){
+  st.serie=0; st.falsch++;
+  var rettung=st.schild;
+  if(rettung) st.schild=false; else { st.leben--; st.wackeln=0.35; }
+  $('karte').className='karte no';
+  toast((rettung?'🛡 Schild hat dich gerettet! ':'')+text);
+  fehlerMerk(q.merk);
+  if(q.gid) wiederholen.push({ gid:q.gid, typ:q.typ, n:3 });
+  ton(180,0.22,'sawtooth'); try{ if(!rettung && navigator.vibrate) navigator.vibrate(120); }catch(e){}
+  if(st.leben<=0) st.vorbeiNach=1.4;
+}
+function nachAntwort(ok){
+  if(st.zeitlupe>0) st.zeitlupe--;
+  st.aufgabe=null; st.naechste=ok?0.7:1.6;
+  var s=stufe();
+  if(s>st.stufeAlt){
+    st.stufeAlt=s; popup('Stufe '+s,'185,230,255',true);
+    if(s===SPIEL.BOMBE_AB) toast('💣 Ab jetzt kommen auch Bomben!');
+    if(s===SPIEL.PROFI_AB){ gib('profi'); toast('🧠 Profi-Stufe! Bomben kommen öfter.'); }
+  }
+  effekteZeigen(); hudWerte(); missionPruefen();
+}
 function torAuswerten(t){
   t.erledigt=true; t.gewaehlt=st.spur+1;
   var a=st.aufgabe, aktiv=a && a.aid===t.aid, ok=t.gewaehlt===t.ok, p=P(st.px,0.9,SPIEL.ZP);
   if(aktiv) faerbeChips(t.ok,t.gewaehlt);
+  if(ok){ var plus=richtigGeantwortet(t.q); popup('+'+plus,'140,255,190'); funken(p[0],p[1],'47,208,127',18); }
+  else { falschGeantwortet(t.q,'Richtig wäre: '+html(t.q.antw[t.ok])); funken(p[0],p[1],'255,92,108',14); }
+  if(aktiv) nachAntwort(ok);
+  else { effekteZeigen(); hudWerte(); }
+}
+function fehlerMerk(m){ if(m && st.fehler.indexOf(m)<0) st.fehler.push(m); }
+/* Bombe antippen: Laser vom Gleiter zur Bombe, dann auswerten */
+function schiesseBombe(i){
+  var a=st&&st.aufgabe;
+  if(modus!=='lauf'||!a||a.art!=='bombe'||a.erledigt||st.vorbeiNach>0) return;
+  if(i===a.aus) return;
+  a.erledigt=true; a.gewaehlt=i;
+  var b=bombenPlatz(i), g=P(st.px,0.5,SPIEL.ZP);
+  st.laser={ x1:g[0], y1:g[1]-FX/SPIEL.ZP*0.25, x2:b.x, y2:b.y, l:0.18 };
+  ton(880,0.05,'square'); versteckeHinweis('bombe');
+  var ok=i===a.q.ok;
+  faerbeChips(a.q.ok,i);
+  funken(b.x,b.y,ok?'47,208,127':'255,92,108',30);
   if(ok){
-    var mult=multi(), plus=10*mult;
-    st.serie++; st.besteSerie=Math.max(st.besteSerie,st.serie); st.richtig++;
-    punkteDazu(plus); zaehleRichtig(t.q);
-    $('karte').className='karte ok'; popup('+'+plus,'140,255,190'); funken(p[0],p[1],'47,208,127',18);
-    var msg=pick(['Richtig!','Stark!','Genau!','Sauber!','Top!'])+(mult>1?' ×'+mult:'');
-    var SER={5:'5er-Serie! ×2',10:'🔥 Unaufhaltsam!',15:'🔥 15er-Serie!',20:'⚡ Physik-Legende!',25:'👑 25 in Serie!',30:'👑 Unglaublich!'};
-    if(SER[st.serie]) msg=SER[st.serie];
-    if(st.serie>=15) gib('serie');
-    if(st.serie>0 && st.serie%SPIEL.HERZ_SERIE===0 && st.leben<SPIEL.LEBEN){ st.leben++; msg='❤️ Herz zurück – '+st.serie+' in Serie!'; }
-    if(aktiv && a.art==='doppel' && a.zielOk){ punkteDazu(20); msg='🧠 Doppelt richtig! +20'; popup('+20 Bonus','255,154,208',true); }
-    toast(msg); ton(660,0.09); setTimeout(function(){ ton(990,0.09); },70);
+    var bonus=Math.round(10*a.rest/a.zeit);
+    var plus=richtigGeantwortet(a.q,bonus); st.zaehl.bombe++;
+    if(a.variante==='polizei'){ st.zaehl.polizei++; if(st.zaehl.polizei>=3) gib('polizei'); toast('🚨 Erwischt! Richtig heißt es '+esc(a.q.falsch.zu)+'.'); }
+    if(st.zaehl.bombe>=5) gib('schuetze');
+    popup('💣 +'+plus,'140,255,190',true);
   } else {
-    st.serie=0; st.falsch++;
-    var rettung=st.schild;
-    if(rettung){ st.schild=false; } else { st.leben--; st.wackeln=0.35; }
-    $('karte').className='karte no'; funken(p[0],p[1],'255,92,108',14);
-    toast((rettung?'🛡 Schild hat dich gerettet! ':'')+'Richtig wäre: '+html(t.q.antw[t.ok]));
-    fehlerMerk(t.q.merk);
-    wiederholen.push({ gid:t.q.gid, typ:t.q.typ, n:3 });
-    ton(180,0.22,'sawtooth'); try{ if(!rettung && navigator.vibrate) navigator.vibrate(120); }catch(e){}
-    if(st.leben<=0) st.vorbeiNach=1.4;
+    falschGeantwortet(a.q,a.variante==='polizei'?'„'+esc(a.q.antw[i])+'“ war richtig geschrieben – falsch ist „'+esc(a.q.antw[a.q.ok])+'“.':'Daneben – richtig wäre: '+html(a.q.antw[a.q.ok]));
+    a.boom=0.5;
   }
-  if(st.zeitlupe>0) st.zeitlupe--;
-  if(aktiv){ st.aufgabe=null; st.naechste=ok?0.55:1.5; }
-  var s=stufe();
-  if(s>st.stufeAlt){
-    st.stufeAlt=s; popup('Stufe '+s,'185,230,255',true);
-    if(s===SPIEL.PROFI_AB){ gib('profi'); toast('🧠 Profi-Stufe! Erst schießen, dann fahren.'); }
-    if(s===SPIEL.POLIZEI_AB) toast('🚨 Gleich kommt die Einheiten-Polizei!');
-  }
-  effekteZeigen(); hudWerte(); missionPruefen();
+  nachAntwort(ok);
 }
-function fehlerMerk(m){ if(st.fehler.indexOf(m)<0) st.fehler.push(m); }
-function zielErledigt(r,idx){
-  r.erledigt=true; r.getroffen=idx;
-  var a=st.aufgabe, aktiv=a && a.aid===r.aid, ok=idx===r.ok;
-  if(aktiv) faerbeChips(r.ok,idx);
-  if(idx>=0){ var p=P(idx-1,1.55,Math.max(r.z,SPIEL.ZP+0.5)); funken(p[0],p[1],ok?'47,208,127':'255,92,108',24); }
-  if(ok){
-    var plus=10*multi(); punkteDazu(plus); st.zaehl.treffer++; st.zaehl.einheit++;
-    if(st.zaehl.treffer>=5) gib('schuetze');
-    popup('🎯 +'+plus,'255,190,230'); toast('Treffer! Jetzt durchs Größensymbol fahren.'); ton(1175,0.08,'square');
-  } else {
-    toast((idx<0?'Nicht geschossen':'Daneben')+' – richtig wäre: '+html(r.q.antw[r.ok]));
-    fehlerMerk(r.q.merk); wiederholen.push({ gid:r.q.gid, typ:'g2es', n:3 }); ton(220,0.15,'sawtooth');
-  }
-  if(aktiv){ a.zielOk=ok; a.wechsel=0.35; $('karte').className='karte profi '+(ok?'ok':'no'); }
-  missionPruefen();
-}
-function drohneErledigt(d,getroffen){
-  d.erledigt=true; d.getroffen=getroffen;
-  var a=st.aufgabe, aktiv=a && a.aid===d.aid;
-  if(getroffen){
-    var p=P(d.spur,0.75,Math.max(d.z,SPIEL.ZP+0.5));
-    funken(p[0],p[1],d.falsch?'90,169,255':'255,92,108',22);
-    if(d.falsch){
-      punkteDazu(15); st.zaehl.treffer++; if(aktiv) a.erwischt++;
-      if(st.zaehl.treffer>=5) gib('schuetze');
-      popup('🚨 +15','140,200,255'); toast('Erwischt! Nicht „'+esc(d.t)+'“, sondern '+esc(d.zu)+'.'); ton(1175,0.08,'square');
-    } else {
-      if(aktiv) a.fehler++; st.serie=0;
-      toast('„'+esc(d.t)+'“ war richtig geschrieben!'); fehlerMerk('„'+esc(d.t)+'“ ist richtig geschrieben – nicht abschießen.'); ton(220,0.15,'sawtooth');
-    }
-  } else if(d.falsch){
-    if(aktiv) a.fehler++;
-    toast('Durchgerutscht: „'+esc(d.t)+'“ – richtig ist '+esc(d.zu)+'.'); fehlerMerk('Nicht „'+esc(d.t)+'“, sondern '+esc(d.zu)+'.');
-  }
-  if(aktiv) $('prompt').innerHTML='<span class="klein">Erwischt: <b style="color:#fff">'+a.erwischt+'</b> von '+a.falschZahl+'</span>';
-  hudWerte(); missionPruefen();
-}
-function polizeiFertig(a){
-  if(a.fehler===0){ punkteDazu(25); gib('polizei'); toast('🚨 Welle sauber gelöst! +25'); popup('+25','140,200,255',true); $('karte').className='karte ok'; }
-  else { toast('Welle vorbei: '+a.erwischt+' von '+a.falschZahl+' erwischt.'); $('karte').className='karte'; }
-  st.aufgabe=null; st.naechste=1.1;
+function bombenExplosion(a){
+  a.erledigt=true; a.explodiert=true; a.boom=0.7;
+  faerbeChips(a.q.ok,-1);
+  for(var i=0;i<3;i++){ var b=bombenPlatz(i); funken(b.x,b.y,'255,140,60',26); }
+  st.wackeln=0.5; ton(110,0.4,'sawtooth');
+  falschGeantwortet(a.q,'💥 Zu langsam! Richtig wäre: '+html(a.q.antw[a.q.ok]));
+  nachAntwort(false);
 }
 function kugelNehmen(k){
   k.weg=true; st.zaehl.kugel++;
   if(k.typ==='schild'){ st.schild=true; popup('🛡 Schild!','127,182,255',true); }
-  else if(k.typ==='fifty'){ st.fifty=true; popup('✂️ 50:50 fürs nächste Tor','255,154,208',true); }
+  else if(k.typ==='fifty'){ st.fifty=true; popup('✂️ 50:50 für die nächste Frage','255,154,208',true); }
   else { st.zeitlupe=3; popup('⏳ Zeitlupe!','185,166,255',true); }
   var p=P(k.spur,0.5,SPIEL.ZP); funken(p[0],p[1],KUGEL_FARBE[k.typ],16); ton(988,0.08); setTimeout(function(){ ton(1318,0.1); },60);
   effekteZeigen(); missionPruefen();
 }
 
-/* ---------- Schießen ---------- */
-function schiessen(){
-  if(modus!=='lauf'||!st||st.cool>0||st.vorbeiNach>0) return;
-  st.cool=0.22; st.schuesse.push({ spur:st.spur, z:SPIEL.ZP+0.4, weg:false });
-  ton(880,0.04,'square'); versteckeHinweis('schiessen');
-}
-function bewegeSchuesse(dt){
-  st.schuesse.forEach(function(s){
-    if(s.weg) return;
-    s.z+=75*dt;
-    st.ziele.forEach(function(r){ if(!s.weg && !r.erledigt && r.z<=s.z && r.z>SPIEL.ZP && r.z<SPIEL.ZFERN+2){ s.weg=true; zielErledigt(r,s.spur+1); } });
-    if(s.weg) return;
-    var best=null;
-    st.drohnen.forEach(function(d){ if(!d.erledigt && d.spur===s.spur && d.z<=s.z && d.z>SPIEL.ZP && d.z<SPIEL.ZFERN+2 && (!best||d.z<best.z)) best=d; });
-    if(best){ s.weg=true; drohneErledigt(best,true); }
-    if(s.z>SPIEL.ZFERN+8) s.weg=true;
-  });
-  st.schuesse=st.schuesse.filter(function(s){ return !s.weg; });
-}
-
 /* ---------- Ablauf je Bild ---------- */
 function vSoll(){
-  var v=Math.min(SPIEL.VMAX,SPIEL.V0+SPIEL.VPLUS*st.richtig), a=st.aufgabe;
+  var v=Math.min(SPIEL.VMAX,SPIEL.V0+SPIEL.VPLUS*st.richtig);
   if(st.zeitlupe>0) v*=0.65;
-  if(a&&a.art==='doppel') v*=0.8;
-  if(a&&a.art==='polizei') v*=0.8;
   return v;
 }
 function update(dt){
@@ -1301,12 +1293,10 @@ function update(dt){
   if(modus==='vorbei') st.v=Math.max(0,st.v-st.v*2.2*dt); else st.v+=(vSoll()-st.v)*Math.min(1,dt*1.5);
   var d=st.v*dt; st.weg+=d;
   st.px+=(st.spur-st.px)*Math.min(1,dt*14);
-  st.wackeln=Math.max(0,st.wackeln-dt); st.cool-=dt;
+  st.wackeln=Math.max(0,st.wackeln-dt);
+  if(st.laser){ st.laser.l-=dt; if(st.laser.l<=0) st.laser=null; }
   var lauf=modus==='lauf';
-  if(lauf) bewegeSchuesse(dt);
   st.tore.forEach(function(t){ t.z-=d; if(!t.erledigt && t.z<=SPIEL.ZP && lauf) torAuswerten(t); });
-  st.ziele.forEach(function(r){ r.z-=d; if(!r.erledigt && r.z<=SPIEL.ZP && lauf) zielErledigt(r,-1); });
-  st.drohnen.forEach(function(x){ x.z-=d; if(!x.erledigt && x.z<=SPIEL.ZP && lauf) drohneErledigt(x,false); });
   st.energie.forEach(function(e){
     var z0=e.z; e.z-=d;
     if(z0>SPIEL.ZP && e.z<=SPIEL.ZP && lauf){
@@ -1324,24 +1314,26 @@ function update(dt){
   st.kugeln.forEach(function(k){ var z0=k.z; k.z-=d; if(!k.weg && z0>SPIEL.ZP && k.z<=SPIEL.ZP && lauf && k.spur===st.spur) kugelNehmen(k); });
   st.fahnen.forEach(function(f){ var z0=f.z; f.z-=d; if(z0>SPIEL.ZP && f.z<=SPIEL.ZP && lauf){ toast('★ Neuer Rekord!'); var p=P(0,1.2,SPIEL.ZP); funken(p[0],p[1],'255,201,60',40); ton(784,0.1); setTimeout(function(){ ton(1046,0.1); },100); setTimeout(function(){ ton(1318,0.18); },200); } });
   var weg=function(o){ return o.z>0.95; };
-  st.tore=st.tore.filter(weg); st.ziele=st.ziele.filter(weg); st.drohnen=st.drohnen.filter(weg);
-  st.energie=st.energie.filter(weg); st.kugeln=st.kugeln.filter(weg); st.fahnen=st.fahnen.filter(weg);
+  st.tore=st.tore.filter(weg); st.energie=st.energie.filter(weg); st.kugeln=st.kugeln.filter(weg); st.fahnen=st.fahnen.filter(weg);
   if(st.serie>=10 && lauf){
     st.spurGold-=dt;
     if(st.spurGold<=0){ st.spurGold=0.035; var p=P(st.px,0.12,SPIEL.ZP), u=FX/SPIEL.ZP;
       st.teilchen.push({ x:p[0]+(Math.random()-0.5)*u*0.35, y:p[1], vx:(Math.random()-0.5)*30, vy:70+Math.random()*60, l:0.45, l0:0.45, s:3, f:'255,201,60', g:0 }); }
   }
+  if(st.bombeWeg){ st.bombeWeg.boom-=dt; if(st.bombeWeg.boom<=0) st.bombeWeg=null; }
   if(lauf){
     var a=st.aufgabe;
+    if(a && a.art==='bombe' && !a.erledigt){
+      a.rest-=dt*(st.zeitlupe>0?0.65:1);
+      if(a.rest<=0){ a.rest=0; st.bombeWeg=a; bombenExplosion(a); }
+    }
     if(st.vorbeiNach>0){ st.vorbeiNach-=dt; if(st.vorbeiNach<=0) rundeEnde(); }
-    else if(!a){ st.naechste-=dt; if(st.naechste<=0) neueAufgabe(); }
-    else if(a.art==='doppel' && a.phase===1 && a.wechsel>=0){ a.wechsel-=dt; if(a.wechsel<0){ a.phase=2; zeigeKarte(a); } }
-    else if(a.art==='polizei'){ if(a.drohnen.every(function(x){ return x.erledigt; })) polizeiFertig(a); else polizeiChips(a); }
+    else if(!st.aufgabe){ st.naechste-=dt; if(st.naechste<=0) neueAufgabe(); }
     zeitbalkenAktualisieren();
   }
 }
 
-/* ---------- Zeitbalken: zeigt, wann das Tor (bzw. das Ziel) kommt ---------- */
+/* ---------- Zeitbalken: zeigt, wann das Tor kommt bzw. die Bomben explodieren ---------- */
 var zbAlt=-1;
 function zeitbalken(f){
   f=Math.max(0,Math.min(1,f));
@@ -1350,14 +1342,11 @@ function zeitbalken(f){
   $('zeitbalken').classList.toggle('knapp',f<0.3);
 }
 function zeitbalkenAktualisieren(){
-  var a=st&&st.aufgabe, z=null;
+  var a=st&&st.aufgabe;
   if(!a){ zeitbalken(0); return; }
-  if(a.art==='tor') z=a.tor.z;
-  else if(a.art==='doppel') z=a.phase===1?a.ziele.z:a.tor.z;
-  else { var offen=a.drohnen.filter(function(d){ return !d.erledigt; }); z=offen.length?Math.max.apply(null,offen.map(function(d){ return d.z; }))*(SPIEL.ZFERN/(SPIEL.ZFERN+70)):SPIEL.ZP; }
-  zeitbalken((z-SPIEL.ZP)/(SPIEL.ZFERN-SPIEL.ZP));
+  if(a.art==='tor') zeitbalken((a.tor.z-SPIEL.ZP)/(SPIEL.ZFERN-SPIEL.ZP));
+  else zeitbalken(a.rest/a.zeit);
 }
-
 /* ---------- HUD ---------- */
 function hudWerte(){
   if(!st) return;
@@ -1376,23 +1365,25 @@ function effekteZeigen(){
 }
 function toast(t){ var e=$('toast'); if(!t){ e.classList.remove('an'); return; } e.innerHTML=t; e.classList.add('an'); }
 
-/* ---------- Steuerung: Antwort unten antippen, Spur antippen, ein Wisch = eine Spur, oben aufs Ziel = schießen ---------- */
+/* ---------- Steuerung: Antwort unten antippen, Spur antippen, ein Wisch = eine Spur, Bombe antippen = schießen ---------- */
 function lenke(r){ if(modus!=='lauf'||!st) return; var n=Math.max(-1,Math.min(1,st.spur+r)); if(n!==st.spur){ st.spur=n; markiereSpur(); ton(440,0.03); } versteckeHinweis('lenken'); }
 function setzeSpur(i){ if(modus!=='lauf'||!st) return; var n=Math.max(-1,Math.min(1,i-1)); if(n!==st.spur) ton(440,0.03); st.spur=n; markiereSpur(); versteckeHinweis('lenken'); }
+function antwortTaste(i){
+  var a=st&&st.aufgabe;
+  if(a && a.art==='bombe' && !a.erledigt) schiesseBombe(i); else setzeSpur(i);
+}
 var hinweisArt='';
 function zeigeHinweis(t,art){ var h=$('hinweis'); h.textContent=t; h.style.opacity='1'; hinweisArt=art; }
 function versteckeHinweis(art){ if(hinweisArt && (!art||art===hinweisArt)){ hinweisArt=''; $('hinweis').style.opacity='0'; } }
-function schussAufgabe(){ var a=st&&st.aufgabe; return !!a && (a.art==='polizei' || (a.art==='doppel' && a.phase===1)); }
-function schussGrenze(){ return yh+(yp-yh)*0.42; }
 document.addEventListener('keydown',function(e){
   var k=e.key;
   if(e.target && e.target.tagName==='INPUT') return;
   if(modus==='lauf'){
     if(k==='ArrowLeft'||k==='a'||k==='A'){ lenke(-1); e.preventDefault(); }
     else if(k==='ArrowRight'||k==='d'||k==='D'){ lenke(1); e.preventDefault(); }
-    else if(k==='1'||k==='2'||k==='3'){ setzeSpur(+k-1); }
-    else if(k===' '||k==='ArrowUp'||k==='w'||k==='W'){ if(!e.repeat) schiessen(); e.preventDefault(); }
+    else if(k==='1'||k==='2'||k==='3'){ antwortTaste(+k-1); }
     else if(k==='Escape'||k==='p'||k==='P'){ pausieren(); e.preventDefault(); }
+    else if(k===' ') e.preventDefault();
   } else if(modus==='countdown'){ if(k==='Escape'||k==='p'||k==='P') pausieren(); if(k===' ') e.preventDefault(); }
   else if(modus==='pause' && (k==='Escape'||k==='Enter'||k==='p'||k==='P')){ fortsetzen(); e.preventDefault(); }
   else if(modus==='start' && k==='Enter'){ start(); e.preventDefault(); }
@@ -1401,9 +1392,9 @@ var zeiger=null;
 function spielTipp(cxp,cyp){
   if(modus!=='lauf'||!st) return;
   var r=cv.getBoundingClientRect(), x=cxp-r.left, y=cyp-r.top;
-  var spalte=x<r.width/3?0:(x>r.width*2/3?2:1);
-  setzeSpur(spalte);
-  if(schussAufgabe() && y<schussGrenze()) schiessen();
+  var b=bombeBeiPunkt(x,y);
+  if(b>=0){ schiesseBombe(b); return; }
+  setzeSpur(x<r.width/3?0:(x>r.width*2/3?2:1));
 }
 cv.addEventListener('pointerdown',function(e){ zeiger={ x:e.clientX, y:e.clientY, id:e.pointerId, zug:false }; try{ cv.setPointerCapture(e.pointerId); }catch(x){} });
 cv.addEventListener('pointermove',function(e){
@@ -1417,8 +1408,8 @@ cv.addEventListener('pointerup',function(e){
   zeiger=null;
 });
 Array.prototype.forEach.call(document.querySelectorAll('#spuren .chip'),function(c){
-  c.addEventListener('pointerdown',function(e){ e.preventDefault(); setzeSpur(+c.getAttribute('data-l')); });
-  c.addEventListener('click',function(e){ if(e.detail===0) setzeSpur(+c.getAttribute('data-l')); });
+  c.addEventListener('pointerdown',function(e){ e.preventDefault(); antwortTaste(+c.getAttribute('data-l')); });
+  c.addEventListener('click',function(e){ if(e.detail===0) antwortTaste(+c.getAttribute('data-l')); });
 });
 cv.addEventListener('pointercancel',function(){ zeiger=null; });
 
@@ -1480,14 +1471,12 @@ function abbrechenAufgabe(){
   var a=st.aufgabe;
   st.serie=0;
   if(a){
-    var fremd=function(o){ return o.aid!==a.aid; };
-    st.tore=st.tore.filter(fremd); st.ziele=st.ziele.filter(fremd); st.drohnen=st.drohnen.filter(fremd);
-    if(a.art==='tor') wiederholen.push({ gid:a.q.gid, typ:a.q.typ, n:2 });
-    else if(a.art==='doppel') wiederholen.push({ gid:a.g.id, typ:'g2es', n:2 });
-    else st.seitPolizei=Math.max(0,SPIEL.POLIZEI_ALLE-3);
+    st.tore=st.tore.filter(function(o){ return o.aid!==a.aid; });
+    if(a.q && a.q.gid) wiederholen.push({ gid:a.q.gid, typ:a.q.typ, n:2 });
+    if(a.art==='bombe') st.seitBombe=Math.max(0,st.seitBombe-1);
     st.aufgabe=null;
   }
-  st.naechste=0.3; st.schuesse=[];
+  st.bombeWeg=null; st.laser=null; st.naechste=0.3;
   hudWerte();
 }
 function pausieren(){
@@ -1630,7 +1619,7 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){
 requestAnimationFrame(schleife);
 
 /* nur zum Testen */
-window.__runner={ neueFrage:neueFrage, MACHER:MACHER, POOL:POOL, plain:plain, update:update, setzeSpur:setzeSpur, schiessen:schiessen,
+window.__runner={ neueFrage:neueFrage, MACHER:MACHER, POOL:POOL, plain:plain, update:update, setzeSpur:setzeSpur, schiesseBombe:schiesseBombe, antwortTaste:antwortTaste, bombenPlatz:bombenPlatz,
   pausieren:pausieren, fortsetzen:fortsetzen, erzwinge:function(a){ naechsteArt=a; },
   zustand:function(){ return { modus:modus, st:st, countdown:countdown }; }, countdownTick:function(dt){ if(modus==='countdown'){ countdown-=dt; if(countdown<=0){ countdown=0; modus='lauf'; } } } };
 })();
