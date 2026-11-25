@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.5 Das Erwärmungsgesetz – Lernpfad</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/ab-pfad.css">
+<style>
+.mini-check .reihe{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mini-check input{font:inherit;font-size:17px;padding:7px 10px;border:2px solid #c9d3d8;border-radius:10px;width:9em}
+.mini-check button,.knopf-labor{font:inherit;font-weight:700;border:0;border-radius:10px;padding:9px 14px;background:var(--petrol2);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+.wp-werte{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0 4px}
+.wp-werte b{color:var(--petrol2)}
+.wp-regler label{display:block;margin-top:8px;font-weight:700}
+.wp-regler input{width:100%}
+</style>
+</head>
+<body>
+<script>
+/* =====================================================================
+   Physik 9b · 2.5 Das Erwärmungsgesetz – Lernpfad auf dem Blatt (Whirlpool-Version, AB vom 24.11.2026)
+   Bilder: bilder/2-5/*.webp (aus dem AB, 104 px/cm) · Maße in cm wie in der PowerPoint (19,05 × 27,52 cm)
+   Regel: jede Zeile mit Einheit; Divisionen als Bruch; sinnvolle Ziffern.
+   ===================================================================== */
+var U = function (e) { return '\\,\\mathrm{' + e + '}'; };
+var C = '\\,{}^{\\circ}\\mathrm{C}';
+var PF = '\\,\\rightarrow\\,';
+var CU = '\\,\\dfrac{\\mathrm{kJ}}{\\mathrm{kg}\\cdot{}^{\\circ}\\mathrm{C}}';
+var CUL = '\\,\\mathrm{kJ}/(\\mathrm{kg}\\cdot{}^{\\circ}\\mathrm{C})';
+var EUR = '\\text{€}';
+var EURKWH = '\\,\\dfrac{\\text{€}}{\\mathrm{kWh}}';
+var W = 'W_{\\mathrm{th}}';
+var GESETZ = '$' + W + ' = m \\cdot c \\cdot \\Delta\\vartheta$';
+
+/* ---------- Erklärungen (Glühbirne) ---------- */
+var E_LITER_KG = function (v) { return { schritte: [
+  { k: 'Gegeben ist ein Volumen', t: 'Im Text steht, wie viel <b>Liter</b> Wasser es sind. Im Gesetz brauchst du aber die <b>Masse</b> in kg.' },
+  { k: 'Wasser: 1 l wiegt 1 kg', t: 'Das steht auch unten auf Seite 1 des Blatts:', f: '$1' + U('l') + PF + '1' + U('kg') + '$' },
+  { k: 'Hier', f: '$V = ' + v + U('l') + PF + 'm = ' + v + U('kg') + '$' }] }; };
+var E_C = function (stoff, wert) { return { schritte: [
+  { k: 'Woher kommt c?', t: 'Die spezifische Wärmekapazität $c$ steht in der <b>Tabelle unten auf Seite 1</b>.' },
+  { k: stoff, f: '$c = ' + wert + CU + '$' },
+  { k: 'Bedeutung', t: '1 kg ' + stoff + ' braucht ' + wert + ' kJ, um 1 °C wärmer zu werden.' }] }; };
+var E_DELTA = function (a, b, d) { return { schritte: [
+  { k: 'Δϑ heißt Temperatur<b>unterschied</b>', t: 'Für das Gesetz zählt nicht die Endtemperatur, sondern um wie viel Grad sich das Wasser erwärmt (oder abkühlt).' },
+  { k: 'Größere minus kleinere Temperatur', f: '$\\Delta\\vartheta = (' + b + ' - ' + a + ')' + C + ' = ' + d + C + '$' },
+  { k: 'Typischer Fehler', t: 'Wer nur mit der Endtemperatur ' + b + ' °C rechnet, bekommt viel zu viel Energie heraus.' }] }; };
+var E_EINHEITEN = { schritte: [
+  { k: 'Mit Einheiten einsetzen', t: 'Setze jede Größe <b>mit Einheit</b> ein. Dann siehst du sofort, ob das Ergebnis die richtige Einheit hat.' },
+  { k: 'Einheiten kürzen', t: 'kg steht oben und unten, °C auch – beides kürzt sich weg:',
+    f: '$\\mathrm{\\cancel{kg}} \\cdot \\dfrac{\\mathrm{kJ}}{\\mathrm{\\cancel{kg}} \\cdot \\mathrm{\\cancel{{}^{\\circ}C}}} \\cdot \\mathrm{\\cancel{{}^{\\circ}C}} = \\mathrm{kJ}$' },
+  { k: 'Übrig bleibt', t: 'Kilojoule – genau die Einheit einer Energie. ✓' }] };
+var E_ZIFFERN = function (angaben, erg) { return { schritte: [
+  { k: 'Regel', t: 'Das Ergebnis bekommt so viele Ziffern wie die Angabe mit den <b>wenigsten Ziffern</b> – aber mindestens 2.' },
+  { k: 'Ziffern zählen', t: angaben },
+  { k: 'Also', f: erg }] }; };
+var E_KWH = { schritte: [
+  { k: 'Strom wird in kWh bezahlt', t: 'Der Strompreis gilt pro <b>Kilowattstunde</b>. Du musst die Energie also zuerst von kJ in kWh umrechnen.' },
+  { k: '1 kWh = 3600 kJ', t: 'Frage: Wie oft passen 3600 kJ in die Energie? Das rechnest du mit einem Bruch:', f: '$' + W + ' = \\dfrac{89\\,037{,}5' + U('kJ') + '}{3600' + U('kJ') + '} \\cdot 1' + U('kWh') + '$' },
+  { k: 'Einheiten', t: 'kJ kürzt sich, übrig bleibt kWh.' },
+  { k: 'Zwischenergebnis', t: 'Behalte für den nächsten Schritt mehr Ziffern (24,73 kWh) – gerundet wird erst ganz am Ende.' }] };
+var E_GESETZ = { schritte: [
+  { k: 'Was ihr gemessen habt', t: 'Doppeltes $\\Delta\\vartheta$ → doppelte Energie. Doppelte Masse → doppelte Energie. Und Wasser braucht etwa doppelt so viel wie Öl – der Stoff zählt also auch.' },
+  { k: 'Proportional heißt: malnehmen', t: 'Wenn die Energie zu $m$ <b>und</b> zu $\\Delta\\vartheta$ proportional ist, stehen beide als Faktor in der Formel. Der Stoff kommt über $c$ dazu.' },
+  { k: 'Das Erwärmungsgesetz', f: GESETZ }] };
+
+/* ---------- Kleiner Ergebnis-Check als Zusatz (für die zweite Antwort einer Aufgabe) ---------- */
+function miniCheck(titel, einh, ok, exakt, fehler) {
+  return { titel: titel,
+    html: '<div class="mini-check"><div class="reihe"><input type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 1,23"><span>' + einh + '</span><button type="button">Prüfen</button></div><div class="ort"></div></div>',
+    init: function (s, fmt) {
+      var inp = s.querySelector('input'), ort = s.querySelector('.ort');
+      function zahl(t) { t = (t || '').trim().replace(/\s/g, '').replace('−', '-').replace(',', '.'); var m = t.match(/^(-?\d*\.?\d+)(?:[·*x]10\^?(-?\d+))?$/i); return m ? parseFloat(m[1]) * (m[2] ? Math.pow(10, +m[2]) : 1) : NaN; }
+      function nah(a, b, r) { return Math.abs(a - b) <= Math.abs(b) * r + 1e-9; }
+      function rm(art, t) { ort.innerHTML = '<div class="rm ' + art + '">' + fmt(t) + '</div>'; }
+      function pruef() {
+        var x = zahl(inp.value);
+        if (isNaN(x)) return rm('nein', 'Gib nur eine Zahl ein. Die Einheit steht schon dahinter.');
+        if (ok.some(function (o) { return nah(x, o, 0.0001); })) return rm('gut', '<b>Richtig!</b> Vergleiche trotzdem deinen Rechenweg.');
+        if (nah(x, exakt, 0.012)) return rm('fast', '<b>Richtig gerechnet</b> – aber noch nicht sinnvoll gerundet.');
+        for (var i = 0; i < fehler.length; i++) if (nah(x, fehler[i].w, 0.012)) return rm('nein', fehler[i].t);
+        rm('nein', '<b>Das stimmt noch nicht.</b> Deck oben die Lösung Zeile für Zeile auf.');
+      }
+      s.querySelector('button').onclick = pruef;
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') pruef(); });
+    } };
+}
+
+var SPIEL_LABOR = { titel: 'Noch nicht gemessen?',
+  html: '<p>Die Messwerte kommen aus dem Wärme-Labor. Eure Werte dürfen etwas abweichen – wie bei echten Messungen.</p><p><a class="knopf-labor" href="sim-2-5-erwaermen.html">Zum Wärme-Labor ›</a></p>' };
+
+var SPIEL_WHIRLPOOL = { titel: 'Ausprobieren: Was kostet die Füllung?',
+  html: '<div class="wp-regler"><label>Wassermenge: <span class="v"></span></label><input type="range" min="300" max="1500" step="50" value="850" aria-label="Wassermenge in Liter">' +
+        '<label>Zieltemperatur: <span class="t"></span></label><input type="range" min="20" max="40" step="1" value="37" aria-label="Zieltemperatur in Grad Celsius"></div>' +
+        '<div class="wp-werte"></div><p class="hinweis-klein">Leitungswasser 12 °C, Strom 0,35 € pro kWh. Wie stark ändern sich die Kosten, wenn ihr das Wasser nur auf 30 °C heizt?</p>',
+  init: function (s, fmt) {
+    var r = s.querySelectorAll('input'), w = s.querySelector('.wp-werte');
+    function z(x, d) { return x.toFixed(d).replace('.', ','); }
+    function neu() {
+      var V = +r[0].value, t2 = +r[1].value, dt = t2 - 12, Wk = V * 4.19 * dt, kwh = Wk / 3600;
+      s.querySelector('.v').textContent = V + ' l'; s.querySelector('.t').textContent = t2 + ' °C (Δϑ = ' + dt + ' °C)';
+      w.innerHTML = '<span>Energie: <b>' + Math.round(Wk).toLocaleString('de-DE').replace(/\./g, '\u202f') + ' kJ</b></span><span>= <b>' + z(kwh, 1) + ' kWh</b></span><span>Kosten: <b>' + z(kwh * 0.35, 2) + ' €</b></span>';
+    }
+    r[0].oninput = neu; r[1].oninput = neu; neu();
+  } };
+
+window.PFAD = {
+  fach: 'Physik 9b', titel: '2.5 Das Erwärmungsgesetz', zurueck: 'material.html',
+  ueberschrift: 'Lernpfad zum Arbeitsblatt – Lösung Zeile für Zeile',
+  karten: [
+
+  /* ===================== Start ===================== */
+  { chip: 'Start', start: true, titel: '2.5 Das Erwärmungsgesetz',
+    html:
+    '<p>Hier siehst du dein Arbeitsblatt. Mit <span class="mini" style="background:var(--petrol2);color:#fff">Nächster Schritt</span> erscheint die Lösung <b>Zeile für Zeile</b> in Blau.</p>' +
+    '<ol class="start"><li>Erst <b>selbst</b> lösen, dann vergleichen.</li><li>Bei den Rechenaufgaben: Ergebnis bei <b>Ergebnis prüfen</b> eingeben.</li>' +
+    '<li>Hängst du fest? <span class="mini" style="background:var(--gelb)">Tipp</span> hilft beim nächsten Schritt. Der gelbe Rahmen zeigt, wo die nächste Zeile hinkommt.</li>' +
+    '<li><span class="mini" style="background:var(--orange);color:#fff">Glühbirne</span> = Erklärung zu einer schwierigen Zeile.</li>' +
+    '<li>Grüne Haken zeigen, wofür es Punkte gibt – so wie in der Ex oder Schulaufgabe korrigiert wird: <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 13 L9 20 L24 2" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = 1 Punkt, <span class="mini-haken"><svg viewBox="0 0 26 24"><path d="M2 12 L8 18.5 L18 3.5 M9 10 L18.5 12.6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> = ½ Punkt. Für geg., ges. und den Antwortsatz gibt es keine Punkte – aufschreiben musst du sie trotzdem.</li></ol>' +
+    '<div class="box">📱 Am Handy: <b>quer halten</b> oder die <b>Lupe</b> nehmen. Zoomen mit zwei Fingern geht auch.</div>' +
+    '<div class="box"><b>Fahrplan:</b> geg. (Liter → kg, Temperaturunterschied $\\Delta\\vartheta$ gleich ausrechnen) → ges. → Formel → Einsetzen mit Einheiten → Ergebnis (sinnvoll runden) → Antwort. <b>Jede Zeile bekommt eine Einheit.</b></div>' +
+    '<div class="merk"><b>Das brauchst du</b><br>Erwärmungsgesetz: ' + GESETZ + '<br>' +
+    'Wasser: $1' + U('l') + PF + '1' + U('kg') + '$; &nbsp;$1' + U('g') + ' = 10^{-3}' + U('kg') + '$<br>' +
+    'Strom: $1' + U('kWh') + ' = 3600' + U('kJ') + '$<br>Die Werte für $c$ stehen in der Tabelle unten auf Seite 1.</div>' },
+
+  /* ===================== Vermutungen ===================== */
+  { chip: 'Vermutung', name: 'Forschungsfrage und Vermutungen', bild: { src: 'bilder/2-5/ff.webp', y0: 1.78, y1: 7.35 },
+    zeilen: [
+      { x: 3.1, y: 5.06, z: 'Wassermenge (Masse $m$) – Temperaturunterschied $\\Delta\\vartheta$', s: 'Vermutung 1',
+        tipp: 'Was ist teurer: eine Badewanne oder eine Tasse heizen? Und: auf 25 °C oder auf 37 °C?' },
+      { x: 3.1, y: 5.82, z: 'Stoff (hier Wasser)', s: 'Vermutung 2', tipp: 'Würde Öl genauso viel Energie brauchen wie Wasser?' },
+      { x: 3.1, y: 6.58, z: '(Strompreis – für die Kosten, nicht für die Energie)', s: 'Vermutung 3',
+        tipp: 'Der Strompreis ändert die Kosten – aber nicht, wie viel Energie das Wasser braucht.' }
+    ] },
+
+  /* ===================== Wärme-Labor ===================== */
+  { chip: 'Labor', name: 'Experimente online: Wärme-Labor', bild: { src: 'bilder/2-5/labor.webp', y0: 7.30, y1: 17.05 },
+    zeilen: [
+      { x: 6.37, y: 12.42, mitte: true, z: '≈ 43', s: 'Becher A', tipp: '1 kg Wasser, 10 °C wärmer. Eure Messung darf etwas abweichen.' },
+      { x: 8.37, y: 12.42, mitte: true, z: '≈ 87', s: 'Becher B', tipp: 'Doppelt so viele Grad wie Becher A.' },
+      { x: 14.33, y: 12.50, mitte: true, z: 'X', s: 'Ergebnis ankreuzen', tipp: 'Vergleiche: 43 kJ und 87 kJ – wie oft passt der kleinere Wert in den großen?' },
+      { x: 17.50, y: 12.18, mitte: true, z: 'HE', s: 'Buchstaben' },
+      { x: 6.37, y: 13.58, mitte: true, z: '≈ 43', s: 'Becher A', tipp: '1 kg Wasser, 10 °C wärmer – wie in Auftrag 1.' },
+      { x: 8.37, y: 13.58, mitte: true, z: '≈ 87', s: 'Becher B', tipp: 'Doppelte Masse, gleiches $\\Delta\\vartheta$.' },
+      { x: 14.33, y: 13.66, mitte: true, z: 'X', s: 'Ergebnis ankreuzen' },
+      { x: 17.50, y: 13.33, mitte: true, z: 'IZ', s: 'Buchstaben' },
+      { x: 6.37, y: 14.74, mitte: true, z: '≈ 43', s: 'Becher A', tipp: 'Wasser: derselbe Wert wie in Auftrag 1.' },
+      { x: 8.37, y: 14.74, mitte: true, z: '≈ 21', s: 'Becher B', tipp: 'Speiseöl erwärmt sich leichter.' },
+      { x: 13.45, y: 14.80, mitte: true, z: 'X', s: 'Ergebnis ankreuzen', birne: [16.2, 14.17],
+        erkl: { schritte: [
+          { k: 'Messung', t: 'Wasser: ≈ 43 kJ, Speiseöl: ≈ 21 kJ – Wasser braucht etwa <b>doppelt so viel</b>.' },
+          { k: 'Grund: der Stoff', t: 'Jeder Stoff braucht unterschiedlich viel Wärme. Das beschreibt die <b>spezifische Wärmekapazität</b> $c$.' },
+          { k: 'Tabelle', t: 'Wasser $4{,}19' + CUL + '$, Speiseöl $2{,}0' + CUL + '$ – also etwa doppelt so viel.' }] } },
+      { x: 17.50, y: 14.48, mitte: true, z: 'ST', s: 'Buchstaben' },
+      { x: 6.37, y: 15.90, mitte: true, z: '60', s: 'berechnet', birne: [5.27, 15.88], tipp: 'Rechne mit dem Erwärmungsgesetz: $1{,}5' + U('kg') + '$ Öl, $c = 2{,}0' + CUL + '$, $\\Delta\\vartheta = 20' + C + '$.',
+        erkl: { schritte: [
+          { k: 'Gesetz', f: GESETZ },
+          { k: 'Einsetzen', f: '$' + W + ' = 1{,}5' + U('kg') + ' \\cdot 2{,}0' + CU + ' \\cdot 20' + C + ' = 60' + U('kJ') + '$' }] } },
+      { x: 8.37, y: 15.90, mitte: true, z: '≈ 63', s: 'gemessen', tipp: 'Wert aus dem Labor (Becher A, Becher B aus).' },
+      { x: 9.82, y: 15.96, mitte: true, z: 'X', s: 'Ergebnis ankreuzen', birne: [14.2, 15.32],
+        erkl: { schritte: [
+          { k: 'Vergleich', t: 'Berechnet 60 kJ, gemessen etwa 63 kJ – das passt ungefähr.' },
+          { k: 'Warum etwas mehr?', t: 'Ein Teil der Wärme geht an den Becher und an die Luft verloren. Darum braucht man in echt immer etwas mehr Energie als berechnet.' }] } },
+      { x: 17.50, y: 15.63, mitte: true, z: 'AB', s: 'Buchstaben' },
+      { x: 4.6, y: 16.42, z: 'H E I Z S T A B', s: 'Lösungswort', cls: 'satz' }
+    ],
+    spiele: [SPIEL_LABOR] },
+
+  /* ===================== Merkkasten ===================== */
+  { chip: 'Merke', name: 'Merke: Das Erwärmungsgesetz', bild: { src: 'bilder/2-5/merke.webp', y0: 17.45, y1: 27.15 },
+    zeilen: [
+      { x: 1.0, y: 18.38, z: '1. Doppelter Temperaturunterschied $\\Delta\\vartheta$ → doppelte Wärme $' + W + '$: &nbsp; $' + W + ' \\sim \\Delta\\vartheta$', s: '1.',
+        tipp: 'Auftrag 1 im Labor: Was passiert mit der Energie bei doppeltem $\\Delta\\vartheta$?' },
+      { x: 1.0, y: 19.14, z: '2. Doppelte Masse $m$ → doppelte Wärme: &nbsp; $' + W + ' \\sim m$', s: '2.', tipp: 'Auftrag 2 im Labor.' },
+      { x: 1.0, y: 19.90, z: '3. Die Wärme hängt vom Stoff ab. Die spezifische Wärmekapazität $c$ gibt an,', s: '3.', tipp: 'Auftrag 3: Wasser und Speiseöl im Vergleich.' },
+      { x: 1.45, y: 20.66, z: 'wie viel Wärme 1 kg eines Stoffes braucht, um 1 °C wärmer zu werden.', s: '3. (Bedeutung von c)', tipp: 'Lies die Überschrift der Tabelle unten: Einheit kJ pro kg und °C.' },
+      { x: 1.0, y: 22.19, z: '→ Erwärmungsgesetz: &nbsp;' + GESETZ, s: 'Erwärmungsgesetz', tipp: 'Fasse 1. bis 3. in einer Formel zusammen.', erkl: E_GESETZ },
+      { x: 1.45, y: 22.95, z: 'Einheit von $c$: $' + CUL.replace('\\,', '') + '$ – Wasser hat eine große spezifische Wärmekapazität.', s: 'Einheit von c', rows: 1,
+        tipp: 'Schau in die Tabelle: Welcher Stoff hat das größte $c$?' }
+    ] },
+
+  /* ===================== Aufgabe 1 ===================== */
+  { chip: 'A1', name: 'Aufgabe 1',
+    check: { einh: 'kJ', ok: [84], exakt: 83.8, bsp: '12,3', runden: 'Sinnvoll sind 2 Ziffern wie bei 0,25 l.',
+      fehler: [{ w: 83800, t: '<b>Masse in Gramm eingesetzt?</b> 0,25 l Wasser sind $0{,}25' + U('kg') + '$.' },
+               { w: 99.5, t: '<b>Mit 95 °C gerechnet?</b> Du brauchst den Temperatur<b>unterschied</b> $\\Delta\\vartheta = 80' + C + '$.' },
+               { w: 115.2, t: '<b>Temperaturen addiert?</b> $\\Delta\\vartheta$ ist der Unterschied: 95 °C − 15 °C.' }] },
+    teile: [
+      { bild: 'bilder/2-5/a1.webp', top: 0.78, y0: 0.78, y1: 2.42 },
+      { rechnung: {
+        links: [
+          { z: '$V = 0{,}25' + U('l') + PF + 'm = 0{,}25' + U('kg') + '$', p: 0.5, pl: 'Umrechnen', tipp: 'Im Gesetz steht die Masse $m$. Wie schwer ist 1 l Wasser?', erkl: E_LITER_KG('0{,}25') },
+          { z: '$c = 4{,}19' + CU + '$', tipp: 'Tabelle unten auf Seite 1: Wasser.', erkl: E_C('Wasser', '4{,}19') },
+          { z: '$\\vartheta_1 = 15' + C + '$', tipp: 'Anfangstemperatur.' },
+          { z: '$\\vartheta_2 = 95' + C + PF + '\\Delta\\vartheta = (95 - 15)' + C + ' = 80' + C + '$', p: 0.5, pl: 'Δϑ', tipp: 'Endtemperatur – und gleich den Unterschied ausrechnen.', erkl: E_DELTA(15, 95, 80) }],
+        ges: { z: '$' + W + '$', tipp: 'Gesucht ist die nötige Wärme.' },
+        rechts: [
+          { z: GESETZ, s: 'Formel', p: 0.5, pl: 'Formel', tipp: 'Das Erwärmungsgesetz aus dem Merkkasten.' },
+          { z: '$' + W + ' = 0{,}25' + U('kg') + ' \\cdot 4{,}19' + CU + ' \\cdot 80' + C + '$', s: 'Einsetzen', p: 0.5, pl: 'Einsetzen', tipp: 'Jede Größe mit Einheit einsetzen.', erkl: E_EINHEITEN },
+          { z: '$' + W + ' = 83{,}8' + U('kJ') + '$', s: 'Ergebnis', p: 1, pl: [[0.5, 'Wert'], [0.5, 'Einheit']], tipp: 'Taschenrechner: 0,25 · 4,19 · 80. Welche Einheit bleibt übrig?' },
+          { z: '$' + W + ' \\approx$&nbsp;<span class="unter">$84' + U('kJ') + '$</span>', s: 'Sinnvoll runden', p: 0.5, pl: 'Ziffern', tipp: 'Wie viele Ziffern hat die ungenaueste Angabe?',
+            erkl: E_ZIFFERN('$0{,}25' + U('l') + '$: 2 Ziffern (die 0 vorne zählt nicht); $4{,}19$: 3 Ziffern; $15' + C + '$ und $95' + C + '$: 2 Ziffern.', '$' + W + ' = 83{,}8' + U('kJ') + ' \\approx 84' + U('kJ') + '$') }],
+        antwort: { z: 'Man braucht etwa 84 kJ Wärme.', tipp: 'Ganzer Satz mit Ergebnis und Einheit.' } } }
+    ] },
+
+  /* ===================== Aufgabe 2 a ===================== */
+  { chip: 'A2 a', name: 'Aufgabe 2 a',
+    check: { frage: 'Ergebnis prüfen: Gib die Energie in kJ ein (Zehnerpotenz so: 1,2·10^4).', einh: 'kJ', ok: [89000], exakt: 89037.5, bsp: '1,2·10^4',
+      runden: 'Sinnvoll sind 2 Ziffern: $8{,}9 \\cdot 10^4' + U('kJ') + '$.',
+      fehler: [{ w: 131775.5, t: '<b>Mit 37 °C gerechnet?</b> Du brauchst den Temperatur<b>unterschied</b> $\\Delta\\vartheta = 25' + C + '$.' },
+               { w: 174513.5, t: '<b>Temperaturen addiert?</b> $\\Delta\\vartheta$ ist der Unterschied: 37 °C − 12 °C.' },
+               { w: 24.73, t: 'Das sind schon <b>kWh</b> – das kommt erst in b). Hier ist die Energie in kJ gefragt.' },
+               { w: 89.0375, t: 'Das sind <b>MJ</b> (Megajoule). Gib die Energie in kJ an.' }] },
+    teile: [
+      { bild: 'bilder/2-5/a2.webp', top: 7.10, y0: 7.10, y1: 9.72 },
+      { rechnung: {
+        links: [
+          { z: '$V = 850' + U('l') + PF + 'm = 850' + U('kg') + '$', p: 0.5, pl: 'Umrechnen', tipp: 'Wie schwer sind 850 l Wasser?', erkl: E_LITER_KG('850') },
+          { z: '$c = 4{,}19' + CU + '$', tipp: 'Tabelle unten auf Seite 1: Wasser.' },
+          { z: '$\\vartheta_1 = 12' + C + '$', tipp: 'Leitungswasser.' },
+          { z: '$\\vartheta_2 = 37' + C + PF + '\\Delta\\vartheta = (37 - 12)' + C + ' = 25' + C + '$', p: 0.5, pl: 'Δϑ', tipp: 'Endtemperatur – und gleich den Unterschied ausrechnen.', erkl: E_DELTA(12, 37, 25) }],
+        ges: { z: '$' + W + '$', tipp: 'Gesucht ist die Energie zum Aufheizen.' },
+        rechts: [
+          { z: GESETZ, s: 'Formel', p: 0.5, pl: 'Formel', tipp: 'Das Erwärmungsgesetz.' },
+          { z: '$' + W + ' = 850' + U('kg') + ' \\cdot 4{,}19' + CU + ' \\cdot 25' + C + '$', s: 'Einsetzen', p: 0.5, pl: 'Einsetzen', tipp: 'Jede Größe mit Einheit einsetzen.', erkl: E_EINHEITEN },
+          { z: '$' + W + ' = 89\\,037{,}5' + U('kJ') + '$', s: 'Ergebnis', p: 1, pl: [[0.5, 'Wert'], [0.5, 'Einheit']], tipp: 'Taschenrechner: 850 · 4,19 · 25.' },
+          { z: '$' + W + ' \\approx$&nbsp;<span class="unter">$8{,}9 \\cdot 10^4' + U('kJ') + '$</span>', s: 'Sinnvoll runden', p: 0.5, pl: 'Ziffern', tipp: '2 Ziffern – mit Zehnerpotenz schreiben.',
+            erkl: { schritte: [
+              { k: 'Ziffern zählen', t: '$12' + C + '$, $37' + C + '$ und damit $\\Delta\\vartheta = 25' + C + '$ haben 2 Ziffern – also bekommt das Ergebnis 2 Ziffern.' },
+              { k: 'Mit Zehnerpotenz', t: '89 037,5 hat 5 Stellen vor dem Komma. Mit 2 Ziffern geschrieben:', f: '$89\\,037{,}5' + U('kJ') + ' \\approx 89\\,000' + U('kJ') + ' = 8{,}9 \\cdot 10^4' + U('kJ') + '$' },
+              { k: 'Warum so?', t: 'Bei 89 000 sieht man nicht, ob die Nullen gemessen sind. $8{,}9 \\cdot 10^4$ zeigt klar: 2 sinnvolle Ziffern.' }] } }] } }
+    ] },
+
+  /* ===================== Aufgabe 2 b ===================== */
+  { chip: 'A2 b', name: 'Aufgabe 2 b',
+    check: { frage: 'Ergebnis prüfen: Was kostet eine Füllung?', einh: '€', ok: [8.7, 8.66, 8.75, 8.8], exakt: 8.6564, bsp: '1,23',
+      fehler: [{ w: 31163.1, t: '<b>Mit kJ gerechnet?</b> Der Preis gilt pro <b>kWh</b>. Rechne zuerst die Energie in kWh um: $1' + U('kWh') + ' = 3600' + U('kJ') + '$.' },
+               { w: 70.66, t: '<b>Geteilt statt mal?</b> Jede kWh kostet 0,35 € – also kWh <b>mal</b> Preis.' },
+               { w: 24.73, t: 'Das ist die Energie in <b>kWh</b>. Jetzt noch mit dem Preis malnehmen.' }] },
+    teile: [
+      { bild: 'bilder/2-5/a2.webp', top: 7.10, y0: 7.10, y1: 9.72 },
+      { bild: 'bilder/2-5/a2.webp', top: 7.10, y0: 13.38, y1: 13.97 },
+      { rechnung: {
+        links: [
+          { z: '$' + W + ' = 89\\,037{,}5' + U('kJ') + '$', tipp: 'Nimm das ungerundete Ergebnis aus a).' },
+          { z: 'Preis: $0{,}35' + EURKWH + '$', tipp: 'Steht in der Aufgabe: 0,35 € pro kWh.' },
+          { z: '$1' + U('kWh') + ' = 3600' + U('kJ') + '$', tipp: 'Steht als Tipp bei b).' }],
+        ges: { z: 'Kosten $K$', tipp: 'Gesucht sind die Kosten in Euro.' },
+        rechts: [
+          { z: '$' + W + ' = \\dfrac{89\\,037{,}5' + U('kJ') + '}{3600' + U('kJ') + '} \\cdot 1' + U('kWh') + '$', s: 'In kWh umrechnen', p: 1, pl: 'Umrechnen', tipp: 'Wie oft passen 3600 kJ in die Energie?', erkl: E_KWH },
+          { z: '$' + W + ' \\approx 24{,}73' + U('kWh') + '$', s: 'Zwischenergebnis', tipp: 'Noch nicht stark runden – das ist ein Zwischenergebnis.' },
+          { z: '$K = 24{,}73' + U('kWh') + ' \\cdot 0{,}35' + EURKWH + '$', s: 'Kosten rechnen', p: 0.5, pl: 'Einsetzen', tipp: 'Jede kWh kostet 0,35 € – kWh kürzt sich, übrig bleibt €.' },
+          { z: '$K = 8{,}66' + EUR + '$', s: 'Ergebnis', p: 1, pl: [[0.5, 'Wert'], [0.5, 'Einheit']], tipp: 'Taschenrechner: 24,73 · 0,35.' },
+          { z: '$K \\approx$&nbsp;<span class="unter">$8{,}7' + EUR + '$</span>', s: 'Sinnvoll runden', p: 0.5, pl: 'Ziffern', tipp: 'Wie viele Ziffern hat 0,35 €? (Wer mit 25 kWh rechnet, bekommt 8,75 € ≈ 8,80 € – auch richtig.)',
+            erkl: E_ZIFFERN('$0{,}35' + EUR + '$: 2 Ziffern; $\\Delta\\vartheta = 25' + C + '$: 2 Ziffern.', '$K = 8{,}66' + EUR + ' \\approx 8{,}7' + EUR + '$ – im Antwortsatz schreibt man Geld meist mit Cent: 8,70 €.') }],
+        antwort: { z: 'Eine Füllung kostet etwa 8,70 €.', tipp: 'Ganzer Satz mit Ergebnis. Lag deine Schätzung aus der Stunde richtig?' } } }
+    ],
+    spiele: [SPIEL_WHIRLPOOL] },
+
+  /* ===================== Aufgabe 3 ===================== */
+  { chip: 'A3', name: 'Aufgabe 3',
+    check: { frage: 'Ergebnis prüfen: Wie viel Wärme gibt die <b>Kartoffel</b> ab?', einh: 'kJ', ok: [95], exakt: 95.2, bsp: '12,3',
+      runden: 'Sinnvoll sind 2 Ziffern wie bei $c = 3{,}4' + CUL + '$.',
+      fehler: [{ w: 95200, t: '<b>Masse in Gramm eingesetzt?</b> $200' + U('g') + ' = 0{,}200' + U('kg') + '$.' },
+               { w: 122.4, t: '<b>Mit 180 °C gerechnet?</b> Du brauchst den Temperatur<b>unterschied</b>: 180 °C − 40 °C.' },
+               { w: 149.6, t: '<b>Temperaturen addiert?</b> $\\Delta\\vartheta$ ist der Unterschied: 180 °C − 40 °C.' }] },
+    teile: [
+      { bild: 'bilder/2-5/a3.webp', top: 17.08, y0: 17.08, y1: 19.72 },
+      { rechnung: { strich: 9.4,
+        links: [
+          { z: '$m_{\\mathrm{F}} = 2{,}0' + U('g') + ' = 2{,}0 \\cdot 10^{-3}' + U('kg') + '$', p: 0.5, pl: 'Umrechnen', tipp: '$1' + U('g') + ' = 10^{-3}' + U('kg') + '$ – der Index F steht für Folie.',
+            erkl: { schritte: [{ k: 'Grundeinheit kg', t: '1 kg sind 1000 g. Also ist 1 g ein Tausendstel Kilogramm:', f: '$1' + U('g') + ' = 10^{-3}' + U('kg') + '$' }, { k: 'Hier', f: '$2{,}0' + U('g') + ' = 2{,}0 \\cdot 10^{-3}' + U('kg') + '$' }] } },
+          { z: '$m_{\\mathrm{K}} = 200' + U('g') + ' = 0{,}200' + U('kg') + '$', p: 0.5, pl: 'Umrechnen', tipp: 'Index K für Kartoffel. 200 g in kg?' },
+          { z: '$c_{\\mathrm{F}} = 0{,}90' + CU + '$', tipp: 'Alufolie ist aus Aluminium – schau in die Tabelle auf Seite 1.', erkl: E_C('Aluminium', '0{,}90') },
+          { z: '$c_{\\mathrm{K}} = 3{,}4' + CU + '$', tipp: 'Steht in der Aufgabe.' },
+          { z: '$\\vartheta_1 = 180' + C + '$', tipp: 'Temperatur aus dem Ofen.' },
+          { z: '$\\vartheta_2 = 40' + C + '$', tipp: 'Temperatur nach dem Abkühlen.' },
+          { z: '$\\Delta\\vartheta = (180 - 40)' + C + ' = 140' + C + '$', p: 0.5, pl: 'Δϑ', tipp: 'Beim Abkühlen: größere minus kleinere Temperatur.', erkl: E_DELTA(40, 180, 140) }],
+        ges: { z: '$W_{\\mathrm{F}}$; &nbsp;$W_{\\mathrm{K}}$', tipp: 'Gesucht ist die Wärme von Folie und Kartoffel.' },
+        rechts: [
+          { z: GESETZ, s: 'Formel', p: 0.5, pl: 'Formel', tipp: 'Das Erwärmungsgesetz gilt auch beim Abkühlen – dann gibt der Körper die Wärme ab.' },
+          { z: '$W_{\\mathrm{F}} = 2{,}0 \\cdot 10^{-3}' + U('kg') + ' \\cdot 0{,}90' + CU + ' \\cdot 140' + C + '$', s: 'Einsetzen (Folie)', p: 0.5, pl: 'Einsetzen', tipp: 'Werte der Folie mit Einheiten einsetzen.', erkl: E_EINHEITEN },
+          { z: '$W_{\\mathrm{F}} = 0{,}252' + U('kJ') + ' \\approx$&nbsp;<span class="unter">$0{,}25' + U('kJ') + '$</span>', s: 'Ergebnis (Folie)', p: 1.5, pl: [[0.5, 'Wert'], [0.5, 'Einheit'], [0.5, 'Ziffern']],
+            tipp: '2 Ziffern wie bei 2,0 g und 0,90.' },
+          { z: '$W_{\\mathrm{K}} = 0{,}200' + U('kg') + ' \\cdot 3{,}4' + CU + ' \\cdot 140' + C + '$', s: 'Einsetzen (Kartoffel)', p: 0.5, pl: 'Einsetzen', tipp: 'Jetzt die Werte der Kartoffel.' },
+          { z: '$W_{\\mathrm{K}} = 95{,}2' + U('kJ') + ' \\approx$&nbsp;<span class="unter">$95' + U('kJ') + '$</span>', s: 'Ergebnis (Kartoffel)', p: 1.5, pl: [[0.5, 'Wert'], [0.5, 'Einheit'], [0.5, 'Ziffern']],
+            tipp: '2 Ziffern wie bei 3,4.' }] } },
+      { bild: 'bilder/2-5/a3.webp', top: 17.08, y0: 24.32, y1: 26.50,
+        zeilen: [
+          { x: 1.0, y: 25.04, z: 'Die Folie hat eine sehr kleine Masse. Sie gibt beim Abkühlen nur etwa 0,25 kJ ab –', s: 'b) Erklären', cls: 'satz', p: 1, pl: 'Masse/Wärme',
+            tipp: 'Vergleiche die Massen und deine Ergebnisse aus a).' },
+          { x: 1.0, y: 25.80, z: 'fast 400-mal weniger als die Kartoffel. Diese kleine Wärme kann die Hand kaum erwärmen.', s: 'b) Folge für die Hand', cls: 'satz', p: 1, pl: 'Folge', birne: [18.72, 25.72],
+            erkl: { schritte: [
+              { k: 'Vergleich', f: '$\\dfrac{95' + U('kJ') + '}{0{,}25' + U('kJ') + '} \\approx 380$' },
+              { k: 'Was heißt das?', t: 'Beide sind gleich heiß. Aber die Folie hat kaum Wärme gespeichert. Berührst du sie, ist die wenige Wärme schnell weg – die Folie ist sofort abgekühlt.' },
+              { k: 'Darum Vorsicht bei der Kartoffel', t: 'Sie hat viel Masse und ein großes $c$ (viel Wasser darin). Sie gibt lange Wärme ab – daran kann man sich verbrennen.' }] } }
+        ] }
+    ],
+    spiele: [miniCheck('Ergebnis prüfen: Wie viel Wärme gibt die Folie ab?', 'kJ', [0.25], 0.252, [
+      { w: 252, t: '<b>Masse in Gramm eingesetzt?</b> $2{,}0' + U('g') + ' = 2{,}0 \\cdot 10^{-3}' + U('kg') + '$.' },
+      { w: 0.952, t: '<b>Falsches c?</b> Alufolie ist aus Aluminium: $c = 0{,}90' + CUL + '$.' },
+      { w: 0.324, t: '<b>Mit 180 °C gerechnet?</b> Du brauchst den Temperaturunterschied: 180 °C − 40 °C.' }])] },
+
+  /* ===================== Ende ===================== */
+  { chip: 'Ende', start: true, titel: 'Geschafft! 🎉',
+    html: '<p>Checkliste für die Schulaufgabe:</p><ul>' +
+      '<li>Ich kenne das Erwärmungsgesetz ' + GESETZ + ' und kann sagen, was jede Größe bedeutet.</li>' +
+      '<li>Ich kann erklären: doppelte Masse oder doppeltes $\\Delta\\vartheta$ → doppelte Wärme.</li>' +
+      '<li>Ich weiß, was die <b>spezifische Wärmekapazität</b> $c$ angibt, und finde sie in der Tabelle.</li>' +
+      '<li>Ich rechne Liter Wasser in kg und Gramm in kg um und bilde den Temperatur<b>unterschied</b> $\\Delta\\vartheta$.</li>' +
+      '<li>Ich rechne kJ in kWh um ($1' + U('kWh') + ' = 3600' + U('kJ') + '$) und berechne Stromkosten.</li>' +
+      '<li>Jede Zeile hat eine <b>Einheit</b>, ich runde <b>sinnvoll</b> und schreibe einen <b>Antwortsatz</b>.</li></ul>' +
+      '<p><a href="sim-2-5-erwaermen.html" style="color:var(--petrol2);font-weight:bold">Wärme-Labor</a> &nbsp;|&nbsp; <a href="ab-2-4.html" style="color:var(--petrol2);font-weight:bold">← Lernpfad 2.4</a> &nbsp;|&nbsp; <a href="material.html" style="color:var(--petrol2);font-weight:bold">Zum Material</a></p>' }
+  ] };
+</script>
+<script src="../assets/ab-pfad.js"></script>
+<script data-goatcounter="https://goess-met.goatcounter.com/count" async src="../assets/count.js"></script>
+<footer class="recht" style="text-align:center;font-size:12.5px;line-height:1.5;margin:26px 12px 14px;opacity:.7"><a href="../impressum.html" style="color:inherit">Impressum</a> · <a href="../datenschutz.html" style="color:inherit">Datenschutz</a></footer>
+</body>
+</html>
