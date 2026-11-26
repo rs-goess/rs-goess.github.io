@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B3B47">
+<title>2.5 Exit-Ticket: Das Erwärmungsgesetz</title>
+<link href="../assets/schriften/schriften.css" rel="stylesheet">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script src="../assets/katex/katex.min.js"></script>
+<style>
+  /* Physik 9b · 2.5 Exit-Ticket (27.11.2026) – Petrol-Design wie die Lernpfade */
+  :root{--petrol:#0B3B47;--petrol2:#0E7490;--hell:#BFE3EA;--tinte:#111827;--grau:#F2F2F2;--rand:#D5DDE3;
+        --gelb:#FFC83D;--gruen:#1F7A4D;--gruen-hell:#E3F4EA;--rot:#C62828;--rot-hell:#FDE8E8;--orange:#C2410C;
+        --orange-hell:#FFF1E8;--lila:#6A2C9E}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--petrol);color:var(--tinte);font-family:Nunito,system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+       font-size:17.5px;line-height:1.45;min-height:100vh;padding-bottom:40px;-webkit-tap-highlight-color:transparent}
+  header{max-width:640px;margin:0 auto;padding:12px 16px 6px;color:#fff}
+  .zurStart{display:inline-block;margin:0 0 6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);
+            color:#fff;font-size:14px;font-weight:700;text-decoration:none}
+  header small{display:block;color:var(--hell);font-size:13.5px;font-weight:700}
+  header h1{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:21px;line-height:1.25;margin:4px 0 10px}
+  .fortschritt{display:flex;gap:5px;margin:4px 0 2px}
+  .fortschritt span{flex:1;height:9px;border-radius:999px;background:rgba(255,255,255,.2)}
+  .fortschritt span.jetzt{background:var(--gelb)}
+  .fortschritt span.r{background:#5CC08A}
+  .fortschritt span.f{background:#F07B7B}
+  main{max-width:640px;margin:0 auto;padding:6px 12px}
+  .karte{background:#fff;border-radius:18px;padding:18px 16px 16px;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:rein .25s ease}
+  @keyframes rein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .nr{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--petrol2);font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+  .nr b{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
+        background:var(--petrol2);color:#fff;font-size:15px;letter-spacing:0}
+  .art{font-weight:700;color:#6b7780;text-transform:none;letter-spacing:0}
+  .frage{font-size:19px;font-weight:700;margin:10px 0 12px}
+  .frage .klein{display:block;font-weight:500;font-size:15.5px;color:#4b5563;margin-top:4px}
+  .ctab{width:100%;border-collapse:collapse;font-size:14.5px;margin:2px 0 12px}
+  .ctab th,.ctab td{border:1px solid var(--rand);padding:4px 5px;text-align:center}
+  .ctab th{background:var(--grau);font-weight:700}
+  .mc{list-style:none;margin:0;padding:0}
+  .mc li{margin:8px 0}
+  .mc button{width:100%;min-height:52px;text-align:left;display:flex;gap:12px;align-items:center;border:2px solid var(--rand);
+             background:#fff;border-radius:14px;padding:10px 12px;font:inherit;font-size:17px;color:var(--tinte);cursor:pointer}
+  .mc button .bu{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid #9aa8b2;display:inline-flex;
+                 align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#4b5563}
+  .mc button:not(:disabled):hover{border-color:var(--petrol2);background:#F2FAFC}
+  .mc button.r{border-color:var(--gruen);background:var(--gruen-hell)}
+  .mc button.r .bu{background:var(--gruen);border-color:var(--gruen);color:#fff}
+  .mc button.f{border-color:var(--rot);background:var(--rot-hell)}
+  .mc button.f .bu{background:var(--rot);border-color:var(--rot);color:#fff}
+  .mc button:disabled{cursor:default}
+  .mc button.blass{opacity:.55}
+  .mc .katex{font-size:1.12em}
+  .fx{display:inline-block;white-space:nowrap}
+  .mc button.r .bu::after{content:'✓'} .mc button.f .bu::after{content:'✗'}
+  .rueck{margin:12px 0 0;border-radius:12px;padding:10px 12px;font-size:16px;animation:rein .25s ease}
+  .rueck.gut{background:var(--gruen-hell);border-left:5px solid var(--gruen)}
+  .rueck.schlecht{background:var(--orange-hell);border-left:5px solid var(--orange)}
+  .rueck b.t{display:block;margin-bottom:2px}
+  .rueck.gut b.t{color:var(--gruen)} .rueck.schlecht b.t{color:var(--orange)}
+  .weiter{display:block;width:100%;margin-top:14px;border:0;border-radius:14px;min-height:56px;font:inherit;font-size:18px;
+          font-weight:800;background:var(--gelb);color:#222;cursor:pointer;box-shadow:0 3px 0 #D9A21E}
+  .start ul{margin:8px 0 14px;padding-left:22px} .start li{margin:5px 0}
+  .diagramm{display:block;margin:0 auto 10px;width:100%;max-width:360px;height:auto}
+  /* Ergebnisbildschirm zum Hochhalten */
+  .ergebnis{text-align:center;color:#fff;border-radius:22px;padding:22px 16px 18px;box-shadow:0 6px 18px rgba(0,0,0,.3);animation:rein .3s ease}
+  .ergebnis.gruen{background:#1F7A4D} .ergebnis.gelb{background:#B7791F} .ergebnis.rot{background:#B42318}
+  .ergebnis .kopf{font-weight:800;font-size:15px;letter-spacing:.05em;text-transform:uppercase;opacity:.9}
+  .ergebnis .punkte{font-family:Unbounded,Nunito,sans-serif;font-weight:700;font-size:86px;line-height:1;margin:10px 0 4px}
+  .ergebnis .punkte small{font-size:38px;opacity:.85}
+  .ergebnis .urteil{font-size:22px;font-weight:800;margin:4px 0 12px}
+  .haken{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:360px;margin:0 auto 12px}
+  .haken span{background:rgba(255,255,255,.18);border-radius:10px;padding:5px 0;font-weight:800;font-size:15px}
+  .haken span.r{background:#fff;color:#1F7A4D} .haken span.f{background:rgba(0,0,0,.28);color:#fff}
+  .ergebnis .meta{font-size:15px;opacity:.95}
+  .ergebnis .meta b{font-size:17px}
+  .ergebnis .meta .versuch2{display:inline-block;background:#fff;color:#B42318;border-radius:999px;padding:1px 10px;font-weight:800}
+  .zeigen{display:inline-block;margin-top:10px;background:rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;font-weight:800}
+  .knoepfe{display:flex;gap:10px;margin-top:14px}
+  .knoepfe button{flex:1;border:0;border-radius:14px;min-height:50px;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+  .k-fehler{background:#fff;color:var(--petrol)} .k-nochmal{background:rgba(255,255,255,.2);color:#fff}
+  .fehlerliste{margin-top:14px}
+  .fehlerliste .karte{margin-top:10px}
+  .fehlerliste h3{margin:0 0 4px;font-size:16px;color:var(--petrol2)}
+  .fehlerliste p{margin:4px 0}
+  .ok{color:var(--gruen);font-weight:800}
+  @media (max-width:420px){ .ergebnis .punkte{font-size:72px} .frage{font-size:18px} }
+</style>
+</head>
+<body>
+<header>
+  <a class="zurStart" href="material.html">‹ Material</a>
+  <small>Physik 9b · 2.5 Das Erwärmungsgesetz</small>
+  <h1>Exit-Ticket: Kopf statt Taschenrechner</h1>
+  <div class="fortschritt" id="fortschritt" aria-hidden="true"></div>
+</header>
+<main id="main"></main>
+
+<script>
+/* =====================================================================
+   Physik 9b · 2.5 Exit-Ticket Erwärmungsgesetz (Vertretungsstunde Fr 27.11.2026)
+   10 Fragen: Verständnis + Überschlag im Kopf. Gewertet wird nur der erste Klick.
+   Ergebnisbildschirm zum Hochhalten (grün 8–10, gelb 5–7, rot 0–4) mit Versuchsnummer und Uhrzeit.
+   Gespeichert wird nur die Zahl der Versuche auf diesem Gerät (localStorage), nichts wird gesendet.
+   ===================================================================== */
+var C = '\\,{}^{\\circ}\\mathrm{C}';
+var W = 'W_{\\mathrm{th}}';
+var DT = '\\Delta\\vartheta';
+var CU = '\\,\\tfrac{\\mathrm{kJ}}{\\mathrm{kg}\\cdot{}^{\\circ}\\mathrm{C}}';
+var CUL = '\\,\\mathrm{kJ}/(\\mathrm{kg}\\cdot{}^{\\circ}\\mathrm{C})';
+var U = function (e) { return '\\,\\mathrm{' + e + '}'; };
+
+function tex(x) {
+  if (window.katex) { try { return katex.renderToString(x, { throwOnError: false, strict: 'ignore' }); } catch (e) {} }
+  return x;
+}
+function fmt(s) { return (s || '').replace(/\$([^$]+)\$/g, function (_, x) { return '<span class="fx">' + tex(x) + '</span>'; }); }
+function mischen(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+var CTAB = '<table class="ctab"><tr><th>Stoff</th><th>Wasser</th><th>Öl</th><th>Alu</th><th>Eisen</th><th>Kupfer</th></tr>' +
+  '<tr><th>' + tex('c') + ' in ' + tex('\\tfrac{\\mathrm{kJ}}{\\mathrm{kg}\\cdot{}^{\\circ}\\mathrm{C}}') + '</th><td>4,19</td><td>2,0</td><td>0,90</td><td>0,45</td><td>0,38</td></tr></table>';
+
+var DIAGRAMM =
+  '<svg class="diagramm" viewBox="0 0 300 200" role="img" aria-label="Temperatur-Wärme-Diagramm mit Graph A steil und Graph B flach">' +
+  '<g stroke="#E5E7EB" stroke-width="1">' +
+  [60, 100, 140, 180, 220, 260].map(function (x) { return '<line x1="' + x + '" y1="20" x2="' + x + '" y2="170"/>'; }).join('') +
+  [140, 110, 80, 50, 20].map(function (y) { return '<line x1="40" y1="' + y + '" x2="280" y2="' + y + '"/>'; }).join('') +
+  '</g><g stroke="#111827" stroke-width="2" fill="#111827">' +
+  '<line x1="40" y1="170" x2="288" y2="170"/><polygon points="292,170 282,165 282,175"/>' +
+  '<line x1="40" y1="170" x2="40" y2="12"/><polygon points="40,8 35,18 45,18"/></g>' +
+  '<line x1="40" y1="140" x2="250" y2="28" stroke="#1F4E79" stroke-width="4" stroke-linecap="round"/>' +
+  '<line x1="40" y1="140" x2="280" y2="95" stroke="#C55A11" stroke-width="4" stroke-linecap="round"/>' +
+  '<text x="256" y="34" font-family="Nunito,Arial" font-weight="800" font-size="18" fill="#1F4E79">A</text>' +
+  '<text x="262" y="88" font-family="Nunito,Arial" font-weight="800" font-size="18" fill="#C55A11">B</text>' +
+  '<text x="48" y="16" font-family="Nunito,Arial" font-size="13" fill="#111827"><tspan font-style="italic">ϑ</tspan> in °C</text>' +
+  '<text x="284" y="190" text-anchor="end" font-family="Nunito,Arial" font-size="13" fill="#111827">zugeführte Wärme <tspan font-style="italic">W</tspan><tspan font-size="9" dy="3">th</tspan></text>' +
+  '<text x="34" y="144" text-anchor="end" font-family="Nunito,Arial" font-size="12" fill="#111827">20</text>' +
+  '</svg>';
+
+/* r = Index der richtigen Antwort in a (vor dem Mischen) */
+var FRAGEN = [
+  { art: 'Verstehen', f: 'Was gibt die spezifische Wärmekapazität $c$ eines Stoffes an?',
+    a: ['Die Wärme, die man braucht, um 1&nbsp;kg des Stoffes um 1&nbsp;°C zu erwärmen.',
+        'Die Wärme, die man braucht, um 1&nbsp;g des Stoffes um 1&nbsp;°C zu erwärmen.',
+        'Die Temperatur, auf die sich 1&nbsp;kg des Stoffes höchstens erwärmen lässt.',
+        'Wie schnell der Stoff Wärme weiterleitet.'], r: 0,
+    e: 'Die spezifische Wärmekapazität bezieht sich auf **1 kg** und **1 °C**. Wasser: $c = 4{,}19' + CU + '$ – man braucht 4,19 kJ, um 1 kg Wasser um 1 °C zu erwärmen.' },
+
+  { art: 'Verstehen', f: 'Du erwärmst 3&nbsp;l statt 1&nbsp;l Wasser – beide Male von 20&nbsp;°C auf 60&nbsp;°C.<span class="klein">Wie viel Wärme brauchst du für die 3&nbsp;l?</span>',
+    a: ['die dreifache Wärme', 'gleich viel Wärme', 'ein Drittel der Wärme', 'die neunfache Wärme'], r: 0,
+    e: '$' + W + ' \\sim m$: dreifache Masse → dreifache Wärme. Das $' + DT + '$ ist beide Male gleich (40 °C).' },
+
+  { art: 'Umrechnen', f: 'Ein Topf enthält 750&nbsp;ml Wasser.<span class="klein">Welche Masse setzt du in $' + W + ' = m \\cdot c \\cdot ' + DT + '$ ein?</span>',
+    a: ['$m = 0{,}75' + U('kg') + '$', '$m = 750' + U('kg') + '$', '$m = 7{,}5' + U('kg') + '$', '$m = 0{,}075' + U('kg') + '$'], r: 0,
+    e: '1 l Wasser hat die Masse 1 kg. 750 ml = 0,75 l → $m = 0{,}75' + U('kg') + '$.' },
+
+  { art: 'Verstehen', f: 'Je 1&nbsp;kg Aluminium und Eisen bekommen genau gleich viel Wärme.<span class="klein">Welcher Block wird wärmer? (Aluminium: $c = 0{,}90' + CUL + '$, Eisen: $c = 0{,}45' + CUL + '$)</span>',
+    a: ['der Eisenblock', 'der Aluminiumblock', 'beide werden gleich warm', 'das hängt nur von der Anfangstemperatur ab'], r: 0,
+    e: 'Eisen hat die **kleinere** spezifische Wärmekapazität: Für 1 °C braucht es nur halb so viel Wärme. Mit derselben Wärme steigt seine Temperatur also doppelt so stark.' },
+
+  { art: 'Alltag', f: 'Warum füllt man eine Wärmflasche mit Wasser und nicht mit Speiseöl?',
+    a: ['Wasser hat eine größere spezifische Wärmekapazität und speichert deshalb mehr Wärme.',
+        'Wasser hat eine kleinere spezifische Wärmekapazität und hält deshalb länger warm.',
+        'Wasser wird beim Erhitzen schneller heiß als Öl.',
+        'Öl kann man nicht erwärmen.'], r: 0,
+    e: 'Wasser: $4{,}19' + CU + '$, Öl: $2{,}0' + CU + '$. Beim Abkühlen um gleich viele Grad gibt Wasser etwa doppelt so viel Wärme ab – die Flasche hält länger warm.' },
+
+  { art: 'Überschlag', f: 'Wie viel Wärme braucht man ungefähr, um 2&nbsp;kg Wasser von 20&nbsp;°C auf 30&nbsp;°C zu erwärmen?<span class="klein">Rechne im Kopf mit $c \\approx 4{,}2' + CUL + '$.</span>',
+    a: ['etwa 84&nbsp;kJ', 'etwa 8,4&nbsp;kJ', 'etwa 252&nbsp;kJ', 'etwa 420&nbsp;kJ'], r: 0,
+    e: '$' + DT + ' = 30' + C + ' - 20' + C + ' = 10' + C + '$<br>$' + W + ' \\approx 2' + U('kg') + '\\cdot 4{,}2' + CU + '\\cdot 10' + C + ' = 84' + U('kJ') + '$<br>Typische Fehler: 252 kJ (Endtemperatur statt $' + DT + '$), 420 kJ (Temperaturen addiert).' },
+
+  { art: 'Überschlag', f: '1&nbsp;kg Eisen ($c = 0{,}45' + CUL + '$) nimmt 45&nbsp;kJ Wärme auf.<span class="klein">Um wie viel Grad wird es wärmer?</span>',
+    a: ['um 100&nbsp;°C', 'um etwa 20&nbsp;°C', 'um 10&nbsp;°C', 'um 1000&nbsp;°C'], r: 0,
+    e: '$' + DT + ' = \\dfrac{' + W + '}{m \\cdot c} = \\dfrac{45' + U('kJ') + '}{1' + U('kg') + '\\cdot 0{,}45' + CU + '} = 100' + C + '$<br>Etwa 20 °C kommt heraus, wenn man malnimmt statt teilt.' },
+
+  { art: 'Diagramm', f: 'Je 1&nbsp;kg Kupfer und Aluminium werden ab 20&nbsp;°C erwärmt.<span class="klein">Welcher Graph gehört zu Aluminium? (Kupfer: $c = 0{,}38' + CUL + '$, Aluminium: $c = 0{,}90' + CUL + '$)</span>' + DIAGRAMM,
+    a: ['Graph B, weil er flacher ist', 'Graph A, weil er steiler ist', 'Graph A, weil Aluminium leichter ist', 'Das kann man nicht sagen.'], r: 0,
+    e: 'Aluminium hat das größere $c$: Bei gleicher Wärme steigt seine Temperatur weniger – sein Graph ist **flacher** (B). Kupfer wird schneller heiß (A).' },
+
+  { art: 'Überschlag', f: 'Ein Wasserkocher gibt 360&nbsp;kJ Wärme ans Wasser ab.<span class="klein">Wie viele kWh sind das? ($1' + U('kWh') + ' = 3600' + U('kJ') + '$)</span>',
+    a: ['0,1&nbsp;kWh', '10&nbsp;kWh', '1&nbsp;kWh', 'etwa 1,3 Millionen kWh'], r: 0,
+    e: '$\\dfrac{360' + U('kJ') + '}{3600' + U('kJ') + '}\\cdot 1' + U('kWh') + ' = 0{,}1' + U('kWh') + '$ – das kostet nur ein paar Cent.' },
+
+  { art: 'Umstellen', f: 'Du sollst aus einer Messung die spezifische Wärmekapazität berechnen.<span class="klein">Welche Formel ist richtig?</span>',
+    a: ['$c = \\dfrac{' + W + '}{m \\cdot ' + DT + '}$', '$c = \\dfrac{m \\cdot ' + DT + '}{' + W + '}$',
+        '$c = ' + W + ' \\cdot m \\cdot ' + DT + '$', '$c = \\dfrac{' + W + ' \\cdot m}{' + DT + '}$'], r: 0,
+    e: '$' + W + ' = m \\cdot c \\cdot ' + DT + '\\quad | : (m \\cdot ' + DT + ')$<br>$c = \\dfrac{' + W + '}{m \\cdot ' + DT + '}$' }
+];
+
+var main = document.getElementById('main');
+var leiste = document.getElementById('fortschritt');
+var nr = 0, antworten = [];
+var KEY = 'p9-quiz-2-5-versuche';
+
+function versuche(neu) {
+  var v = 0;
+  try { v = parseInt(localStorage.getItem(KEY) || '0', 10) || 0; if (neu) { v++; localStorage.setItem(KEY, String(v)); } } catch (e) { if (neu) v = 1; }
+  return v;
+}
+function fett(s) { return s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>'); }
+
+function zeichneLeiste() {
+  leiste.innerHTML = FRAGEN.map(function (_, i) {
+    var k = antworten[i] === undefined ? (i === nr ? 'jetzt' : '') : (antworten[i] ? 'r' : 'f');
+    return '<span class="' + k + '"></span>';
+  }).join('');
+}
+
+function start() {
+  nr = 0; antworten = [];
+  leiste.innerHTML = '';
+  main.innerHTML = '<section class="karte start">' +
+    '<div class="nr"><b>10</b> Fragen · ca. 8 Minuten</div>' +
+    '<p class="frage">So geht’s</p>' +
+    '<ul><li>Ohne Taschenrechner – alles geht im Kopf.</li>' +
+    '<li>Es zählt nur dein <b>erster</b> Klick.</li>' +
+    '<li>Nach jeder Frage siehst du die Erklärung.</li>' +
+    '<li>Am Ende: Bildschirm hochhalten und Herrn Gößmann zeigen.</li></ul>' +
+    CTAB +
+    '<button class="weiter" type="button" id="los">Los geht’s ▶</button></section>';
+  document.getElementById('los').onclick = function () { zeigeFrage(); };
+}
+
+function zeigeFrage() {
+  var q = FRAGEN[nr];
+  zeichneLeiste();
+  var opts = mischen(q.a.map(function (t, i) { return { t: t, ok: i === q.r }; }));
+  var bu = 'ABCD';
+  main.innerHTML = '<section class="karte">' +
+    '<div class="nr"><b>' + (nr + 1) + '</b> von ' + FRAGEN.length + ' <span class="art">· ' + q.art + '</span></div>' +
+    '<div class="frage">' + fmt(q.f) + '</div>' +
+    '<ul class="mc">' + opts.map(function (o, i) {
+      return '<li><button type="button" data-i="' + i + '"><span class="bu"></span><span>' + fmt(o.t) + '</span></button></li>';
+    }).join('') + '</ul><div id="rueck"></div></section>';
+  window.scrollTo(0, 0);
+  var knoepfe = main.querySelectorAll('.mc button');
+  knoepfe.forEach(function (b) {
+    b.onclick = function () {
+      var i = +b.dataset.i, richtig = opts[i].ok;
+      antworten[nr] = richtig;
+      knoepfe.forEach(function (k, j) {
+        k.disabled = true;
+        if (opts[j].ok) k.classList.add('r');
+        else if (j === i) k.classList.add('f');
+        else k.classList.add('blass');
+      });
+      zeichneLeiste();
+      var letzte = nr === FRAGEN.length - 1;
+      document.getElementById('rueck').innerHTML =
+        '<div class="rueck ' + (richtig ? 'gut' : 'schlecht') + '"><b class="t">' + (richtig ? 'Richtig!' : 'Leider nicht – so geht’s:') + '</b>' + fett(fmt(q.e)) + '</div>' +
+        '<button class="weiter" type="button" id="weiter">' + (letzte ? 'Zum Ergebnis ▶' : 'Nächste Frage ▶') + '</button>';
+      var w = document.getElementById('weiter');
+      w.onclick = function () { nr++; if (nr < FRAGEN.length) zeigeFrage(); else ergebnis(); };
+      w.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+  });
+}
+
+function ergebnis() {
+  var p = antworten.filter(Boolean).length;
+  var v = versuche(true);
+  var stufe = p >= 8 ? 'gruen' : (p >= 5 ? 'gelb' : 'rot');
+  var urteil = p >= 8 ? 'Stark – das sitzt!' : (p >= 5 ? 'Gut – schau dir deine Fehler noch an.' : 'Übe noch: Übungsblatt + Lernpfad!');
+  var jetzt = new Date();
+  var uhr = ('0' + jetzt.getHours()).slice(-2) + ':' + ('0' + jetzt.getMinutes()).slice(-2);
+  zeichneLeiste();
+  main.innerHTML = '<section class="ergebnis ' + stufe + '">' +
+    '<div class="kopf">Exit-Ticket 2.5 · Erwärmungsgesetz</div>' +
+    '<div class="punkte">' + p + '<small> / 10</small></div>' +
+    '<div class="urteil">' + urteil + '</div>' +
+    '<div class="haken">' + antworten.map(function (a, i) { return '<span class="' + (a ? 'r' : 'f') + '">' + (i + 1) + (a ? ' ✓' : ' ✗') + '</span>'; }).join('') + '</div>' +
+    '<div class="meta">' + (v > 1 ? '<span class="versuch2">' + v + '. Versuch</span>' : '<b>1. Versuch</b>') + ' · ' + uhr + ' Uhr</div>' +
+    '<div class="zeigen">Bildschirm hochhalten!</div>' +
+    '<div class="knoepfe">' + (p < 10 ? '<button class="k-fehler" type="button" id="fehler">Meine Fehler ansehen</button>' : '') +
+    '<button class="k-nochmal" type="button" id="nochmal">Nochmal</button></div></section>' +
+    '<div class="fehlerliste" id="liste"></div>';
+  window.scrollTo(0, 0);
+  var f = document.getElementById('fehler');
+  if (f) f.onclick = function () {
+    document.getElementById('liste').innerHTML = FRAGEN.map(function (q, i) {
+      if (antworten[i]) return '';
+      return '<section class="karte"><h3>Frage ' + (i + 1) + ' · ' + q.art + '</h3><p>' + fmt(q.f) + '</p>' +
+        '<p class="ok">Richtig: ' + fmt(q.a[q.r]) + '</p><p>' + fett(fmt(q.e)) + '</p></section>';
+    }).join('');
+    f.disabled = true;
+    document.getElementById('liste').scrollIntoView({ behavior: 'smooth' });
+  };
+  document.getElementById('nochmal').onclick = start;
+}
+
+start();
+</script>
+</body>
+</html>
