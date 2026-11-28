@@ -159,6 +159,8 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
 .besten .eintragen button:disabled{opacity:.5;cursor:default}
 .netstatus{font-size:14px;margin:6px 0;min-height:0}
 .netstatus.ok{color:var(--ok)}.netstatus.warn{color:var(--orange)}
+.unterzahl{text-align:center;font-size:14px;font-weight:700;color:var(--text2);margin:-2px 0 6px}
+.besten .runde{font-size:15px;margin:0 0 8px;color:var(--text)}.besten .runde b{color:var(--gelb)}
 .reiter{display:flex;gap:6px;margin:8px 0 6px}
 .reiter button{flex:1;min-height:36px;border-radius:10px;border:1px solid var(--rand);font-weight:800;font-size:14px;color:var(--text2)}
 .reiter button[aria-selected="true"]{background:rgba(255,201,60,.18);color:var(--text);border-color:rgba(255,201,60,.6)}
@@ -238,7 +240,7 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
         <li>🚨 Einheiten-Polizei: die falsch geschriebene Einheit abschießen · 🎯 jede Runde eine Mission</li>
         <li>Pause verdeckt die Frage und kostet die Serie.</li>
       </ul>
-      <div class="bestwert"><span>Dein Bestwert</span><b id="bestStart">0</b></div>
+      <div class="bestwert"><span>Bestwert auf diesem Gerät</span><b id="bestStart">0</b></div>
       <button class="knopf" id="losKnopf">Los geht's</button>
       <h3 class="ab">Dein Gleiter</h3>
       <div class="skins" id="skins"></div>
@@ -269,6 +271,7 @@ details.mehr summary{cursor:pointer;font-weight:900;margin-top:12px;min-height:4
     <div class="panel">
       <div class="ober" style="text-align:center">Runde vorbei</div>
       <div class="gross" id="endPunkte">0</div>
+      <div class="unterzahl">Punkte in dieser Runde</div>
       <div class="rekord" id="rekord"></div>
       <div class="werte">
         <div><b id="wRichtig">0</b>richtig</div>
@@ -1521,7 +1524,7 @@ function rundeEnde(){
     var alt=daten.best||0, neu=st.punkte>alt;
     if(neu){ daten.best=st.punkte; speichern(); }
     $('endPunkte').textContent=st.punkte;
-    $('rekord').textContent=neu&&st.punkte>0?'★ Neuer Bestwert!':'Dein Bestwert: '+(daten.best||0);
+    $('rekord').textContent=neu&&st.punkte>0?'★ Neuer Bestwert auf diesem Gerät!':'Bestwert auf diesem Gerät: '+(daten.best||0);
     $('wRichtig').textContent=st.richtig; $('wSerie').textContent=st.besteSerie; $('wStufe').textContent=stufe();
     var neuL=[];
     var m=st.mission; neuL.push((m.fertig?'🎯 Mission geschafft: ':'🎯 Mission nicht geschafft: ')+esc(m.def.text));
@@ -1551,8 +1554,8 @@ window.addEventListener('blur',function(){ pausieren(); });
 var NET={ url:'https://sliitqxickadcoghewli.supabase.co/rest/v1/', key:'sb_publishable_yWD0GRsIhkx9TGn6SSOCbg_1L0bj2v7', game:KL.game, klasse:KL.klasse };
 var NAME_KEY='quiz.spitzname', ANSICHT_KEY='bestenliste.ansicht.'+NET.game;
 function wochenStart(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-((d.getDay()+6)%7)); return d; }
-function netFetch(path,body,extra){
-  var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ctl) ctl.abort(); },7000);
+function netFetch(path,body,extra,ms){
+  var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ctl) ctl.abort(); },ms||7000);
   var h={ apikey:NET.key, 'Content-Type':'application/json' }; if(extra) for(var k in extra) h[k]=extra[k];
   return fetch(NET.url+path,{ method:'POST', headers:h, body:JSON.stringify(body), signal:ctl?ctl.signal:undefined })
     .then(function(r){ clearTimeout(to); return r; },function(e){ clearTimeout(to); throw e; });
@@ -1563,7 +1566,7 @@ function bestenBox(mitEintrag){
   var ansicht=lsGet(ANSICHT_KEY)==='gesamt'?'gesamt':'woche';
   var punkte=st?st.punkte:0;
   div.innerHTML='<h3>🏆 Bestenliste Klasse '+esc(NET.klasse)+'</h3>'+
-    (mitEintrag?'<div class="eintragen"><input type="text" maxlength="14" autocomplete="off" placeholder="Dein Spitzname" aria-label="Spitzname"><button type="button">Eintragen</button></div>'+
+    (mitEintrag?'<p class="runde">Eingetragen werden die <b>'+punkte+' Punkte dieser Runde</b>. In der Liste bleibt immer dein bester Eintrag stehen.</p><div class="eintragen"><input type="text" maxlength="14" autocomplete="off" placeholder="Dein Spitzname" aria-label="Spitzname"><button type="button">Eintragen</button></div>'+
     '<p class="klein" style="margin:6px 0">Nur Spitzname, kein echter Name! Gespeichert werden Spitzname, Punkte und Stufe. <a href="../datenschutz.html#bestenliste">Datenschutz</a></p>':'')+
     '<div class="netstatus" role="status"></div>'+
     '<div class="reiter" role="tablist"><button type="button" data-v="woche">Diese Woche</button><button type="button" data-v="gesamt">Gesamt</button></div>'+
@@ -1574,23 +1577,46 @@ function bestenBox(mitEintrag){
     var inp=div.querySelector('input'), knopf=div.querySelector('.eintragen button');
     inp.value=lsGet(NAME_KEY);
     if(punkte<1){ knopf.disabled=true; inp.disabled=true; status('warn','Mit 0 Punkten gibt es noch keinen Eintrag.'); }
+    knopf.textContent=punkte+' P. eintragen';
+    var WARTEN=[3,6,10];   // automatische Neuversuche nach … Sekunden
+    var senden=function(x,versuch){
+      netFetch('scores',{ game:NET.game, name:x, score:punkte, level:stufe(), ops:(st.richtig+' richtig').slice(0,24) },{ Prefer:'return=minimal' },12000)
+        .then(function(r){
+          if(r.ok) return { art:'ok' };
+          return r.text().then(function(t){
+            var msg=''; try{ msg=JSON.parse(t).message||''; }catch(e){ msg=t||''; }
+            msg=String(msg).replace(/\s+/g,' ').slice(0,90);
+            if(/nicht erlaubt/.test(msg)) return { art:'name' };
+            if(/Zu viele/.test(msg) || r.status===429) return { art:'viele' };
+            return { art:'fehler', code:r.status, msg:msg };
+          });
+        },function(){ return { art:'offline' }; })
+        .then(function(res){
+          if(res.art==='ok'){ lsSet(NAME_KEY,x); knopf.textContent='Eingetragen ✓'; inp.disabled=true; status('ok','Deine '+punkte+' Punkte sind eingetragen.'); laden(x,punkte); return; }
+          if(res.art==='name'){ knopf.disabled=false; status('warn','Dieser Spitzname ist nicht erlaubt. Nimm bitte einen anderen.'); return; }
+          // vorübergehende Probleme: von selbst nochmal versuchen
+          var nochmal=(res.art==='viele'||res.art==='offline'||(res.art==='fehler'&&res.code>=500));
+          if(nochmal && versuch<WARTEN.length){
+            var s=WARTEN[versuch];
+            status('warn',(res.art==='viele'?'Gerade tragen sich sehr viele ein.':'Die Bestenliste antwortet gerade nicht.')+' Neuer Versuch in '+s+' s …');
+            setTimeout(function(){ status('','Wird eingetragen … (Versuch '+(versuch+2)+')'); senden(x,versuch+1); },s*1000);
+            return;
+          }
+          knopf.disabled=false; knopf.textContent='Nochmal versuchen';
+          if(res.art==='viele') status('warn','Gerade tragen sich sehr viele ein. Tipp in einer Minute auf „Nochmal versuchen“.');
+          else if(res.art==='offline') status('warn','Keine Verbindung zur Bestenliste – ist das Tablet im WLAN? Tipp dann auf „Nochmal versuchen“.');
+          else status('warn','Die Bestenliste hat den Eintrag abgelehnt (Fehler '+res.code+(res.msg?': '+res.msg:'')+'). Sag bitte deiner Lehrkraft Bescheid.');
+        });
+    };
     knopf.onclick=function(){
       var x=inp.value.trim().replace(/\s+/g,' ');
       if(!nameOk(x)){ status('warn','Der Spitzname braucht 2 bis 14 Zeichen: Buchstaben, Ziffern, Leerzeichen, Punkt oder Strich.'); return; }
       knopf.disabled=true; status('','Wird eingetragen …');
-      netFetch('scores',{ game:NET.game, name:x, score:punkte, level:stufe(), ops:(st.richtig+' richtig').slice(0,24) },{ Prefer:'return=minimal' })
-        .then(function(r){ if(r.ok) return 'ok'; return r.text().then(function(t){ return /nicht erlaubt/.test(t)?'name':(/Zu viele/.test(t)?'viele':'fehler'); }); },function(){ return 'offline'; })
-        .then(function(res){
-          if(res==='ok'){ lsSet(NAME_KEY,x); knopf.textContent='Eingetragen ✓'; inp.disabled=true; status('ok','Du stehst jetzt in der Bestenliste.'); laden(); return; }
-          knopf.disabled=false;
-          if(res==='name') status('warn','Dieser Spitzname ist nicht erlaubt. Nimm bitte einen anderen.');
-          else if(res==='viele') status('warn','Gerade tragen sich sehr viele ein – probier es in einer Minute nochmal.');
-          else status('warn','Keine Verbindung zur Bestenliste. Probier es später nochmal.');
-        });
+      senden(x,0);
     };
   }
   Array.prototype.forEach.call(div.querySelectorAll('.reiter button'),function(b){ b.onclick=function(){ ansicht=b.getAttribute('data-v'); lsSet(ANSICHT_KEY,ansicht); laden(); }; });
-  function laden(){
+  function laden(neuName,neuPunkte){
     Array.prototype.forEach.call(div.querySelectorAll('.reiter button'),function(b){ b.setAttribute('aria-selected',b.getAttribute('data-v')===ansicht); });
     var eigen=(lsGet(NAME_KEY)||'').toLowerCase();
     ol.innerHTML='<li class="leer">Lädt …</li>';
@@ -1607,6 +1633,10 @@ function bestenBox(mitEintrag){
           li.innerHTML='<span class="rg">'+(i+1)+'.</span><span class="nm"></span><span class="pk">'+(+z.score||0)+' P.</span>';
           li.querySelector('.nm').textContent=z.name; ol.appendChild(li);
         });
+        if(neuName){
+          var z=rows.filter(function(r){ return String(r.name).toLowerCase()===neuName.toLowerCase(); })[0];
+          if(z && (+z.score||0)>neuPunkte) status('ok','Deine '+neuPunkte+' Punkte sind eingetragen. In der Liste steht weiter dein besserer Eintrag mit '+(+z.score)+' Punkten.');
+        }
       },function(){ ol.innerHTML='<li class="leer">Die Bestenliste ist gerade nicht erreichbar.</li>'; });
   }
   laden();
